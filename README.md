@@ -1,66 +1,62 @@
-```
-Dial Plan Visualizer - see a graph of the call flow for
-any Inbound Route.
-```
-### What?
-Dpviz
-This is a module for [FreePBX©](http://www.freepbx.org/ "FreePBX Home Page"), an open source graphical user interface to control and manage [Asterisk(http://www.asterisk.org/ "Asterisk Home Page") phone systems.  FreePBX is licensed under GPL.
-The dpviz module shows you a graph of the call flow for any Inbound Route.  End-user PBX support often involves making changes to the flow for inbound calls, or simply asking questions about it (e.g. "Whose phones ring when someone calls X?  When we get a call on Y does it go directly to the IVR or are there Time Conditions applied first?").
+# Dial Plan Visualizer (dpviz)
 
-### Installing the module
-* If upgrading- uninstall the current version first.
+## Overview
+The **Dial Plan Visualizer** (dpviz) is a module for [FreePBX®](http://www.freepbx.org/), an open-source graphical user interface for managing [Asterisk](http://www.asterisk.org/) phone systems. FreePBX is licensed under GPL.
 
-* Command line...
-Uninstall:
-```
+This module visually maps out the call flow for any inbound route, making it an essential tool for PBX administrators. It simplifies troubleshooting, optimization, and documentation of call routing by providing a clear, interactive diagram of how calls are handled.
+
+It is particularly useful for:
+- **Understanding call distribution** – "Which extensions ring when someone calls X?"
+- **Tracing call logic** – "When a call comes in on Y, does it go directly to the IVR, or are Time Conditions applied first?"
+- **Identifying misconfigurations** – Quickly spot and correct unintended call routing behaviors.
+- **Streamlining PBX management** – Reduce the time spent manually tracking call flows in complex systems.
+
+## Installation
+### Upgrading from a Previous Version
+If upgrading, uninstall the current version before proceeding.
+
+#### Uninstall via Command Line:
+```sh
 fwconsole ma uninstall dpviz
 ```
 
-Install:
-```
+#### Install via Command Line:
+```sh
 fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/heads/main.zip
 ```
 
---or--
-
-### Installing the Module
-
+### Install via FreePBX Admin Panel
 1. **Log into FreePBX**, then navigate to **Admin > Module Admin**.
 2. Click **Upload Modules**.
 3. **Download the module** from the following link: [Download dpviz](https://github.com/madgen78/dpviz/archive/refs/heads/main.zip).
-
-#### Upload the Module:
 4. Set the upload type to **"Upload (From Hard Disk)"**.
-5. Click **Choose File** to select the downloaded file, then click **Upload (From Hard Disk)**.
-6. After the upload, click the **"Local Module Administration"** link.
+5. Click **Choose File**, select the downloaded module, then click **Upload (From Hard Disk)**.
+6. After the upload completes, click **Local Module Administration**.
+7. Scroll down to **Dial Plan Visualizer** under the **Reports** section and click on it to expand.
+8. Click **Install** and then click **Process** (at the bottom of page) to complete the installation.
 
-#### Install the Module:
-7. Scroll down to **Dial Plan Visualizer** under the **Reports** section and click it.
-8. Click the **Install** action.
-9. Finally, click the **Process** button at the bottom of the page.
-
-
-### How to Use the Module
+## Usage
 1. **Log in to your PBX** and navigate to **Reports > Dial Plan Visualizer**.
 2. **Select or search for an inbound route** using the side menu.
 
-#### Highlighting Paths:
-- Click **Highlight Paths**, then click on a node or edge to highlight it (links are inactive).
-- **Exported images** will include the highlighted paths.
-- When you're done, click **Remove Highlights** to clear the highlights.
+### Highlighting Call Paths
+- Click **Highlight Paths**, then select a node or edge to highlight it (links are inactive).
+- **Exported images** will include highlighted paths.
+- To clear highlights, click **Remove Highlights**.
 
-#### Navigation:
-- **Pan** by holding down the left mouse button.
+### Navigation
+- **Pan** by holding down the left mouse button and dragging.
 - **Zoom** using the mouse wheel.
 
-#### Additional Features:
-- **Hover** over a path to highlight the entire path from start to end.
+### Additional Features
+- **Hover** over a path to highlight the entire call flow from start to end.
 - **Click** on a destination to open it in a new tab.
 - **Click** on a "Match: (timegroup)" to open it in a new tab.
-- To export, click the **"Export as ... .png"** button.
+- To export, click **"Export as .png"**.
 
-### License
-[This modules code is licensed as GPLv3+](http://www.gnu.org/licenses/gpl-3.0.txt)
 
+## License
+This module's code is licensed under [GPLv3+](http://www.gnu.org/licenses/gpl-3.0.txt).
 
 [__Buy me a coffee! :coffee:__](https://buymeacoffee.com/adamvolchko)
+
