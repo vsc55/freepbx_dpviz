@@ -58,6 +58,7 @@ function dpp_find_route($routes, $num) {
   return $match;
 }
 
+
 #
 # This is a recursive function.  It digs through various nodes
 # (ring groups, ivrs, time conditions, extensions, etc.) to find
@@ -229,7 +230,7 @@ function dpp_follow_destinations (&$route, $destination) {
     }
 	  
     #check current status and set path to active
-    $C = '/usr/sbin/asterisk -rx "database show DAYNIGHT/C'.$daynightnum.'" | cut -d \':\' -f2 | tr -d \' \' | head -1';
+    $C ='/usr/sbin/asterisk -rx "database show DAYNIGHT/C'.$daynightnum.'" | cut -d \':\' -f2 | tr -d \' \' | head -1';
     exec($C, $current_daynight);
     $dactive = $nactive = "";
     if ($current_daynight[0]=='DAY'){$dactive="(Active)";}else{$nactive="(Active)";}
@@ -550,12 +551,14 @@ function dpp_follow_destinations (&$route, $destination) {
       $route['parent_node'] = $node;
       dpp_follow_destinations($route, $q['dest']);
     }
-
-		foreach ($q['members'] as $types=>$type) {
-			foreach ($type as $members){
-				$route['parent_node'] = $node;
-				$route['parent_edge_label'] = ($types == 'static') ? ' Static' : ' Dynamic';
-				dpp_follow_destinations($route, 'qmember'.$members);
+		
+		if (!empty($q['members'])){
+			foreach ($q['members'] as $types=>$type) {
+				foreach ($type as $members){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = ($types == 'static') ? ' Static' : ' Dynamic';
+					dpp_follow_destinations($route, 'qmember'.$members);
+				}
 			}
 		}
 		#end of Queues
@@ -825,7 +828,7 @@ function dpp_load_tables(&$dproute) {
   $query = "select * from queues_config";
   $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
   if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from timegroups_details");       
+    die_freepbx($results->getMessage()."<br><br>Error selecting from queues_config");       
   }
   foreach($results as $q) {
     $id = $q['extension'];
@@ -853,9 +856,10 @@ function dpp_load_tables(&$dproute) {
   }
 	
 	# Queue members (dynamic) //options
-	if ($dynmembers){
+	if ($dynmembers && !empty($dproute['queues'])){
 		foreach ($dproute['queues'] as $id=>$details){
 			$dynmem=array();
+			
 			$D='/usr/sbin/asterisk -rx "database show QPENALTY '.$id.'" | grep \'/agents/\' | cut -d\'/\' -f5 | cut -d\':\' -f1';
 			exec($D, $dynmem);
 
@@ -972,18 +976,6 @@ function dpp_load_tables(&$dproute) {
     dpplog(9, "directory=$id");
   }
 
-  # DISA
-  $query = "select * from disa";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from disa");
-  }
-  foreach($results as $disa) {
-    $id = $disa['disa_id'];
-    $dproute['disa'][$id] = $disa;
-    dpplog(9, "disa=$id");
-  }
-
   # Call Flow Control (day/night)
   $query = "select * from daynight";
   $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
@@ -1020,32 +1012,10 @@ function dpp_load_tables(&$dproute) {
 		dpplog(9, "recordings=$id");
   }
 	
-	# Voicemail Blasting
-	$query = "select * from vmblast";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from Voicemail Blasting");
-  }
-  foreach($results as $vmblasts) {
-    $id = $vmblasts['grpnum'];
-    dpplog(9, "vmblast:  vmblast=$id");
-    $dproute['vmblasts'][$id] = $vmblasts;
-  }
 	
-	# Voicemail Blasting Groups
-	$query = "select * from vmblast_groups";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from Voicemail Blasting Groups");
-  }
-  foreach($results as $vmblastsGrp) {
-    $id = $vmblastsGrp['grpnum'];
-    dpplog(9, "vmblast:  vmblast=$id");
-		$dproute['vmblasts'][$id]['members'][] = $vmblastsGrp['ext'];
-  }
 	
-	// Array of table names to check
-	$tables = ['dynroute', 'dynroute_dests', 'languages'];
+	// Array of table names to check -not required
+	$tables = ['disa', 'dynroute', 'dynroute_dests', 'languages', 'vmblast', 'vmblast_groups'];
 	
 	foreach ($tables as $table) {
     // Check if the table exists
@@ -1065,7 +1035,13 @@ function dpp_load_tables(&$dproute) {
         continue;  // Skip to the next table
     }
 
-    if ($table == 'dynroute') {
+		if ($table == 'disa') {
+				foreach($results as $disa) {
+					$id = $disa['disa_id'];
+					$dproute['disa'][$id] = $disa;
+					dpplog(9, "disa=$id");
+				}
+		}elseif ($table == 'dynroute') {
         foreach ($results as $dynroute) {
             $id = $dynroute['id'];
             $dproute['dynroute'][$id] = $dynroute;
@@ -1084,8 +1060,19 @@ function dpp_load_tables(&$dproute) {
 					$dproute['languages'][$id] = $languages;
 					dpplog(9, "languages=$id");
 				}
-    }
-		
+    } elseif ($table == 'vmblast') {
+				foreach($results as $vmblasts) {
+					$id = $vmblasts['grpnum'];
+					dpplog(9, "vmblast:  vmblast=$id");
+					$dproute['vmblasts'][$id] = $vmblasts;
+				}
+		} elseif ($table == 'vmblast_groups') {
+					foreach($results as $vmblastsGrp) {
+					$id = $vmblastsGrp['grpnum'];
+					dpplog(9, "vmblast:  vmblast=$id");
+					$dproute['vmblasts'][$id]['members'][] = $vmblastsGrp['ext'];
+				}
+		}
 	}
 }
 # END load gobs of data.
