@@ -1,7 +1,7 @@
-# Dial Plan Visualizer (dpviz)
+# Dial Plan Vizualizer (dpviz)
 
 ## Overview
-The **Dial Plan Visualizer** (dpviz) is a module for [FreePBX®](http://www.freepbx.org/), an open-source graphical user interface for managing [Asterisk](http://www.asterisk.org/) phone systems. FreePBX is licensed under GPL.
+The **Dial Plan Vizualizer** (dpviz) is a module for [FreePBX®](http://www.freepbx.org/), an open-source graphical user interface for managing [Asterisk](http://www.asterisk.org/) phone systems. FreePBX is licensed under GPL.
 
 This module visually maps out the call flow for any inbound route, making it an essential tool for PBX administrators. It simplifies troubleshooting, optimization, and documentation of call routing by providing a clear, interactive diagram of how calls are handled.
 
@@ -32,16 +32,15 @@ fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/head
 4. Set the upload type to **"Upload (From Hard Disk)"**.
 5. Click **Choose File**, select the downloaded module, then click **Upload (From Hard Disk)**.
 6. After the upload completes, click **Local Module Administration**.
-7. Scroll down to **Dial Plan Visualizer** under the **Reports** section and click on it to expand.
+7. Scroll down to **Dial Plan Vizualizer** under the **Reports** section and click on it to expand.
 8. Click **Install** and then click **Process** (at the bottom of page) to complete the installation.
 
 ## Usage
-1. **Log in to your PBX** and navigate to **Reports > Dial Plan Visualizer**.
+1. **Log in to your PBX** and navigate to **Reports > Dial Plan Vizualizer**.
 2. **Select or search for an inbound route** using the side menu.
 
 ### Highlighting Call Paths
 - Click **Highlight Paths**, then select a node or edge to highlight it (links are inactive).
-- **Exported images** will include highlighted paths.
 - To clear highlights, click **Remove Highlights**.
 
 ### Navigation

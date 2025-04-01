@@ -27,20 +27,24 @@ $neons = [
 
 function dpp_load_incoming_routes() {
   global $db;
-
+	
   $sql = "select * from incoming order by extension";
   $results = $db->getAll($sql, DB_FETCHMODE_ASSOC);
   if (DB::IsError($results)) {
     die_freepbx($results->getMessage()."<br><br>Error selecting from incoming");       
   }
-
+	
+	$routes = [];
   // Store the routes in a hash indexed by the inbound number
-  foreach($results as $route) {
-    $num = $route['extension'];
-		$cid = $route['cidnum'];
-    $routes[$num.$cid] = $route;
+  if (is_array($results)) {
+    foreach ($results as $route) {
+      $num = $route['extension'];
+      $cid = $route['cidnum'];
+      $routes[$num.$cid] = $route;
+    }
   }
-  return $routes;
+	
+	return $routes;
 }
 
 function dpp_find_route($routes, $num) {

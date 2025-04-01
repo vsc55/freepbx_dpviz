@@ -1,7 +1,7 @@
 <module>
   <rawname>dpviz</rawname>
   <repo>unsupported</repo>
-  <name>Dial Plan Visualizer</name>
+  <name>Dial Plan Vizualizer</name>
   <version>1.0.15</version>
   <publisher>AdamV</publisher>
   <license>GPLv3+</license>
@@ -9,7 +9,7 @@
   <category>Reports</category>
   <description>Graphical display of the dial plan for any Inbound Route</description>
   <menuitems>
-    <dpviz>Dial Plan Visualizer</dpviz>
+    <dpviz>Dial Plan Vizualizer</dpviz>
   </menuitems>
 	<database>
 		<table name="dpviz">
@@ -35,6 +35,6 @@
   <info>https://github.com/madgen78/dpviz</info>
   <md5sum>c62830a311338fa38b1aa0e9f9284fc3</md5sum>
   <supported>
-    <version>12.0</version>
+    <version>17.0</version>
   </supported>
 </module>
