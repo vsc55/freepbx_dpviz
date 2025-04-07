@@ -50,7 +50,7 @@ function dpp_load_incoming_routes() {
 function dpp_find_route($routes, $num) {
 
   $match = array();
-  $pattern = '/[^_xX+0-9]/';   # remove all non-digits
+  $pattern = '/[^_xX+0-9\[\]]/';   # remove all non-digits
   $num =  preg_replace($pattern, '', $num);
 
   // "extension" is the key for the routes hash
@@ -87,7 +87,13 @@ function dpp_follow_destinations (&$route, $destination) {
   # a destination to look at.  For the first one, we get the destination from
   # the route object.
   if ($destination == '') {
-		if (empty($route['extension'])){$didLabel='ANY';}else{$didLabel=formatPhoneNumbers($route['extension']);}
+		if (empty($route['extension'])){
+			$didLabel='ANY';
+		}elseif (is_numeric($route['extension']) && (strlen($route['extension'])==10 || strlen($route['extension'])==11)){
+			$didLabel=formatPhoneNumbers($route['extension']);
+		}else{
+			$didLabel=$route['extension'];
+		}
 		$didLink=$route['extension'].'/';
 		if (!empty($route['cidnum'])){
 			$didLabel.=' / '.formatPhoneNumbers($route['cidnum']);
@@ -286,7 +292,14 @@ function dpp_follow_destinations (&$route, $destination) {
 		$node->attribute('URL', htmlentities('/admin/config.php?display=directory&view=form&id='.$directorynum));
 		$node->attribute('target', '_blank');
 		$node->attribute('fillcolor', $pastels[9]);
+		$node->attribute('shape', 'folder');
 		$node->attribute('style', 'filled');
+		
+		if ($directory['invalid_destination']!=''){
+			 $route['parent_edge_label']= ' Invalid Input';
+			 $route['parent_node'] = $node;
+			 dpp_follow_destinations($route, $directory['invalid_destination']);
+		}
 		#end of Directory
 
 		#
@@ -443,8 +456,19 @@ function dpp_follow_destinations (&$route, $destination) {
 
     # The destinations we need to follow are the invalid_destination,
     # timeout_destination, and the selection targets
-
-
+	
+		
+		#now go through the selections
+		if (!empty($ivr['entries'])){
+			ksort($ivr['entries']);
+			foreach ($ivr['entries'] as $selid => $ent) {
+				
+				$route['parent_edge_label']= ' Selection '.sanitizeLabels($ent['selection']);
+				$route['parent_node'] = $node;
+				dpp_follow_destinations($route, $ent['dest']);
+			}
+		}
+		
 		#are the invalid and timeout destinations the same?
 		if ($ivr['invalid_destination']==$ivr['timeout_destination']){
 			 $route['parent_edge_label']= " Invalid Input, Timeout ($ivr[timeout_time] secs)";
@@ -461,17 +485,6 @@ function dpp_follow_destinations (&$route, $destination) {
 					$route['parent_node'] = $node;
 					dpp_follow_destinations($route, $ivr['timeout_destination']);
 				}
-		}
-		
-		#now go through the selections
-		if (!empty($ivr['entries'])){
-			ksort($ivr['entries']);
-			foreach ($ivr['entries'] as $selid => $ent) {
-				
-				$route['parent_edge_label']= ' Selection '.sanitizeLabels($ent['selection']);
-				$route['parent_node'] = $node;
-				dpp_follow_destinations($route, $ent['dest']);
-			}
 		}
 		# end of IVRs
 
@@ -547,14 +560,6 @@ function dpp_follow_destinations (&$route, $destination) {
     $node->attribute('shape', 'hexagon');
     $node->attribute('fillcolor', 'mediumaquamarine');
     $node->attribute('style', 'filled');
-
-    # The destinations we need to follow are the queue members (extensions)
-    # and the no-answer destination.
-    if ($q['dest'] != '') {
-      $route['parent_edge_label'] = ' No Answer ('.$maxwait.')';
-      $route['parent_node'] = $node;
-      dpp_follow_destinations($route, $q['dest']);
-    }
 		
 		if (!empty($q['members'])){
 			foreach ($q['members'] as $types=>$type) {
@@ -565,6 +570,14 @@ function dpp_follow_destinations (&$route, $destination) {
 				}
 			}
 		}
+		
+		# The destinations we need to follow are the queue members (extensions)
+    # and the no-answer destination.
+    if ($q['dest'] != '') {
+      $route['parent_edge_label'] = ' No Answer ('.$maxwait.')';
+      $route['parent_node'] = $node;
+      dpp_follow_destinations($route, $q['dest']);
+    }
 		#end of Queues
 		
 		#
@@ -597,14 +610,6 @@ function dpp_follow_destinations (&$route, $destination) {
     $node->attribute('target', '_blank');
     $node->attribute('fillcolor', $pastels[12]);
     $node->attribute('style', 'filled');
-
-    # The destinations we need to follow are the no-answer destination
-    # (postdest) and the members of the group.
-    if ($rg['postdest'] != '') {
-      $route['parent_edge_label'] = ' No Answer ('.secondsToTimes($rg['grptime']).')';
-      $route['parent_node'] = $node;
-      dpp_follow_destinations($route, $rg['postdest']);
-    }
 		
 		$grplist = preg_split("/-/", $rg['grplist']);
     
@@ -613,6 +618,14 @@ function dpp_follow_destinations (&$route, $destination) {
 			$route['parent_edge_label'] = '';
       dpp_follow_destinations($route, "rg$member");
     } 
+		
+		# The destinations we need to follow are the no-answer destination
+    # (postdest) and the members of the group.
+    if ($rg['postdest'] != '') {
+      $route['parent_edge_label'] = ' No Answer ('.secondsToTimes($rg['grptime']).')';
+      $route['parent_node'] = $node;
+      dpp_follow_destinations($route, $rg['postdest']);
+    }
     # End of Ring Groups
   
 		#
@@ -670,7 +683,9 @@ function dpp_follow_destinations (&$route, $destination) {
     $tgtime = $route['timegroups'][$tc['time']]['time'];
     $tgnum = $route['timegroups'][$tc['time']]['id'];
 
-    # Now set the current node to be the parent and recurse on both the true and false branches
+    
+		
+		# Now set the current node to be the parent and recurse on both the true and false branches
     $route['parent_edge_label'] = 'Match:\\n'.sanitizeLabels($tgname).'\\n'.$tgtime;
     $route['parent_edge_url'] = htmlentities('/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum);
     $route['parent_edge_target'] = '_blank';
@@ -678,12 +693,11 @@ function dpp_follow_destinations (&$route, $destination) {
     $route['parent_node'] = $node;
     dpp_follow_destinations($route, $tc['truegoto']);
 
-
-    $route['parent_edge_label'] = ' NoMatch';
+		$route['parent_edge_label'] = ' NoMatch';
     $route['parent_edge_url'] ='';
     $route['parent_edge_target'] = '';
     $route['parent_node'] = $node;
-    dpp_follow_destinations($route, $tc['falsegoto']);		
+    dpp_follow_destinations($route, $tc['falsegoto']);
 		#end of Time Conditions
  
 		#
@@ -702,7 +716,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		$node->attribute('label', 'Voicemail: '.$vmnum.' '.sanitizeLabels($vmname).' '.$vm_array[$vmtype].'\\n'.$vmemail);
 		$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$vmnum));
 		$node->attribute('target', '_blank');
-		$node->attribute('shape', 'house');
+		$node->attribute('shape', 'folder');
 		$node->attribute('fillcolor', $pastels[11]);
 		$node->attribute('style', 'filled');
 		#end of Voicemail
@@ -724,11 +738,9 @@ function dpp_follow_destinations (&$route, $destination) {
 		
 		if (!empty($vmblast['members'])){
 			foreach ($vmblast['members'] as $member) {
-				
 				$route['parent_edge_label']= '';
 				$route['parent_node'] = $node;
 				dpp_follow_destinations($route, 'vmblast-mem,'.$member);
-				
 			}
 		}
 		#end of VM Blast
@@ -802,7 +814,6 @@ function dpp_load_tables(&$dproute) {
       if ($exploded[3]!=='*'){$month=ucfirst($exploded[3]).' ';}else{$month='';}
 
       $dproute['timegroups'][$id]['time'] .=$dow . $month . $date . $time."\\l";
-      //$dproute['timegroups'][$id]['time'] .= "\n";
     }
   }
 
@@ -908,102 +919,6 @@ function dpp_load_tables(&$dproute) {
     $dproute['ivrs'][$id]['entries'][$selid] = $ent;
   }
 
-  # Ring Groups
-  $query = "select * from ringgroups";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from ringgroups");       
-  }
-  foreach($results as $rg) {
-    $id = $rg['grpnum'];
-    $dproute['ringgroups'][$id] = $rg;
-  }
-
-  # Announcements
-  $query = "select * from announcement";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from announcement");       
-  }
-  foreach($results as $an) {
-    $id = $an['announcement_id'];
-    $dproute['announcements'][$id] = $an;
-    $dest = $an['post_dest'];
-    dpplog(9, "announcement dest:  an=$id   dest=$dest");
-    $dproute['announcements'][$id]['dest'] = $dest;
-  }
-
-  # Set Caller ID
-  $query = "select * from setcid";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from setcid");
-  }
-  foreach($results as $cid) {
-    $id = $cid['cid_id'];
-    $dproute['setcid'][$id] = $cid;
-  }
-
-  # Misc Destinations
-  $query = "select * from miscdests";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from misc destinations");
-  }
-  foreach($results as $miscdest) {
-    $id = $miscdest['id'];
-    $dproute['miscdest'][$id] = $miscdest;
-    dpplog(9, "miscdest dest: $id");
-  }
-
-  # Conferences (meetme)
-  $query = "select * from meetme";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from meetme (conferences)");
-  }
-  foreach($results as $meetme) {
-    $id = $meetme['exten'];
-    $dproute['meetme'][$id] = $meetme;
-    dpplog(9, "meetme dest:  conf=$id");
-  }
-
-  # Directory
-  $query = "select * from directory_details";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from directory");
-  }
-  foreach($results as $directory) {
-    $id = $directory['id'];
-    $dproute['directory'][$id] = $directory;
-    dpplog(9, "directory=$id");
-  }
-
-  # Call Flow Control (day/night)
-  $query = "select * from daynight";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from daynight");
-  }
-  foreach($results as $daynight) {
-    $id = $daynight['ext'];
-    $dproute['daynight'][$id][] = $daynight;
-		dpplog(9, "daynight=$id");
-  }
-  
-  # Feature Codes
-  $query = "select * from featurecodes";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from featurecodes");
-  }
-  foreach($results as $featurecodes) {
-	$id=$featurecodes['defaultcode'];
-    $dproute['featurecodes'][$id] = $featurecodes;
-		dpplog(9, "featurecodes=$id");
-  }
-
   # Recordings
   $query = "select * from recordings";
   $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
@@ -1019,7 +934,7 @@ function dpp_load_tables(&$dproute) {
 	
 	
 	// Array of table names to check -not required
-	$tables = ['disa', 'dynroute', 'dynroute_dests', 'languages', 'vmblast', 'vmblast_groups'];
+	$tables = ['announcement','daynight','directory_details','disa','dynroute','dynroute_dests','featurecodes','languages','meetme','miscdests','ringgroups','setcid','vmblast','vmblast_groups'];
 	
 	foreach ($tables as $table) {
     // Check if the table exists
@@ -1039,7 +954,27 @@ function dpp_load_tables(&$dproute) {
         continue;  // Skip to the next table
     }
 
-		if ($table == 'disa') {
+ 		if ($table == 'announcement') {
+				foreach($results as $an) {
+					$id = $an['announcement_id'];
+					$dproute['announcements'][$id] = $an;
+					$dest = $an['post_dest'];
+					dpplog(9, "announcement dest:  an=$id   dest=$dest");
+					$dproute['announcements'][$id]['dest'] = $dest;
+				}
+		}elseif ($table == 'daynight') {
+				foreach($results as $daynight) {
+					$id = $daynight['ext'];
+					$dproute['daynight'][$id][] = $daynight;
+					dpplog(9, "daynight=$id");
+				}
+		}elseif ($table == 'directory_details') {
+				foreach($results as $directory) {
+					$id = $directory['id'];
+					$dproute['directory'][$id] = $directory;
+					dpplog(9, "directory=$id");
+				}
+		}elseif ($table == 'disa') {
 				foreach($results as $disa) {
 					$id = $disa['disa_id'];
 					$dproute['disa'][$id] = $disa;
@@ -1051,26 +986,54 @@ function dpp_load_tables(&$dproute) {
             $dproute['dynroute'][$id] = $dynroute;
             dpplog(9, "dynroute=$id");
         }
-    } elseif ($table == 'dynroute_dests') {
+    }elseif ($table == 'dynroute_dests') {
         foreach ($results as $dynroute_dests) {
             $id = $dynroute_dests['dynroute_id'];
             $selid = $dynroute_dests['selection'];
             dpplog(9, "dynroute_dests: dynroute=$id match=$selid");
             $dproute['dynroute'][$id]['routes'][$selid] = $dynroute_dests;
         }
-    } elseif ($table == 'languages') {
+    }elseif ($table == 'featurecodes') {
+        foreach($results as $featurecodes) {
+					$id=$featurecodes['defaultcode'];
+					$dproute['featurecodes'][$id] = $featurecodes;
+					dpplog(9, "featurecodes=$id");
+				}
+    }elseif ($table == 'languages') {
         foreach($results as $languages) {
 					$id=$languages['language_id'];
 					$dproute['languages'][$id] = $languages;
 					dpplog(9, "languages=$id");
+				}		
+    }elseif ($table == 'meetme') {
+        foreach($results as $meetme) {
+					$id = $meetme['exten'];
+					$dproute['meetme'][$id] = $meetme;
+					dpplog(9, "meetme dest:  conf=$id");
 				}
-    } elseif ($table == 'vmblast') {
+    }elseif ($table == 'miscdests') {
+        foreach($results as $miscdest) {
+					$id = $miscdest['id'];
+					$dproute['miscdest'][$id] = $miscdest;
+					dpplog(9, "miscdest dest: $id");
+				}
+    }elseif ($table == 'ringgroups') {
+        foreach($results as $rg) {
+					$id = $rg['grpnum'];
+					$dproute['ringgroups'][$id] = $rg;
+				}
+    }elseif ($table == 'setcid') {
+        foreach($results as $cid) {
+					$id = $cid['cid_id'];
+					$dproute['setcid'][$id] = $cid;
+				}
+    }elseif ($table == 'vmblast') {
 				foreach($results as $vmblasts) {
 					$id = $vmblasts['grpnum'];
 					dpplog(9, "vmblast:  vmblast=$id");
 					$dproute['vmblasts'][$id] = $vmblasts;
 				}
-		} elseif ($table == 'vmblast_groups') {
+		}elseif ($table == 'vmblast_groups') {
 					foreach($results as $vmblastsGrp) {
 					$id = $vmblastsGrp['grpnum'];
 					dpplog(9, "vmblast:  vmblast=$id");
@@ -1137,7 +1100,6 @@ function formatPhoneNumbers($phoneNumber) {
 
         $phoneNumber = '('.$areaCode.') '.$nextThree.'-'.$lastFour;
     }
-
     return $phoneNumber;
 }
 
@@ -1154,6 +1116,4 @@ function options_gets() {
 		return [];
 	}
 }
-
-
 ?>

@@ -64,10 +64,16 @@ $direction=($horizontal== 1) ? 'LR' : 'TB';
 			
 			$gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);  // ugh, apparently viz chokes on newlines, wtf?
 			
+			if (is_numeric($extdisplay) && (strlen($extdisplay)==10 || strlen($extdisplay)==11)){
+				$number=formatPhoneNumbers($extdisplay);
+			}else{
+				$number=$extdisplay;
+			}
+			
 			?>
 			<div class="fpbx-container">
 				<div id="vizContainer" class="display full-border">
-					<h2>Dial Plan For Inbound Route <?php echo formatPhoneNumbers($extdisplay); if (!empty($cid)){echo ' / '.formatPhoneNumbers($cid);} echo ': '.$dproute['description']; ?></h2>
+					<h2>Dial Plan For Inbound Route <?php echo $number; if (!empty($cid)){echo ' / '.formatPhoneNumbers($cid);} echo ': '.$dproute['description']; ?></h2>
 					<?php if ($datetime==1){echo "<h6>".date('Y-m-d H:i:s')."</h6>";} ?>
 				</div>
 			</div>

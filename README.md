@@ -38,6 +38,7 @@ fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/head
 ## Usage
 1. **Log in to your PBX** and navigate to **Reports > Dial Plan Vizualizer**.
 2. **Select or search for an inbound route** using the side menu.
+3. **Labels** are placed on the right (vertical) or above (horizontal) the paths drawn.
 
 ### Highlighting Call Paths
 - Click **Highlight Paths**, then select a node or edge to highlight it (links are inactive).
