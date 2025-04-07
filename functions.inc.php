@@ -334,6 +334,16 @@ function dpp_follow_destinations (&$route, $destination) {
 		$node->attribute('fillcolor', $pastels[12]);
 		$node->attribute('style', 'filled');
 
+		if (!empty($dynrt['routes'])){
+			ksort($dynrt['routes']);
+			foreach ($dynrt['routes'] as $selid => $ent) {
+				
+				$route['parent_edge_label']= '  Match: '.sanitizeLabels($ent['selection']).'\\n'.sanitizeLabels($ent['description']);
+				$route['parent_node'] = $node;
+				dpp_follow_destinations($route, $ent['dest']);
+			}
+		}
+		
 		//are the invalid and timeout destinations the same?
 		if ($dynrt['invalid_dest']==$dynrt['default_dest']){
 			 $route['parent_edge_label']= ' Invalid Input, Default ('.$dynrt['timeout'].' secs)';
@@ -349,16 +359,6 @@ function dpp_follow_destinations (&$route, $destination) {
 				$route['parent_edge_label']= ' Default ('.$dynrt['timeout'].' secs)';
 				$route['parent_node'] = $node;
 				dpp_follow_destinations($route, $dynrt['default_dest']);
-			}
-		}
-
-		if (!empty($dynrt['routes'])){
-			ksort($dynrt['routes']);
-			foreach ($dynrt['routes'] as $selid => $ent) {
-				
-				$route['parent_edge_label']= '  Match: '.sanitizeLabels($ent['selection']).'\\n'.sanitizeLabels($ent['description']);
-				$route['parent_node'] = $node;
-				dpp_follow_destinations($route, $ent['dest']);
 			}
 		}
 		#end of Dynamic Routes
@@ -676,14 +676,11 @@ function dpp_follow_destinations (&$route, $destination) {
     $node->attribute('shape', 'invhouse');
     $node->attribute('fillcolor', 'dodgerblue');
     $node->attribute('style', 'filled');
-
   
     # Not going to use the time group info for right now.  Maybe put it in the edge text?
     $tgname = $route['timegroups'][$tc['time']]['description'];
     $tgtime = $route['timegroups'][$tc['time']]['time'];
     $tgnum = $route['timegroups'][$tc['time']]['id'];
-
-    
 		
 		# Now set the current node to be the parent and recurse on both the true and false branches
     $route['parent_edge_label'] = 'Match:\\n'.sanitizeLabels($tgname).'\\n'.$tgtime;
@@ -930,7 +927,6 @@ function dpp_load_tables(&$dproute) {
     $dproute['recordings'][$id] = $recordings;
 		dpplog(9, "recordings=$id");
   }
-	
 	
 	
 	// Array of table names to check -not required
