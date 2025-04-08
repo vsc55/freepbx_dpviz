@@ -585,8 +585,12 @@ function dpp_follow_destinations (&$route, $destination) {
 		#
 	} elseif (preg_match("/^qmember(\d+)/", $destination, $matches)) {
 		$qextension=$matches[1];
-		$qlabel = isset($route['extensions'][$qextension]['name']) ? $route['extensions'][$qextension]['name'] : '';
-		$node->attribute('label', 'Ext '.$qextension.'\\n'.sanitizeLabels($qlabel));
+		$qlabel = isset($route['extensions'][$qextension]['name']) ? 'Ext '.$qextension.'\\n'.$route['extensions'][$qextension]['name'] : $qextension;
+		$node->attribute('label', sanitizeLabels($qlabel));
+		if (!is_numeric($qlabel)){
+			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$qextension));
+			$node->attribute('target', '_blank');
+		}
 		
 		if ($route['parent_edge_label'] == ' Static') {
 			$node->attribute('fillcolor', $pastels[20]);
@@ -636,6 +640,10 @@ function dpp_follow_destinations (&$route, $destination) {
 		$rglabel = isset($route['extensions'][$rgext]) ? 'Ext '.$rgext.'\\n'.$route['extensions'][$rgext]['name'] : $rgext;
 
 		$node->attribute('label', sanitizeLabels($rglabel));
+		if (!is_numeric($rglabel)){
+			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$rgext));
+			$node->attribute('target', '_blank');
+		}
 		$node->attribute('fillcolor', $pastels[2]);
 		$node->attribute('style', 'filled');
 		# end of ring group members
@@ -646,9 +654,10 @@ function dpp_follow_destinations (&$route, $destination) {
   } elseif (preg_match("/^app-setcid,(\d+),(\d+)/", $destination, $matches)) {
 		$cidnum = $matches[1];
 		$cidother = $matches[2];
-
 		$cid = $route['setcid'][$cidnum];
-		$node->attribute('label', 'Set CID\\nName= '.preg_replace('/\${CALLERID\(name\)}/i', '$cid_name', $cid['cid_name']).'\\nNumber= '.preg_replace('/\${CALLERID\(num\)}/i', '$cid_number', $cid['cid_num']));
+		$cidLabel= 'Set CID\\nName= '.preg_replace('/\${CALLERID\(name\)}/i', '<name>', $cid['cid_name']).'\\lNumber= '.preg_replace('/\${CALLERID\(num\)}/i', '<number>', $cid['cid_num']).'\\l';
+
+		$node->attribute('label', sanitizeLabels($cidLabel));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=setcid&view=form&id='.$cidnum));
 		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'note');
@@ -710,7 +719,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		$vmemail= $route['extensions'][$vmnum]['email'];
 		$vmemail= str_replace("|",",\\n",$vmemail);
 	 
-		$node->attribute('label', 'Voicemail: '.$vmnum.' '.sanitizeLabels($vmname).' '.$vm_array[$vmtype].'\\n'.$vmemail);
+		$node->attribute('label', 'Voicemail: '.$vmnum.' '.sanitizeLabels($vmname).' '.$vm_array[$vmtype].'\\n'.sanitizeLabels($vmemail));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$vmnum));
 		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'folder');
@@ -1054,7 +1063,7 @@ function dpplog($level, $msg) {
         return;
     }
 
-    $ts = date('m-d-Y H:i:s');
+    $ts = date('Y-m-d H:i:s');
     $logFile = "/var/log/asterisk/dpviz.log";
 
     $fd = fopen($logFile, "a");
