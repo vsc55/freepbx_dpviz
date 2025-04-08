@@ -762,6 +762,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		$vmblastemail=$route['extensions'][$member]['email'];
 		$vmblastemail= str_replace("|",",\\n",$vmblastemail);
 		$node->attribute('label', 'Ext '.$member.' '.sanitizeLabels($vmblastname).'\\n'.sanitizeLabels($vmblastemail));
+		$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$member));
 		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'rect');
 		$node->attribute('fillcolor', $pastels['16']);
