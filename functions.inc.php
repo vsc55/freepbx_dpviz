@@ -214,11 +214,15 @@ function dpp_follow_destinations (&$route, $destination) {
   } elseif (preg_match("/^app-blackhole,(hangup|congestion|busy|zapateller|musiconhold|ring|no-service),(\d+)/", $destination, $matches)) {
 		$blackholetype = str_replace('musiconhold','Music On Hold',$matches[1]);
 		$blackholeother = $matches[2];
-		
+		$previousURL=$route['parent_node']->getAttribute('URL', '');
+
 		$node->attribute('label', 'Terminate Call: '.ucwords($blackholetype,'-'));
+		$node->attribute('URL', $previousURL);
+    $node->attribute('target', '_blank');
 		$node->attribute('shape', 'invhouse');
 		$node->attribute('fillcolor', 'orangered');
 		$node->attribute('style', 'filled');
+		
 		#end of Blackhole
 
 		#
