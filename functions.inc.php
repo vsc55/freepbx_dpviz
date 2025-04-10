@@ -99,10 +99,12 @@ function dpp_follow_destinations (&$route, $destination) {
 			$didLabel.=' / '.formatPhoneNumbers($route['cidnum']);
 			$didLink.=$route['cidnum'];
 		}
+		$didLabel.='\\n'.$route['description'];
 
 			$dpgraph->node($route['extension'],
 				array(
 					'label' => sanitizeLabels($didLabel),
+					'tooltip' => sanitizeLabels($didLabel),
 					'shape' => 'cds',
 					'style' => 'filled',
 					'URL'   => htmlentities('/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)),
@@ -116,6 +118,8 @@ function dpp_follow_destinations (&$route, $destination) {
     // returning the graph.  Similarly for edge() and beginEdge().
     $route['parent_node'] = $dpgraph->get($route['extension']);
     $route['parent_edge_label'] = ' Always';
+		
+
 
     # One of thse should work to set the root node, but neither does.
     # See: https://rt.cpan.org/Public/Bug/Display.html?id=101437
@@ -155,10 +159,17 @@ function dpp_follow_destinations (&$route, $destination) {
     dpplog(9, "Making an edge from $ptxt -> $ntxt");
     $edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
     $edge->attribute('label', sanitizeLabels($route['parent_edge_label']));
-		if (preg_match("/^(Match:)./", $route['parent_edge_label'])){
+		$edge->attribute('labeltooltip',  sanitizeLabels($route['parent_edge_label']));
+		
+		if (preg_match("/^( Match| NoMatch)/", $route['parent_edge_label'])) {
 			$edge->attribute('URL', $route['parent_edge_url']);
 			$edge->attribute('target', $route['parent_edge_target']);
 		}
+		if (preg_match("/^( IVR)./", $route['parent_edge_label'])){
+			$edge->attribute('style', 'dashed');
+		}
+		
+		
   }
 
   dpplog(9, "The Graph: " . print_r($dpgraph, true));
@@ -192,6 +203,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		}
 		
 		$node->attribute('label', 'Announcements: '.sanitizeLabels($an['description']).'\\nRecording: '.sanitizeLabels($announcement).$rec);
+		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=announcement&view=form&extdisplay='.$annum));
 		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'note');
@@ -217,6 +229,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		$previousURL=$route['parent_node']->getAttribute('URL', '');
 
 		$node->attribute('label', 'Terminate Call: '.ucwords($blackholetype,'-'));
+		$node->attribute('tooltip', 'Terminate Call: '.ucwords($blackholetype,'-'));
 		$node->attribute('URL', $previousURL);
     $node->attribute('target', '_blank');
 		$node->attribute('shape', 'invhouse');
@@ -332,6 +345,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		
 		$announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : 'None';
 		$node->attribute('label', 'DYN: '.sanitizeLabels($dynrt['name']).'\\nAnnouncement: '.sanitizeLabels($announcement));
+		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=dynroute&action=edit&id='.$dynnum));
 		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'component');
@@ -371,18 +385,39 @@ function dpp_follow_destinations (&$route, $destination) {
 		# Extension (from-did-direct)
 		#
   } elseif (preg_match("/^from-did-direct,(\d+),(\d+)/", $destination, $matches)) {
+		
 		$extnum = $matches[1];
 		$extother = $matches[2];
-		$extname= $route['extensions'][$extnum]['name'];
-		$extemail= $route['extensions'][$extnum]['email'];
+		$extension = $route['extensions'][$extnum];
+		$extname= $extension['name'];
+		$extemail= $extension['email'];
 		$extemail= str_replace("|",",\\n",$extemail);
-		
+
 		$node->attribute('label', 'Extension: '.$extnum.' '.sanitizeLabels($extname).'\\n'.sanitizeLabels($extemail));
+		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$extnum));
 		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'house');
 		$node->attribute('fillcolor', $pastels[15]);
 		$node->attribute('style', 'filled');
+		
+		//Optional Destinations
+		if ($extension['noanswer_dest'] != '') {
+			$route['parent_edge_label']= ' No Answer';
+			$route['parent_node'] = $node;
+			dpp_follow_destinations($route, $extension['noanswer_dest']);
+		}
+		if ($extension['busy_dest'] != '') {
+			$route['parent_edge_label']= ' Busy';
+			$route['parent_node'] = $node;
+			dpp_follow_destinations($route, $extension['busy_dest']);
+		}
+		if ($extension['chanunavail_dest'] != '') {
+			$route['parent_edge_label']= ' Not Reachable';
+			$route['parent_node'] = $node;
+			dpp_follow_destinations($route, $extension['chanunavail_dest']);
+		}
+		
 		#end of Extension (from-did-direct)
 
 		#
@@ -395,6 +430,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		
 		if ($feature['customcode']!=''){$featurenum=$feature['customcode'];}
 		$node->attribute('label', 'Feature Code: '.sanitizeLabels($feature['description']).' \\<'.$featurenum.'\\>');
+		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=featurecodeadmin'));
 		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'folder');
@@ -417,6 +453,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		$didLink=$num.'/';
 		
 		$node->attribute('label', sanitizeLabels($didLabel));
+		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)));
 		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'cds');
@@ -452,6 +489,7 @@ function dpp_follow_destinations (&$route, $destination) {
     }
 
     $node->attribute('label', "IVR: ".sanitizeLabels($ivr['name'])."\\nAnnouncement: ".sanitizeLabels($ivrRecName)."\\lRecord ".$rec."\\l");
+		$node->attribute('tooltip', $node->getAttribute('label'));
     $node->attribute('URL', htmlentities('/admin/config.php?display=ivr&action=edit&id='.$inum));
     $node->attribute('target', '_blank');
     $node->attribute('shape', 'component');
@@ -490,6 +528,8 @@ function dpp_follow_destinations (&$route, $destination) {
 					dpp_follow_destinations($route, $ivr['timeout_destination']);
 				}
 		}
+		
+		
 		# end of IVRs
 
 		#
@@ -582,6 +622,14 @@ function dpp_follow_destinations (&$route, $destination) {
       $route['parent_node'] = $node;
       dpp_follow_destinations($route, $q['dest']);
     }
+		
+		if (is_numeric($q['ivr_id'])){
+      $route['parent_edge_label'] = ' IVR Break Out (every '.secondsToTimes($q['data']['min-announce-frequency']).')';
+      $route['parent_node'] = $node;
+      dpp_follow_destinations($route, 'ivr-'.$q['ivr_id'].',s,1');
+    }
+		
+		
 		#end of Queues
 		
 		#
@@ -591,6 +639,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		$qextension=$matches[1];
 		$qlabel = isset($route['extensions'][$qextension]['name']) ? 'Ext '.$qextension.'\\n'.$route['extensions'][$qextension]['name'] : $qextension;
 		$node->attribute('label', sanitizeLabels($qlabel));
+		$node->attribute('tooltip', $node->getAttribute('label'));
 		if (!is_numeric($qlabel)){
 			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$qextension));
 			$node->attribute('target', '_blank');
@@ -644,6 +693,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		$rglabel = isset($route['extensions'][$rgext]) ? 'Ext '.$rgext.'\\n'.$route['extensions'][$rgext]['name'] : $rgext;
 
 		$node->attribute('label', sanitizeLabels($rglabel));
+		$node->attribute('tooltip', $node->getAttribute('label'));
 		if (!is_numeric($rglabel)){
 			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$rgext));
 			$node->attribute('target', '_blank');
@@ -662,6 +712,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		$cidLabel= 'Set CID\\nName= '.preg_replace('/\${CALLERID\(name\)}/i', '<name>', $cid['cid_name']).'\\lNumber= '.preg_replace('/\${CALLERID\(num\)}/i', '<number>', $cid['cid_num']).'\\l';
 
 		$node->attribute('label', sanitizeLabels($cidLabel));
+		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=setcid&view=form&id='.$cidnum));
 		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'note');
@@ -696,7 +747,7 @@ function dpp_follow_destinations (&$route, $destination) {
     $tgnum = $route['timegroups'][$tc['time']]['id'];
 		
 		# Now set the current node to be the parent and recurse on both the true and false branches
-    $route['parent_edge_label'] = 'Match:\\n'.sanitizeLabels($tgname).'\\n'.$tgtime;
+    $route['parent_edge_label'] = ' Match:\\n'.sanitizeLabels($tgname).'\\n'.$tgtime;
     $route['parent_edge_url'] = htmlentities('/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum);
     $route['parent_edge_target'] = '_blank';
 
@@ -704,8 +755,8 @@ function dpp_follow_destinations (&$route, $destination) {
     dpp_follow_destinations($route, $tc['truegoto']);
 
 		$route['parent_edge_label'] = ' NoMatch';
-    $route['parent_edge_url'] ='';
-    $route['parent_edge_target'] = '';
+    $route['parent_edge_url'] = htmlentities('/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum);
+    $route['parent_edge_target'] = '_blank';
     $route['parent_node'] = $node;
     dpp_follow_destinations($route, $tc['falsegoto']);
 		#end of Time Conditions
@@ -724,6 +775,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		$vmemail= str_replace("|",",\\n",$vmemail);
 	 
 		$node->attribute('label', 'Voicemail: '.$vmnum.' '.sanitizeLabels($vmname).' '.$vm_array[$vmtype].'\\n'.sanitizeLabels($vmemail));
+		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$vmnum));
 		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'folder');
@@ -762,6 +814,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		$vmblastemail=$route['extensions'][$member]['email'];
 		$vmblastemail= str_replace("|",",\\n",$vmblastemail);
 		$node->attribute('label', 'Ext '.$member.' '.sanitizeLabels($vmblastname).'\\n'.sanitizeLabels($vmblastemail));
+		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$member));
 		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'rect');
@@ -878,7 +931,9 @@ function dpp_load_tables(&$dproute) {
         $enum = $matches[1];
 				$dproute['queues'][$id]['members']['static'][]=$enum;
       }
-    }	
+    }else{
+			$dproute['queues'][$id]['data'][$qd['keyword']]=$qd['data'];
+		}
   }
 	
 	# Queue members (dynamic) //options
