@@ -6,6 +6,24 @@
 		<div class="panel-body">
 			<div class="fpbx-container">
 				<div class="display full-border">
+				<div class="panel panel-info panel-help">
+					<div class="panel-heading collapsed" data-toggle="collapse" href="#panelId67f91e1a7403f" role="button" aria-expanded="false" aria-controls="panelId67f91e1a7403f">
+						<h3 class="panel-title"><span class="pull-left"><i class="fa fa-info-circle fa-lg fa-fw"></i></span>Navigation and usage<span class="pull-right"><i class="chevron fa fa-fw"></i></span></h3>
+					</div>
+					<div id="panelId67f91e1a7403f" class="panel-collapse collapse" style="">
+						<div class="panel-body">
+							<ul class="list-unstyled">
+								<li><strong>Redraw from a Node:</strong> Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a node to make it the new starting point in the diagram. To revert, <strong>Ctrl/Cmd + left-click</strong> the parent node.</li>
+								<li><strong>Highlight Paths:</strong> Click <strong>Highlight Paths</strong>, then select a node or edge (links are inactive). Click <strong>Remove Highlights</strong> to clear.</li>
+								<li><strong>Hover:</strong> Hover over a path to highlight between destinations.</li>
+								<li><strong>Open Destinations:</strong> Click a destination to open it in a new tab.</li>
+								<li><strong>Open Time Groups:</strong> Click on a "<strong>Match: (timegroup)</strong>" or "<strong>NoMatch</strong>" to open in a new tab.</li>
+								<li><strong>Pan:</strong> Hold the left mouse button and drag to move the view.</li>
+								<li><strong>Zoom:</strong> Use the mouse wheel to zoom in and out.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
 					<form class="fpbx-submit" name="editDpviz" action="?display=dpviz&action=edit" method="post">
 					<!--datetime-->
 					<div class="element-container">

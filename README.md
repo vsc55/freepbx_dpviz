@@ -45,15 +45,18 @@ fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/head
 - To clear highlights, click **Remove Highlights**.
 
 ### Navigation
+- **Redraw from a Node:** Press Ctrl (Cmd on macOS) and left-click a node to make it the new starting point in the diagram. To revert, Ctrl/Cmd + left-click the parent node.
 - **Pan** by holding down the left mouse button and dragging.
 - **Zoom** using the mouse wheel.
 
 ### Additional Features
-- **Hover** over a path to highlight the entire call flow from start to end.
+- **Hover** over a path to highlight the path between destinations.
 - **Click** on a destination to open it in a new tab.
-- **Click** on a "Match: (timegroup)" to open it in a new tab.
+- **Click** on a "Match: (timegroup)" or "NoMatch" to open it in a new tab.
 - To export, click **"Export as .png"**.
 
+### Dependencies
+- **PHP >= 5.4.0**
 
 ## License
 This module's code is licensed under [GPLv3+](http://www.gnu.org/licenses/gpl-3.0.txt).
