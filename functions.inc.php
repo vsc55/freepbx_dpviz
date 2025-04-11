@@ -70,12 +70,13 @@ function dpp_find_route($routes, $num) {
 # the dial plan, stored in the $route object.
 #
 #
-function dpp_follow_destinations (&$route, $destination) {
+function dpp_follow_destinations (&$route, $destination, $optional) {
   global $db;
   global $pastels;
   global $neons;
 	global $direction;
-
+	
+	$optional = preg_match('/^[_xX+\d\[\]]+$/', $optional) ? '' : $optional;
   if (! isset ($route['dpgraph'])) {
     $route['dpgraph'] = new Alom\Graphviz\Digraph('"'.$route['extension'].'"');
 		$route['dpgraph']->attr('graph',array('rankdir'=>$direction));
@@ -86,6 +87,7 @@ function dpp_follow_destinations (&$route, $destination) {
   # This only happens on the first call.  Every recursive call includes
   # a destination to look at.  For the first one, we get the destination from
   # the route object.
+	
   if ($destination == '') {
 		if (empty($route['extension'])){
 			$didLabel='ANY';
@@ -101,23 +103,23 @@ function dpp_follow_destinations (&$route, $destination) {
 		}
 		$didLabel.='\\n'.$route['description'];
 
-			$dpgraph->node($route['extension'],
-				array(
-					'label' => sanitizeLabels($didLabel),
-					'tooltip' => sanitizeLabels($didLabel),
-					'shape' => 'cds',
-					'style' => 'filled',
-					'URL'   => htmlentities('/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)),
-					'target'=>'_blank',
-					'fillcolor' => 'darkseagreen')
-				);
+		$dpgraph->node($route['extension'],
+			array(
+				'label' => sanitizeLabels($didLabel),
+				'tooltip' => sanitizeLabels($didLabel),
+				'shape' => 'cds',
+				'style' => 'filled',
+				'URL'   => htmlentities('/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)),
+				'target'=>'_blank',
+				'fillcolor' => 'darkseagreen')
+			);
     // $graph->node() returns the graph, not the node, so we always
     // have to get() the node after adding to the graph if we want
     // to save it for something.
     // UPDATE: beginNode() creates a node and returns it instead of
     // returning the graph.  Similarly for edge() and beginEdge().
     $route['parent_node'] = $dpgraph->get($route['extension']);
-    $route['parent_edge_label'] = ' Always';
+    
 		
 
 
@@ -125,14 +127,18 @@ function dpp_follow_destinations (&$route, $destination) {
     # See: https://rt.cpan.org/Public/Bug/Display.html?id=101437
     #$route->{parent_node}->set_attribute('root', 'true');
     #$dpgraph->set_attribute('root' => $route->{extension});
-
+		
     // If an inbound route has no destination, we want to bail, otherwise recurse.
-    if ($route['destination'] != '') {
-      dpp_follow_destinations($route, $route['destination']);
+    if ($optional != '') {
+			$route['parent_edge_label'] = ' ';
+      dpp_follow_destinations($route, $optional,'');
+    }elseif ($route['destination'] != '') {
+			$route['parent_edge_label'] = ' Always';
+      dpp_follow_destinations($route, $route['destination'],'');
     }
     return;
   }
-
+	
   dpplog(9, "Inspecting destination $destination");
 
   // We use get() to see if the node exists before creating it.  get() throws
@@ -150,6 +156,7 @@ function dpp_follow_destinations (&$route, $destination) {
   $ptxt = $route['parent_node']->getAttribute('label', '');
   $ntxt = $node->getAttribute('label', '');
   dpplog(9, "Found it: ntxt = $ntxt");
+	
   if ($ntxt == '' ) { $ntxt = "(new node: $destination)"; }
   if ($dpgraph->hasEdge(array($route['parent_node'], $node))) {
     dpplog(9, "NOT making an edge from $ptxt -> $ntxt");
@@ -167,6 +174,10 @@ function dpp_follow_destinations (&$route, $destination) {
 		}
 		if (preg_match("/^( IVR)./", $route['parent_edge_label'])){
 			$edge->attribute('style', 'dashed');
+		}
+		
+		if (preg_match("/^ +$/", $route['parent_edge_label'])){
+			$edge->attribute('style', 'dotted');
 		}
 		
 		
@@ -216,7 +227,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		if ($an['post_dest'] != '') {
 			$route['parent_edge_label'] = ' Continue';
 			$route['parent_node'] = $node;
-			dpp_follow_destinations($route, $an['post_dest']);
+			dpp_follow_destinations($route, $an['post_dest'],'');
 		}
 		# end of announcements
 
@@ -266,11 +277,11 @@ function dpp_follow_destinations (&$route, $destination) {
       if ($d['dmode']=='day'){
 				 $route['parent_edge_label'] = ' Day Mode '.$dactive;
 				 $route['parent_node'] = $node;
-				 dpp_follow_destinations($route, $d['dest']);
+				 dpp_follow_destinations($route, $d['dest'],'');
       }elseif ($d['dmode']=='night'){
           $route['parent_edge_label'] = ' Night Mode '.$nactive;
           $route['parent_node'] = $node;
-          dpp_follow_destinations($route, $d['dest']);
+          dpp_follow_destinations($route, $d['dest'],'');
       }elseif ($d['dmode']=="fc_description"){
            $node->attribute('label', "Call Flow: ".sanitizeLabels($d['dest']) .$code);
       }
@@ -315,7 +326,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		if ($directory['invalid_destination']!=''){
 			 $route['parent_edge_label']= ' Invalid Input';
 			 $route['parent_node'] = $node;
-			 dpp_follow_destinations($route, $directory['invalid_destination']);
+			 dpp_follow_destinations($route, $directory['invalid_destination'],'');
 		}
 		#end of Directory
 
@@ -358,7 +369,7 @@ function dpp_follow_destinations (&$route, $destination) {
 				
 				$route['parent_edge_label']= '  Match: '.sanitizeLabels($ent['selection']).'\\n'.sanitizeLabels($ent['description']);
 				$route['parent_node'] = $node;
-				dpp_follow_destinations($route, $ent['dest']);
+				dpp_follow_destinations($route, $ent['dest'],'');
 			}
 		}
 		
@@ -366,17 +377,17 @@ function dpp_follow_destinations (&$route, $destination) {
 		if ($dynrt['invalid_dest']==$dynrt['default_dest']){
 			 $route['parent_edge_label']= ' Invalid Input, Default ('.$dynrt['timeout'].' secs)';
 			 $route['parent_node'] = $node;
-			 dpp_follow_destinations($route, $dynrt['invalid_dest']);
+			 dpp_follow_destinations($route, $dynrt['invalid_dest'],'');
 		}else{
 			if ($dynrt['invalid_dest'] != '') {
 				$route['parent_edge_label']= ' Invalid Input';
 				$route['parent_node'] = $node;
-				dpp_follow_destinations($route, $dynrt['invalid_dest']);
+				dpp_follow_destinations($route, $dynrt['invalid_dest'],'');
 			}
 			if ($dynrt['default_dest'] != '') {
 				$route['parent_edge_label']= ' Default ('.$dynrt['timeout'].' secs)';
 				$route['parent_node'] = $node;
-				dpp_follow_destinations($route, $dynrt['default_dest']);
+				dpp_follow_destinations($route, $dynrt['default_dest'],'');
 			}
 		}
 		#end of Dynamic Routes
@@ -402,22 +413,76 @@ function dpp_follow_destinations (&$route, $destination) {
 		$node->attribute('style', 'filled');
 		
 		//Optional Destinations
-		if ($extension['noanswer_dest'] != '') {
-			$route['parent_edge_label']= ' No Answer';
-			$route['parent_node'] = $node;
-			dpp_follow_destinations($route, $extension['noanswer_dest']);
+		if (!empty($extension['noanswer_dest']) || !empty($extension['busy_dest']) || !empty($extension['chanunavail_dest']) ) {
+			if (
+					$extension['noanswer_dest'] === $extension['busy_dest'] &&
+					$extension['noanswer_dest'] === $extension['chanunavail_dest']
+			) {
+					// All three are equal
+					$route['parent_edge_label'] = ' No Answer, Busy, Not Reachable';
+					$route['parent_node'] = $node;
+					dpp_follow_destinations($route, $extension['noanswer_dest'],'');
+			} elseif (
+					$extension['noanswer_dest'] === $extension['busy_dest']
+					&& $extension['chanunavail_dest'] !== $extension['noanswer_dest']
+			) {
+					// No Answer and Busy are the same, but Not Reachable is different
+					$route['parent_edge_label'] = ' No Answer & Busy';
+					$route['parent_node'] = $node;
+					dpp_follow_destinations($route, $extension['noanswer_dest'],'');
+
+					if (!empty($extension['chanunavail_dest'])) {
+							$route['parent_edge_label'] = ' Not Reachable';
+							$route['parent_node'] = $node;
+							dpp_follow_destinations($route, $extension['chanunavail_dest'],'');
+					}
+			} elseif (
+					$extension['noanswer_dest'] === $extension['chanunavail_dest']
+					&& $extension['busy_dest'] !== $extension['noanswer_dest']
+			) {
+					// No Answer and Not Reachable are the same
+					$route['parent_edge_label'] = ' No Answer & Not Reachable';
+					$route['parent_node'] = $node;
+					dpp_follow_destinations($route, $extension['noanswer_dest'],'');
+
+					if (!empty($extension['busy_dest'])) {
+							$route['parent_edge_label'] = ' Busy';
+							$route['parent_node'] = $node;
+							dpp_follow_destinations($route, $extension['busy_dest'],'');
+					}
+			} elseif (
+					$extension['busy_dest'] === $extension['chanunavail_dest']
+					&& $extension['noanswer_dest'] !== $extension['busy_dest']
+			) {
+					// Busy and Not Reachable are the same
+					$route['parent_edge_label'] = ' Busy & Not Reachable';
+					$route['parent_node'] = $node;
+					dpp_follow_destinations($route, $extension['busy_dest'],'');
+
+					if (!empty($extension['noanswer_dest'])) {
+							$route['parent_edge_label'] = ' No Answer';
+							$route['parent_node'] = $node;
+							dpp_follow_destinations($route, $extension['noanswer_dest'],'');
+					}
+			} else {
+					// All are different
+					if (!empty($extension['noanswer_dest'])) {
+							$route['parent_edge_label'] = ' No Answer';
+							$route['parent_node'] = $node;
+							dpp_follow_destinations($route, $extension['noanswer_dest'],'');
+					}
+					if (!empty($extension['busy_dest'])) {
+							$route['parent_edge_label'] = ' Busy';
+							$route['parent_node'] = $node;
+							dpp_follow_destinations($route, $extension['busy_dest'],'');
+					}
+					if (!empty($extension['chanunavail_dest'])) {
+							$route['parent_edge_label'] = ' Not Reachable';
+							$route['parent_node'] = $node;
+							dpp_follow_destinations($route, $extension['chanunavail_dest'],'');
+					}
+			}
 		}
-		if ($extension['busy_dest'] != '') {
-			$route['parent_edge_label']= ' Busy';
-			$route['parent_node'] = $node;
-			dpp_follow_destinations($route, $extension['busy_dest']);
-		}
-		if ($extension['chanunavail_dest'] != '') {
-			$route['parent_edge_label']= ' Not Reachable';
-			$route['parent_node'] = $node;
-			dpp_follow_destinations($route, $extension['chanunavail_dest']);
-		}
-		
 		#end of Extension (from-did-direct)
 
 		#
@@ -462,7 +527,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		
 		$route['parent_edge_label']= ' Continue';
 		$route['parent_node'] = $node;
-		dpp_follow_destinations($route, $incoming['destination']);
+		dpp_follow_destinations($route, $incoming['destination'],'');
 
 		#end of Inbound Routes
 
@@ -507,25 +572,25 @@ function dpp_follow_destinations (&$route, $destination) {
 				
 				$route['parent_edge_label']= ' Selection '.sanitizeLabels($ent['selection']);
 				$route['parent_node'] = $node;
-				dpp_follow_destinations($route, $ent['dest']);
+				dpp_follow_destinations($route, $ent['dest'],'');
 			}
 		}
 		
 		#are the invalid and timeout destinations the same?
 		if ($ivr['invalid_destination']==$ivr['timeout_destination']){
-			 $route['parent_edge_label']= " Invalid Input, Timeout ($ivr[timeout_time] secs)";
+			 $route['parent_edge_label']= ' Invalid Input, Timeout ('.$ivr['timeout_time'].' secs)';
 			 $route['parent_node'] = $node;
-			 dpp_follow_destinations($route, $ivr['invalid_destination']);
+			 dpp_follow_destinations($route, $ivr['invalid_destination'],'');
 		}else{
 				if ($ivr['invalid_destination'] != '') {
 					$route['parent_edge_label']= ' Invalid Input';
 					$route['parent_node'] = $node;
-					dpp_follow_destinations($route, $ivr['invalid_destination']);
+					dpp_follow_destinations($route, $ivr['invalid_destination'],'');
 				}
 				if ($ivr['timeout_destination'] != '') {
 					$route['parent_edge_label']= ' Timeout ('.$ivr['timeout_time'].' secs)';
 					$route['parent_node'] = $node;
-					dpp_follow_destinations($route, $ivr['timeout_destination']);
+					dpp_follow_destinations($route, $ivr['timeout_destination'],'');
 				}
 		}
 		
@@ -550,7 +615,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		if ($lang['dest'] != '') {
 			$route['parent_edge_label'] = ' Continue';
 			$route['parent_node'] = $node;
-			dpp_follow_destinations($route, $lang['dest']);
+			dpp_follow_destinations($route, $lang['dest'],'');
 		}
 		#end of Languages
 
@@ -610,7 +675,7 @@ function dpp_follow_destinations (&$route, $destination) {
 				foreach ($type as $members){
 					$route['parent_node'] = $node;
 					$route['parent_edge_label'] = ($types == 'static') ? ' Static' : ' Dynamic';
-					dpp_follow_destinations($route, 'qmember'.$members);
+					dpp_follow_destinations($route, 'qmember'.$members,'');
 				}
 			}
 		}
@@ -620,13 +685,13 @@ function dpp_follow_destinations (&$route, $destination) {
     if ($q['dest'] != '') {
       $route['parent_edge_label'] = ' No Answer ('.$maxwait.')';
       $route['parent_node'] = $node;
-      dpp_follow_destinations($route, $q['dest']);
+      dpp_follow_destinations($route, $q['dest'],'');
     }
 		
 		if (is_numeric($q['ivr_id'])){
       $route['parent_edge_label'] = ' IVR Break Out (every '.secondsToTimes($q['data']['min-announce-frequency']).')';
       $route['parent_node'] = $node;
-      dpp_follow_destinations($route, 'ivr-'.$q['ivr_id'].',s,1');
+      dpp_follow_destinations($route, 'ivr-'.$q['ivr_id'].',s,1','');
     }
 		
 		
@@ -673,7 +738,7 @@ function dpp_follow_destinations (&$route, $destination) {
     foreach ($grplist as $member) {
       $route['parent_node'] = $node;
 			$route['parent_edge_label'] = '';
-      dpp_follow_destinations($route, "rg$member");
+      dpp_follow_destinations($route, "rg$member",'');
     } 
 		
 		# The destinations we need to follow are the no-answer destination
@@ -681,7 +746,7 @@ function dpp_follow_destinations (&$route, $destination) {
     if ($rg['postdest'] != '') {
       $route['parent_edge_label'] = ' No Answer ('.secondsToTimes($rg['grptime']).')';
       $route['parent_node'] = $node;
-      dpp_follow_destinations($route, $rg['postdest']);
+      dpp_follow_destinations($route, $rg['postdest'],'');
     }
     # End of Ring Groups
   
@@ -722,7 +787,7 @@ function dpp_follow_destinations (&$route, $destination) {
 		if ($cid['dest'] != '') {
 			$route['parent_edge_label'] = ' Continue';
 			$route['parent_node'] = $node;
-			dpp_follow_destinations($route, $cid['dest']);
+			dpp_follow_destinations($route, $cid['dest'],'');
 		}
 		#end of Set CID
 		
@@ -752,13 +817,13 @@ function dpp_follow_destinations (&$route, $destination) {
     $route['parent_edge_target'] = '_blank';
 
     $route['parent_node'] = $node;
-    dpp_follow_destinations($route, $tc['truegoto']);
+	  dpp_follow_destinations($route, $tc['truegoto'],'');
 
 		$route['parent_edge_label'] = ' NoMatch';
     $route['parent_edge_url'] = htmlentities('/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum);
     $route['parent_edge_target'] = '_blank';
     $route['parent_node'] = $node;
-    dpp_follow_destinations($route, $tc['falsegoto']);
+		dpp_follow_destinations($route, $tc['falsegoto'],'');
 		#end of Time Conditions
  
 		#
@@ -802,7 +867,7 @@ function dpp_follow_destinations (&$route, $destination) {
 			foreach ($vmblast['members'] as $member) {
 				$route['parent_edge_label']= '';
 				$route['parent_node'] = $node;
-				dpp_follow_destinations($route, 'vmblast-mem,'.$member);
+				dpp_follow_destinations($route, 'vmblast-mem,'.$member,'');
 			}
 		}
 		#end of VM Blast

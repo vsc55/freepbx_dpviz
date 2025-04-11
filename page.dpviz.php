@@ -31,7 +31,7 @@ $destinationColumn= isset($options[0]['destination']) ? $options[0]['destination
 $scale= isset($options[0]['scale']) ? $options[0]['scale'] : '1';
 $dynmembers= isset($options[0]['dynmembers']) ? $options[0]['dynmembers'] : '0';
 $direction=($horizontal== 1) ? 'LR' : 'TB';
-
+$clickedNodeTitle= isset($_REQUEST['clickedNodeTitle']) ? $_REQUEST['clickedNodeTitle'] : '';
 ?>
 <div class="container-fluid">
 	<div class="display full-border">
@@ -50,13 +50,18 @@ $direction=($horizontal== 1) ? 'LR' : 'TB';
 		} else {
 			$filename = ($iroute == '') ? 'ANY.png' : $iroute.'.png';
 			echo '<p><button class="btn btn-primary" onclick="location.reload();">Reload Page</button><input type="button" id="download" value="Export as ' . $filename . '"><button type="button" id="focus" class="btn btn-default">Highlight Paths</button></p>';
-			dpp_load_tables($dproute);   # adds data for time conditions, IVRs, etc.
-			//echo "<pre>" . "FreePBX config data:\n" . print_r($dproute, true) . "</pre><br>";
-
 			
-			dpplog(5, "Doing follow dest ...");
-			dpp_follow_destinations($dproute, '');
-			dpplog(5, "Finished follow dest ...");
+			if (!empty($clickedNodeTitle)){
+				dpp_load_tables($dproute);
+				dpp_follow_destinations($dproute, '', $clickedNodeTitle);
+				
+			}else{
+				dpp_load_tables($dproute);   # adds data for time conditions, IVRs, etc.
+				//echo "<pre>" . "FreePBX config data:\n" . print_r($dproute, true) . "</pre><br>";
+				dpplog(5, "Doing follow dest ...");
+				dpp_follow_destinations($dproute, '', '');
+				dpplog(5, "Finished follow dest ...");
+			}
 			
 			$gtext = $dproute['dpgraph']->render();
 		
@@ -80,6 +85,7 @@ $direction=($horizontal== 1) ? 'LR' : 'TB';
 			<script src="modules/dpviz/assets/js/viz.min.js"></script>
 			<script src="modules/dpviz/assets/js/full.render.js"></script>
 			<script src="modules/dpviz/assets/js/html2canvas.min.js"></script>
+			<script src="modules/dpviz/assets/js/click.js"></script>
 			<script type="text/javascript">
 				var viz = new Viz();
 				let isFocused = false;
@@ -371,6 +377,8 @@ $direction=($horizontal== 1) ? 'LR' : 'TB';
 						window.open(uri);
 					}
 				}
+				
+				
 				
 			</script>
 			<?php
