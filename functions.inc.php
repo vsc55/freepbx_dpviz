@@ -107,6 +107,8 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 			array(
 				'label' => sanitizeLabels($didLabel),
 				'tooltip' => sanitizeLabels($didLabel),
+				'width' => 2,
+				'margin' => '.13',
 				'shape' => 'cds',
 				'style' => 'filled',
 				'URL'   => htmlentities('/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)),
@@ -148,6 +150,7 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
   } catch (Exception $e) {
     dpplog(7, "Adding node: $destination");
     $node = $dpgraph->beginNode($destination);
+		$node->attribute('margin', '.25,.055');
   }
  
   // Add an edge from our parent to this node, if there is not already one.
@@ -162,6 +165,8 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
     dpplog(9, "NOT making an edge from $ptxt -> $ntxt");
 		$edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
 		$edge->attribute('label', sanitizeLabels($route['parent_edge_label']));
+		$edge->attribute('labeltooltip',  sanitizeLabels($route['parent_edge_label']));
+		
   } else {
     dpplog(9, "Making an edge from $ptxt -> $ntxt");
     $edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
@@ -693,8 +698,6 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
       $route['parent_node'] = $node;
       dpp_follow_destinations($route, 'ivr-'.$q['ivr_id'].',s,1','');
     }
-		
-		
 		#end of Queues
 		
 		#
@@ -790,6 +793,31 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 			dpp_follow_destinations($route, $cid['dest'],'');
 		}
 		#end of Set CID
+		
+		#
+		# TTS
+		#
+  } elseif (preg_match("/^ext-tts,(\d+),(\d+)/", $destination, $matches)) {
+		$ttsnum = $matches[1];
+		$ttsother = $matches[2];
+		$tts = $route['tts'][$ttsnum];
+		$ttsLabel= 'TTS: '.$tts['name'];
+		$ttsTooltip = 'Engine: '.$tts['engine'].'\\nDesc: '.$tts['text'];
+		
+		$node->attribute('label', sanitizeLabels($ttsLabel));
+		$node->attribute('tooltip', sanitizeLabels($ttsTooltip));
+		$node->attribute('URL', htmlentities('/admin/config.php?display=tts&view=form&id='.$ttsnum));
+		$node->attribute('target', '_blank');
+		$node->attribute('shape', 'note');
+		$node->attribute('fillcolor', $pastels[6]);
+		$node->attribute('style', 'filled');
+
+		if ($tts['goto'] != '') {
+			$route['parent_edge_label'] = ' Continue';
+			$route['parent_node'] = $node;
+			dpp_follow_destinations($route, $tts['goto'],'');
+		}
+		#end of TTS
 		
 		#
 		# Time Conditions
@@ -1064,7 +1092,7 @@ function dpp_load_tables(&$dproute) {
 	
 	
 	// Array of table names to check -not required
-	$tables = ['announcement','daynight','directory_details','disa','dynroute','dynroute_dests','featurecodes','languages','meetme','miscdests','ringgroups','setcid','vmblast','vmblast_groups'];
+	$tables = ['announcement','daynight','directory_details','disa','dynroute','dynroute_dests','featurecodes','languages','meetme','miscdests','ringgroups','setcid','tts','vmblast','vmblast_groups'];
 	
 	foreach ($tables as $table) {
     // Check if the table exists
@@ -1157,6 +1185,11 @@ function dpp_load_tables(&$dproute) {
 					$id = $cid['cid_id'];
 					$dproute['setcid'][$id] = $cid;
 				}
+    }elseif ($table == 'tts') {
+        foreach($results as $tts) {
+					$id = $tts['id'];
+					$dproute['tts'][$id] = $tts;
+				}
     }elseif ($table == 'vmblast') {
 				foreach($results as $vmblasts) {
 					$id = $vmblasts['grpnum'];
@@ -1175,10 +1208,16 @@ function dpp_load_tables(&$dproute) {
 # END load gobs of data.
 
 function sanitizeLabels($text) {
-		if ($text === null) {
+    if ($text === null) {
         $text = '';
     }
-		return htmlentities($text, ENT_QUOTES, 'UTF-8');
+    // Convert HTML special characters
+    $text = htmlentities($text, ENT_QUOTES, 'UTF-8');
+
+    // Replace actual newlines with Graphviz-style escaped newline
+    $text = str_replace(["\r\n", "\r", "\n"], '\\n', $text);
+
+    return $text;
 }
 
 function dpplog($level, $msg) {
@@ -1246,4 +1285,7 @@ function options_gets() {
 		return [];
 	}
 }
+
+
+
 ?>

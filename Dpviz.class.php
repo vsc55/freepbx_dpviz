@@ -24,7 +24,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
     }
 
     public function getOptions() {
-        $sql = "SELECT panzoom, horizontal, datetime, destination, scale, dynmembers FROM dpviz";
+        $sql = "SELECT * FROM dpviz";
         $sth = $this->db->prepare($sql);
         $sth->execute();
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
@@ -60,7 +60,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				$destination = isset($request['destination']) ? $request['destination'] : '';
 				$scale = isset($request['scale']) ? $request['scale'] : '';
 				$dynmembers = isset($request['dynmembers']) ? $request['dynmembers'] : '';
-
+				
         switch ($action) {
             case 'edit':
                 $this->editDpviz($panzoom, $horizontal, $datetime, $destination, $scale, $dynmembers);
@@ -71,5 +71,71 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
     }
 		public function getRightNav($request) {
 			return load_view(__DIR__."/views/rnav.php",[]);
+		}
+		
+		public function ajaxRequest($req, &$setting){
+			switch ($req) {
+				case 'check_update':
+				return true;
+				break;
+			}
+			return false;
+		}
+	
+		public function ajaxHandler() {
+				$action = isset($_REQUEST['command']) ? $_REQUEST['command'] : '';
+				switch ($action) {
+						case 'check_update':
+								// Call the function to check for updates
+								$result = $this->checkForGitHubUpdate();
+
+								if (isset($result['error'])) {
+										return ['status' => 'error', 'message' => $result['error']];
+								}
+								return [
+										'status' => 'success',
+										'current' => $result['current'],
+										'latest' => $result['latest'],
+										'up_to_date' => $result['up_to_date'],
+								];
+						default:
+								return ['status' => 'error', 'message' => 'Unknown command'];
+				}
+		}
+		
+		public function checkForGitHubUpdate() {
+	
+			$ver = \FreePBX::Modules()->getInfo('dpviz')['dpviz']['version']; // current version
+			$url = "https://api.github.com/repos/madgen78/dpviz/releases/latest"; // GitHub version
+
+			$opts = [
+					"http" => [
+							"method" => "GET",
+							"header" => "User-Agent: dpviz\r\n"
+					]
+			];
+			$context = stream_context_create($opts);
+			$json = file_get_contents($url, false, $context);
+
+			if ($json === false) {
+					return ['error' => 'Failed to fetch release info.'];
+			}
+
+			$data = json_decode($json, true);
+			if (!isset($data['tag_name'])) {
+					return ['error' => 'Invalid response from GitHub.'];
+			}
+
+			$latestVersion = ltrim($data['tag_name'], 'v');
+			$upToDate = version_compare($ver, $latestVersion, '>=');
+			$now = new \DateTime();
+
+			return [
+					'current' => $ver,
+					'latest' => $latestVersion,
+					'up_to_date' => $upToDate,
+					'checked' => $now->format('Y-m-d H:i:s')
+			];
+			
 		}
 }

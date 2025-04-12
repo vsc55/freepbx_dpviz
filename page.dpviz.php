@@ -23,7 +23,6 @@ $iroute=$extdisplay.$cid;
 
 //options
 $options=options_gets();
-$datetime=$options[0]['datetime'];
 $datetime = isset($options[0]['datetime']) ? $options[0]['datetime'] : '1';
 $horizontal = isset($options[0]['horizontal']) ? $options[0]['horizontal'] : '0';
 $panzoom = isset($options[0]['panzoom']) ? $options[0]['panzoom'] : '0';
@@ -32,6 +31,7 @@ $scale= isset($options[0]['scale']) ? $options[0]['scale'] : '1';
 $dynmembers= isset($options[0]['dynmembers']) ? $options[0]['dynmembers'] : '0';
 $direction=($horizontal== 1) ? 'LR' : 'TB';
 $clickedNodeTitle= isset($_REQUEST['clickedNodeTitle']) ? $_REQUEST['clickedNodeTitle'] : '';
+
 ?>
 <div class="container-fluid">
 	<div class="display full-border">
@@ -53,8 +53,9 @@ $clickedNodeTitle= isset($_REQUEST['clickedNodeTitle']) ? $_REQUEST['clickedNode
 			
 			if (!empty($clickedNodeTitle)){
 				dpp_load_tables($dproute);
+				dpplog(5, "Doing follow dest ...");
 				dpp_follow_destinations($dproute, '', $clickedNodeTitle);
-				
+				dpplog(5, "Finished follow dest ...");
 			}else{
 				dpp_load_tables($dproute);   # adds data for time conditions, IVRs, etc.
 				//echo "<pre>" . "FreePBX config data:\n" . print_r($dproute, true) . "</pre><br>";
@@ -377,9 +378,6 @@ $clickedNodeTitle= isset($_REQUEST['clickedNodeTitle']) ? $_REQUEST['clickedNode
 						window.open(uri);
 					}
 				}
-				
-				
-				
 			</script>
 			<?php
 			if ($panzoom==1){ ?>
@@ -389,6 +387,7 @@ $clickedNodeTitle= isset($_REQUEST['clickedNodeTitle']) ? $_REQUEST['clickedNode
 								var element = document.querySelector('#graph0');
 								if (element) {
 										panzoom(element);
+										
 								}
 						});
 				</script>
@@ -397,3 +396,4 @@ $clickedNodeTitle= isset($_REQUEST['clickedNodeTitle']) ? $_REQUEST['clickedNode
 	}
 	?>
 </div>
+
