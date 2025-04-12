@@ -86,7 +86,6 @@ $clickedNodeTitle= isset($_REQUEST['clickedNodeTitle']) ? $_REQUEST['clickedNode
 			<script src="modules/dpviz/assets/js/viz.min.js"></script>
 			<script src="modules/dpviz/assets/js/full.render.js"></script>
 			<script src="modules/dpviz/assets/js/html2canvas.min.js"></script>
-			<script src="modules/dpviz/assets/js/click.js"></script>
 			<script type="text/javascript">
 				var viz = new Viz();
 				let isFocused = false;
