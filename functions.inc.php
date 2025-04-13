@@ -916,19 +916,44 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 	
 		#preg_match not found
 	}else {
-    dpplog(1, "Unknown destination type: $destination");
-    $node->attribute('fillcolor', $pastels[12]);
-		$node->attribute('label', sanitizeLabels($destination));
-		$node->attribute('style', 'filled');
-    
-  } 
-
+		
+		#custom destinations
+		foreach ($route['customapps'] as $entry) {
+			if ($entry['target'] === $destination) {
+				$custDest=$entry;
+				break;
+			}
+		}
+		#end of Custom Destinations
+		
+		if (!empty($custDest)){
+			$custId=$entry['destid'];
+			$custLabel='Cust Dest: '.$entry['description'].'\\nTarget: '.$entry['target'].'\\l';
+			$custNotes=$entry['notes'];
+			
+			$node->attribute('label', sanitizeLabels($custLabel));
+			if (empty($custNotes)){
+				$node->attribute('tooltip', $node->getAttribute('label'));
+			}else{
+				$node->attribute('tooltip', sanitizeLabels($entry['notes']));
+			}
+			$node->attribute('URL', htmlentities('/admin/config.php?display=customdests&view=form&destid='.$custId));
+			$node->attribute('target', '_blank');
+			$node->attribute('shape', 'component');
+			$node->attribute('fillcolor', $pastels[27]);
+			$node->attribute('style', 'filled');
+		}else{
+			dpplog(1, "Unknown destination type: $destination");
+			$node->attribute('fillcolor', $pastels[12]);
+			$node->attribute('label', sanitizeLabels($destination));
+			$node->attribute('style', 'filled');
+    }
+  }
 }
-
 
 # load gobs of data.  Save it in hashrefs indexed by ints
 function dpp_load_tables(&$dproute) {
-  global $db;
+	global $db;
 	global $dynmembers;
   # Time Conditions
   $query = "select * from timeconditions";
@@ -1092,7 +1117,7 @@ function dpp_load_tables(&$dproute) {
 	
 	
 	// Array of table names to check -not required
-	$tables = ['announcement','daynight','directory_details','disa','dynroute','dynroute_dests','featurecodes','languages','meetme','miscdests','ringgroups','setcid','tts','vmblast','vmblast_groups'];
+	$tables = ['announcement','daynight','directory_details','disa','dynroute','dynroute_dests','featurecodes','kvstore_FreePBX_modules_Customappsreg','languages','meetme','miscdests','ringgroups','setcid','tts','vmblast','vmblast_groups'];
 	
 	foreach ($tables as $table) {
     // Check if the table exists
@@ -1156,6 +1181,15 @@ function dpp_load_tables(&$dproute) {
 					$id=$featurecodes['defaultcode'];
 					$dproute['featurecodes'][$id] = $featurecodes;
 					dpplog(9, "featurecodes=$id");
+				}
+    }elseif ($table == 'kvstore_FreePBX_modules_Customappsreg') {
+        foreach($results as $Customappsreg) {
+					if (is_numeric($Customappsreg['key'])){
+						$id=$Customappsreg['key'];
+						$val=json_decode($Customappsreg['val'],true);
+						$dproute['customapps'][$id] = $val;
+						dpplog(9, "customapps=$id");
+					}
 				}
     }elseif ($table == 'languages') {
         foreach($results as $languages) {

@@ -128,13 +128,11 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
 			$latestVersion = ltrim($data['tag_name'], 'v');
 			$upToDate = version_compare($ver, $latestVersion, '>=');
-			$now = new \DateTime();
-
+			
 			return [
 					'current' => $ver,
 					'latest' => $latestVersion,
 					'up_to_date' => $upToDate,
-					'checked' => $now->format('Y-m-d H:i:s')
 			];
 			
 		}
