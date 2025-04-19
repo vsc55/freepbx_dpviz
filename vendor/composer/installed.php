@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'e0c2ccac2f73979bc28fcbe9dbe3132b34b10255',
+        'reference' => '9060ae0ad473b5510787ccadd23967ecf4deba7c',
         'name' => '__root__',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'e0c2ccac2f73979bc28fcbe9dbe3132b34b10255',
+            'reference' => '9060ae0ad473b5510787ccadd23967ecf4deba7c',
             'dev_requirement' => false,
         ),
         'alom/graphviz' => array(
