@@ -28,7 +28,7 @@ $(document).ready(function() {
         });
     });
 		
-		document.querySelectorAll('g.node').forEach(node => {
+	document.querySelectorAll('g.node').forEach(node => {
 		node.addEventListener('click', function(e) {
 			if (e.ctrlKey || e.metaKey) {  // Support Ctrl on Windows/Linux, Command on Mac
 				e.preventDefault();

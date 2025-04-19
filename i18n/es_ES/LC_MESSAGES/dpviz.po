@@ -1,0 +1,238 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-18 23:57+0200\n"
+"PO-Revision-Date: 2025-04-18 23:57+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
+"X-Poedit-Basepath: .\n"
+
+#: Dpviz.class.php:159
+msgid "Please select a dialplan to visualize."
+msgstr "Seleccione un plan de marcación para visualizarlo."
+
+#: Dpviz.class.php:172
+#, php-format
+msgid "Unknown page: %s"
+msgstr "Página desconocida: %s"
+
+#: Dpviz.class.php:235
+msgid "Unknown command"
+msgstr "Comando desconocido"
+
+#: Dpviz.class.php:256
+msgid "Failed to fetch release info."
+msgstr ""
+
+#: Dpviz.class.php:262
+msgid "Invalid response from GitHub."
+msgstr "Respuesta no válida de GitHub."
+
+#: views/page.main.php:1 views/rnav.php:2 views/view.dialplan.php:1
+#: views/view.options.php:1
+msgid "No direct script access allowed"
+msgstr "No se permite el acceso directo a los scripts"
+
+#: views/page.main.php:5
+msgid "Dial Plan Vizualizer"
+msgstr "Visualizador del plan de marcación"
+
+#: views/rnav.php:31
+msgid "DID / CID"
+msgstr "DID / CID"
+
+#: views/rnav.php:32
+msgid "Description"
+msgstr "Descripción"
+
+#: views/rnav.php:34
+msgid "Destination"
+msgstr "Destino"
+
+#: views/view.dialplan.php:13
+#, php-format
+msgid "Error: Could not find inbound route for '%s'"
+msgstr "Error: No se pudo encontrar la ruta de entrada para '%s'"
+
+#: views/view.dialplan.php:20
+msgid "Reload Page"
+msgstr "Recargar página"
+
+#: views/view.dialplan.php:21
+#, php-format
+msgid "Export as %s"
+msgstr "Exportar como %s"
+
+#: views/view.dialplan.php:22
+msgid "Highlight Paths"
+msgstr "Resaltar rutas"
+
+#: views/view.dialplan.php:64
+#, php-format
+msgid "Dial Plan For Inbound Route %s%s:%s"
+msgstr "Plan de marcación para la ruta de entrada %s%s:%s"
+
+#: views/view.options.php:5
+msgid "Options"
+msgstr "Opciones"
+
+#: views/view.options.php:5
+msgid "(Click to Expand)"
+msgstr "(Haga clic para ampliar)"
+
+#: views/view.options.php:14
+msgid "Navigation and usage"
+msgstr "Navegación y uso"
+
+#: views/view.options.php:20
+msgid "Redraw from a Node:"
+msgstr "Redibujar desde un Nodo:"
+
+#: views/view.options.php:20
+msgid ""
+"Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a "
+"node to make it the new starting point in the diagram. To revert, "
+"<strong>Ctrl/Cmd + left-click</strong> the parent node."
+msgstr ""
+"Pulsa <strong>Ctrl</strong><strong>(Cmd</strong> en macOS) y haz clic con el "
+"botón izquierdo en un nodo para convertirlo en el nuevo punto de partida del "
+"diagrama. Para revertir, <strong>Ctrl/Cmd + clic izquierdo en</strong> el "
+"nodo padre."
+
+#: views/view.options.php:21
+msgid "Highlight Paths:"
+msgstr "Resaltar rutas:"
+
+#: views/view.options.php:21
+msgid ""
+"Click <strong>Highlight Paths</strong>, then select a node or edge (links "
+"are inactive). Click <strong>Remove Highlights</strong> to clear."
+msgstr ""
+"Haga clic en <strong>Resaltar rutas</strong> y, a continuación, seleccione "
+"un nodo o arista (los enlaces están inactivos). Haga clic en "
+"<strong>Eliminar resaltados</strong> para borrar."
+
+#: views/view.options.php:22
+msgid "Hover:"
+msgstr ""
+
+#: views/view.options.php:22
+msgid "Hover over a path to highlight between destinations."
+msgstr "Pase el ratón por encima de una ruta para resaltar entre los destinos."
+
+#: views/view.options.php:23
+msgid "Open Destinations:"
+msgstr "Destinos abiertos:"
+
+#: views/view.options.php:23
+msgid "Click a destination to open it in a new tab."
+msgstr "Haga clic en un destino para abrirlo en una nueva pestaña."
+
+#: views/view.options.php:24
+msgid "Open Time Groups:"
+msgstr "Grupos de Tiempo Abierto:"
+
+#: views/view.options.php:24
+msgid ""
+"Click on a \"<strong>Match: (timegroup)</strong>\" or \"<strong>NoMatch</"
+"strong>\" to open in a new tab."
+msgstr ""
+"Haga clic en<strong>\"Match: (timegroup)</strong>\" o<strong>\"NoMatch</"
+"strong>\" para abrir en una nueva pestaña."
+
+#: views/view.options.php:25
+msgid "Pan:"
+msgstr "Pan:"
+
+#: views/view.options.php:25
+msgid "Hold the left mouse button and drag to move the view."
+msgstr ""
+"Mantenga pulsado el botón izquierdo del ratón y arrástrelo para mover la "
+"vista."
+
+#: views/view.options.php:26
+msgid "Zoom:"
+msgstr "Zoom:"
+
+#: views/view.options.php:26
+msgid "Use the mouse wheel to zoom in and out."
+msgstr "Utiliza la rueda del ratón para acercar y alejar la imagen."
+
+#: views/view.options.php:37
+msgid "Check for Updates"
+msgstr "Comprobar si hay actualizaciones"
+
+#: views/view.options.php:54
+msgid "Date & Time Stamp"
+msgstr "Sello de fecha y hora"
+
+#: views/view.options.php:59 views/view.options.php:86
+#: views/view.options.php:113 views/view.options.php:140
+#: views/view.options.php:167 views/view.options.php:194
+msgid "Yes"
+msgstr "Sí"
+
+#: views/view.options.php:61 views/view.options.php:88
+#: views/view.options.php:115 views/view.options.php:142
+#: views/view.options.php:169 views/view.options.php:196
+msgid "No"
+msgstr "No"
+
+#: views/view.options.php:69
+msgid "Displays the date and time on the graph."
+msgstr "Muestra la fecha y la hora en el gráfico."
+
+#: views/view.options.php:81
+msgid "Export as High-Resolution PNG"
+msgstr "Exportar como PNG de alta resolución"
+
+#: views/view.options.php:96
+msgid "Increases PNG resolution during export."
+msgstr "Aumenta la resolución PNG durante la exportación."
+
+#: views/view.options.php:108
+msgid "Horizontal Layout"
+msgstr "Diseño horizontal"
+
+#: views/view.options.php:123
+msgid "Displays the dial plan in a horizontal layout."
+msgstr "Muestra el plan de marcación en formato horizontal."
+
+#: views/view.options.php:135
+msgid "Pan & Zoom"
+msgstr "Panorámica y zoom"
+
+#: views/view.options.php:150
+msgid ""
+"Allows you to use pan and zoom functions. Click and hold to pan, and use the "
+"mouse wheel to zoom."
+msgstr ""
+"Permite utilizar las funciones de panorámica y zoom. Mantenga pulsado para "
+"desplazarse y utilice la rueda del ratón para hacer zoom."
+
+#: views/view.options.php:162
+msgid "Show Destination Column"
+msgstr "Mostrar columna de destino"
+
+#: views/view.options.php:177
+msgid ""
+"Displays the destination column for each inbound route. May impact "
+"performance with a large number of inbound routes."
+msgstr ""
+"Muestra la columna de destino para cada ruta entrante. Puede afectar al "
+"rendimiento con un gran número de rutas entrantes."
+
+#: views/view.options.php:189
+msgid "Show Dynamic Members for Queues"
+msgstr "Mostrar miembros dinámicos para colas"
+
+#: views/view.options.php:204
+msgid "Displays the list of dynamic agents currently assigned to the queues."
+msgstr ""
+"Muestra la lista de agentes dinámicos asignados actualmente a las colas."
