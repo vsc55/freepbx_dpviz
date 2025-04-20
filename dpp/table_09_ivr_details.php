@@ -5,14 +5,8 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableIvrDetails extends baseTables
 {
-    //   # IVRs
-    //   $sql = sprintf("SELECT * FROM %s", "ivr_details");
-    //   foreach($results as $ivr)
-    //   {
-    //       $id = $ivr['id'];
-    //       $dproute['ivrs'][$id] = $ivr;
-    //   }
-
+    # IVRs
+    
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "ivr_details");

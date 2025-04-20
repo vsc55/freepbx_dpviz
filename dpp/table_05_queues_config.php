@@ -5,16 +5,8 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableQueuesConfig extends baseTables
 {
-    // # Queues
-    // $sql = sprintf("SELECT * FROM %s", "queues_config");
-    // foreach($results as $q)
-    // {
-    // 	$id = $q['extension'];
-    // 	$dproute['queues'][$id] = $q;
-    // 	$dproute['queues'][$id]['members']['static']  = array();
-    // 	$dproute['queues'][$id]['members']['dynamic'] = array();
-    // }
-    
+    # Queues
+
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "queues_config");
@@ -26,10 +18,11 @@ class TableQueuesConfig extends baseTables
     {
         foreach($this->getTableData() as $q)
 		{
-			$id = $q['extension'];
-            $this->route['queues'][$id] = $q;
-            $this->route['queues'][$id]['members']['static']  = array(); // table_06_queues_static.php
-            $this->route['queues'][$id]['members']['dynamic'] = array(); // table_07_queues_dynamic.php
+			$id = $q[$this->key_id];
+            $this->route[$this->key_name][$id] = $q;
+            $this->route[$this->key_name][$id]['members']['static']  = array(); // table_06_queues_static.php
+            $this->route[$this->key_name][$id]['members']['dynamic'] = array(); // table_07_queues_dynamic.php
 		}
+        return true;
     }
 }

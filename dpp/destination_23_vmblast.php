@@ -17,8 +17,10 @@ class DestinationVmblast extends baseDestinations
         $vmblastother = $matches[2];
         $vmblast 	  = $route['vmblasts'][$vmblastnum];
         
-        $node->attribute('label', 'VM Blast: '.$vmblastnum.' '.$this->dpp->sanitizeLabels($vmblast['description']));
-        $node->attribute('URL', htmlentities('/admin/config.php?display=vmblast&view=form&extdisplay='.$vmblastnum));
+        $label = sprintf(_('VM Blast: %s %s'), $vmblastnum , $this->dpp->sanitizeLabels($vmblast['description']));
+
+        $node->attribute('label', $label);
+        $node->attribute('URL', $this->genUrlConfig('vmblast', $vmblastnum)); // '/admin/config.php?display=vmblast&view=form&extdisplay='.$vmblastnum
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'folder');
         $node->attribute('fillcolor', 'gainsboro');
@@ -28,9 +30,10 @@ class DestinationVmblast extends baseDestinations
         {
             foreach ($vmblast['members'] as $member)
             {
-                $route['parent_edge_label']= '';
-                $route['parent_node'] = $node;
-                $this->dpp->followDestinations($route, 'vmblast-mem,'.$member,'');
+                $route['parent_node']       = $node;
+                $route['parent_edge_label'] = '';
+                
+                $this->dpp->followDestinations($route, sprintf('vmblast-mem,%s', $member), '');
             }
         }
     }

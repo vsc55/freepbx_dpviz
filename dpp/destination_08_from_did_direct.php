@@ -20,9 +20,11 @@ class DestinationFromDidDirect extends baseDestinations
         $extemail  = $extension['email'];
         $extemail  = str_replace("|",",\\n",$extemail);
 
-        $node->attribute('label', 'Extension: '.$extnum.' '.$this->dpp->sanitizeLabels($extname).'\\n'.$this->dpp->sanitizeLabels($extemail));
+        $label     = sprintf(_('Extension: %s %s\\n%s'), $extnum, $this->dpp->sanitizeLabels($extname), $this->dpp->sanitizeLabels($extemail));
+
+        $node->attribute('label', $label);
         $node->attribute('tooltip', $node->getAttribute('label'));
-        $node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$extnum));
+        $node->attribute('URL', $this->genUrlConfig('extensions', $extnum, null)); //'/admin/config.php?display=extensions&extdisplay='.$extnum
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'house');
         $node->attribute('fillcolor', self::pastels[15]);
@@ -34,66 +36,81 @@ class DestinationFromDidDirect extends baseDestinations
             if ($extension['noanswer_dest'] === $extension['busy_dest'] && $extension['noanswer_dest'] === $extension['chanunavail_dest'])
             {
                 // All three are equal
-                $route['parent_edge_label'] = ' No Answer, Busy, Not Reachable';
-                $route['parent_node'] = $node;
-                $this->dpp->followDestinations($route, $extension['noanswer_dest'],'');
+                $route['parent_node']       = $node;
+                $route['parent_edge_label'] = _(' No Answer, Busy, Not Reachable');
+                
+                $this->dpp->followDestinations($route, $extension['noanswer_dest'], '');
             }
             elseif ($extension['noanswer_dest'] === $extension['busy_dest'] && $extension['chanunavail_dest'] !== $extension['noanswer_dest'])
             {
                 // No Answer and Busy are the same, but Not Reachable is different
-                $route['parent_edge_label'] = ' No Answer & Busy';
-                $route['parent_node'] = $node;
-                $this->dpp->followDestinations($route, $extension['noanswer_dest'],'');
+                $route['parent_node']       = $node;
+                $route['parent_edge_label'] = _(' No Answer & Busy');
+                
+                $this->dpp->followDestinations($route, $extension['noanswer_dest'], '');
 
                 if (!empty($extension['chanunavail_dest']))
                 {
-                    $route['parent_edge_label'] = ' Not Reachable';
-                    $route['parent_node'] = $node;
-                    $this->dpp->followDestinations($route, $extension['chanunavail_dest'],'');
+                    $route['parent_node']       = $node;
+                    $route['parent_edge_label'] = _(' Not Reachable');
+                    
+                    $this->dpp->followDestinations($route, $extension['chanunavail_dest'], '');
                 }
             }
             elseif ($extension['noanswer_dest'] === $extension['chanunavail_dest'] && $extension['busy_dest'] !== $extension['noanswer_dest'])
             {
                 // No Answer and Not Reachable are the same
-                $route['parent_edge_label'] = ' No Answer & Not Reachable';
-                $route['parent_node'] = $node;
-                $this->dpp->followDestinations($route, $extension['noanswer_dest'],'');
+                $route['parent_node']       = $node;
+                $route['parent_edge_label'] = _(' No Answer & Not Reachable');
+                
+                $this->dpp->followDestinations($route, $extension['noanswer_dest'], '');
 
-                if (!empty($extension['busy_dest'])) {
-                    $route['parent_edge_label'] = ' Busy';
-                    $route['parent_node'] = $node;
-                    $this->dpp->followDestinations($route, $extension['busy_dest'],'');
+                if (!empty($extension['busy_dest']))
+                {
+                    $route['parent_node']       = $node;
+                    $route['parent_edge_label'] = _(' Busy');
+                    
+                    $this->dpp->followDestinations($route, $extension['busy_dest'], '');
                 }
             }
             elseif ($extension['busy_dest'] === $extension['chanunavail_dest'] && $extension['noanswer_dest'] !== $extension['busy_dest'])
             {
                 // Busy and Not Reachable are the same
-                $route['parent_edge_label'] = ' Busy & Not Reachable';
-                $route['parent_node'] = $node;
-                $this->dpp->followDestinations($route, $extension['busy_dest'],'');
+                $route['parent_node']       = $node;
+                $route['parent_edge_label'] = _(' Busy & Not Reachable');
+                
+                $this->dpp->followDestinations($route, $extension['busy_dest'], '');
 
-                if (!empty($extension['noanswer_dest'])) {
-                    $route['parent_edge_label'] = ' No Answer';
-                    $route['parent_node'] = $node;
-                    $this->dpp->followDestinations($route, $extension['noanswer_dest'],'');
+                if (!empty($extension['noanswer_dest']))
+                {
+                    $route['parent_node']       = $node;
+                    $route['parent_edge_label'] = _(' No Answer');
+                    
+                    $this->dpp->followDestinations($route, $extension['noanswer_dest'], '');
                 }
             }
             else
             {
                 // All are different
-                if (!empty($extension['noanswer_dest'])) {
-                    $route['parent_edge_label'] = ' No Answer';
-                    $route['parent_node'] = $node;
-                    $this->dpp->followDestinations($route, $extension['noanswer_dest'],'');
+                if (!empty($extension['noanswer_dest']))
+                {
+                    $route['parent_node']       = $node;
+                    $route['parent_edge_label'] = _(' No Answer');
+                    
+                    $this->dpp->followDestinations($route, $extension['noanswer_dest'], '');
                 }
-                if (!empty($extension['busy_dest'])) {
-                    $route['parent_edge_label'] = ' Busy';
-                    $route['parent_node'] = $node;
-                    $this->dpp->followDestinations($route, $extension['busy_dest'],'');
+                if (!empty($extension['busy_dest']))
+                {
+                    $route['parent_node']       = $node;
+                    $route['parent_edge_label'] = _(' Busy');
+                    
+                    $this->dpp->followDestinations($route, $extension['busy_dest'], '');
                 }
-                if (!empty($extension['chanunavail_dest'])) {
-                    $route['parent_edge_label'] = ' Not Reachable';
-                    $route['parent_node'] = $node;
+                if (!empty($extension['chanunavail_dest']))
+                {
+                    $route['parent_node']       = $node;
+                    $route['parent_edge_label'] = _(' Not Reachable');
+                    
                     $this->dpp->followDestinations($route, $extension['chanunavail_dest'],'');
                 }
             }

@@ -15,9 +15,11 @@ class DestinationRecording extends baseDestinations
     {
         $recID 		= $matches[1];
         $recIDOther = $matches[2];
+        $playName   = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : _('None');
 
-        $playName = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : 'None';
-        $node->attribute('label', 'Play Recording: '.$this->dpp->sanitizeLabels($playName));
+        $label = sprintf(_('Play Recording: %s'), $this->dpp->sanitizeLabels($playName));
+
+        $node->attribute('label', $label);
         $node->attribute('URL', htmlentities('/admin/config.php?display=recordings&action=edit&id='.$recID));
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'rect');

@@ -5,26 +5,8 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableQueuesDetails extends baseTables
 {
-    // # Queue members (static)
-    // $sql = sprintf("SELECT * FROM %s", "queues_details");
-    // foreach($results as $qd)
-    // {
-    // 	$id = $qd['id'];
-    // 	if ($qd['keyword'] == 'member')
-    // 	{
-    // 		$member = $qd['data'];
-    // 		if (preg_match("/Local\/(\d+)/", $member, $matches))
-    // 		{
-    // 			$enum = $matches[1];
-    // 			$dproute['queues'][$id]['members']['static'][] = $enum;
-    // 		}
-    // 	}
-    // 	else
-    // 	{
-    // 		$dproute['queues'][$id]['data'][$qd['keyword']] = $qd['data'];
-    // 	}
-    // }
-
+    # Queue members (static)
+    
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "queues_details");
@@ -36,20 +18,22 @@ class TableQueuesDetails extends baseTables
     {
         foreach($this->getTableData() as $qd)
 		{
-            $id = $qd['id'];
+            $id = $qd[$this->key_id];
+
             if ($qd['keyword'] == 'member')
             {
                 $member = $qd['data'];
                 if (preg_match("/Local\/(\d+)/", $member, $matches))
                 {
                     $enum = $matches[1];
-                    $this->route['queues'][$id]['members']['static'][] = $enum;
+                    $this->route[$this->key_name][$id]['members']['static'][] = $enum;
                 }
             }
             else
             {
-                $this->route['queues'][$id]['data'][$qd['keyword']] = $qd['data'];
+                $this->route[$this->key_name][$id]['data'][$qd['keyword']] = $qd['data'];
             }
 		}
+        return true;
     }
 }

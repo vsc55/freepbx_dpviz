@@ -16,9 +16,12 @@ class DestinationSetCid extends baseDestinations
         $cidnum   = $matches[1];
         $cidother = $matches[2];
         $cid 	  = $route['setcid'][$cidnum];
-        $cidLabel = 'Set CID\\nName= '.preg_replace('/\${CALLERID\(name\)}/i', '<name>', $cid['cid_name']).'\\lNumber= '.preg_replace('/\${CALLERID\(num\)}/i', '<number>', $cid['cid_num']).'\\l';
 
-        $node->attribute('label', $this->dpp->sanitizeLabels($cidLabel));
+        $cid_name = preg_replace('/\${CALLERID\(name\)}/i', '<name>', $cid['cid_name']);
+        $cid_num  = preg_replace('/\${CALLERID\(num\)}/i', '<number>', $cid['cid_num']);
+        $label    = sprintf(_('Set CID\\nName= %s\\lNumber= %s\\l'), $cid_name, $cid_num);
+
+        $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
         $node->attribute('URL', htmlentities('/admin/config.php?display=setcid&view=form&id='.$cidnum));
         $node->attribute('target', '_blank');
@@ -28,9 +31,10 @@ class DestinationSetCid extends baseDestinations
 
         if ($cid['dest'] != '')
         {
-            $route['parent_edge_label'] = ' Continue';
-            $route['parent_node'] = $node;
-            $this->dpp->followDestinations($route, $cid['dest'],'');
+            $route['parent_node']       = $node;
+            $route['parent_edge_label'] = _(' Continue');
+            
+            $this->dpp->followDestinations($route, $cid['dest'], '');
         }
     }
 }

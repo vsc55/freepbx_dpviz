@@ -13,12 +13,14 @@ class DestinationBlackhole extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $blackholetype  = str_replace('musiconhold','Music On Hold',$matches[1]);
+        $blackholetype  = str_replace('musiconhold', _('Music On Hold'), $matches[1]);
         $blackholeother = $matches[2];
-        $previousURL	= $route['parent_node']->getAttribute('URL', '');
-
-        $node->attribute('label', 'Terminate Call: '.ucwords($blackholetype,'-'));
-        $node->attribute('tooltip', 'Terminate Call: '.ucwords($blackholetype,'-'));
+        
+        $labal          = sprintf(_('Terminate Call: %s'), ucwords($blackholetype,'-'));
+        $previousURL    = $route['parent_node']->getAttribute('URL', '');
+        
+        $node->attribute('label', $labal);
+        $node->attribute('tooltip', $labal);
         $node->attribute('URL', $previousURL);
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'invhouse');

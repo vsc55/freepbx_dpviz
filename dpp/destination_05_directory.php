@@ -16,18 +16,21 @@ class DestinationDirectory extends baseDestinations
         $directorynum 	= $matches[1];
         $directoryother = $matches[2];
         $directory 		= $route['directory'][$directorynum];
+        
+        $label          = sprintf(_('Directory: %s'), $this->dpp->sanitizeLabels($directory['dirname']));
 
-        $node->attribute('label', 'Directory: '.$this->dpp->sanitizeLabels($directory['dirname']));
-        $node->attribute('URL', htmlentities('/admin/config.php?display=directory&view=form&id='.$directorynum));
+        $node->attribute('label', $label);
+        $node->attribute('URL', $this->genUrlConfig('directory', $directorynum)); //'/admin/config.php?display=directory&view=form&id='.$directorynum
         $node->attribute('target', '_blank');
         $node->attribute('fillcolor', self::pastels[9]);
         $node->attribute('shape', 'folder');
         $node->attribute('style', 'filled');
         
-        if ($directory['invalid_destination']!='')
+        if ($directory['invalid_destination'] != '')
         {
-            $route['parent_edge_label']= ' Invalid Input';
-            $route['parent_node'] = $node;
+            $route['parent_node']       = $node;
+            $route['parent_edge_label'] = _(' Invalid Input');
+            
             $this->dpp->followDestinations($route, $directory['invalid_destination'], '');
         }
     }

@@ -13,12 +13,20 @@ class DestinationRingGroupsMembers extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $rgext   = $matches[1];
-        $rglabel = isset($route['extensions'][$rgext]) ? 'Ext '.$rgext.'\\n'.$route['extensions'][$rgext]['name'] : $rgext;
+        $rgext = $matches[1];
 
-        $node->attribute('label', $this->dpp->sanitizeLabels($rglabel));
+        if (isset($route['extensions'][$rgext]))
+        {
+            $label = sprintf(_('Ext %s\\n%s'), $rgext, $route['extensions'][$rgext]['name']);
+        }
+        else
+        {
+            $label = $rgext;
+        }
+
+        $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
-        if (!is_numeric($rglabel))
+        if (!is_numeric($label))
         {
             $node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$rgext));
             $node->attribute('target', '_blank');

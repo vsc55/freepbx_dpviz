@@ -5,15 +5,6 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableVmblastGroups extends baseTables
 {
-    // case 'vmblast_groups':
-    //     foreach($results as $vmblastsGrp)
-    //     {
-    //         $id = $vmblastsGrp['grpnum'];
-    //         $this->dpplog(9, "vmblast:  vmblast=$id");
-    //         $dproute['vmblasts'][$id]['members'][] = $vmblastsGrp['ext'];
-    //     }
-    // break;
-    
     public function __construct($dpp)
     {
         parent::__construct($dpp, "vmblast_groups", true);
@@ -25,9 +16,12 @@ class TableVmblastGroups extends baseTables
     {
         foreach($this->getTableData() as $vmblastsGrp)
 		{
-            $id = $vmblastsGrp['grpnum'];
+            $id = $vmblastsGrp[$this->key_id];
+            
+            $dproute[$this->key_name][$id]['members'][] = $vmblastsGrp['ext'];
+
             $this->log(9, "vmblast:  vmblast=$id");
-            $dproute['vmblasts'][$id]['members'][] = $vmblastsGrp['ext'];
 		}
+        return true;
     }
 }

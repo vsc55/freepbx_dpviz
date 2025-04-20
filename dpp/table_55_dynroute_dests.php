@@ -5,16 +5,6 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableDynrouteDests extends baseTables
 {
-    // case 'dynroute_dests':
-    //     foreach ($results as $dynroute_dests)
-    //     {
-    //         $id = $dynroute_dests['dynroute_id'];
-    //         $selid = $dynroute_dests['selection'];
-    //         $this->dpplog(9, "dynroute_dests: dynroute=$id match=$selid");
-    //         $dproute['dynroute'][$id]['routes'][$selid] = $dynroute_dests;
-    //     }
-    // break;
-
     public function __construct($dpp)
     {
         parent::__construct($dpp, "dynroute_dests", true);
@@ -26,10 +16,13 @@ class TableDynrouteDests extends baseTables
     {
         foreach($this->getTableData() as $dynroute_dests)
 		{
-            $id    = $dynroute_dests['dynroute_id'];
+            $id    = $dynroute_dests[$this->key_id];
             $selid = $dynroute_dests['selection'];
+            
+            $dproute[$this->key_name][$id]['routes'][$selid] = $dynroute_dests;
+
             $this->log(9, "dynroute_dests: dynroute=$id match=$selid");
-            $dproute['dynroute'][$id]['routes'][$selid] = $dynroute_dests;
 		}
+        return true;
     }
 }

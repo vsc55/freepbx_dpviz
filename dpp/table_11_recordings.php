@@ -5,14 +5,7 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableRecordings extends baseTables
 {
-    // # Recordings
-    // $sql = sprintf("SELECT * FROM %s", "recordings");
-    // foreach($results as $recordings)
-    // {
-    //     $id = $recordings['id'];
-    //     $dproute['recordings'][$id] = $recordings;
-    //     $this->dpplog(9, "recordings=$id");
-    // }
+    # Recordings
     
     public function __construct(object &$dpp)
     {

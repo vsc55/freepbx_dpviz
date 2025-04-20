@@ -5,14 +5,8 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableTimeconditions extends baseTables
 {
-    // # Time Conditions
-    // $sql = sprintf("SELECT * FROM %s", "timeconditions");
-    // foreach($results as $tc)
-    // {
-    // 	$id = $tc['timeconditions_id'];
-    // 	$dproute['timeconditions'][$id] = $tc;
-    // }
-
+    # Time Conditions
+    
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "timeconditions");

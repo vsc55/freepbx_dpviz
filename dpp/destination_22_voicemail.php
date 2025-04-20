@@ -18,16 +18,18 @@ class DestinationVoicemail extends baseDestinations
         $vmother = $matches[3];
         
         $vm_array = array(
-            'b'=>'(Busy Message)',
-            'i'=>'(Instructions Only)',
-            's'=>'(No Message)',
-            'u'=>'(Unavailable Message)'
+            'b' => _('(Busy Message)'),
+            'i' => _('(Instructions Only)'),
+            's' => _('(No Message)'),
+            'u' => _('(Unavailable Message)')
         );
         $vmname   = $route['extensions'][$vmnum]['name'];
         $vmemail  = $route['extensions'][$vmnum]['email'];
         $vmemail  = str_replace("|",",\\n",$vmemail);
     
-        $node->attribute('label', 'Voicemail: '.$vmnum.' '.$this->dpp->sanitizeLabels($vmname).' '.$vm_array[$vmtype].'\\n'.$this->dpp->sanitizeLabels($vmemail));
+        $label = sprintf(_('Voicemail: %s %s %s\\n%s'), $vmnum, $this->dpp->sanitizeLabels($vmname), $vm_array[$vmtype], $this->dpp->sanitizeLabels($vmemail));
+
+        $node->attribute('label', $label);
         $node->attribute('tooltip', $node->getAttribute('label'));
         $node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$vmnum));
         $node->attribute('target', '_blank');

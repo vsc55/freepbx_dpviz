@@ -58,13 +58,22 @@ abstract class baseDestinations
     {
         if (method_exists($this, 'callback_followDestinations'))
         {
-            return call_user_func([$this, 'callback_followDestinations'], $route, $node, $destination, $matches);
+            // return call_user_func([$this, 'callback_followDestinations'], $route, $node, $destination, $matches);
+            $callback = [$this, 'callback_followDestinations'];
+            $args = [&$route, &$node, $destination, $matches];
+            return call_user_func_array($callback, $args);
         }
         else
         {
             $this->log('error', 'No callback function found for followDestinations in ' . get_class($this));    
             return false;
         }
+    }
+
+    public function genUrlConfig($display, $extdisplay, $view = 'form')
+    {
+        $url_view = is_null($view) ? '' : sprintf("&view=%s", $view);
+        return htmlentities(sprintf('/admin/config.php?display=%s%s&extdisplay=%s', $display, $url_view, $extdisplay));
     }
 
 }

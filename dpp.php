@@ -4,8 +4,8 @@ Namespace FreePBX\Modules\Dpviz;
 
 class dpp {
 
-    private $freepbx            = null;
-	private $db                 = null;
+    public $freepbx = null;
+	public $db      = null;
 
     private $list_class_tables              = [];
     private $list_calss_tables_destinations = [];
@@ -13,7 +13,7 @@ class dpp {
     public $inroutes = [];
     public $dproutes = [];
 
-	private $direction = 'LR'; // LR = Left to Right, TB = Top to Bottom
+	protected $direction = 'LR'; // LR = Left to Right, TB = Top to Bottom
 
     // Log Level: 0 = total quiet, 9 = much verbose
 	Const DPP_LOG_LEVEL = 3;
@@ -40,10 +40,10 @@ class dpp {
     	"#ff66ff", "#f2003c", "#ffcc00", "#ff69b4", "#0aff02"
 	];
 
-    function __construct($freepbx, $db, $load_routes = true)
+    public function __construct($freepbx, $load_routes = true)
     {
         $this->freepbx = $freepbx;
-        $this->db      = $db;
+        $this->db      = $freepbx->Database;
 
         $this->LoadClass();
 
@@ -168,7 +168,7 @@ class dpp {
             if (class_exists($fullClassName))
             {
                 // Create an instance of the class and add it to the list
-                $list_calss_tables_destinations[] = new $fullClassName($this);
+                $this->list_calss_tables_destinations[] = new $fullClassName($this);
 				$this->log(5, sprintf(_("Class '%s' Create OK!"), $fullClassName));
             }
             else
@@ -211,7 +211,7 @@ class dpp {
      * @param string $sql The SQL query to execute.
      * @return array An array of associative arrays representing the rows.
      */
-    protected function fetchAll(string $sql, array $params = []): array
+    public function fetchAll(string $sql, array $params = []): array
     {
         if (empty($sql))
         {
@@ -370,6 +370,7 @@ class dpp {
 	{
         foreach ($this->getClassTables($force_load) as $table_class)
         {
+			
             // call the load method of the class
 			$table_class->load();
         }
@@ -408,7 +409,7 @@ class dpp {
 		{
 			if (empty($route['extension']))
 			{
-				$didLabel = 'ANY';
+				$didLabel = _('ANY');
 			}
 			elseif (is_numeric($route['extension']) && (strlen($route['extension'])==10 || strlen($route['extension'])==11))
 			{
@@ -462,7 +463,7 @@ class dpp {
 			}
 			elseif ($route['destination'] != '')
 			{
-				$route['parent_edge_label'] = ' Always';
+				$route['parent_edge_label'] = _(' Always');
 				$this->followDestinations($route, $route['destination'], '');
 			}
 			return;
@@ -491,7 +492,7 @@ class dpp {
 		
 		if ($ntxt == '' )
 		{
-			$ntxt = "(new node: $destination)";
+			$ntxt = sprintf(_("(new node: %s)"), $destination);
 		}
 
 		if ($dpgraph->hasEdge(array($route['parent_node'], $node)))
@@ -532,11 +533,11 @@ class dpp {
 			return;
 		}
 	
-        foreach ($this->getClassDestinations() as $item)
+        foreach ($this->getClassDestinations() as &$item)
         {
             if (preg_match($item->getDestinationRegEx(), $destination, $matches))
             {
-                $item->getDestinationRegEx()->followDestinations($route, $node, $destination, $matches);
+                $item->followDestinations($route, $node, $destination, $matches);
                 break;
             }
         }			
@@ -554,6 +555,7 @@ class dpp {
 
 		$this->loadIncomingRoutes(true);
 		$this->findRoute($num);
+		$this->loadTables(true);
 		$this->log(5, "Doing follow dest ...");
 		$this->followDestinations($this->dproutes, '', $optional);
 		$this->log(5, "Finished follow dest ...");

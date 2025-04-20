@@ -5,14 +5,8 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableTimegroupsGroups extends baseTables
 {
-    // # Time Groups
-    // $sql = sprintf("SELECT * FROM %s", "timegroups_groups");
-    // foreach($results as $tg)
-    // {
-    // 	$id = $tg['id'];
-    // 	$dproute['timegroups'][$id] = $tg;
-    // }
-
+    # Time Groups
+    
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "timegroups_groups");

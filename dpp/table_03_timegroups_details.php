@@ -5,30 +5,7 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableTimegroupsDetails extends baseTables
 {
-    // # Time Groups Details
-    // $sql = sprintf("SELECT * FROM %s", "timegroups_details");
-    // foreach($results as $tgd)
-    // {
-    // 	$id = $tgd['timegroupid'];
-    // 	if (! isset($dproute['timegroups'][$id]))
-    // 	{
-    // 		$this->dpplog(1, "timegroups_details id found for unknown timegroup, id=$id");
-    // 	}
-    // 	else
-    // 	{
-    // 		if (!isset($dproute['timegroups'][$id]['time']))
-    // 		{
-    // 			$dproute['timegroups'][$id]['time'] = '';
-    // 		}
-    // 		$exploded = explode("|", $tgd['time']);
-    // 		$time 	  = ($exploded[0] !== '*') ? $exploded[0] : '';
-    // 		$dow 	  = ($exploded[1] !== '*') ? sprintf("%s, ", ucwords($exploded[1], '-')) : '';
-    // 		$date 	  = ($exploded[2] !== '*') ? sprintf("%s ", $exploded[2]) : '';
-    // 		$month 	  = ($exploded[3] !== '*') ? sprintf("%s ", ucfirst($exploded[3])) : '';
-
-    // 		$dproute['timegroups'][$id]['time'] .= sprintf("%s%s%s%s\\l", $dow, $month, $date, $time);
-    // 	}
-    // }
+    # Time Groups Details
 
     public function __construct(object &$dpp)
     {
@@ -39,19 +16,18 @@ class TableTimegroupsDetails extends baseTables
 
     public function callback_load()
     {
-        # Time Groups Details
         foreach($this->getTableData() as $tgd)
 		{
-			$id = $tgd['timegroupid'];
-			if (! isset($this->route['timegroups'][$id]))
+			$id = $tgd[$this->key_id];
+			if (! isset($this->route[$this->key_name][$id]))
 			{
 				$this->log(1, sprintf("timegroups_details id found for unknown timegroup, id=%s", $id));
                 continue;
 			}
 			
-            if (!isset($this->route['timegroups'][$id]['time']))
+            if (!isset($this->route[$this->key_name][$id]['time']))
             {
-                $this->route['timegroups'][$id]['time'] = '';
+                $this->route[$this->key_name][$id]['time'] = '';
             }
             $exploded = explode("|", $tgd['time']);
             $time 	  = ($exploded[0] !== '*') ? $exploded[0] : '';
@@ -59,7 +35,8 @@ class TableTimegroupsDetails extends baseTables
             $date 	  = ($exploded[2] !== '*') ? sprintf("%s ", $exploded[2]) : '';
             $month 	  = ($exploded[3] !== '*') ? sprintf("%s ", ucfirst($exploded[3])) : '';
 
-            $this->route['timegroups'][$id]['time'] .= sprintf("%s%s%s%s\\l", $dow, $month, $date, $time);
+            $this->route[$this->key_name][$id]['time'] .= sprintf("%s%s%s%s\\l", $dow, $month, $date, $time);
 		}
+        return true;
     }
 }

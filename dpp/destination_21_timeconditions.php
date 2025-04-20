@@ -15,9 +15,11 @@ class DestinationTimeconditions extends baseDestinations
     {
         $tcnum 	 = $matches[1];
         $tcother = $matches[2];
+        $tc      = $route['timeconditions'][$tcnum];
 
-        $tc = $route['timeconditions'][$tcnum];
-        $node->attribute('label', "TC: ".$this->dpp->sanitizeLabels($tc['displayname']));
+        $label = sprintf(_('TC: %s'), $this->dpp->sanitizeLabels($tc['displayname']));
+
+        $node->attribute('label', $label);
         $node->attribute('URL', htmlentities('/admin/config.php?display=timeconditions&view=form&itemid='.$tcnum));
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'invhouse');
@@ -30,17 +32,19 @@ class DestinationTimeconditions extends baseDestinations
         $tgnum  = $route['timegroups'][$tc['time']]['id'];
         
         # Now set the current node to be the parent and recurse on both the true and false branches
-        $route['parent_edge_label'] = ' Match:\\n'.$this->dpp->sanitizeLabels($tgname).'\\n'.$tgtime;
-        $route['parent_edge_url'] = htmlentities('/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum);
+        $route['parent_node']        = $node;
+        $route['parent_edge_label']  = sprintf(_(' Match:\\n%s\\n%s'), $this->dpp->sanitizeLabels($tgname), $tgtime);
+        $route['parent_edge_url']    = $this->genUrlConfig('timegroups', $tgnum); // /admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum
         $route['parent_edge_target'] = '_blank';
 
-        $route['parent_node'] = $node;
-        $this->dpp->followDestinations($route, $tc['truegoto'],'');
+        $this->dpp->followDestinations($route, $tc['truegoto'], '');
 
-        $route['parent_edge_label'] = ' NoMatch';
-        $route['parent_edge_url'] = htmlentities('/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum);
+        
+        $route['parent_node']        = $node;
+        $route['parent_edge_label']  = _(' NoMatch');
+        $route['parent_edge_url']    = $this->genUrlConfig('timegroups', $tgnum); // /admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum)
         $route['parent_edge_target'] = '_blank';
-        $route['parent_node'] = $node;
-        $this->dpp->followDestinations($route, $tc['falsegoto'],'');
+        
+        $this->dpp->followDestinations($route, $tc['falsegoto'], '');
     }
 }

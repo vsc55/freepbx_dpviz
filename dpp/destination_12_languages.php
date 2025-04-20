@@ -15,10 +15,12 @@ class DestinationLanguages extends baseDestinations
     {
         $langnum   = $matches[1];
         $langother = $matches[2];
+        $lang      = $route['languages'][$langnum];
 
-        $lang = $route['languages'][$langnum];
-        $node->attribute('label', 'Languages: '.$this->dpp->sanitizeLabels($lang['description']));
-        $node->attribute('URL', htmlentities('/admin/config.php?display=languages&view=form&extdisplay='.$langnum));
+        $lable = sprintf(_('Languages: %s'), $this->dpp->sanitizeLabels($lang['description']));
+
+        $node->attribute('label', $lable);
+        $node->attribute('URL', $this->genUrlConfig('languages', $langnum)); //'/admin/config.php?display=languages&view=form&extdisplay='.$langnum
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'note');
         $node->attribute('fillcolor', self::pastels[6]);
@@ -26,8 +28,9 @@ class DestinationLanguages extends baseDestinations
 
         if ($lang['dest'] != '')
         {
-            $route['parent_edge_label'] = ' Continue';
-            $route['parent_node'] = $node;
+            $route['parent_node']       = $node;
+            $route['parent_edge_label'] = _(' Continue');
+            
             $this->dpp->followDestinations($route, $lang['dest'],'');
         }
     }

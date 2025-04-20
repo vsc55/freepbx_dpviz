@@ -5,37 +5,29 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableUsers extends baseTables
 {
-    // # Users
-    // $sql = sprintf("SELECT * FROM %s", "users");
-    // foreach($results as $users)
-    // {
-    // 	$Qresult = array();
-    // 	$id 	 = $users['extension'];
-    // 	$u[$id]  = $users;
-    // 	$dproute['extensions'][$id]= $users;
-    // 	$Q='grep -E \'^'.$id.'[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3';
-    // 	exec($Q, $Qresult);
-    // 	$dproute['extensions'][$id]['email'] = !empty($Qresult[0]) ? $Qresult[0] : 'unassigned';
-    // }
-
+    # Users
+    
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "users");
+        $this->key_id   = "extension";
+        $this->key_name = "extensions";
     }
 
     public function callback_load()
     {
         foreach($this->getTableData() as $user)
 		{
-			$Qresult = array();
-			$id 	 = $user['extension'];
-			$u[$id]  = $user;
+			$id 	 = $user[$this->key_id];
+			// $u[$id]  = $user;
 
-            $Q='grep -E \'^'.$id.'[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3';
+            $Q       = sprintf('grep -E \'^%s[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3', $id);
+            $Qresult = array();
 			exec($Q, $Qresult);
 
-			$this->route['extensions'][$id]= $user;
-			$this->route['extensions'][$id]['email'] = !empty($Qresult[0]) ? $Qresult[0] : 'unassigned';
+			$this->route[$this->key_name][$id]= $user;
+			$this->route[$this->key_name][$id]['email'] = !empty($Qresult[0]) ? $Qresult[0] : _('unassigned');
 		}
+        return true;
     }
 }

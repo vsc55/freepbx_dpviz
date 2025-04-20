@@ -14,7 +14,7 @@
 								<span class="pull-left"><i class="fa fa-info-circle fa-lg fa-fw"></i></span><?= _("Navigation and usage") ?><span class="pull-right"><i class="chevron fa fa-fw"></i></span>
 							</h3>
 						</div>
-						<div id="panelId67f91e1a7403f" class="panel-collapse collapse" style="">
+						<div id="panelId67f91e1a7403f" class="panel-collapse collapse">
 							<div class="panel-body">
 								<ul class="list-unstyled">
 									<li><strong><?= _("Redraw from a Node:") ?></strong> <?= _("Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a node to make it the new starting point in the diagram. To revert, <strong>Ctrl/Cmd + left-click</strong> the parent node.") ?></li>

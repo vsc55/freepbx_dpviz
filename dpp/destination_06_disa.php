@@ -16,8 +16,10 @@ class DestinationDisa extends baseDestinations
         $disanum   = $matches[1];
         $disaother = $matches[2];
         $disa 	   = $route['disa'][$disanum];
+        
+        $label     = sprintf(_('DISA: %s'), $this->dpp->sanitizeLabels($disa['displayname']));
 
-        $node->attribute('label', 'DISA: '.$this->dpp->sanitizeLabels($disa['displayname']));
+        $node->attribute('label', $label);
         $node->attribute('URL', htmlentities('/admin/config.php?display=disa&view=form&itemid='.$disanum));
         $node->attribute('target', '_blank');
         $node->attribute('fillcolor', self::pastels[10]);

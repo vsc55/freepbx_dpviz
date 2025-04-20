@@ -43,7 +43,7 @@ abstract class baseTables
     protected function isExistTable(): bool
     {
         $sql = "SHOW TABLES LIKE ?";
-        $result = $this->dpp->db->fetchAll($sql, [$this->getTableName()]);
+        $result = $this->dpp->fetchAll($sql, [$this->getTableName()]);
         return !empty($result);
     }
 
@@ -78,7 +78,7 @@ abstract class baseTables
         $this->dpp->log($level, $message);
     }
 
-    public function load(): bool
+    public function load(): ?bool
     {
         // callback function to load the table
         if (!$this->isExistTable())
@@ -90,7 +90,11 @@ abstract class baseTables
         // call the callback function to load the table
         if (method_exists($this, 'callback_load'))
         {
-            return call_user_func([$this, 'callback_load'], $this->route);
+            $callback = [$this, 'callback_load'];
+            $args = [&$this->route];
+            return call_user_func_array($callback, $args);
+
+            // return call_user_func([$this, 'callback_load'], $this->route);
         }
         else
         {

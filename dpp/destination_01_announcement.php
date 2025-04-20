@@ -19,12 +19,12 @@ class DestinationAnnouncement extends baseDestinations
         $an    = $route['announcements'][$annum];
         $recID = $an['recording_id'];
         
-        $announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : 'None';
+        $announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : _('None');
         #feature code exist?
         if ( isset($route['featurecodes']['*29'.$recID]) )
         {
             #custom feature code?
-            if ($route['featurecodes']['*29'.$an['recording_id']]['customcode']!='')
+            if ($route['featurecodes']['*29'.$an['recording_id']]['customcode'] != '')
             {
                 $featurenum = $route['featurecodes']['*29'.$an['recording_id']]['customcode'];
             }
@@ -32,24 +32,19 @@ class DestinationAnnouncement extends baseDestinations
             {
                 $featurenum = $route['featurecodes']['*29'.$an['recording_id']]['defaultcode'];
             }
-            #is it enabled?
-            if ( ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') )
-            {
-                $rec = '\\nRecord(yes): '.$featurenum;
-            }
-            else
-            {
-                $rec = '\\nRecord(no): '.$featurenum;
-            }
+            $rec_active = ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ? _('yes'): _('no');
+            $rec_status = $featurenum;
         }
         else
         {
-            $rec='\\nRecord(no): disabled';
+            $rec_status = _('disabled');
+            $rec_active = _('no');
         }
+        $label = sprintf(_('Announcements: %s\\nRecording: %s\\nRecord (%s): %s'), $this->dpp->sanitizeLabels($an['description']), $this->dpp->sanitizeLabels($announcement), $rec_active, $rec_status);
         
-        $node->attribute('label', 'Announcements: '.$this->dpp->sanitizeLabels($an['description']).'\\nRecording: '.$this->dpp->sanitizeLabels($announcement).$rec);
+        $node->attribute('label', $label);
         $node->attribute('tooltip', $node->getAttribute('label'));
-        $node->attribute('URL', htmlentities('/admin/config.php?display=announcement&view=form&extdisplay='.$annum));
+        $node->attribute('URL', $this->genUrlConfig('announcement', $annum)); //'/admin/config.php?display=announcement&view=form&extdisplay='.$annum
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'note');
         $node->attribute('fillcolor', 'oldlace');
@@ -60,9 +55,10 @@ class DestinationAnnouncement extends baseDestinations
 
         if ($an['post_dest'] != '')
         {
-            $route['parent_edge_label'] = ' Continue';
-            $route['parent_node'] = $node;
-            $this->dpp->followDestinations($route, $an['post_dest'],'');
+            $route['parent_node']       = $node;
+            $route['parent_edge_label'] = _(' Continue');
+
+            $this->dpp->followDestinations($route, $an['post_dest'], '');
         }
     }
 }

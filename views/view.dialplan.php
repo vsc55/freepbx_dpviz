@@ -1,64 +1,20 @@
-<?php if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); } ?>
+<?php
+	if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); }
 
-<?php 
-    //echo "<pre>" . "FreePBX config data:\n" . print_r($inroutes, true) . "</pre><br>";
+    if (!$isExistRoute) :
+	?>
 
-	// $inroutes = dpp_load_incoming_routes();
-	// $dproute = dpp_find_route($inroutes, $iroute);
-
-	
-	// $gtext = $dpviz->dpp->render($iroute, $clickedNodeTitle);
-
-	// dbug($gtext);
-	// exit;
-    
-
-	if (!$isExistRoute) :
-?>
  	<h2><?= sprintf(_("Error: Could not find inbound route for '%s'"), $iroute) ?></h2>
-<?php 
+
+	<?php 
 	return;
 	endif; 
-?>
 
-<p>
-    <button class="btn btn-primary" onclick="location.reload();"><?= _("Reload Page") ?></button>
-    <input type="button" id="download" value="<?= sprintf(_("Export as %s"), $filename) ?>">
-    <button type="button" id="focus" class="btn btn-default"><?= _("Highlight Paths") ?></button>
-</p>
 
-<?php
 	$gtext = $dpviz->dpp->render($iroute, $clickedNodeTitle);
-
-	
-
-	// if (!empty($clickedNodeTitle))
-    // {
-	// 	// $dpviz->dpp_load_tables($dproute);
-	// 	// $dpviz->dpplog(5, "Doing follow dest ...");
-
-	// 	$dpviz->dpp->followDestinations($dproute, '', $clickedNodeTitle);
-	// 	// $dpviz->dpp_follow_destinations($dproute, '', $clickedNodeTitle);
-    //     $dpviz->dpplog(5, "Finished follow dest ...");
-	// }
-    // else
-    // {
-	// 	// $dpviz->dpp_load_tables($dproute);   # adds data for time conditions, IVRs, etc.
-	// 			//echo "<pre>" . "FreePBX config data:\n" . print_r($dproute, true) . "</pre><br>";
-	// 	// $dpviz->dpplog(5, "Doing follow dest ...");
-	// 	$dpviz->dpp->followDestinations($dproute, '', '');
-	// 	// $dpviz->dpp_follow_destinations($dproute, '', '');
-	// 	$dpviz->dpplog(5, "Finished follow dest ...");
-	// }
-	
-	
-
-	// $gtext = $dproute['dpgraph']->render();
-		
 	$dpviz->dpp->log(5, "Dial Plan Graph for $extdisplay $cid:\n$gtext");
-			
 	$gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);  // ugh, apparently viz chokes on newlines, wtf?
-			
+	
 	if (is_numeric($extdisplay) && (strlen($extdisplay)==10 || strlen($extdisplay)==11))
 	{
 		$number = $dpviz->dpp->formatPhoneNumbers($extdisplay);
@@ -67,9 +23,12 @@
 	{
 		$number = $extdisplay;
 	}
-			
 ?>
-
+<p>
+    <button class="btn btn-primary" onclick="location.reload();"><?= _("Reload Page") ?></button>
+    <input type="button" id="download" value="<?= sprintf(_("Export as %s"), $filename) ?>">
+    <button type="button" id="focus" class="btn btn-default"><?= _("Highlight Paths") ?></button>
+</p>
 <div class="fpbx-container">
 	<div id="vizContainer" class="display full-border">
 		<h2><?= sprintf(_("Dial Plan For Inbound Route %s%s:%s"), $number, ((!empty($cid)) ? ' / '.$dpviz->dpp->formatPhoneNumbers($cid) : ''),  $dpviz->dpp->dproutes['description']) ?></h2>

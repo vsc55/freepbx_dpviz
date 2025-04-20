@@ -5,15 +5,6 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableVmblast extends baseTables
 {
-    // case 'vmblast':
-    //     foreach($results as $vmblasts)
-    //     {
-    //         $id = $vmblasts['grpnum'];
-    //         $this->dpplog(9, "vmblast:  vmblast=$id");
-    //         $dproute['vmblasts'][$id] = $vmblasts;
-    //     }
-    // break;
-    
     public function __construct($dpp)
     {
         parent::__construct($dpp, "vmblast", true);

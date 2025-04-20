@@ -5,34 +5,26 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableIvrEntries extends baseTables
 {
-  
-// # IVR entries
-// $sql = sprintf("SELECT * FROM %s", "ivr_entries");
-// $sth = $this->db->prepare($sql);
-// $sth->execute();
-// $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
-// foreach($results as $ent)
-// {
-//     $id    = $ent['ivr_id'];
-//     $selid = $ent['selection'];
-//     $this->dpplog(9, "entry:  ivr=$id   selid=$selid");
-//     $dproute['ivrs'][$id]['entries'][$selid] = $ent;
-// }
-
+    # IVR entries
 
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "ivr_entries");
+        $this->key_id   = "ivr_id";
+        $this->key_name = "ivrs";
     }
 
     public function callback_load()
     {
         foreach($this->getTableData() as $ent)
 		{
-			$id    = $ent['ivr_id'];
+			$id    = $ent[$this->key_id];
 			$selid = $ent['selection'];
-			$this->log(9, sprintf("entry:  ivr=%s   selid=%s", $id, $selid));
-			$this->route['ivrs'][$id]['entries'][$selid] = $ent;
+
+			$this->route[$this->key_name][$id]['entries'][$selid] = $ent;
+
+            $this->log(9, sprintf("entry:  ivr=%s   selid=%s", $id, $selid));
 		}
+        return true;
     }
 }
