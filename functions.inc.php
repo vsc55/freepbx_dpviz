@@ -5,7 +5,7 @@ if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
 function dpplog($level, $msg)
 {
 	FreePBX::Modules()->deprecatedFunction();
-	return FreePBX::Dpviz()->dpplog($level, $msg);
+	return FreePBX::Dpviz()->dpp->log($level, $msg);
 }
 
 ?>

@@ -1,0 +1,68 @@
+<?php
+namespace FreePBX\modules\Dpviz\dpp\destination;
+
+require_once __DIR__ . '/baseDestinations.php';
+
+class DestinationAnnouncement extends baseDestinations
+{
+    public function __construct(object &$dpp)
+    {
+        parent::__construct($dpp);
+        $this->regex = "/^app-announcement-(\d+),s,(\d+)/";
+    }
+
+    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    {
+        $annum	 = $matches[1];
+        $another = $matches[2];
+
+        $an    = $route['announcements'][$annum];
+        $recID = $an['recording_id'];
+        
+        $announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : 'None';
+        #feature code exist?
+        if ( isset($route['featurecodes']['*29'.$recID]) )
+        {
+            #custom feature code?
+            if ($route['featurecodes']['*29'.$an['recording_id']]['customcode']!='')
+            {
+                $featurenum = $route['featurecodes']['*29'.$an['recording_id']]['customcode'];
+            }
+            else
+            {
+                $featurenum = $route['featurecodes']['*29'.$an['recording_id']]['defaultcode'];
+            }
+            #is it enabled?
+            if ( ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') )
+            {
+                $rec = '\\nRecord(yes): '.$featurenum;
+            }
+            else
+            {
+                $rec = '\\nRecord(no): '.$featurenum;
+            }
+        }
+        else
+        {
+            $rec='\\nRecord(no): disabled';
+        }
+        
+        $node->attribute('label', 'Announcements: '.$this->dpp->sanitizeLabels($an['description']).'\\nRecording: '.$this->dpp->sanitizeLabels($announcement).$rec);
+        $node->attribute('tooltip', $node->getAttribute('label'));
+        $node->attribute('URL', htmlentities('/admin/config.php?display=announcement&view=form&extdisplay='.$annum));
+        $node->attribute('target', '_blank');
+        $node->attribute('shape', 'note');
+        $node->attribute('fillcolor', 'oldlace');
+        $node->attribute('style', 'filled');
+
+        # The destinations we need to follow are the no-answer destination
+        # (postdest) and the members of the group.
+
+        if ($an['post_dest'] != '')
+        {
+            $route['parent_edge_label'] = ' Continue';
+            $route['parent_node'] = $node;
+            $this->dpp->followDestinations($route, $an['post_dest'],'');
+        }
+    }
+}
