@@ -42,7 +42,7 @@ class DestinationQueues extends baseDestinations
                 foreach ($type as $members)
                 {
                     $route['parent_node']       = $node;
-                    //TODO: Ver como se comporta ya que se usa en query_members!!
+                    //TODO: Check if it works since it is used in query_members!!
                     $route['parent_edge_label'] = ($types == 'static') ? _(' Static') : _(' Dynamic');
                     $this->dpp->followDestinations($route, sprintf('qmember%s', $members),'');
                 }

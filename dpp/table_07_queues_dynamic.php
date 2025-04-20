@@ -17,7 +17,8 @@ class TableQueuesDynamic extends baseTables
     public function callback_load()
     {
         //TODO: $dynmembers= isset($options[0]['dynmembers']) ? $options[0]['dynmembers'] : '0';
-        global $dynmembers;
+		$dynmembers = \FreePBX::Dpviz()->getSetting('dynmembers');
+        
         # Queue members (dynamic) //options
 		if ($dynmembers && !empty($this->route[$this->key_name]))
 		{

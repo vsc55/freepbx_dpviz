@@ -17,7 +17,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
 	Const TABLE_NAME = 'dpviz';
 
-	Const default_config = [
+	Const default_setting = [
 		'panzoom'	  => 1,
 		'horizontal'  => 0,
 		'datetime'	  => 1,
@@ -40,66 +40,100 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
     public function install()
 	{
-		$sql = sprintf("INSERT INTO %s (`panzoom`,`horizontal`,`datetime`,`destination`,`scale`,`dynmembers`) VALUES (?,?,?,?,?,?)", self::TABLE_NAME);
-		$sth = $this->db->prepare($sql);
-		return $sth->execute([
-			self::default_config['panzoom'],
-			self::default_config['horizontal'],
-			self::default_config['datetime'],
-			self::default_config['destination'],
-			self::default_config['scale'],
-			self::default_config['dynmembers']
-		]);
+		// Save the default configuration in the kvstore.
+		$this->setSettingAll($this->getSettingAll());
     }
 
     public function uninstall() {
         // Required by BMO, but can remain empty
     }
-
-    public function getOptions() {
-        $sql = sprintf("SELECT * FROM %s", self::TABLE_NAME);
-        $sth = $this->db->prepare($sql);
-        $sth->execute();
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
-    }
-    
-    public function editDpviz($panzoom, $horizontal, $datetime, $destination, $scale, $dynmembers)
+	
+	/**
+	 * Get all configuration values.
+	 * @return array An associative array of configuration settings, with default values if not set.
+	 */
+	public function getSettingAll(): array
 	{
-		// Valideate and sanitize inputs.
-		// We are using the default values if the inputs are not set and only allow 1 or 0
-		$panzoom = ($panzoom ?? self::default_config['panzoom']) == 1 ? 1 : 0;
-		$horizontal = ($horizontal ?? self::default_config['horizontal']) == 1 ? 1 : 0;
-		$datetime = ($datetime ?? self::default_config['datetime']) == 1 ? 1 : 0;
-		$destination = ($destination ?? self::default_config['destination']) == 1 ? 1 : 0;
-		$scale = ($scale ?? self::default_config['scale']) == 1 ? 1 : 0;
-		$dynmembers = ($dynmembers ?? self::default_config['dynmembers']) == 1 ? 1 : 0;
+		$settings = $this->getAll("setting");
 
-        $sql  = sprintf("UPDATE %s SET `panzoom` = :panzoom, `horizontal` = :horizontal, `datetime` = :datetime, `destination` = :destination, `scale` = :scale, `dynmembers` = :dynmembers WHERE `id` = 1", self::TABLE_NAME);
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            ':panzoom'	   => $panzoom,
-            ':horizontal'  => $horizontal,
-			':datetime'    => $datetime,
-			':destination' => $destination,
-			':scale'       => $scale,
-			':dynmembers'  => $dynmembers
-        ]);
-    }
+		// Filter only valid keys defined in default_setting
+		$settings = array_merge(self::default_setting, $settings);
 
-	function options_gets() {
-		$data_return = [];
-		$rows = $this->getOptions();
-		
-		if(!empty($rows) && is_array($rows))
-		{
-			foreach ($rows as $row)
-			{
-				$data_return[] = $row;
-			}
-		}
-		return $data_return;
+		// Direction: LR (left-to-right) o TB (top-to-bottom)
+		$settings['direction'] = ($settings['horizontal']) == 1 ? 'LR' : 'TB';
+		return $settings;
 	}
 
+	/**
+	 * Set multiple configuration values at once.
+	 * @param array $settings An associative array of configuration settings to set.
+	 * @return bool True if the configuration was set successfully, false otherwise.
+	 * @throws \Exception If the settings is not an array.
+	 */
+	public function setSettingAll(array $settings): bool
+	{
+		if (empty($settings))
+		{
+			return false;
+		}
+
+		// Filter only valid keys defined in default_setting
+		$validSettings = array_intersect_key($settings, self::default_setting);
+		foreach ($validSettings as $key => $val)
+		{
+			if (is_null($val))
+			{
+				$val = self::default_setting[$key];
+			}
+			parent::setConfig($key, $val, "setting");
+		}
+		return true;
+	}
+
+	/**
+	 * Get a configuration value.
+	 * @param string $key The configuration key to retrieve.
+	 * @param string|null $default The default value to return if the key does not exist.
+	 * @return string|null The configuration value or null if not found.
+	 * @throws \Exception If the key is not a string.
+	 */
+	public function getSetting(string $key, ?string $default = null): ?string
+	{
+		if ($key === '') {
+			return $default ?? null;
+		}
+		$settings = $this->getSettingAll();
+		return $settings[$key] ?? $default ?? (self::default_setting[$key] ?? null);
+	}
+
+	/**
+	 * Set a configuration value.
+	 * @param string $key The configuration key to set.
+	 * @param string|null $val The value to set. If null, the key will be deleted.
+	 * @return bool True if the configuration was set successfully, false otherwise.
+	 */
+	public function setSetting(string $key, ?string $val): bool
+	{
+		if ($key == '')
+		{
+			return false;
+		}
+		parent::setConfig($key, $val, "setting");
+		return true;
+	}
+
+	/**
+	 * Reset the configuration to default values.
+	 * This will delete the current configuration and set it to the default values.
+	 * @return bool
+	 */
+	public function resetSetting(): bool
+	{
+		$this->delById('setting');
+		$this->setSettingAll($this->getSettingAll());
+		return true;
+	}
+	
     public function doConfigPageInit($page) {
         $request = freepbxGetSanitizedRequest();
 		// $request = $_REQUEST;
@@ -108,15 +142,19 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         switch ($action)
 		{
             case 'edit':
-				// If the request does not exist, it defines it as null since editDpviz() will validate and set the default value if necessary.
-				$panzoom 	 = $request['panzoom'] ?? null;
-				$horizontal  = $request['horizontal'] ?? null;
-				$datetime 	 = $request['datetime'] ?? null;
-				$destination = $request['destination'] ?? null;
-				$scale 		 = $request['scale'] ?? null;
-				$dynmembers  = $request['dynmembers'] ?? null;
-
-                $this->editDpviz($panzoom, $horizontal, $datetime, $destination, $scale, $dynmembers);
+				//TODO: Implement via AJAX
+				if (isset($request['reset']))
+				{
+					$this->resetSetting();
+				}
+				else
+				{
+					$new_setting = array_intersect_key($request, self::default_setting);
+					if (!empty($new_setting))
+					{
+						$this->setSettingAll($new_setting);
+					}
+				}
                 break;
 
             default:
@@ -128,12 +166,15 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 	{
 		$request = freepbxGetSanitizedRequest();
 		// $request = $_REQUEST;
-		$options = $this->options_gets();
+
+		$setting = $this->getSettingAll();
+
 		$data = array(
 			"dpviz"	  	 => $this,
 			'request' 	 => $request,
 			'page' 	  	 => $page ?? '',
-			'options' 	 => $options,
+			'setting' 	 => $setting,
+			// 'options' 	 => $options,
 			'extdisplay' => $request['extdisplay'] ?? '',
 			'cid' 		 => $request['cid'] ?? '',
 		);
@@ -148,13 +189,13 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				break;
 
 			case 'options':
-				$data['datetime'] 			= $options[0]['datetime'] ?? '1';
-				$data['horizontal'] 		= $options[0]['horizontal'] ?? '0';
-				$data['panzoom'] 			= $options[0]['panzoom'] ?? '0';
-				$data['destinationColumn'] 	= $options[0]['destination'] ?? '0';
-				$data['scale'] 				= $options[0]['scale'] ?? '1';
-				$data['dynmembers'] 		= $options[0]['dynmembers'] ?? '0';
-				$data['direction'] 			= ($options[0]['horizontal'] ?? 0) == 1 ? 'LR' : 'TB';
+				$data['datetime'] 			= $setting['datetime'];
+				$data['horizontal'] 		= $setting['horizontal'];
+				$data['panzoom'] 			= $setting['panzoom'];
+				$data['destinationColumn'] 	= $setting['destination'];
+				$data['scale'] 				= $setting['scale'];
+				$data['dynmembers'] 		= $setting['dynmembers'];
+				$data['direction'] 			= $setting['direction'];
 				$data['clickedNodeTitle'] 	= $request['clickedNodeTitle'] ?? '';
 				
 				$data_return = load_view(__DIR__."/views/view.options.php", $data);
@@ -162,10 +203,10 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
 			case 'dialplan':
 				$data['iroute'] 	= sprintf("%s%s", $data['extdisplay'], $data['cid']);
-				$data['datetime'] 	= $options[0]['datetime'] ?? '1';
-				$data['scale'] 		= $options[0]['scale'] ?? '1';
-				$data['panzoom'] 	= $options[0]['panzoom'] ?? '0';
-				$data['direction'] 	= ($options[0]['horizontal'] ?? 0) == 1 ? 'LR' : 'TB';
+				$data['datetime'] 	= $setting['datetime'];
+				$data['scale'] 		= $setting['scale'];
+				$data['panzoom'] 	= $setting['panzoom'];
+				$data['direction'] 	= $setting['direction'];
 
 				if (!isset($_GET['extdisplay']))
 				{
@@ -192,12 +233,12 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
 	public function getRightNav($request, $params = array())
 	{
-		$options = $this->options_gets();
 		$data = array(
 		 	"dpviz"   			=> $this,
 		 	"request" 			=> $request,
+			'setting' 			=> $this->getSettingAll(),
 		 	"display" 			=> strtolower(trim($request['display'] ?? '')),
-		 	'destinationColumn' => ($options[0]['destination'] ?? self::default_config['destination']) == 1 ? true : false,
+		 	'destinationColumn' => $this->getSetting('destination') == 1 ? true : false,
 		 	'destinations' 		=> $this->freepbx->Modules->getDestinations(),
 			'extdisplay' 		=> $request['extdisplay'] ?? null,
 		);

@@ -43,7 +43,8 @@
 							</div>
 						</div>
 					</div>
-					<form class="fpbx-submit" name="editDpviz" action="?display=dpviz&action=edit" method="post">
+					<form class="fpbx-submit" name="editDpviz" action="?display=dpviz" method="post">
+					<input type="hidden" name="action" value="edit">
 					<!--datetime-->
 					<div class="element-container">
 						<div class="row">
@@ -209,7 +210,8 @@
 
 					<div class="row">
 						<div class="col-md-12 text-right">
-							<input class="btn btn-primary" name="submit" type="submit" value="Submit" id="submit">
+							<input class="btn btn-primary" name="reset" type="submit" value="<?= _('Reset Default') ?>" id="reset">
+							<input class="btn btn-primary" name="submit" type="submit" value="<?= _('Save Changes') ?>" id="submit">
 						</div>
 					</div>
 					</form>

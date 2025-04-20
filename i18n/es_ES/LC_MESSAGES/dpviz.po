@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-20 20:34+0200\n"
-"PO-Revision-Date: 2025-04-20 21:32+0200\n"
+"POT-Creation-Date: 2025-04-20 23:11+0200\n"
+"PO-Revision-Date: 2025-04-20 23:12+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -13,24 +13,24 @@ msgstr ""
 "X-Generator: Poedit 3.6\n"
 "X-Poedit-Basepath: .\n"
 
-#: Dpviz.class.php:173
+#: Dpviz.class.php:214
 msgid "Please select a dialplan to visualize."
 msgstr "Seleccione un plan de marcación para visualizarlo."
 
-#: Dpviz.class.php:187
+#: Dpviz.class.php:228
 #, php-format
 msgid "Unknown page: %s"
 msgstr "Página desconocida: %s"
 
-#: Dpviz.class.php:250
+#: Dpviz.class.php:291
 msgid "Unknown command"
 msgstr "Comando desconocido"
 
-#: Dpviz.class.php:271
+#: Dpviz.class.php:312
 msgid "Failed to fetch release info."
 msgstr ""
 
-#: Dpviz.class.php:277
+#: Dpviz.class.php:318
 msgid "Invalid response from GitHub."
 msgstr "Respuesta no válida de GitHub."
 
@@ -346,7 +346,7 @@ msgstr "No se permite el acceso directo a los scripts"
 
 #: views/page.main.php:5
 msgid "Dial Plan Vizualizer"
-msgstr "Visualizador del plan de marcación"
+msgstr "Visualizador del Plan de Marcación"
 
 #: views/rnav.php:31
 msgid "DID / CID"
@@ -473,47 +473,47 @@ msgstr "Utiliza la rueda del ratón para acercar y alejar la imagen."
 msgid "Check for Updates"
 msgstr "Comprobar si hay actualizaciones"
 
-#: views/view.options.php:54
+#: views/view.options.php:55
 msgid "Date & Time Stamp"
 msgstr "Sello de fecha y hora"
 
-#: views/view.options.php:59 views/view.options.php:86
-#: views/view.options.php:113 views/view.options.php:140
-#: views/view.options.php:167 views/view.options.php:194
+#: views/view.options.php:60 views/view.options.php:87
+#: views/view.options.php:114 views/view.options.php:141
+#: views/view.options.php:168 views/view.options.php:195
 msgid "Yes"
 msgstr "Sí"
 
-#: views/view.options.php:61 views/view.options.php:88
-#: views/view.options.php:115 views/view.options.php:142
-#: views/view.options.php:169 views/view.options.php:196
+#: views/view.options.php:62 views/view.options.php:89
+#: views/view.options.php:116 views/view.options.php:143
+#: views/view.options.php:170 views/view.options.php:197
 msgid "No"
 msgstr "No"
 
-#: views/view.options.php:69
+#: views/view.options.php:70
 msgid "Displays the date and time on the graph."
 msgstr "Muestra la fecha y la hora en el gráfico."
 
-#: views/view.options.php:81
+#: views/view.options.php:82
 msgid "Export as High-Resolution PNG"
 msgstr "Exportar como PNG de alta resolución"
 
-#: views/view.options.php:96
+#: views/view.options.php:97
 msgid "Increases PNG resolution during export."
 msgstr "Aumenta la resolución PNG durante la exportación."
 
-#: views/view.options.php:108
+#: views/view.options.php:109
 msgid "Horizontal Layout"
 msgstr "Diseño horizontal"
 
-#: views/view.options.php:123
+#: views/view.options.php:124
 msgid "Displays the dial plan in a horizontal layout."
 msgstr "Muestra el plan de marcación en formato horizontal."
 
-#: views/view.options.php:135
+#: views/view.options.php:136
 msgid "Pan & Zoom"
 msgstr "Panorámica y zoom"
 
-#: views/view.options.php:150
+#: views/view.options.php:151
 msgid ""
 "Allows you to use pan and zoom functions. Click and hold to pan, and use the "
 "mouse wheel to zoom."
@@ -521,11 +521,11 @@ msgstr ""
 "Permite utilizar las funciones de panorámica y zoom. Mantenga pulsado para "
 "desplazarse y utilice la rueda del ratón para hacer zoom."
 
-#: views/view.options.php:162
+#: views/view.options.php:163
 msgid "Show Destination Column"
 msgstr "Mostrar columna de destino"
 
-#: views/view.options.php:177
+#: views/view.options.php:178
 msgid ""
 "Displays the destination column for each inbound route. May impact "
 "performance with a large number of inbound routes."
@@ -533,11 +533,19 @@ msgstr ""
 "Muestra la columna de destino para cada ruta entrante. Puede afectar al "
 "rendimiento con un gran número de rutas entrantes."
 
-#: views/view.options.php:189
+#: views/view.options.php:190
 msgid "Show Dynamic Members for Queues"
 msgstr "Mostrar miembros dinámicos para colas"
 
-#: views/view.options.php:204
+#: views/view.options.php:205
 msgid "Displays the list of dynamic agents currently assigned to the queues."
 msgstr ""
 "Muestra la lista de agentes dinámicos asignados actualmente a las colas."
+
+#: views/view.options.php:213
+msgid "Reset Default"
+msgstr "Restablecer a valores por defecto"
+
+#: views/view.options.php:214
+msgid "Save Changes"
+msgstr "Guardar Cambios"
