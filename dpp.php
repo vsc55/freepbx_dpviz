@@ -282,7 +282,7 @@ class dpp {
      * @param string $text The text to sanitize.
      * @return string The sanitized text.
      */
-	public function sanitizeLabels(string $text) : string
+	public function sanitizeLabels(?string $text) : string
 	{
 		if ($text === null) {
 			$text = '';

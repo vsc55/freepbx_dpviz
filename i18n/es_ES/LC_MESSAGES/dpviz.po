@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-20 23:11+0200\n"
-"PO-Revision-Date: 2025-04-20 23:12+0200\n"
+"POT-Creation-Date: 2025-04-21 20:54+0200\n"
+"PO-Revision-Date: 2025-04-21 20:56+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -13,24 +13,42 @@ msgstr ""
 "X-Generator: Poedit 3.6\n"
 "X-Poedit-Basepath: .\n"
 
-#: Dpviz.class.php:214
-msgid "Please select a dialplan to visualize."
-msgstr "Seleccione un plan de marcación para visualizarlo."
-
-#: Dpviz.class.php:228
+#: Dpviz.class.php:229
 #, php-format
-msgid "Unknown page: %s"
-msgstr "Página desconocida: %s"
+msgid "❌Unknown page: %s"
+msgstr "❌Página desconocida: %s"
 
-#: Dpviz.class.php:291
-msgid "Unknown command"
-msgstr "Comando desconocido"
+#: Dpviz.class.php:279
+msgid "✔ Settings saved successfully"
+msgstr "✔ Configuración guardados correctamente"
 
-#: Dpviz.class.php:312
+#: Dpviz.class.php:286
+msgid "❌ Failed to save settings"
+msgstr "❌ No se ha podido guardar la configuración"
+
+#: Dpviz.class.php:296
+msgid "✔ Settings reset to default values"
+msgstr "✔ Configuración restablecida a los valores predeterminados"
+
+#: Dpviz.class.php:325
+#, php-format
+msgid "✔ You are using the latest version: %s"
+msgstr "✔ Está utilizando la última versión: %s"
+
+#: Dpviz.class.php:329
+#, php-format
+msgid "⚠ A new version is available: %s, current version: %s"
+msgstr "⚠ Una nueva versión está disponible: %s, versión actual: %s"
+
+#: Dpviz.class.php:335
+msgid "❌ Unknown command"
+msgstr "❌ Comando desconocido"
+
+#: Dpviz.class.php:356
 msgid "Failed to fetch release info."
 msgstr ""
 
-#: Dpviz.class.php:318
+#: Dpviz.class.php:362
 msgid "Invalid response from GitHub."
 msgstr "Respuesta no válida de GitHub."
 
@@ -339,67 +357,67 @@ msgstr "Cust Dest: %s\\nDestino: %s\\l"
 msgid "unassigned"
 msgstr "no asignado"
 
-#: views/page.main.php:1 views/rnav.php:2 views/view.dialplan.php:2
+#: views/page.main.php:1 views/rnav.php:2 views/view.dialplan.err.route.php:1
+#: views/view.dialplan.php:2 views/view.dialplan.select.null.php:1
 #: views/view.options.php:1
 msgid "No direct script access allowed"
 msgstr "No se permite el acceso directo a los scripts"
 
-#: views/page.main.php:5
+#: views/page.main.php:4
 msgid "Dial Plan Vizualizer"
 msgstr "Visualizador del Plan de Marcación"
 
-#: views/rnav.php:31
+#: views/page.main.php:13
+msgid "Dial Plan"
+msgstr "Plan de Marcación"
+
+#: views/page.main.php:18
+msgid "Settings"
+msgstr "Configurar"
+
+#: views/rnav.php:18
 msgid "DID / CID"
 msgstr "DID / CID"
 
-#: views/rnav.php:32
+#: views/rnav.php:19
 msgid "Description"
 msgstr "Descripción"
 
-#: views/rnav.php:34
+#: views/rnav.php:20
 msgid "Destination"
 msgstr "Destino"
 
-#: views/view.dialplan.php:7
+#: views/view.dialplan.err.route.php:16 views/view.dialplan.php:15
 #, php-format
 msgid "Error: Could not find inbound route for '%s'"
 msgstr "Error: No se pudo encontrar la ruta de entrada para '%s'"
 
-#: views/view.dialplan.php:28
-msgid "Reload Page"
-msgstr "Recargar página"
-
-#: views/view.dialplan.php:29
+#: views/view.dialplan.err.route.php:17
 #, php-format
-msgid "Export as %s"
-msgstr "Exportar como %s"
+msgid ""
+"The system was unable to locate a matching inbound route for the specified "
+"destination: '%s'. This may indicate that the route has been deleted, is "
+"misconfigured, or that the call is being directed to a non-existent or "
+"unregistered pattern. Please verify the inbound route settings and ensure "
+"that the destination is correctly defined within your Dial Plan "
+"configuration."
+msgstr ""
+"El sistema no ha podido localizar una ruta entrante que coincida con el "
+"destino especificado: '%s'. Esto puede deberse a que la ruta ha sido "
+"eliminada, está mal configurada o la llamada se está dirigiendo a un patrón "
+"inexistente o no registrado. Por favor, verifique la configuración de las "
+"rutas entrantes y asegúrese de que el destino esté correctamente definido "
+"dentro de su Plan de Marcado."
 
-#: views/view.dialplan.php:30
-msgid "Highlight Paths"
-msgstr "Resaltar rutas"
-
-#: views/view.dialplan.php:34
-#, php-format
-msgid "Dial Plan For Inbound Route %s%s:%s"
-msgstr "Plan de marcación para la ruta de entrada %s%s:%s"
-
-#: views/view.options.php:5
-msgid "Options"
-msgstr "Opciones"
-
-#: views/view.options.php:5
-msgid "(Click to Expand)"
-msgstr "(Haga clic para ampliar)"
-
-#: views/view.options.php:14
+#: views/view.dialplan.php:46
 msgid "Navigation and usage"
 msgstr "Navegación y uso"
 
-#: views/view.options.php:20
+#: views/view.dialplan.php:52
 msgid "Redraw from a Node:"
 msgstr "Redibujar desde un Nodo:"
 
-#: views/view.options.php:20
+#: views/view.dialplan.php:52
 msgid ""
 "Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a "
 "node to make it the new starting point in the diagram. To revert, "
@@ -410,11 +428,11 @@ msgstr ""
 "diagrama. Para revertir, <strong>Ctrl/Cmd + clic izquierdo en</strong> el "
 "nodo padre."
 
-#: views/view.options.php:21
+#: views/view.dialplan.php:53
 msgid "Highlight Paths:"
 msgstr "Resaltar rutas:"
 
-#: views/view.options.php:21
+#: views/view.dialplan.php:53
 msgid ""
 "Click <strong>Highlight Paths</strong>, then select a node or edge (links "
 "are inactive). Click <strong>Remove Highlights</strong> to clear."
@@ -423,27 +441,27 @@ msgstr ""
 "un nodo o arista (los enlaces están inactivos). Haga clic en "
 "<strong>Eliminar resaltados</strong> para borrar."
 
-#: views/view.options.php:22
+#: views/view.dialplan.php:54
 msgid "Hover:"
 msgstr ""
 
-#: views/view.options.php:22
+#: views/view.dialplan.php:54
 msgid "Hover over a path to highlight between destinations."
 msgstr "Pase el ratón por encima de una ruta para resaltar entre los destinos."
 
-#: views/view.options.php:23
+#: views/view.dialplan.php:55
 msgid "Open Destinations:"
 msgstr "Destinos abiertos:"
 
-#: views/view.options.php:23
+#: views/view.dialplan.php:55
 msgid "Click a destination to open it in a new tab."
 msgstr "Haga clic en un destino para abrirlo en una nueva pestaña."
 
-#: views/view.options.php:24
+#: views/view.dialplan.php:56
 msgid "Open Time Groups:"
 msgstr "Grupos de Tiempo Abierto:"
 
-#: views/view.options.php:24
+#: views/view.dialplan.php:56
 msgid ""
 "Click on a \"<strong>Match: (timegroup)</strong>\" or \"<strong>NoMatch</"
 "strong>\" to open in a new tab."
@@ -451,69 +469,108 @@ msgstr ""
 "Haga clic en<strong>\"Match: (timegroup)</strong>\" o<strong>\"NoMatch</"
 "strong>\" para abrir en una nueva pestaña."
 
-#: views/view.options.php:25
+#: views/view.dialplan.php:57
 msgid "Pan:"
 msgstr "Pan:"
 
-#: views/view.options.php:25
+#: views/view.dialplan.php:57
 msgid "Hold the left mouse button and drag to move the view."
 msgstr ""
 "Mantenga pulsado el botón izquierdo del ratón y arrástrelo para mover la "
 "vista."
 
-#: views/view.options.php:26
+#: views/view.dialplan.php:58
 msgid "Zoom:"
 msgstr "Zoom:"
 
-#: views/view.options.php:26
+#: views/view.dialplan.php:58
 msgid "Use the mouse wheel to zoom in and out."
 msgstr "Utiliza la rueda del ratón para acercar y alejar la imagen."
 
-#: views/view.options.php:37
+#: views/view.dialplan.php:65
+msgid "Reload Page"
+msgstr "Recargar página"
+
+#: views/view.dialplan.php:66
+#, php-format
+msgid "Export as %s"
+msgstr "Exportar como %s"
+
+#: views/view.dialplan.php:67
+msgid "Highlight Paths"
+msgstr "Resaltar rutas"
+
+#: views/view.dialplan.php:71
+#, php-format
+msgid "Dial Plan For Inbound Route %s%s:%s"
+msgstr "Plan de marcación para la ruta de entrada %s%s:%s"
+
+#: views/view.dialplan.select.null.php:16
+msgid "No Dial Plan has been selected for display!"
+msgstr ""
+"Actualmente no se ha seleccionado ningún Plan de Marcado para su "
+"visualización!"
+
+#: views/view.dialplan.select.null.php:17
+msgid ""
+"In order to generate and view the corresponding call flow, please select a "
+"Dial Plan from the available menu. Once selected, the detailed call flow "
+"information will load automatically, allowing you to review and analyze the "
+"call routing configuration associated with that plan. This selection is "
+"required to proceed with inspecting or editing the call flow."
+msgstr ""
+"Para poder generar y mostrar el flujo de llamada correspondiente, es "
+"necesario que seleccione un Plan de Marcado desde el menú disponible. Una "
+"vez realizado este paso, se cargará automáticamente la información detallada "
+"del flujo asociado, permitiéndole revisar y analizar la configuración del "
+"enrutamiento de llamadas para dicho plan. Esta selección es imprescindible "
+"para continuar con la inspección o edición del flujo de llamadas."
+
+#: views/view.options.php:14
 msgid "Check for Updates"
 msgstr "Comprobar si hay actualizaciones"
 
-#: views/view.options.php:55
+#: views/view.options.php:33
 msgid "Date & Time Stamp"
 msgstr "Sello de fecha y hora"
 
-#: views/view.options.php:60 views/view.options.php:87
-#: views/view.options.php:114 views/view.options.php:141
-#: views/view.options.php:168 views/view.options.php:195
+#: views/view.options.php:38 views/view.options.php:66
+#: views/view.options.php:94 views/view.options.php:122
+#: views/view.options.php:150
 msgid "Yes"
 msgstr "Sí"
 
-#: views/view.options.php:62 views/view.options.php:89
-#: views/view.options.php:116 views/view.options.php:143
-#: views/view.options.php:170 views/view.options.php:197
+#: views/view.options.php:40 views/view.options.php:68
+#: views/view.options.php:96 views/view.options.php:124
+#: views/view.options.php:152
 msgid "No"
 msgstr "No"
 
-#: views/view.options.php:70
+#: views/view.options.php:48
 msgid "Displays the date and time on the graph."
 msgstr "Muestra la fecha y la hora en el gráfico."
 
-#: views/view.options.php:82
+#: views/view.options.php:61
 msgid "Export as High-Resolution PNG"
 msgstr "Exportar como PNG de alta resolución"
 
-#: views/view.options.php:97
+#: views/view.options.php:76
 msgid "Increases PNG resolution during export."
 msgstr "Aumenta la resolución PNG durante la exportación."
 
-#: views/view.options.php:109
+#: views/view.options.php:89
 msgid "Horizontal Layout"
 msgstr "Diseño horizontal"
 
-#: views/view.options.php:124
+#: views/view.options.php:104
 msgid "Displays the dial plan in a horizontal layout."
 msgstr "Muestra el plan de marcación en formato horizontal."
 
-#: views/view.options.php:136
+#: views/view.options.php:117
 msgid "Pan & Zoom"
 msgstr "Panorámica y zoom"
 
-#: views/view.options.php:151
+#: views/view.options.php:132
 msgid ""
 "Allows you to use pan and zoom functions. Click and hold to pan, and use the "
 "mouse wheel to zoom."
@@ -521,31 +578,45 @@ msgstr ""
 "Permite utilizar las funciones de panorámica y zoom. Mantenga pulsado para "
 "desplazarse y utilice la rueda del ratón para hacer zoom."
 
-#: views/view.options.php:163
-msgid "Show Destination Column"
-msgstr "Mostrar columna de destino"
-
-#: views/view.options.php:178
-msgid ""
-"Displays the destination column for each inbound route. May impact "
-"performance with a large number of inbound routes."
-msgstr ""
-"Muestra la columna de destino para cada ruta entrante. Puede afectar al "
-"rendimiento con un gran número de rutas entrantes."
-
-#: views/view.options.php:190
+#: views/view.options.php:145
 msgid "Show Dynamic Members for Queues"
 msgstr "Mostrar miembros dinámicos para colas"
 
-#: views/view.options.php:205
+#: views/view.options.php:160
 msgid "Displays the list of dynamic agents currently assigned to the queues."
 msgstr ""
 "Muestra la lista de agentes dinámicos asignados actualmente a las colas."
 
-#: views/view.options.php:213
+#: views/view.options.php:173
+msgid "Save Changes"
+msgstr "Guardar Cambios"
+
+#: views/view.options.php:177
 msgid "Reset Default"
 msgstr "Restablecer a valores por defecto"
 
-#: views/view.options.php:214
-msgid "Save Changes"
-msgstr "Guardar Cambios"
+#~ msgid "Error!"
+#~ msgstr "Error!"
+
+#, php-format
+#~ msgid "Could not find inbound route for '%s'"
+#~ msgstr "No se pudo encontrar la ruta de entrada para '%s'"
+
+#~ msgid "Please select a dialplan to visualize."
+#~ msgstr "Seleccione un plan de marcación para visualizarlo."
+
+#~ msgid "Options"
+#~ msgstr "Opciones"
+
+#~ msgid "(Click to Expand)"
+#~ msgstr "(Haga clic para ampliar)"
+
+#~ msgid "Show Destination Column"
+#~ msgstr "Mostrar columna de destino"
+
+#~ msgid ""
+#~ "Displays the destination column for each inbound route. May impact "
+#~ "performance with a large number of inbound routes."
+#~ msgstr ""
+#~ "Muestra la columna de destino para cada ruta entrante. Puede afectar al "
+#~ "rendimiento con un gran número de rutas entrantes."

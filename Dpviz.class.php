@@ -15,13 +15,10 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
 	public $dpp = null;
 
-	Const TABLE_NAME = 'dpviz';
-
 	Const default_setting = [
 		'panzoom'	  => 1,
 		'horizontal'  => 0,
 		'datetime'	  => 1,
-		'destination' => 1,
 		'scale'		  => 1,
 		'dynmembers'  => 0
 	];
@@ -174,7 +171,6 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 			'request' 	 => $request,
 			'page' 	  	 => $page ?? '',
 			'setting' 	 => $setting,
-			// 'options' 	 => $options,
 			'extdisplay' => $request['extdisplay'] ?? '',
 			'cid' 		 => $request['cid'] ?? '',
 		);
@@ -192,7 +188,6 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				$data['datetime'] 			= $setting['datetime'];
 				$data['horizontal'] 		= $setting['horizontal'];
 				$data['panzoom'] 			= $setting['panzoom'];
-				$data['destinationColumn'] 	= $setting['destination'];
 				$data['scale'] 				= $setting['scale'];
 				$data['dynmembers'] 		= $setting['dynmembers'];
 				$data['direction'] 			= $setting['direction'];
@@ -202,30 +197,50 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				break;
 
 			case 'dialplan':
-				$data['iroute'] 	= sprintf("%s%s", $data['extdisplay'], $data['cid']);
-				$data['datetime'] 	= $setting['datetime'];
-				$data['scale'] 		= $setting['scale'];
-				$data['panzoom'] 	= $setting['panzoom'];
-				$data['direction'] 	= $setting['direction'];
+				$data['iroute'] 	  = sprintf("%s%s", $data['extdisplay'], $data['cid']);
+				$data['isExistRoute'] = $this->dpp->isExistRoute($data['iroute']);
 
 				if (!isset($_GET['extdisplay']))
 				{
-					//TODO: Add a message to the user or load view.
-					$data_return = _("Please select a dialplan to visualize.");
+					$data_return = load_view(__DIR__."/views/view.dialplan.select.null.php", $data);
 				}
-				else 
+				else if (! $data['isExistRoute'])
 				{
+					$data_return = load_view(__DIR__."/views/view.dialplan.err.route.php", $data);
+				}
+				else
+				{
+					$data['datetime'] 	= $setting['datetime'];
+					$data['scale'] 		= $setting['scale'];
+					$data['panzoom'] 	= $setting['panzoom'];
+					$data['direction'] 	= $setting['direction'];
+
 					$this->dpp->setDirection($data['direction']);
 
 					$data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
 					$data['filename'] 		  = ($data['iroute'] == '') ? 'ANY.png' : sprintf("%s.png", $data['iroute']);
 					$data['isExistRoute'] 	  = $this->dpp->isExistRoute($data['iroute']);
+
+					if (is_numeric($data['extdisplay']) && (strlen($data['extdisplay'])==10 || strlen($data['extdisplay'])==11))
+					{
+						$data['number'] = $this->dpp->formatPhoneNumbers($data['extdisplay']);
+					}
+					else
+					{
+						$data['number'] = $data['extdisplay'];
+					}
+
+					$gtext = $this->dpp->render($data['iroute'], $data['clickedNodeTitle']);
+					$this->dpp->log(5, sprintf("Dial Plan Graph for %s %s:\n%s", $data['extdisplay'], $data['cid'], $gtext));
+					$gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);  // ugh, apparently viz chokes on newlines, wtf?
+					$data['gtext'] = $gtext;
+
 					$data_return = load_view(__DIR__."/views/view.dialplan.php", $data);
 				}
 				break;
 
 			default:
-				$data_return = sprintf(_("Unknown page: %s"), $page);
+				$data_return = sprintf(_("❌Unknown page: %s"), $page);
 				break;
 		}
 		return $data_return;
@@ -234,13 +249,8 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 	public function getRightNav($request, $params = array())
 	{
 		$data = array(
-		 	"dpviz"   			=> $this,
-		 	"request" 			=> $request,
-			'setting' 			=> $this->getSettingAll(),
-		 	"display" 			=> strtolower(trim($request['display'] ?? '')),
-		 	'destinationColumn' => $this->getSetting('destination') == 1 ? true : false,
-		 	'destinations' 		=> $this->freepbx->Modules->getDestinations(),
-			'extdisplay' 		=> $request['extdisplay'] ?? null,
+			'request'  => $request,
+			'url_ajax' => 'ajax.php?module=core&amp;command=getJSON&amp;jdata=allDID'
 		);
 		$data = array_merge($data, $params);
 		return load_view(__DIR__.'/views/rnav.php', $data);
@@ -248,7 +258,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 		
 	public function ajaxRequest($req, &$setting)
 	{
-		// ** Allow remote consultation with Postman **
+		// ** Allow remote consultation with Postman, debugging, etc. **
 		// ********************************************
 		// $setting['authenticate'] = false;
 		// $setting['allowremote'] = true;
@@ -256,6 +266,9 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 		// ********************************************
 		switch ($req)
 		{
+			case 'reset_setting_default':
+			case 'save_settings':
+			case 'get_destinations':
 			case 'check_update':
 				return true;
 				break;
@@ -265,10 +278,47 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
 	public function ajaxHandler()
 	{
-		$command = $this->getReq("command", "");
+		$request = freepbxGetSanitizedRequest();
+		$command = $request['command'] ?? '';
 		$data_return = false;
 		switch ($command)
 		{
+			case 'save_settings':
+
+				$new_setting = $request['data'] ?? [];
+				if ($this->setSettingAll($new_setting))
+				{
+					$data_return = [
+						'status' => 'success',
+						'message' => _('✔ Settings saved successfully')
+					];
+				}
+				else
+				{
+					$data_return = [
+						'status' => 'error',
+						'message' => _('❌ Failed to save settings')
+					];
+				}
+				break;
+
+			case 'reset_setting_default':
+				// Reset the settings to default values
+				$this->resetSetting();
+				$data_return = [
+					'status' => "success",
+					'message' => _('✔ Settings reset to default values')
+				];
+				break;
+
+			case 'get_destinations':
+				$data_return = [
+					'status' => 'success',
+					'message' => '',
+					'destinations' => $this->freepbx->Modules->getDestinations()
+				];
+				break;
+
 			case 'check_update':
 				// Call the function to check for updates
 				$result = $this->checkForGitHubUpdate();
@@ -284,11 +334,19 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 						'latest'  	 => $result['latest'],
 						'up_to_date' => $result['up_to_date'],
 					];
+					if ($result['up_to_date'])
+					{
+						$data_return['message'] = sprintf(_('✔ You are using the latest version: %s'), $result['current']);
+					}
+					else
+					{
+						$data_return['message'] = sprintf(_('⚠ A new version is available: %s, current version: %s'), $result['latest'], $result['current']);
+					}
 				}
 				break;
 
 			default:
-				$data_return = ['status' => 'error', 'message' => _('Unknown command')];
+				$data_return = ['status' => 'error', 'message' => _('❌ Unknown command')];
 		}
 		return $data_return;
 	}

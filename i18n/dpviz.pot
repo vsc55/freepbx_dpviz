@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-20 23:11+0200\n"
+"POT-Creation-Date: 2025-04-21 20:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,24 +24,42 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-1: i18n\n"
 "X-Poedit-SearchPathExcluded-2: assets\n"
 
-#: Dpviz.class.php:214
-msgid "Please select a dialplan to visualize."
-msgstr ""
-
-#: Dpviz.class.php:228
+#: Dpviz.class.php:229
 #, php-format
-msgid "Unknown page: %s"
+msgid "❌Unknown page: %s"
 msgstr ""
 
-#: Dpviz.class.php:291
-msgid "Unknown command"
+#: Dpviz.class.php:279
+msgid "✔ Settings saved successfully"
 msgstr ""
 
-#: Dpviz.class.php:312
+#: Dpviz.class.php:286
+msgid "❌ Failed to save settings"
+msgstr ""
+
+#: Dpviz.class.php:296
+msgid "✔ Settings reset to default values"
+msgstr ""
+
+#: Dpviz.class.php:325
+#, php-format
+msgid "✔ You are using the latest version: %s"
+msgstr ""
+
+#: Dpviz.class.php:329
+#, php-format
+msgid "⚠ A new version is available: %s, current version: %s"
+msgstr ""
+
+#: Dpviz.class.php:335
+msgid "❌ Unknown command"
+msgstr ""
+
+#: Dpviz.class.php:356
 msgid "Failed to fetch release info."
 msgstr ""
 
-#: Dpviz.class.php:318
+#: Dpviz.class.php:362
 msgid "Invalid response from GitHub."
 msgstr ""
 
@@ -350,197 +368,212 @@ msgstr ""
 msgid "unassigned"
 msgstr ""
 
-#: views/page.main.php:1 views/rnav.php:2 views/view.dialplan.php:2
+#: views/page.main.php:1 views/rnav.php:2 views/view.dialplan.err.route.php:1
+#: views/view.dialplan.php:2 views/view.dialplan.select.null.php:1
 #: views/view.options.php:1
 msgid "No direct script access allowed"
 msgstr ""
 
-#: views/page.main.php:5
+#: views/page.main.php:4
 msgid "Dial Plan Vizualizer"
 msgstr ""
 
-#: views/rnav.php:31
+#: views/page.main.php:13
+msgid "Dial Plan"
+msgstr ""
+
+#: views/page.main.php:18
+msgid "Settings"
+msgstr ""
+
+#: views/rnav.php:18
 msgid "DID / CID"
 msgstr ""
 
-#: views/rnav.php:32
+#: views/rnav.php:19
 msgid "Description"
 msgstr ""
 
-#: views/rnav.php:34
+#: views/rnav.php:20
 msgid "Destination"
 msgstr ""
 
-#: views/view.dialplan.php:7
+#: views/view.dialplan.err.route.php:16 views/view.dialplan.php:15
 #, php-format
 msgid "Error: Could not find inbound route for '%s'"
 msgstr ""
 
-#: views/view.dialplan.php:28
-msgid "Reload Page"
-msgstr ""
-
-#: views/view.dialplan.php:29
+#: views/view.dialplan.err.route.php:17
 #, php-format
-msgid "Export as %s"
+msgid ""
+"The system was unable to locate a matching inbound route for the specified "
+"destination: '%s'. This may indicate that the route has been deleted, is "
+"misconfigured, or that the call is being directed to a non-existent or "
+"unregistered pattern. Please verify the inbound route settings and ensure "
+"that the destination is correctly defined within your Dial Plan "
+"configuration."
 msgstr ""
 
-#: views/view.dialplan.php:30
-msgid "Highlight Paths"
-msgstr ""
-
-#: views/view.dialplan.php:34
-#, php-format
-msgid "Dial Plan For Inbound Route %s%s:%s"
-msgstr ""
-
-#: views/view.options.php:5
-msgid "Options"
-msgstr ""
-
-#: views/view.options.php:5
-msgid "(Click to Expand)"
-msgstr ""
-
-#: views/view.options.php:14
+#: views/view.dialplan.php:46
 msgid "Navigation and usage"
 msgstr ""
 
-#: views/view.options.php:20
+#: views/view.dialplan.php:52
 msgid "Redraw from a Node:"
 msgstr ""
 
-#: views/view.options.php:20
+#: views/view.dialplan.php:52
 msgid ""
 "Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a "
 "node to make it the new starting point in the diagram. To revert, "
 "<strong>Ctrl/Cmd + left-click</strong> the parent node."
 msgstr ""
 
-#: views/view.options.php:21
+#: views/view.dialplan.php:53
 msgid "Highlight Paths:"
 msgstr ""
 
-#: views/view.options.php:21
+#: views/view.dialplan.php:53
 msgid ""
 "Click <strong>Highlight Paths</strong>, then select a node or edge (links "
 "are inactive). Click <strong>Remove Highlights</strong> to clear."
 msgstr ""
 
-#: views/view.options.php:22
+#: views/view.dialplan.php:54
 msgid "Hover:"
 msgstr ""
 
-#: views/view.options.php:22
+#: views/view.dialplan.php:54
 msgid "Hover over a path to highlight between destinations."
 msgstr ""
 
-#: views/view.options.php:23
+#: views/view.dialplan.php:55
 msgid "Open Destinations:"
 msgstr ""
 
-#: views/view.options.php:23
+#: views/view.dialplan.php:55
 msgid "Click a destination to open it in a new tab."
 msgstr ""
 
-#: views/view.options.php:24
+#: views/view.dialplan.php:56
 msgid "Open Time Groups:"
 msgstr ""
 
-#: views/view.options.php:24
+#: views/view.dialplan.php:56
 msgid ""
 "Click on a \"<strong>Match: (timegroup)</strong>\" or \"<strong>NoMatch</"
 "strong>\" to open in a new tab."
 msgstr ""
 
-#: views/view.options.php:25
+#: views/view.dialplan.php:57
 msgid "Pan:"
 msgstr ""
 
-#: views/view.options.php:25
+#: views/view.dialplan.php:57
 msgid "Hold the left mouse button and drag to move the view."
 msgstr ""
 
-#: views/view.options.php:26
+#: views/view.dialplan.php:58
 msgid "Zoom:"
 msgstr ""
 
-#: views/view.options.php:26
+#: views/view.dialplan.php:58
 msgid "Use the mouse wheel to zoom in and out."
 msgstr ""
 
-#: views/view.options.php:37
+#: views/view.dialplan.php:65
+msgid "Reload Page"
+msgstr ""
+
+#: views/view.dialplan.php:66
+#, php-format
+msgid "Export as %s"
+msgstr ""
+
+#: views/view.dialplan.php:67
+msgid "Highlight Paths"
+msgstr ""
+
+#: views/view.dialplan.php:71
+#, php-format
+msgid "Dial Plan For Inbound Route %s%s:%s"
+msgstr ""
+
+#: views/view.dialplan.select.null.php:16
+msgid "No Dial Plan has been selected for display!"
+msgstr ""
+
+#: views/view.dialplan.select.null.php:17
+msgid ""
+"In order to generate and view the corresponding call flow, please select a "
+"Dial Plan from the available menu. Once selected, the detailed call flow "
+"information will load automatically, allowing you to review and analyze the "
+"call routing configuration associated with that plan. This selection is "
+"required to proceed with inspecting or editing the call flow."
+msgstr ""
+
+#: views/view.options.php:14
 msgid "Check for Updates"
 msgstr ""
 
-#: views/view.options.php:55
+#: views/view.options.php:33
 msgid "Date & Time Stamp"
 msgstr ""
 
-#: views/view.options.php:60 views/view.options.php:87
-#: views/view.options.php:114 views/view.options.php:141
-#: views/view.options.php:168 views/view.options.php:195
+#: views/view.options.php:38 views/view.options.php:66
+#: views/view.options.php:94 views/view.options.php:122
+#: views/view.options.php:150
 msgid "Yes"
 msgstr ""
 
-#: views/view.options.php:62 views/view.options.php:89
-#: views/view.options.php:116 views/view.options.php:143
-#: views/view.options.php:170 views/view.options.php:197
+#: views/view.options.php:40 views/view.options.php:68
+#: views/view.options.php:96 views/view.options.php:124
+#: views/view.options.php:152
 msgid "No"
 msgstr ""
 
-#: views/view.options.php:70
+#: views/view.options.php:48
 msgid "Displays the date and time on the graph."
 msgstr ""
 
-#: views/view.options.php:82
+#: views/view.options.php:61
 msgid "Export as High-Resolution PNG"
 msgstr ""
 
-#: views/view.options.php:97
+#: views/view.options.php:76
 msgid "Increases PNG resolution during export."
 msgstr ""
 
-#: views/view.options.php:109
+#: views/view.options.php:89
 msgid "Horizontal Layout"
 msgstr ""
 
-#: views/view.options.php:124
+#: views/view.options.php:104
 msgid "Displays the dial plan in a horizontal layout."
 msgstr ""
 
-#: views/view.options.php:136
+#: views/view.options.php:117
 msgid "Pan & Zoom"
 msgstr ""
 
-#: views/view.options.php:151
+#: views/view.options.php:132
 msgid ""
 "Allows you to use pan and zoom functions. Click and hold to pan, and use the "
 "mouse wheel to zoom."
 msgstr ""
 
-#: views/view.options.php:163
-msgid "Show Destination Column"
-msgstr ""
-
-#: views/view.options.php:178
-msgid ""
-"Displays the destination column for each inbound route. May impact "
-"performance with a large number of inbound routes."
-msgstr ""
-
-#: views/view.options.php:190
+#: views/view.options.php:145
 msgid "Show Dynamic Members for Queues"
 msgstr ""
 
-#: views/view.options.php:205
+#: views/view.options.php:160
 msgid "Displays the list of dynamic agents currently assigned to the queues."
 msgstr ""
 
-#: views/view.options.php:213
-msgid "Reset Default"
+#: views/view.options.php:173
+msgid "Save Changes"
 msgstr ""
 
-#: views/view.options.php:214
-msgid "Save Changes"
+#: views/view.options.php:177
+msgid "Reset Default"
 msgstr ""

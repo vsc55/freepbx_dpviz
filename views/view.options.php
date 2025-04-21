@@ -1,50 +1,28 @@
 <?php if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); } ?>
 
-<div class="panel panel-default fpbx-usageinfo">
-	<div class="panel-heading">
-		<a data-toggle="collapse" data-target="#collapseOne" onclick="toggleNavBar()"><?= _("Options") ?> <small><?= _("(Click to Expand)") ?></small></a>
-	</div>
-	<div id="collapseOne" class="panel-collapse collapse">
-		<div class="panel-body">
+<div class="display no-border">
+	<div class="row">
+		<div class="col-sm-12">
 			<div class="fpbx-container">
-				<div class="display full-border">
-					<div class="panel panel-info panel-help">
-						<div class="panel-heading collapsed" data-toggle="collapse" href="#panelId67f91e1a7403f" role="button" aria-expanded="false" aria-controls="panelId67f91e1a7403f">
-							<h3 class="panel-title">
-								<span class="pull-left"><i class="fa fa-info-circle fa-lg fa-fw"></i></span><?= _("Navigation and usage") ?><span class="pull-right"><i class="chevron fa fa-fw"></i></span>
-							</h3>
-						</div>
-						<div id="panelId67f91e1a7403f" class="panel-collapse collapse">
-							<div class="panel-body">
-								<ul class="list-unstyled">
-									<li><strong><?= _("Redraw from a Node:") ?></strong> <?= _("Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a node to make it the new starting point in the diagram. To revert, <strong>Ctrl/Cmd + left-click</strong> the parent node.") ?></li>
-									<li><strong><?= _("Highlight Paths:") ?></strong> <?= _("Click <strong>Highlight Paths</strong>, then select a node or edge (links are inactive). Click <strong>Remove Highlights</strong> to clear.") ?></li>
-									<li><strong><?= _("Hover:") ?></strong> <?= _("Hover over a path to highlight between destinations.") ?></li>
-									<li><strong><?= _("Open Destinations:") ?></strong> <?= _("Click a destination to open it in a new tab.") ?></li>
-									<li><strong><?= _("Open Time Groups:") ?></strong> <?= _("Click on a \"<strong>Match: (timegroup)</strong>\" or \"<strong>NoMatch</strong>\" to open in a new tab.") ?></li>
-									<li><strong><?= _("Pan:") ?></strong> <?= _("Hold the left mouse button and drag to move the view.") ?></li>
-									<li><strong><?= _("Zoom:") ?></strong> <?= _("Use the mouse wheel to zoom in and out.") ?></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<!--check for updates-->
-					<div class="element-container">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="row">
-									<div class="col-md-3">
-										<button id="check-update-btn" class="btn btn-default"><?= _("Check for Updates") ?></button>&nbsp;<a href="https://github.com/madgen78/dpviz/" target="_blank"><i class="fa fa-github"></i></a>
-									</div>
-									<div class="col-md-9">
-										<div id="update-result"></div>
-									</div>
+				
+				<!--check for updates-->
+				<div class="element-container">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+								<div class="col-md-3">
+									<button id="check-update-btn" class="btn btn-default"><i class="fa fa-github fa-lg"></i> <?= _("Check for Updates") ?></button>&nbsp;<a href="https://github.com/madgen78/dpviz/" target="_blank"></a>
+								</div>
+								<div class="col-md-9">
+									<div id="update-result"></div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<form class="fpbx-submit" name="editDpviz" action="?display=dpviz" method="post">
-					<input type="hidden" name="action" value="edit">
+				</div>
+				<!--END check for updates-->
+
+				<form class="fpbx-submit" name="editDpviz">
 					<!--datetime-->
 					<div class="element-container">
 						<div class="row">
@@ -72,6 +50,7 @@
 						</div>
 					</div>
 					<!--END datetime-->	
+
 					<!--Higher Resolution-->
 					<div class="element-container">
 						<div class="row">
@@ -99,6 +78,7 @@
 						</div>
 					</div>
 					<!--END Higher Resolution-->
+					
 					<!--horizontal-->
 					<div class="element-container">
 						<div class="row">
@@ -126,6 +106,7 @@
 						</div>
 					</div>
 					<!--END horizontal-->
+					
 					<!--panzoom-->
 					<div class="element-container">
 						<div class="row">
@@ -153,33 +134,7 @@
 						</div>
 					</div>
 					<!--END panzoom-->
-					<!--destination-->
-					<div class="element-container">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="row">
-									<div class="form-group">
-										<div class="col-md-3">
-											<label class="control-label" for="destination"><?= _("Show Destination Column") ?></label>
-											<i class="fa fa-question-circle fpbx-help-icon" data-for="destination"></i>
-										</div>
-										<div class="col-md-9 radioset">
-											<input type="radio" name="destination" id="destinationyes" value="1" <?= ($destinationColumn?"CHECKED":"") ?>>
-											<label for="destinationyes"><?= _("Yes");?></label>
-											<input type="radio" name="destination" id="destinationno" value="0" <?= ($destinationColumn?"":"CHECKED") ?>>
-											<label for="destinationno"><?= _("No");?></label>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<span id="destination-help" class="help-block fpbx-help-block"><?= _("Displays the destination column for each inbound route. May impact performance with a large number of inbound routes.")?></span>
-							</div>
-						</div>
-					</div>
-					<!--END destination-->
+					
 					<!--dynmembers-->
 					<div class="element-container">
 						<div class="row">
@@ -208,14 +163,25 @@
 					</div>
 					<!--END destination-->
 
+					
+					<!-- button submit -->
 					<div class="row">
 						<div class="col-md-12 text-right">
-							<input class="btn btn-primary" name="reset" type="submit" value="<?= _('Reset Default') ?>" id="reset">
-							<input class="btn btn-primary" name="submit" type="submit" value="<?= _('Save Changes') ?>" id="submit">
+							<div class="btn-group" role="group" aria-label="Actions">
+								<button type="button" class="btn btn-primary" name="submit" id="settings_submit">
+									<i class="fa fa-save me-2"></i>
+									<?= _('Save Changes') ?>
+								</button>
+								<button type="button" class="btn btn-danger" name="reset"  id="settings_reset">
+									<i class="fa fa-undo me-2"></i>
+									<?= _('Reset Default') ?>
+								</button>
+							</div>
 						</div>
 					</div>
-					</form>
-				</div>
+					<!-- END button submit -->
+
+				</form>
 			</div>
 		</div>
 	</div>
