@@ -973,14 +973,16 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 	
 		#preg_match not found
 	}else {
-		#custom destinations
-		foreach ($route['customapps'] as $entry) {
-			if ($entry['target'] === $destination) {
-				$custDest=$entry;
-				break;
+		if (!empty($route['customapps'])){
+			#custom destinations
+			foreach ($route['customapps'] as $entry) {
+				if ($entry['target'] === $destination) {
+					$custDest=$entry;
+					break;
+				}
 			}
+			#end of Custom Destinations
 		}
-		#end of Custom Destinations
 		
 		if (!empty($custDest)){
 			$custId=$entry['destid'];
