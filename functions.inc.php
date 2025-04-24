@@ -186,6 +186,8 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 		if (preg_match("/^( Match| No Match)/", $route['parent_edge_label'])) {
 			$edge->attribute('URL', $route['parent_edge_url']);
 			$edge->attribute('target', $route['parent_edge_target']);
+			$edge->attribute('labeltooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
+			$edge->attribute('edgetooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
 		}
 		if (preg_match("/^( IVR)./", $route['parent_edge_label'])){
 			$edge->attribute('style', 'dashed');
@@ -889,11 +891,32 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 			$tgLink = '/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum;
 			$tgTooltip= $tgLabel;
 		} elseif ($tc['mode'] === 'calendar-group') {
-			$cal= $route['calendar'][$tc['calendar_id']];
-			$tgLabel=$cal['name'];
-			$tgLink = '/admin/config.php?display=calendar&action=view&type=calendar&id='.$tc['calendar_id'];
-			$tgTooltip='Name= '.$cal['name'].'\\nDescription= '.$cal['description'].'\\nType= '.$cal['type'].'\\nTimezone= '.$cal['timezone'];
+			if (!empty($route['calendar'][$tc['calendar_id']])){
+				$cal= $route['calendar'][$tc['calendar_id']];
+				$tgLabel=$cal['name'];
+				$tgLink = '/admin/config.php?display=calendar&action=view&type=calendar&id='.$tc['calendar_id'];
+				$tgTooltip='Name= '.$cal['name'].'\\nDescription= '.$cal['description'].'\\nType= '.$cal['type'].'\\nTimezone= '.$cal['timezone'];
+				
+			}elseif (!empty($route['calendar'][$tc['calendar_group_id']])){
+				$cal= $route['calendar'][$tc['calendar_group_id']];
+				$tgLabel=$cal['name'];
+				$tgLink = '/admin/config.php?display=calendargroups&action=edit&id='.$tc['calendar_group_id'];
+				$calNames='Calendars= ';
+				if (!empty($cal['calendars'])){
+					foreach ($cal['calendars'] as $c){
+						$calNames.=$route['calendar'][$c]['name'].'\\n';
+					}
+				}
+				
+				$cats = !empty($cal['categories']) ? count($cal['categories']) : 'All';
+				$categories='Categories= '.$cats.' categories';
+				$eves = !empty($cal['events']) ? count($cal['events']) : 'All';
+				$events='Events= '.$eves.' events';
+				$expand = $cal['expand'] ? 'true' : 'false';
+				$tgTooltip='Name= '.$cal['name'].'\\n'.$calNames.'\\n'.$categories.'\\n'.$events.'\\nExpand= '.$expand;
+			}
 		}
+		
 		# Now set the current node to be the parent and recurse on both the true and false branches
     $route['parent_edge_label'] = ' Match:\\n'.sanitizeLabels($tgLabel);
     $route['parent_edge_url'] = htmlentities($tgLink);
@@ -1158,7 +1181,12 @@ function dpp_load_tables(&$dproute) {
 					$id=$calendar['key'];
 					$val=json_decode($calendar['val'],true);
 					$dproute['calendar'][$id] = $val;
-					dpplog(9, "featurecodes=$id");
+					dpplog(9, "calendar=$id");
+				}elseif ($calendar['id']=='groups'){
+					$id=$calendar['key'];
+					$val=json_decode($calendar['val'],true);
+					$dproute['calendar'][$id] = $val;
+					dpplog(9, "calendar=$id");
 				}
 			}
     }elseif ($table == 'kvstore_FreePBX_modules_Customappsreg') {
