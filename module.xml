@@ -2,7 +2,7 @@
   <rawname>dpviz</rawname>
   <repo>unsupported</repo>
   <name>Dial Plan Vizualizer</name>
-  <version>1.0.16</version>
+  <version>1.0.17</version>
   <publisher>AdamV</publisher>
   <license>GPLv3+</license>
   <licenselink>http://www.gnu.org/licenses/gpl-3.0.txt</licenselink>
@@ -20,9 +20,12 @@
 			<field name="destination" type="boolean" default="1"/>
 			<field name="scale" type="boolean" default="1"/>
 			<field name="dynmembers" type="boolean" default="1"/>
+			<field name="combineQueueRing" type="boolean" default="0"/>
+			<field name="extOptional" type="boolean" default="0"/>
 		</table>
   </database>
 	<changelog>
+		*1.0.17* Added calendar matching for time conditions. Added Queue Priorities.
 		*1.0.16* Updated for issues raised. Added Start from a node, Check for Updates button, support for ext-tts.
 		*1.0.15* Moved module to dpviz
 		*1.0.14* Updated for ANY route. Updated for E.164 format. Added Highlighting. 

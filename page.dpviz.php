@@ -29,6 +29,8 @@ $panzoom = isset($options[0]['panzoom']) ? $options[0]['panzoom'] : '0';
 $destinationColumn= isset($options[0]['destination']) ? $options[0]['destination'] : '0';
 $scale= isset($options[0]['scale']) ? $options[0]['scale'] : '1';
 $dynmembers= isset($options[0]['dynmembers']) ? $options[0]['dynmembers'] : '0';
+$combineQueueRing= isset($options[0]['combineQueueRing']) ? $options[0]['combineQueueRing'] : '0';
+$extOptional= isset($options[0]['extOptional']) ? $options[0]['extOptional'] : '0';
 $direction=($horizontal== 1) ? 'LR' : 'TB';
 $clickedNodeTitle= isset($_REQUEST['clickedNodeTitle']) ? $_REQUEST['clickedNodeTitle'] : '';
 

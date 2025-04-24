@@ -30,14 +30,16 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    public function editDpviz($panzoom, $horizontal, $datetime, $destination, $scale, $dynmembers) {
+    public function editDpviz($panzoom, $horizontal, $datetime, $destination, $scale, $dynmembers, $combineQueueRing, $extOptional) {
         $sql = "UPDATE dpviz SET
             `panzoom` = :panzoom,
             `horizontal` = :horizontal,
 						`datetime` = :datetime,
 						`destination` = :destination,
 						`scale` = :scale,
-						`dynmembers` = :dynmembers
+						`dynmembers` = :dynmembers,
+						`combineQueueRing` = :combineQueueRing,
+						`extOptional` = :extOptional
             WHERE `id` = 1";
         $insert = [
             ':panzoom' => $panzoom,
@@ -45,7 +47,9 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 						':datetime' => $datetime,
 						':destination' => $destination,
 						':scale' => $scale,
-						':dynmembers' => $dynmembers
+						':dynmembers' => $dynmembers,
+						':combineQueueRing' => $combineQueueRing,
+						':extOptional' => $extOptional
         ];
         $stmt = $this->db->prepare($sql);
         return $stmt->execute($insert);
@@ -60,10 +64,14 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				$destination = isset($request['destination']) ? $request['destination'] : '';
 				$scale = isset($request['scale']) ? $request['scale'] : '';
 				$dynmembers = isset($request['dynmembers']) ? $request['dynmembers'] : '';
+				$combineQueueRing = isset($request['combineQueueRing']) ? $request['combineQueueRing'] : '';
+				$extOptional = isset($request['extOptional']) ? $request['extOptional'] : '';
 				
         switch ($action) {
             case 'edit':
-                $this->editDpviz($panzoom, $horizontal, $datetime, $destination, $scale, $dynmembers);
+                $this->editDpviz($panzoom, $horizontal, $datetime, $destination, $scale, $dynmembers, $combineQueueRing, $extOptional);
+								header("Location: " . $_SERVER['HTTP_REFERER']);
+								exit;
                 break;
             default:
                 break;

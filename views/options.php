@@ -121,6 +121,33 @@
 						</div>
 					</div>
 					<!--END horizontal-->
+					<!--combineQueueRing node-->
+					<div class="element-container">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="form-group">
+										<div class="col-md-3">
+											<label class="control-label" for="combineQueueRing"><?php echo _("Combine Queue Agents and RG Members into one node") ?></label>
+											<i class="fa fa-question-circle fpbx-help-icon" data-for="combineQueueRing"></i>
+										</div>
+										<div class="col-md-9 radioset">
+											<input type="radio" name="combineQueueRing" id="combineQueueRingyes" value="1" <?php echo ($combineQueueRing?"CHECKED":"") ?>>
+											<label for="combineQueueRingyes"><?php echo _("Yes");?></label>
+											<input type="radio" name="combineQueueRing" id="combineQueueRingno" value="0" <?php echo ($combineQueueRing?"":"CHECKED") ?>>
+											<label for="combineQueueRingno"><?php echo _("No");?></label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<span id="combineQueueRing-help" class="help-block fpbx-help-block"><?php echo _("When an extension is part of both a queue and a ring group, it will be shown as a single node instead of two.")?></span>
+							</div>
+						</div>
+					</div>
+					<!--END combineQueueRing-->
 					<!--panzoom-->
 					<div class="element-container">
 						<div class="row">
@@ -201,7 +228,34 @@
 							</div>
 						</div>
 					</div>
-					<!--END destination-->
+					<!--END dynmembers-->
+					<!--extOptional-->
+					<div class="element-container">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="form-group">
+										<div class="col-md-3">
+											<label class="control-label" for="dynmembers"><?php echo _("Show Extension Optional Destinations") ?></label>
+											<i class="fa fa-question-circle fpbx-help-icon" data-for="extOptional"></i>
+										</div>
+										<div class="col-md-9 radioset">
+											<input type="radio" name="extOptional" id="extOptionalyes" value="1" <?php echo ($extOptional?"CHECKED":"") ?>>
+											<label for="extOptionalyes"><?php echo _("Yes");?></label>
+											<input type="radio" name="extOptional" id="extOptionalno" value="0" <?php echo ($extOptional?"":"CHECKED") ?>>
+											<label for="extOptionalno"><?php echo _("No");?></label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<span id="extOptional-help" class="help-block fpbx-help-block"><?php echo _("Displays and follows the optional destinations (No Answer, Busy, Not Reachable) set for the extension in the Advanced tab.")?></span>
+							</div>
+						</div>
+					</div>
+					<!--END extOptional-->
 
 					<div class="row">
 						<div class="col-md-12 text-right">

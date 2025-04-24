@@ -75,6 +75,8 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
   global $pastels;
   global $neons;
 	global $direction;
+	global $combineQueueRing;
+	global $extOptional;
 	
 	$optional = preg_match('/^[_xX+\d\[\]]+$/', $optional) ? '' : $optional;
   if (! isset ($route['dpgraph'])) {
@@ -87,7 +89,6 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
   # This only happens on the first call.  Every recursive call includes
   # a destination to look at.  For the first one, we get the destination from
   # the route object.
-	
   if ($destination == '') {
 		if (empty($route['extension'])){
 			$didLabel='ANY';
@@ -102,11 +103,18 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 			$didLink.=$route['cidnum'];
 		}
 		$didLabel.='\\n'.$route['description'];
+		$didData=$route['incoming'][$route['extension']];
+		$didTooltip=$didData['extension'].'\\n';
+		$didTooltip.= !empty($didData['cidnum']) ? 'Caller ID Number= ' . $didData['cidnum'].'\\n' : '';
+		$didTooltip.= !empty($didData['description']) ? 'Description= ' . $didData['description'].'\\n' : '';
+		$didTooltip.= !empty($didData['alertinfo']) ? 'Alert Info= ' . $didData['alertinfo'].'\\n' : '';
+		$didTooltip.= !empty($didData['grppre']) ? 'CID Prefix= ' . $didData['grppre'].'\\n' : '';
+		$didTooltip.= !empty($didData['mohclass']) ? 'MOH Class= ' . $didData['mohclass'].'\\n' : '';
 
 		$dpgraph->node($route['extension'],
 			array(
 				'label' => sanitizeLabels($didLabel),
-				'tooltip' => sanitizeLabels($didLabel),
+				'tooltip' => sanitizeLabels($didTooltip),
 				'width' => 2,
 				'margin' => '.13',
 				'shape' => 'cds',
@@ -165,15 +173,17 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
     dpplog(9, "NOT making an edge from $ptxt -> $ntxt");
 		$edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
 		$edge->attribute('label', sanitizeLabels($route['parent_edge_label']));
-		$edge->attribute('labeltooltip',  sanitizeLabels($route['parent_edge_label']));
+		$edge->attribute('labeltooltip',sanitizeLabels($ptxt));
+		$edge->attribute('edgetooltip',sanitizeLabels($ptxt));
 		
   } else {
     dpplog(9, "Making an edge from $ptxt -> $ntxt");
     $edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
     $edge->attribute('label', sanitizeLabels($route['parent_edge_label']));
-		$edge->attribute('labeltooltip',  sanitizeLabels($route['parent_edge_label']));
+		$edge->attribute('labeltooltip',sanitizeLabels($ptxt));
+		$edge->attribute('edgetooltip',sanitizeLabels($ptxt));
 		
-		if (preg_match("/^( Match| NoMatch)/", $route['parent_edge_label'])) {
+		if (preg_match("/^( Match| No Match)/", $route['parent_edge_label'])) {
 			$edge->attribute('URL', $route['parent_edge_url']);
 			$edge->attribute('target', $route['parent_edge_target']);
 		}
@@ -181,6 +191,7 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 			$edge->attribute('style', 'dashed');
 		}
 		
+		//start from node
 		if (preg_match("/^ +$/", $route['parent_edge_label'])){
 			$edge->attribute('style', 'dotted');
 		}
@@ -418,7 +429,7 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 		$node->attribute('style', 'filled');
 		
 		//Optional Destinations
-		if (!empty($extension['noanswer_dest']) || !empty($extension['busy_dest']) || !empty($extension['chanunavail_dest']) ) {
+		if ($extOptional && (!empty($extension['noanswer_dest']) || !empty($extension['busy_dest']) || !empty($extension['chanunavail_dest'])) ) {
 			if (
 					$extension['noanswer_dest'] === $extension['busy_dest'] &&
 					$extension['noanswer_dest'] === $extension['chanunavail_dest']
@@ -431,11 +442,13 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 					$extension['noanswer_dest'] === $extension['busy_dest']
 					&& $extension['chanunavail_dest'] !== $extension['noanswer_dest']
 			) {
+				if (!empty($extension['noanswer_dest'])) {
 					// No Answer and Busy are the same, but Not Reachable is different
 					$route['parent_edge_label'] = ' No Answer & Busy';
 					$route['parent_node'] = $node;
 					dpp_follow_destinations($route, $extension['noanswer_dest'],'');
-
+				}
+					//Not Reachable
 					if (!empty($extension['chanunavail_dest'])) {
 							$route['parent_edge_label'] = ' Not Reachable';
 							$route['parent_node'] = $node;
@@ -445,11 +458,13 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 					$extension['noanswer_dest'] === $extension['chanunavail_dest']
 					&& $extension['busy_dest'] !== $extension['noanswer_dest']
 			) {
+				if (!empty($extension['noanswer_dest'])) {
 					// No Answer and Not Reachable are the same
 					$route['parent_edge_label'] = ' No Answer & Not Reachable';
 					$route['parent_node'] = $node;
 					dpp_follow_destinations($route, $extension['noanswer_dest'],'');
-
+				}
+					//Busy
 					if (!empty($extension['busy_dest'])) {
 							$route['parent_edge_label'] = ' Busy';
 							$route['parent_node'] = $node;
@@ -459,11 +474,13 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 					$extension['busy_dest'] === $extension['chanunavail_dest']
 					&& $extension['noanswer_dest'] !== $extension['busy_dest']
 			) {
+				if (!empty($extension['busy_dest'])) {
 					// Busy and Not Reachable are the same
 					$route['parent_edge_label'] = ' Busy & Not Reachable';
 					$route['parent_node'] = $node;
 					dpp_follow_destinations($route, $extension['busy_dest'],'');
-
+				}
+					//No Answer
 					if (!empty($extension['noanswer_dest'])) {
 							$route['parent_edge_label'] = ' No Answer';
 							$route['parent_node'] = $node;
@@ -583,9 +600,11 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 		
 		#are the invalid and timeout destinations the same?
 		if ($ivr['invalid_destination']==$ivr['timeout_destination']){
+			if (!empty($ivr['invalid_destination'])){
 			 $route['parent_edge_label']= ' Invalid Input, Timeout ('.$ivr['timeout_time'].' secs)';
 			 $route['parent_node'] = $node;
 			 dpp_follow_destinations($route, $ivr['invalid_destination'],'');
+			}
 		}else{
 				if ($ivr['invalid_destination'] != '') {
 					$route['parent_edge_label']= ' Invalid Input';
@@ -655,6 +674,28 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 		$node->attribute('style', 'filled');
 		#end of Play Recording
 
+		# Queue Priorities
+		#
+  }elseif (preg_match("/^app-queueprio,(\d+),(\d+)/", $destination, $matches)) {
+		$queueprioID = $matches[1];
+		$queueprioIDOther = $matches[2];
+		$queueprio = $route['queueprio'][$queueprioID];
+		$queueprioLabel=$queueprio['description'].'\\nPriority: '.$queueprio['queue_priority'];
+		
+		$node->attribute('label', 'Queue Priorities: '.sanitizeLabels($queueprioLabel));
+		$node->attribute('tooltip', $node->getAttribute('label'));
+		$node->attribute('URL', htmlentities('/admin/config.php?display=queueprio&view=form&extdisplay='.$queueprioID));
+		$node->attribute('target', '_blank');
+		$node->attribute('shape', 'rect');
+		$node->attribute('fillcolor', $pastels['16']);
+		$node->attribute('style', 'filled');
+		if ($queueprio['dest'] != '') {
+			$route['parent_edge_label'] = ' Continue';
+			$route['parent_node'] = $node;
+			dpp_follow_destinations($route, $queueprio['dest'], '');
+		}
+		#end of Queue Priorities
+		
 		#
 		# Queues
 		#
@@ -741,7 +782,7 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
     foreach ($grplist as $member) {
       $route['parent_node'] = $node;
 			$route['parent_edge_label'] = '';
-      dpp_follow_destinations($route, "rg$member",'');
+			dpp_follow_destinations($route, $combineQueueRing ? "qmember$member" : "rg$member", '');
     } 
 		
 		# The destinations we need to follow are the no-answer destination
@@ -827,29 +868,45 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
     $tcother = $matches[2];
 
     $tc = $route['timeconditions'][$tcnum];
+		$tcTooltip=$tc['displayname'].'\\nMode= '.$tc['mode'].'\\n';
+		$tcTooltip .= ($tc['timezone'] !== 'default') ? 'Timezone= ' . $tc['timezone'] : '';
+		
     $node->attribute('label', "TC: ".sanitizeLabels($tc['displayname']));
-    $node->attribute('URL', htmlentities('/admin/config.php?display=timeconditions&view=form&itemid='.$tcnum));
+    $node->attribute('tooltip', sanitizeLabels($tcTooltip));
+		$node->attribute('URL', htmlentities('/admin/config.php?display=timeconditions&view=form&itemid='.$tcnum));
     $node->attribute('target', '_blank');
     $node->attribute('shape', 'invhouse');
     $node->attribute('fillcolor', 'dodgerblue');
     $node->attribute('style', 'filled');
-  
-    # Not going to use the time group info for right now.  Maybe put it in the edge text?
-    $tgname = $route['timegroups'][$tc['time']]['description'];
-    $tgtime = $route['timegroups'][$tc['time']]['time'];
-    $tgnum = $route['timegroups'][$tc['time']]['id'];
-		
+
+    //TC modes
+		if ($tc['mode'] === 'time-group') {
+			$tg=$route['timegroups'][$tc['time']];
+			$tgnum = $tg['id'];
+			$tgname = $tg['description'];
+			$tgtime = !empty($tg['time']) ? $tg['time'] : 'No times defined';
+			$tgLabel= $tgname.'\\n'.$tgtime;
+			$tgLink = '/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum;
+			$tgTooltip= $tgLabel;
+		} elseif ($tc['mode'] === 'calendar-group') {
+			$cal= $route['calendar'][$tc['calendar_id']];
+			$tgLabel=$cal['name'];
+			$tgLink = '/admin/config.php?display=calendar&action=view&type=calendar&id='.$tc['calendar_id'];
+			$tgTooltip='Name= '.$cal['name'].'\\nDescription= '.$cal['description'].'\\nType= '.$cal['type'].'\\nTimezone= '.$cal['timezone'];
+		}
 		# Now set the current node to be the parent and recurse on both the true and false branches
-    $route['parent_edge_label'] = ' Match:\\n'.sanitizeLabels($tgname).'\\n'.$tgtime;
-    $route['parent_edge_url'] = htmlentities('/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum);
-    $route['parent_edge_target'] = '_blank';
+    $route['parent_edge_label'] = ' Match:\\n'.sanitizeLabels($tgLabel);
+    $route['parent_edge_url'] = htmlentities($tgLink);
+		$route['parent_edge_target'] = '_blank';
+		$route['parent_edge_labeltooltip']=' Match\\n'.sanitizeLabels($tgTooltip);
 
     $route['parent_node'] = $node;
 	  dpp_follow_destinations($route, $tc['truegoto'],'');
 
-		$route['parent_edge_label'] = ' NoMatch';
-    $route['parent_edge_url'] = htmlentities('/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum);
+		$route['parent_edge_label'] = ' No Match';
+    $route['parent_edge_url'] = htmlentities($tgLink);
     $route['parent_edge_target'] = '_blank';
+		$route['parent_edge_labeltooltip']=' No Match\\n'.sanitizeLabels($tgTooltip);
     $route['parent_node'] = $node;
 		dpp_follow_destinations($route, $tc['falsegoto'],'');
 		#end of Time Conditions
@@ -916,7 +973,6 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 	
 		#preg_match not found
 	}else {
-		
 		#custom destinations
 		foreach ($route['customapps'] as $entry) {
 			if ($entry['target'] === $destination) {
@@ -955,50 +1011,7 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 function dpp_load_tables(&$dproute) {
 	global $db;
 	global $dynmembers;
-  # Time Conditions
-  $query = "select * from timeconditions";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from timeconditions");       
-  }
-  foreach($results as $tc) {
-    $id = $tc['timeconditions_id'];
-    $dproute['timeconditions'][$id] = $tc;
-  }
-
-  # Time Groups
-  $query = "select * from timegroups_groups";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from timegroups_groups");
-  }
-  foreach($results as $tg) {
-    $id = $tg['id'];
-    $dproute['timegroups'][$id] = $tg;
-  }
-
-  # Time Groups Details
-  $query = "select * from timegroups_details";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from timegroups_details");       
-  }
-  foreach($results as $tgd) {
-    $id = $tgd['timegroupid'];
-    if (! isset($dproute['timegroups'][$id])) {
-      dpplog(1, "timegroups_details id found for unknown timegroup, id=$id");
-    } else {
-      if (!isset($dproute['timegroups'][$id]['time'])){$dproute['timegroups'][$id]['time']='';}
-      $exploded=explode("|",$tgd['time']); 
-      if ($exploded[0]!=='*'){$time=$exploded[0];}else{$time='';}
-      if ($exploded[1]!=='*'){$dow=ucwords($exploded[1],'-').', ';}else{$dow='';}
-      if ($exploded[2]!=='*'){$date=$exploded[2].' ';}else{$date='';}
-      if ($exploded[3]!=='*'){$month=ucfirst($exploded[3]).' ';}else{$month='';}
-
-      $dproute['timegroups'][$id]['time'] .=$dow . $month . $date . $time."\\l";
-    }
-  }
-
+  
 	# Users
   $query = "select * from users";
   $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
@@ -1012,62 +1025,15 @@ function dpp_load_tables(&$dproute) {
     $u[$id]= $users;
     $dproute['extensions'][$id]= $users;
 		
-		$Q='grep -E \'^'.$id.'[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3';
-		exec($Q, $Qresult);
-		if (!empty($Qresult[0])){
-			$dproute['extensions'][$id]['email'] =$Qresult[0];
+		$email='grep -E \'^'.$id.'[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3';
+		exec($email, $emailResult);
+		if (!empty($emailResult[0])){
+			$dproute['extensions'][$id]['email'] =$emailResult[0];
 		}else{
 			$dproute['extensions'][$id]['email'] ='unassigned';
 		}
   }
-	
-  # Queues
-  $query = "select * from queues_config";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from queues_config");       
-  }
-  foreach($results as $q) {
-    $id = $q['extension'];
-    $dproute['queues'][$id] = $q;
-		$dproute['queues'][$id]['members']['static']=array();
-		$dproute['queues'][$id]['members']['dynamic']=array();
-  }
-	
-  # Queue members (static)
-  $query = "select * from queues_details";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from queues_details");       
-  }
-	
-  foreach($results as $qd) {
-    $id = $qd['id'];
-    if ($qd['keyword'] == 'member') {
-      $member = $qd['data'];
-      if (preg_match("/Local\/(\d+)/", $member, $matches)) {
-        $enum = $matches[1];
-				$dproute['queues'][$id]['members']['static'][]=$enum;
-      }
-    }else{
-			$dproute['queues'][$id]['data'][$qd['keyword']]=$qd['data'];
-		}
-  }
-	
-	# Queue members (dynamic) //options
-	if ($dynmembers && !empty($dproute['queues'])){
-		foreach ($dproute['queues'] as $id=>$details){
-			$dynmem=array();
-			
-			$D='/usr/sbin/asterisk -rx "database show QPENALTY '.$id.'" | grep \'/agents/\' | cut -d\'/\' -f5 | cut -d\':\' -f1';
-			exec($D, $dynmem);
 
-			foreach ($dynmem as $enum){
-				$dproute['queues'][$id]['members']['dynamic'][]=$enum;
-			}
-		}
-	}
-	
 	# Inbound Routes
   $query = "select * from incoming";
   $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
@@ -1090,7 +1056,7 @@ function dpp_load_tables(&$dproute) {
     $dproute['ivrs'][$id] = $ivr;
   }
 
-  # IVR entries
+  # IVR entries 
   $query = "select * from ivr_entries";
   $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
   if (DB::IsError($results)) {
@@ -1117,7 +1083,9 @@ function dpp_load_tables(&$dproute) {
 	
 	
 	// Array of table names to check -not required
-	$tables = ['announcement','daynight','directory_details','disa','dynroute','dynroute_dests','featurecodes','kvstore_FreePBX_modules_Customappsreg','languages','meetme','miscdests','ringgroups','setcid','tts','vmblast','vmblast_groups'];
+	$tables = ['announcement','daynight','directory_details','disa','dynroute','dynroute_dests','featurecodes','kvstore_FreePBX_modules_Calendar',
+							'kvstore_FreePBX_modules_Customappsreg','languages','meetme','miscdests','queueprio','queues_config','queues_details',
+							'ringgroups','setcid','timeconditions','timegroups_groups','timegroups_details','tts','vmblast','vmblast_groups'];
 	
 	foreach ($tables as $table) {
     // Check if the table exists
@@ -1182,6 +1150,15 @@ function dpp_load_tables(&$dproute) {
 					$dproute['featurecodes'][$id] = $featurecodes;
 					dpplog(9, "featurecodes=$id");
 				}
+		}elseif ($table == 'kvstore_FreePBX_modules_Calendar') {
+			foreach($results as $calendar) {
+				if ($calendar['id']=='calendars'){
+					$id=$calendar['key'];
+					$val=json_decode($calendar['val'],true);
+					$dproute['calendar'][$id] = $val;
+					dpplog(9, "featurecodes=$id");
+				}
+			}
     }elseif ($table == 'kvstore_FreePBX_modules_Customappsreg') {
         foreach($results as $Customappsreg) {
 					if (is_numeric($Customappsreg['key'])){
@@ -1209,6 +1186,45 @@ function dpp_load_tables(&$dproute) {
 					$dproute['miscdest'][$id] = $miscdest;
 					dpplog(9, "miscdest dest: $id");
 				}
+		}elseif ($table == 'queues_config') {
+        foreach($results as $q) {
+					$id = $q['extension'];
+					$dproute['queues'][$id] = $q;
+					$dproute['queues'][$id]['members']['static']=array();
+					$dproute['queues'][$id]['members']['dynamic']=array();
+				}
+		}elseif ($table == 'queueprio') {
+        foreach($results as $queueprio) {
+					$id = $queueprio['queueprio_id'];
+					$dproute['queueprio'][$id] = $queueprio;
+					dpplog(9, "queueprio dest: $id");
+				}
+		}elseif ($table == 'queues_details') {
+        foreach($results as $qd) {
+					$id = $qd['id'];
+					if ($qd['keyword'] == 'member') {
+						$member = $qd['data'];
+						if (preg_match("/Local\/(\d+)/", $member, $matches)) {
+							$enum = $matches[1];
+							$dproute['queues'][$id]['members']['static'][]=$enum;
+						}
+					}else{
+						$dproute['queues'][$id]['data'][$qd['keyword']]=$qd['data'];
+					}
+				}
+				# Queue members (dynamic) //options
+				if ($dynmembers && !empty($dproute['queues'])){
+					foreach ($dproute['queues'] as $id=>$details){
+						$dynmem=array();
+						
+						$D='/usr/sbin/asterisk -rx "database show QPENALTY '.$id.'" | grep \'/agents/\' | cut -d\'/\' -f5 | cut -d\':\' -f1';
+						exec($D, $dynmem);
+
+						foreach ($dynmem as $enum){
+							$dproute['queues'][$id]['members']['dynamic'][]=$enum;
+						}
+					}
+				}
     }elseif ($table == 'ringgroups') {
         foreach($results as $rg) {
 					$id = $rg['grpnum'];
@@ -1218,6 +1234,32 @@ function dpp_load_tables(&$dproute) {
         foreach($results as $cid) {
 					$id = $cid['cid_id'];
 					$dproute['setcid'][$id] = $cid;
+				}
+		}elseif ($table == 'timeconditions') {
+        foreach($results as $tc) {
+					$id = $tc['timeconditions_id'];
+					$dproute['timeconditions'][$id] = $tc;
+				}
+		}elseif ($table == 'timegroups_groups') {			
+        foreach($results as $tg) {
+					$id = $tg['id'];
+					$dproute['timegroups'][$id] = $tg;
+				}
+		}elseif ($table == 'timegroups_details') {
+        foreach($results as $tgd) {
+					$id = $tgd['timegroupid'];
+					if (!isset($dproute['timegroups'][$id])) {
+						dpplog(1, "timegroups_details id found for unknown timegroup, id=$id");
+					} else {
+						if (!isset($dproute['timegroups'][$id]['time'])){$dproute['timegroups'][$id]['time']='';}
+						$exploded=explode("|",$tgd['time']); 
+						if ($exploded[0]!=='*'){$time=$exploded[0];}else{$time='';}
+						if ($exploded[1]!=='*'){$dow=ucwords($exploded[1],'-').', ';}else{$dow='';}
+						if ($exploded[2]!=='*'){$date=$exploded[2].' ';}else{$date='';}
+						if ($exploded[3]!=='*'){$month=ucfirst($exploded[3]).' ';}else{$month='';}
+
+						$dproute['timegroups'][$id]['time'] .=$dow . $month . $date . $time."\\l";
+					}
 				}
     }elseif ($table == 'tts') {
         foreach($results as $tts) {
