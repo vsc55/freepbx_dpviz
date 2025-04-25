@@ -167,9 +167,9 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
   $ptxt = $route['parent_node']->getAttribute('label', '');
   $ntxt = $node->getAttribute('label', '');
   dpplog(9, "Found it: ntxt = $ntxt");
-	
   if ($ntxt == '' ) { $ntxt = "(new node: $destination)"; }
   if ($dpgraph->hasEdge(array($route['parent_node'], $node))) {
+		
     dpplog(9, "NOT making an edge from $ptxt -> $ntxt");
 		$edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
 		$edge->attribute('label', sanitizeLabels($route['parent_edge_label']));
@@ -749,8 +749,10 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 	} elseif (preg_match("/^qmember(\d+)/", $destination, $matches)) {
 		$qextension=$matches[1];
 		$qlabel = isset($route['extensions'][$qextension]['name']) ? 'Ext '.$qextension.'\\n'.$route['extensions'][$qextension]['name'] : $qextension;
+		
 		$node->attribute('label', sanitizeLabels($qlabel));
 		$node->attribute('tooltip', $node->getAttribute('label'));
+		$node->attribute('style', 'filled');
 		if (!is_numeric($qlabel)){
 			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$qextension));
 			$node->attribute('target', '_blank');
@@ -761,16 +763,13 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 		}else{
 			$node->attribute('fillcolor', $pastels[8]);
 		}
-		$node->attribute('style', 'filled');
-		
 		#end of Queue members (static and dynamic)
 
 		#
 		# Ring Groups
 		#
-  } elseif (preg_match("/^ext-group,(\d+),(\d+)/", $destination, $matches)) {
+  } elseif (preg_match("/^ext-group,(\d+)/", $destination, $matches)) {
     $rgnum = $matches[1];
-    $rgother = $matches[2];
 
     $rg = $route['ringgroups'][$rgnum];
     $node->attribute('label', 'Ring Groups: '.$rgnum.' '.sanitizeLabels($rg['description']));
@@ -778,8 +777,8 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
     $node->attribute('target', '_blank');
     $node->attribute('fillcolor', $pastels[12]);
     $node->attribute('style', 'filled');
-		
-		$grplist = preg_split("/-/", $rg['grplist']);
+		$grplist=str_replace('#', '', $rg['grplist']);
+		$grplist = preg_split("/-/", $grplist);
     
     foreach ($grplist as $member) {
       $route['parent_node'] = $node;
@@ -909,9 +908,9 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 				}
 				
 				$cats = !empty($cal['categories']) ? count($cal['categories']) : 'All';
-				$categories='Categories= '.$cats.' categories';
+				$categories='Categories= '.$cats;
 				$eves = !empty($cal['events']) ? count($cal['events']) : 'All';
-				$events='Events= '.$eves.' events';
+				$events='Events= '.$eves;
 				$expand = $cal['expand'] ? 'true' : 'false';
 				$tgTooltip='Name= '.$cal['name'].'\\n'.$calNames.'\\n'.$categories.'\\n'.$events.'\\nExpand= '.$expand;
 			}
@@ -1234,8 +1233,9 @@ function dpp_load_tables(&$dproute) {
 					$id = $qd['id'];
 					if ($qd['keyword'] == 'member') {
 						$member = $qd['data'];
-						if (preg_match("/Local\/(\d+)/", $member, $matches)) {
+						if (preg_match("/Local\/(\d+).*?,(\d+)/", $member, $matches)) {
 							$enum = $matches[1];
+							$pen= $matches[2];
 							$dproute['queues'][$id]['members']['static'][]=$enum;
 						}
 					}else{
@@ -1247,11 +1247,14 @@ function dpp_load_tables(&$dproute) {
 					foreach ($dproute['queues'] as $id=>$details){
 						$dynmem=array();
 						
-						$D='/usr/sbin/asterisk -rx "database show QPENALTY '.$id.'" | grep \'/agents/\' | cut -d\'/\' -f5 | cut -d\':\' -f1';
+						$D='/usr/sbin/asterisk -rx "database show QPENALTY '.$id.'" | grep \'/agents/\' | cut -d\'/\' -f5';
 						exec($D, $dynmem);
-
+						
 						foreach ($dynmem as $enum){
-							$dproute['queues'][$id]['members']['dynamic'][]=$enum;
+							list($ext, $pen) = explode(':', $enum);
+							$ext=trim($ext);
+							$pen=trim($pen);
+							$dproute['queues'][$id]['members']['dynamic'][]=$ext;
 						}
 					}
 				}
