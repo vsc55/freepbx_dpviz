@@ -21,24 +21,24 @@ class dpp {
     // Log file path
     Const LOG_FILE = "/var/log/asterisk/dpviz.log";
 
-	// Set some colors
-	Const pastels = [
-    	"#7979FF", "#86BCFF", "#8ADCFF", "#3DE4FC", "#5FFEF7", "#33FDC0",
-    	"#ed9581", "#81a6a2", "#bae1e7", "#eb94e2", "#f8d580", "#979291",
-    	"#92b8ef", "#ad8086", "#F7A8A8", "#C5A3FF", "#FFC3A0", "#FFD6E0",
-    	"#FFB3DE", "#D4A5A5", "#A5D4D4", "#F5C6EC", "#B5EAD7", "#C7CEEA",
-    	"#E0BBE4", "#FFDFD3", "#FEC8D8", "#D1E8E2", "#E8D1E1", "#EAD5DC",
-    	"#F9E79F", "#D6EAF8"
-	];
+	// // Set some colors
+	// Const pastels = [
+    // 	"#7979FF", "#86BCFF", "#8ADCFF", "#3DE4FC", "#5FFEF7", "#33FDC0",
+    // 	"#ed9581", "#81a6a2", "#bae1e7", "#eb94e2", "#f8d580", "#979291",
+    // 	"#92b8ef", "#ad8086", "#F7A8A8", "#C5A3FF", "#FFC3A0", "#FFD6E0",
+    // 	"#FFB3DE", "#D4A5A5", "#A5D4D4", "#F5C6EC", "#B5EAD7", "#C7CEEA",
+    // 	"#E0BBE4", "#FFDFD3", "#FEC8D8", "#D1E8E2", "#E8D1E1", "#EAD5DC",
+    // 	"#F9E79F", "#D6EAF8"
+	// ];
 
-	Const neons = [
-    	"#fe0000", "#fdfe02", "#0bff01", "#011efe", "#fe00f6",
-    	"#ff5f1f", "#ff007f", "#39ff14", "#ff073a", "#ffae00",
-    	"#08f7fe", "#ff44cc", "#ff6ec7", "#dfff00", "#32cd32",
-    	"#ccff00", "#ff1493", "#00ffff", "#ff00ff", "#ff4500",
-    	"#ff00aa", "#ff4c4c", "#7df9ff", "#adff2f", "#ff6347",
-    	"#ff66ff", "#f2003c", "#ffcc00", "#ff69b4", "#0aff02"
-	];
+	// Const neons = [
+    // 	"#fe0000", "#fdfe02", "#0bff01", "#011efe", "#fe00f6",
+    // 	"#ff5f1f", "#ff007f", "#39ff14", "#ff073a", "#ffae00",
+    // 	"#08f7fe", "#ff44cc", "#ff6ec7", "#dfff00", "#32cd32",
+    // 	"#ccff00", "#ff1493", "#00ffff", "#ff00ff", "#ff4500",
+    // 	"#ff00aa", "#ff4c4c", "#7df9ff", "#adff2f", "#ff6347",
+    // 	"#ff66ff", "#f2003c", "#ffcc00", "#ff69b4", "#0aff02"
+	// ];
 
     public function __construct($freepbx, $load_routes = true)
     {
@@ -95,7 +95,8 @@ class dpp {
         // Example: table_01_users.php → clase TableUsers
         // Example: table_02_users_extra.php → class TableUsersExtra
         $basename_file = basename($file, '.php'); // Get the file name without the extension, for example: table_01_users
-		$regex = sprintf('/%s_\d+_(.+)/', strtolower($classPrefix));
+		// $regex = sprintf('/%s_\d+_(.+)/', strtolower($classPrefix));
+		$regex = sprintf('/%s_(?:\d+_)?(.+)/', strtolower($classPrefix));
         // if (!preg_match('/table_\d+_(.+)/', strtolower($basename_file), $matches))
 		if (!preg_match($regex, strtolower($basename_file), $matches))
         {
@@ -119,10 +120,12 @@ class dpp {
     {
         $this->CleanClass();
 
-        $files_tables      = glob(__DIR__ . '/dpp/table_*.php');
-        $files_destination = glob(__DIR__ . '/dpp/destination_*.php');
-        sort($files_tables);      // Sort the files to ensure consistent loading order (table_01_users.php, table_02_users_extra.php, etc.)
-        sort($files_destination); // Sort the files to ensure consistent loading order (destination_01_users.php, destination_02_users_extra.php, etc.)
+		// Load all class tables and destinations from the dpp directory
+		// The files should be named in the format: table_01_users.php, table_02_users_extra.php, etc.
+        $files_tables       		   = glob(__DIR__ . '/dpp/table_*.php');
+		$class_tables 	    		   = [];
+		$class_tables_without_priority = [];
+		sort($files_tables);      // Sort the files to ensure consistent loading order (table_01_users.php, table_02_users_extra.php, etc.)
 
         foreach ($files_tables as $file)
         {
@@ -138,20 +141,46 @@ class dpp {
             $fullClassName = sprintf('\\%s\\dpp\\table\\%s', __NAMESPACE__ , $className); // Example: \FreePBX\modules\Dpviz\dpp\table\TableUsers
 
 			require_once $file; // Load the file
-            if (class_exists($fullClassName))
-            {
-                // Create an instance of the class and add it to the list
-                $this->list_class_tables[] = new $fullClassName($this);
-				$this->log(5, sprintf(_("Class '%s' Create OK!"), $fullClassName));
-            }
+			if (class_exists($fullClassName))
+			{
+				if (defined("$fullClassName::PRIORITY"))
+				{
+					$class_tables[$fullClassName] = $fullClassName::PRIORITY;
+				}
+				else
+				{
+					$class_tables_without_priority[] = $fullClassName;
+				}
+			}
             else
             {
                 $this->log(1, sprintf(_("Class '%s' not found in '%s'!"), $fullClassName, $file));
                 continue;
             }
         }
+		asort($class_tables);
+		foreach (array_keys($class_tables) as $fullClassName)
+		{
+			// Create an instance of the class and add it to the list
+            $this->list_class_tables[] = new $fullClassName($this);
+			$this->log(5, sprintf(_("Class '%s' Create OK!"), $fullClassName));
+		}
+		foreach ($class_tables_without_priority as $fullClassName)
+		{
+			// Create an instance of the class and add it to the list
+            $this->list_class_tables[] = new $fullClassName($this);
+			$this->log(5, sprintf(_("Class '%s' Create OK, but without priority!"), $fullClassName));
+		}
 
-        foreach ($files_destination as $file)
+
+		// Load all class destinations from the dpp directory
+		// The files should be named in the format: destination_01_users.php, destination_02_users_extra.php, etc.
+		$files_destinations 				 = glob(__DIR__ . '/dpp/destination_*.php');
+		$class_destinations 				 = [];
+		$class_destinations_without_priority = [];
+        sort($files_destinations); // Sort the files to ensure consistent loading order (destination_01_users.php, destination_02_users_extra.php, etc.)
+
+        foreach ($files_destinations as $file)
         {
             if (!file_exists($file))
             {
@@ -165,18 +194,36 @@ class dpp {
             $fullClassName = sprintf('\\%s\\dpp\\destination\\%s', __NAMESPACE__ , $className); // Example: \FreePBX\modules\Dpviz\dpp\destination\DestinationUsers
 
 			require_once $file; // Load the file
-            if (class_exists($fullClassName))
-            {
-                // Create an instance of the class and add it to the list
-                $this->list_calss_tables_destinations[] = new $fullClassName($this);
-				$this->log(5, sprintf(_("Class '%s' Create OK!"), $fullClassName));
-            }
+			if (class_exists($fullClassName))
+			{
+				if (defined("$fullClassName::PRIORITY"))
+				{
+					$class_destinations[$fullClassName] = $fullClassName::PRIORITY;
+				}
+				else
+				{
+					$class_destinations_without_priority[] = $fullClassName;
+				}
+			}
             else
             {
                 $this->log(1, sprintf(_("Class '%s' not found in '%s'!"), $fullClassName, $file));
                 continue;
             }
         }
+		asort($class_destinations);
+		foreach (array_keys($class_destinations) as $fullClassName)
+		{
+			// Create an instance of the class and add it to the list
+            $this->list_calss_tables_destinations[] = new $fullClassName($this);
+			$this->log(5, sprintf(_("Class '%s' Create OK!"), $fullClassName));
+		}
+		foreach ($class_destinations_without_priority as $fullClassName)
+		{
+			// Create an instance of the class and add it to the list
+            $this->list_calss_tables_destinations[] = new $fullClassName($this);
+			$this->log(5, sprintf(_("Class '%s' Create OK, but without priority!"), $fullClassName));
+		}
     }
 
     /**
