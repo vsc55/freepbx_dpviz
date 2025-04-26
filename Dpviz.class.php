@@ -211,8 +211,8 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 								'key'	  => $key,
 								'val'	  => $val,
 								'id'	  => $key,
-								'val_yes' => 3,
-								'val_no'  => 1,
+								// 'val_yes' => "3",
+								// 'val_no'  => "1",
 								'help'	  => _("Increases PNG resolution during export."),
 							);
 						break;
