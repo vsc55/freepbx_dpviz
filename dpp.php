@@ -119,6 +119,35 @@ class dpp {
     private function loadClass()
     {
         $this->CleanClass();
+		
+		/**
+		 * Class Execution Order Management System
+		 *
+		 * Each PHP file must contain a class.
+		 * The class name is dynamically generated based on the file name.
+		 *
+		 * File naming rules:
+		 *  - Valid format: {prefix}_{optional_number_}_name.php
+		 *    Examples: table_01_users.php, table_users_extra.php
+		 *  - The number (e.g., '01') is optional. It is used only for visual organization in the folder.
+		 *
+		 * Class rules:
+		 *  - Classes can optionally define a 'PRIORITY' constant.
+		 *  - PRIORITY determines the execution order:
+		 *    - Classes with PRIORITY are executed first, sorted from lowest to highest value.
+		 *    - Classes without PRIORITY are executed afterward, in the order listed by the file system.
+		 *
+		 * Recommendation for PRIORITY:
+		 *  - Use large increments (e.g., 100, 200, 300) to allow inserting new classes later
+		 *    without needing to reorder existing ones.
+		 *
+		 * Execution summary:
+		 * 1. List all files in the folder.
+		 * 2. Import each file and calculate its class name.
+		 * 3. Separate classes into two groups: with PRIORITY and without PRIORITY.
+		 * 4. Sort and execute classes with PRIORITY first.
+		 * 5. Then execute classes without PRIORITY.
+		*/
 
 		// Load all class tables and destinations from the dpp directory
 		// The files should be named in the format: table_01_users.php, table_02_users_extra.php, etc.
