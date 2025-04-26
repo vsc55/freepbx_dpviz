@@ -1048,7 +1048,7 @@ function dpp_load_tables(&$dproute) {
     $id = $users['extension'];
     $u[$id]= $users;
     $dproute['extensions'][$id]= $users;
-		
+		$emailResult=[];
 		$email='grep -E \'^'.$id.'[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3';
 		exec($email, $emailResult);
 		if (!empty($emailResult[0])){
