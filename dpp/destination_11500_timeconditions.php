@@ -22,9 +22,9 @@ class DestinationTimeconditions extends baseDestinations
         $tcTooltip  = sprintf(_('%s\\nMode= %s\\n'), $tc['displayname'], $tc['mode']);
 		$tcTooltip .= ($tc['timezone'] !== 'default') ? sprintf(_("Timezone= %s"), $tc['timezone']) : '';
 
-        $label = sprintf(_('TC: %s'), $this->dpp->sanitizeLabels($tc['displayname']));
+        $label = sprintf(_('TC: %s'), $tc['displayname']);
 
-        $node->attribute('label', $label);
+        $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $this->dpp->sanitizeLabels($tcTooltip));
         $node->attribute('URL', htmlentities('/admin/config.php?display=timeconditions&view=form&itemid='.$tcnum));
         $node->attribute('target', '_blank');
@@ -32,6 +32,10 @@ class DestinationTimeconditions extends baseDestinations
         $node->attribute('fillcolor', 'dodgerblue');
         $node->attribute('style', 'filled');
     
+        $tgLabel   = '';
+        $tgLink    = '';
+        $tgTooltip = '';
+
         //TC modes
 		if ($tc['mode'] === 'time-group')
         {
@@ -84,10 +88,10 @@ class DestinationTimeconditions extends baseDestinations
         $this->dpp->followDestinations($route, $tc['truegoto'], '');
 
         
-        $route['parent_node']        = $node;
-        $route['parent_edge_label']  = _(' No Match');
-        $route['parent_edge_url']    = htmlentities($tgLink);
-        $route['parent_edge_target'] = '_blank';
+        $route['parent_node']              = $node;
+        $route['parent_edge_label']        = _(' No Match');
+        $route['parent_edge_url']          = htmlentities($tgLink);
+        $route['parent_edge_target']       = '_blank';
         $route['parent_edge_labeltooltip'] = sprintf(_(' No Match:\\n%s'), $this->dpp->sanitizeLabels($tgTooltip));
         
         $this->dpp->followDestinations($route, $tc['falsegoto'], '');

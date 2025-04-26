@@ -37,7 +37,7 @@ class DestinationQueueMembers extends baseDestinations
             $node->attribute('target', '_blank');
         }
         
-        if ($route['parent_edge_label'] == _(' Static'))
+        if ($route['parent_edge_data_status'] == 'static')
         {
             $node->attribute('fillcolor', self::pastels[20]);
         }
@@ -45,5 +45,6 @@ class DestinationQueueMembers extends baseDestinations
         {
             $node->attribute('fillcolor', self::pastels[8]);
         }
+        $node->attribute('style', 'filled');
     }
 }

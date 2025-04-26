@@ -20,9 +20,9 @@ class DestinationDynroute extends baseDestinations
         $recID        = $dynrt['announcement_id'];
         $announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : _('None');
         
-        $label        = sprintf(_('DYN: %s\\nAnnouncement: %s'), $this->dpp->sanitizeLabels($dynrt['name']), $this->dpp->sanitizeLabels($announcement));
+        $label        = sprintf(_('DYN: %s\\nAnnouncement: %s'), $dynrt['name'], $announcement);
 
-        $node->attribute('label', $label);
+        $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
         $node->attribute('URL', htmlentities('/admin/config.php?display=dynroute&action=edit&id='.$dynnum));
         $node->attribute('target', '_blank');
@@ -36,7 +36,7 @@ class DestinationDynroute extends baseDestinations
             foreach ($dynrt['routes'] as $selid => $ent)
             {
                 $route['parent_node']       = $node;
-                $route['parent_edge_label'] = sprintf(_('  Match: %s\\n%s'), $this->dpp->sanitizeLabels($ent['selection']), $this->dpp->sanitizeLabels($ent['description']));
+                $route['parent_edge_label'] = $this->dpp->sanitizeLabels(sprintf(_('  Match: %s\\n%s'), $ent['selection'], $ent['description']));
                 
                 $this->dpp->followDestinations($route, $ent['dest'], '');
             }

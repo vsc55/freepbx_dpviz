@@ -21,16 +21,6 @@ class dpp {
     // Log file path
     Const LOG_FILE = "/var/log/asterisk/dpviz.log";
 
-	// // Set some colors
-	// Const pastels = [
-    // 	"#7979FF", "#86BCFF", "#8ADCFF", "#3DE4FC", "#5FFEF7", "#33FDC0",
-    // 	"#ed9581", "#81a6a2", "#bae1e7", "#eb94e2", "#f8d580", "#979291",
-    // 	"#92b8ef", "#ad8086", "#F7A8A8", "#C5A3FF", "#FFC3A0", "#FFD6E0",
-    // 	"#FFB3DE", "#D4A5A5", "#A5D4D4", "#F5C6EC", "#B5EAD7", "#C7CEEA",
-    // 	"#E0BBE4", "#FFDFD3", "#FEC8D8", "#D1E8E2", "#E8D1E1", "#EAD5DC",
-    // 	"#F9E79F", "#D6EAF8"
-	// ];
-
 	// Const neons = [
     // 	"#fe0000", "#fdfe02", "#0bff01", "#011efe", "#fe00f6",
     // 	"#ff5f1f", "#ff007f", "#39ff14", "#ff073a", "#ffae00",

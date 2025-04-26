@@ -28,9 +28,9 @@ class DestinationQueues extends baseDestinations
             $maxwait = $this->dpp->secondsToTimes($q['maxwait']);
         }
 
-        $label = sprintf(_('Queue %s: %s'), $qnum, $this->dpp->sanitizeLabels($q['descr']));
+        $label = sprintf(_('Queue %s: %s'), $qnum, $q['descr']);
 
-        $node->attribute('label', $label);
+        $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('URL', $this->genUrlConfig('queues', $qnum)); //'/admin/config.php?display=queues&view=form&extdisplay='.$qnum
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'hexagon');
@@ -43,9 +43,10 @@ class DestinationQueues extends baseDestinations
             {
                 foreach ($type as $members)
                 {
-                    $route['parent_node']       = $node;
+                    $route['parent_node']             = $node;
                     //TODO: Check if it works since it is used in query_members!!
-                    $route['parent_edge_label'] = ($types == 'static') ? _(' Static') : _(' Dynamic');
+                    $route['parent_edge_label']       = ($types == 'static') ? _(' Static') : _(' Dynamic');
+                    $route['parent_edge_data_status'] = $types;
                     $this->dpp->followDestinations($route, sprintf('qmember%s', $members),'');
                 }
             }

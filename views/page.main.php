@@ -10,12 +10,12 @@
 					<ul class="nav nav-tabs" role="tablist">
 						<li role="presentation" data-name="dpbox" class="active">
 							<a href="#dpbox" aria-controls="dpbox" role="tab" data-toggle="tab">
-								<?php echo _("Dial Plan") ?>
+								<?= _("Dial Plan") ?>
 							</a>
 						</li>
 						<li role="presentation" data-name="settings" class="change-tab">
 							<a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
-								<?php echo _("Settings") ?>
+								<?= _("Settings") ?>
 							</a>
 						</li>
 					</ul>

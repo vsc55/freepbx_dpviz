@@ -22,11 +22,9 @@ class DestinationFromDidDirect extends baseDestinations
         $extemail  = $extension['email'];
         $extemail  = str_replace("|",",\\n",$extemail);
 
-        $label     = sprintf(_('Extension: %s %s\\n%s'), $extnum, $this->dpp->sanitizeLabels($extname), $this->dpp->sanitizeLabels($extemail));
+        $label     = sprintf(_('Extension: %s %s\\n%s'), $extnum, $extname, $extemail);
 
-        
-
-        $node->attribute('label', $label);
+        $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
         $node->attribute('URL', $this->genUrlConfig('extensions', $extnum, null)); //'/admin/config.php?display=extensions&extdisplay='.$extnum
         $node->attribute('target', '_blank');

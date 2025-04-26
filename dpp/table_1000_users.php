@@ -19,10 +19,9 @@ class TableUsers extends baseTables
     {
         foreach($this->getTableData() as $user)
 		{
-			$id 	 = $user[$this->key_id];
-			// $u[$id]  = $user;
-
-            $email = 'grep -E \'^'.$id.'[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3';
+			$id 	     = $user[$this->key_id];
+            $email       = sprintf('grep -E \'^%s[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3', $id);
+            $emailResult = [];
 		    exec($email, $emailResult);
 
 			$dproute[$this->key_name][$id]= $user;

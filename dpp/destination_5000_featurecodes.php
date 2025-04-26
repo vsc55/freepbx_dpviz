@@ -24,9 +24,9 @@ class DestinationFeaturecodes extends baseDestinations
             $featurenum = $feature['customcode'];
         }
 
-        $lable = sprintf(_('Feature Code: %s \\<%s\\>'), $this->dpp->sanitizeLabels($feature['description']), $featurenum);
+        $lable = sprintf(_('Feature Code: %s \\<%s\\>'), $feature['description'], $featurenum);
 
-        $node->attribute('label', $lable);
+        $node->attribute('label', $this->dpp->sanitizeLabels($lable));
         $node->attribute('tooltip', $node->getAttribute('label'));
         $node->attribute('URL', htmlentities('/admin/config.php?display=featurecodeadmin'));
         $node->attribute('target', '_blank');

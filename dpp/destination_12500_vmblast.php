@@ -19,9 +19,9 @@ class DestinationVmblast extends baseDestinations
         $vmblastother = $matches[2];
         $vmblast 	  = $route['vmblasts'][$vmblastnum];
         
-        $label = sprintf(_('VM Blast: %s %s'), $vmblastnum , $this->dpp->sanitizeLabels($vmblast['description']));
+        $label = sprintf(_('VM Blast: %s %s'), $vmblastnum , $vmblast['description']);
 
-        $node->attribute('label', $label);
+        $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('URL', $this->genUrlConfig('vmblast', $vmblastnum)); // '/admin/config.php?display=vmblast&view=form&extdisplay='.$vmblastnum
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'folder');

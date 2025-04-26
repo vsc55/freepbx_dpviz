@@ -19,9 +19,9 @@ class DestinationDirectory extends baseDestinations
         $directoryother = $matches[2];
         $directory 		= $route['directory'][$directorynum];
         
-        $label          = sprintf(_('Directory: %s'), $this->dpp->sanitizeLabels($directory['dirname']));
+        $label          = sprintf(_('Directory: %s'), $directory['dirname']);
 
-        $node->attribute('label', $label);
+        $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('URL', $this->genUrlConfig('directory', $directorynum)); //'/admin/config.php?display=directory&view=form&id='.$directorynum
         $node->attribute('target', '_blank');
         $node->attribute('fillcolor', self::pastels[9]);

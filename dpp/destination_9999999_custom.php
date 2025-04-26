@@ -43,7 +43,7 @@ class DestinationCustom extends baseDestinations
             }
             else
             {
-                $node->attribute('tooltip', $this->dpp->sanitizeLabels($entry['notes']));
+                $node->attribute('tooltip', $this->dpp->sanitizeLabels($custNotes));
             }
             $node->attribute('URL', htmlentities('/admin/config.php?display=customdests&view=form&destid='.$custId));
             $node->attribute('target', '_blank');

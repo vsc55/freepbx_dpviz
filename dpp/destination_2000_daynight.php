@@ -20,6 +20,7 @@ class DestinationDaynight extends baseDestinations
         $daynight 	   = $route['daynight'][$daynightnum];
     
         #feature code exist?
+        $code = '';
         if ( isset($route['featurecodes']['*28'.$daynightnum]) )
         {
             #custom feature code?
@@ -32,50 +33,46 @@ class DestinationDaynight extends baseDestinations
                 $featurenum = $route['featurecodes']['*28'.$daynightnum]['defaultcode'];
             }
             #is it enabled?
-            if ($route['featurecodes']['*28'.$daynightnum]['enabled']=='1')
-            {
-                $code = '\\nToggle (enabled): '.$featurenum;
-            }
-            else
-            {
-                $code = '\\nToggle (disabled): '.$featurenum;
-            }
+            $code = sprintf(_("\\nToggle (%s): %s"), ($route['featurecodes']['*28'.$daynightnum]['enabled'] == '1') ? _('enabled') : _('disabled'), $featurenum);
         }
-        else
-        {
-            $code = '';
-        }
-            
+        
         #check current status and set path to active
-        $C ='/usr/sbin/asterisk -rx "database show DAYNIGHT/C'.$daynightnum.'" | cut -d \':\' -f2 | tr -d \' \' | head -1';
+        $current_daynight = array();
+        $C                = sprintf('/usr/sbin/asterisk -rx "database show DAYNIGHT/C%s" | cut -d \':\' -f2 | tr -d \' \' | head -1', $daynightnum);
         exec($C, $current_daynight);
-        $dactive = $nactive = "";
-        if ($current_daynight[0]=='DAY')
+
+        $dactive = "";
+        $nactive = "";
+        if ($current_daynight[0] == 'DAY')
         {
-            $dactive = "(Active)";
+            $dactive = _("(Active)");
         }
         else
         {
-            $nactive = "(Active)";
+            $nactive = _("(Active)");
         }
     
         foreach ($daynight as $d)
         {
-            if ($d['dmode']=='day')
+            switch ($d['dmode'])
             {
-                $route['parent_edge_label'] = ' Day Mode '.$dactive;
-                $route['parent_node'] = $node;
-                $this->dpp->followDestinations($route, $d['dest'], '');
-            }
-            elseif ($d['dmode']=='night')
-            {
-                $route['parent_edge_label'] = ' Night Mode '.$nactive;
-                $route['parent_node'] = $node;
-                $this->dpp->followDestinations($route, $d['dest'],'');
-            }
-            elseif ($d['dmode']=="fc_description")
-            {
-                $node->attribute('label', "Call Flow: ".$this->dpp->sanitizeLabels($d['dest']) .$code);
+                case 'day':
+                    $route['parent_node']       = $node;
+                    $route['parent_edge_label'] = sprintf(_(' Day Mode %s'), $dactive);
+                
+                    $this->dpp->followDestinations($route, $d['dest'], '');
+                    break;
+
+                case 'night':
+                    $route['parent_node']       = $node;
+                    $route['parent_edge_label'] = sprintf(_(' Night Mode %s'), $nactive);
+                
+                    $this->dpp->followDestinations($route, $d['dest'],'');
+                    break;
+
+                case 'fc_description':
+                    $node->attribute('label', $this->dpp->sanitizeLabels(sprintf(_("Call Flow: %s%s"), $d['dest'], $code)));
+                    break;
             }
         }
         

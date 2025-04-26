@@ -20,20 +20,24 @@ class DestinationIvr extends baseDestinations
         $iother = $matches[3];
 
         $ivr		= $route['ivrs'][$inum];
-        $recID		= $ivr['announcement'];
+        $recID		= $ivr['announcement'] ?? '';
+        $ivrName    = $ivr['name'] ?? '';
         $ivrRecName = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : 'None';
+
+        $ivrDestination        = $ivr['invalid_destination'] ?? '';
+        $ivrDestinationTimeout = $ivr['timeout_destination'] ?? '';
         
         #feature code exist?
-        if ( isset($route['featurecodes']['*29'.$ivr['announcement']]) )
+        if ( isset($route['featurecodes']['*29'.$recID]) )
         {
             #custom feature code?
-            if ($route['featurecodes']['*29'.$ivr['announcement']]['customcode']!='')
+            if ($route['featurecodes']['*29'.$recID]['customcode']!='')
             {
-                $featurenum = $route['featurecodes']['*29'.$ivr['announcement']]['customcode'];
+                $featurenum = $route['featurecodes']['*29'.$recID]['customcode'];
             }
             else
             {
-                $featurenum = $route['featurecodes']['*29'.$ivr['announcement']]['defaultcode'];
+                $featurenum = $route['featurecodes']['*29'.$recID]['defaultcode'];
             }
             #is it enabled?
             $rec_active = ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ? _('yes'): _('no');
@@ -44,9 +48,9 @@ class DestinationIvr extends baseDestinations
             $rec_status = _('disabled');
             $rec_active = _('no');
         }
-        $label = sprintf(_('IVR: %s\\nAnnouncement: %s\\lRecord (%s): %s\\l'), $this->dpp->sanitizeLabels($ivr['name']), $this->dpp->sanitizeLabels($ivrRecName), $rec_active, $rec_status);
+        $label = sprintf(_('IVR: %s\\nAnnouncement: %s\\lRecord (%s): %s\\l'), $ivrName, $ivrRecName, $rec_active, $rec_status);
 
-        $node->attribute('label', $label);
+        $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
         $node->attribute('URL', htmlentities('/admin/config.php?display=ivr&action=edit&id='.$inum));
         $node->attribute('target', '_blank');
@@ -71,31 +75,31 @@ class DestinationIvr extends baseDestinations
         }
         
         #are the invalid and timeout destinations the same?
-        if ($ivr['invalid_destination'] == $ivr['timeout_destination'])
+        if ($ivrDestination == $ivrDestinationTimeout)
         {
-            if (!empty($ivr['invalid_destination']))
+            if (!empty($ivrDestination))
             {
                 $route['parent_node']       = $node;
                 $route['parent_edge_label'] = sprintf(_(' Invalid Input, Timeout (%s secs)'), $ivr['timeout_time']);
             
-                $this->dpp->followDestinations($route, $ivr['invalid_destination'], '');
+                $this->dpp->followDestinations($route, $ivrDestination, '');
             }
         }
         else
         {
-            if ($ivr['invalid_destination'] != '') 
+            if ($ivrDestination != '') 
             {
                 $route['parent_node']       = $node;
                 $route['parent_edge_label'] = _(' Invalid Input');
                 
-                $this->dpp->followDestinations($route, $ivr['invalid_destination'], '');
+                $this->dpp->followDestinations($route, $ivrDestination, '');
             }
-            if ($ivr['timeout_destination'] != '')
+            if ($ivrDestinationTimeout != '')
             {
                 $route['parent_node']       = $node;
                 $route['parent_edge_label'] = sprintf(_(' Timeout (%s secs)'), $ivr['timeout_time']);
                 
-                $this->dpp->followDestinations($route, $ivr['timeout_destination'], '');
+                $this->dpp->followDestinations($route, $ivrDestinationTimeout, '');
             }
         }
     }

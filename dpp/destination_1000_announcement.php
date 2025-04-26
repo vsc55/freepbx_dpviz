@@ -42,9 +42,10 @@ class DestinationAnnouncement extends baseDestinations
             $rec_status = _('disabled');
             $rec_active = _('no');
         }
-        $label = sprintf(_('Announcements: %s\\nRecording: %s\\nRecord (%s): %s'), $this->dpp->sanitizeLabels($an['description']), $this->dpp->sanitizeLabels($announcement), $rec_active, $rec_status);
         
-        $node->attribute('label', $label);
+        $label = sprintf(_('Announcements: %s\\nRecording: %s\\nRecord (%s): %s'), $an['description'], $announcement, $rec_active, $rec_status);
+        
+        $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
         $node->attribute('URL', $this->genUrlConfig('announcement', $annum)); //'/admin/config.php?display=announcement&view=form&extdisplay='.$annum
         $node->attribute('target', '_blank');
