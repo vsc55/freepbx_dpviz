@@ -32,7 +32,7 @@
 					<div class="btn-toolbar" role="toolbar">
 						<div class="btn-group mr-2" role="group">
 							<button type="button" class="btn btn-primary" onclick="location.reload();"><?= _("Reload Page") ?></button>
-							<button type="button" class="btn btn-primary" id="toolbar_btn_download" data-scale="<?= $scale ?>" data-filename="<?= $filename ?>"><?= sprintf(_("Export as %s"), $filename) ?></button>
+							<button type="button" class="btn btn-primary" id="toolbar_btn_download" data-scale="<?= $settings['scale'] ?>" data-filename="<?= $filename ?>"><?= sprintf(_("Export as %s"), $basefilename) ?></button>
 							<button type="button" class="btn btn-default" id="toolbar_btn_focus"><?= _("Highlight Paths") ?></button>
 						</div>
 					</div>
@@ -47,7 +47,7 @@
 							</h2>
 						</div>
 						<div class="col-3 text-right">
-							<?php if ($datetime == 1): ?>
+							<?php if ($settings['datetime'] == 1): ?>
 								<h6 class="text-muted mb-0"><?= date('Y-m-d H:i:s') ?></h6>
 							<?php endif; ?>
 						</div>
@@ -278,7 +278,7 @@
 	}
 
 </script>
-<?php if ($panzoom==1) : ?>
+<?php if ($settings['panzoom'] == 1) : ?>
 	<script src="modules/dpviz/assets/js/panzoom.min.js"></script>
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", function() {

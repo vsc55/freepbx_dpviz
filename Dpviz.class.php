@@ -187,12 +187,94 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				break;
 
 			case 'options':
-				// $data['datetime'] 			= $settings['datetime'];
-				$data['horizontal'] 		= $settings['horizontal'];
-				$data['panzoom'] 			= $settings['panzoom'];
-				$data['scale'] 				= $settings['scale'];
-				$data['dynmembers'] 		= $settings['dynmembers'];
-				$data['direction'] 			= $settings['direction'];
+				// definition the parameters for the dynamic generation of the options list of the settings tab
+				$data['tab']['settings'] = array();
+				foreach ($settings as $key => $val)
+				{
+					switch($key)
+					{
+						case 'datetime':
+							$data['tab']['settings']["0"] = array(
+								'type' 	=> 'checkbox',
+								'label' => _("Date & Time Stamp"),
+								'key' 	=> $key,
+								'val' 	=> $val,
+								'id' 	=> $key,
+								'help' 	=> _("Displays the date and time on the graph."),
+							);
+						break;
+
+						case 'scale':
+							$data['tab']['settings']["1"] = array(
+								'type'	  => 'checkbox',
+								'label'	  => _("Export as High-Resolution PNG"),
+								'key'	  => $key,
+								'val'	  => $val,
+								'id'	  => $key,
+								'val_yes' => 3,
+								'val_no'  => 1,
+								'help'	  => _("Increases PNG resolution during export."),
+							);
+						break;
+
+						case 'horizontal':
+							$data['tab']['settings']["2"] = array(
+								'type' 	=> 'checkbox',
+								'label' => _("Horizontal Layout"),
+								'key' 	=> $key,
+								'val' 	=> $val,
+								'id' 	=> $key,
+								'help' 	=> _("Displays the dial plan in a horizontal layout."),
+							);
+						break;
+
+						case 'combine_queue_ring':
+							$data['tab']['settings']["3"] = array(
+								'type' 	=> 'checkbox',
+								'label' => _("Combine Queue Agents and RG Members into one node"),
+								'key' 	=> $key,
+								'val' 	=> $val,
+								'id' 	=> $key,
+								'help' 	=> _("When an extension is part of both a queue and a ring group, it will be shown as a single node instead of two."),
+							);
+						break;
+
+						case 'panzoom':
+							$data['tab']['settings']["4"] = array(
+								'type' 	=> 'checkbox',
+								'label' => _("Pan & Zoom"),
+								'key' 	=> $key,
+								'val' 	=> $val,
+								'id' 	=> $key,
+								'help' 	=> _("Allows you to use pan and zoom functions. Click and hold to pan, and use the mouse wheel to zoom."),
+							);
+							break;
+						case 'dynmembers':
+							$data['tab']['settings']["5"] = array(
+								'type' 	=> 'checkbox',
+								'label' => _("Show Dynamic Members for Queues"),
+								'key' 	=> $key,
+								'val' 	=> $val,
+								'id' 	=> $key,
+								'help' 	=> _("Displays the list of dynamic agents currently assigned to the queues."),
+							);
+						break;
+						case 'ext_optional':
+							$data['tab']['settings']["6"] = array(
+								'type' 	=> 'checkbox',
+								'label' => _("Show Extension Optional Destinations"),
+								'key' 	=> $key,
+								'val' 	=> $val,
+								'id' 	=> $key,
+								'help' 	=> _("Displays and follows the optional destinations (No Answer, Busy, Not Reachable) set for the extension in the Advanced tab."),
+							);
+						break;
+					}
+
+					// We sort the array so that the html is generated in the correct order
+					ksort($data['tab']['settings']);
+				}
+
 				$data['clickedNodeTitle'] 	= $request['clickedNodeTitle'] ?? '';
 				
 				$data_return = load_view(__DIR__."/views/view.options.php", $data);
@@ -212,15 +294,11 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				}
 				else
 				{
-					$data['datetime'] 	= $settings['datetime'];
-					$data['scale'] 		= $settings['scale'];
-					$data['panzoom'] 	= $settings['panzoom'];
-					$data['direction'] 	= $settings['direction'];
-
-					$this->dpp->setDirection($data['direction']);
+					$this->dpp->setDirection($settings['direction']);
 
 					$data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
-					$data['filename'] 		  = ($data['iroute'] == '') ? 'ANY.png' : sprintf("%s.png", $data['iroute']);
+					$data['basefilename']	  = ($data['iroute'] == '') ? 'ANY' : $data['iroute'];
+					$data['filename'] 		  = sprintf("%s.png", $data['basefilename']);
 					$data['isExistRoute'] 	  = $this->dpp->isExistRoute($data['iroute']);
 
 					if (is_numeric($data['extdisplay']) && (strlen($data['extdisplay'])==10 || strlen($data['extdisplay'])==11))
