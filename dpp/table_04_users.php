@@ -14,19 +14,18 @@ class TableUsers extends baseTables
         $this->key_name = "extensions";
     }
 
-    public function callback_load()
+    public function callback_load(&$dproute)
     {
         foreach($this->getTableData() as $user)
 		{
 			$id 	 = $user[$this->key_id];
 			// $u[$id]  = $user;
 
-            $Q       = sprintf('grep -E \'^%s[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3', $id);
-            $Qresult = array();
-			exec($Q, $Qresult);
+            $email = 'grep -E \'^'.$id.'[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3';
+		    exec($email, $emailResult);
 
-			$this->route[$this->key_name][$id]= $user;
-			$this->route[$this->key_name][$id]['email'] = !empty($Qresult[0]) ? $Qresult[0] : _('unassigned');
+			$dproute[$this->key_name][$id]= $user;
+			$dproute[$this->key_name][$id]['email'] = !empty($emailResult[0]) ? $emailResult[0] : _('unassigned');
 		}
         return true;
     }

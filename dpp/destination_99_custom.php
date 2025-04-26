@@ -13,14 +13,17 @@ class DestinationCustom extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        #custom destinations
-        $custDest = null;
-        foreach ($route['customapps'] as $entry)
+        if (!empty($route['customapps']))
         {
-            if ($entry['target'] === $destination)
+            #custom destinations
+            $custDest = null;
+            foreach ($route['customapps'] as $entry)
             {
-                $custDest = $entry;
-                break;
+                if ($entry['target'] === $destination)
+                {
+                    $custDest = $entry;
+                    break;
+                }
             }
         }
         #end of Custom Destinations

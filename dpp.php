@@ -426,11 +426,19 @@ class dpp {
 				$didLabel .= sprintf(' / %s', $this->formatPhoneNumbers($route['cidnum']));
 				$didLink  .= $route['cidnum'];
 			}
-			$didLabel .= sprintf('\\n%s', $route['description']);
+			$didLabel  .= sprintf('\\n%s', $route['description']);
+
+			$didData	= $route['incoming'][$route['extension']];
+			$didTooltip = sprintf("%s\\n", $didData['extension']);
+			$didTooltip.= !empty($didData['cidnum']) 		? sprintf(_('Caller ID Number= %s\\n'), $didData['cidnum']) : '';
+			$didTooltip.= !empty($didData['description']) 	? sprintf(_('Description= %s\\n'), $didData['description']) : '';
+			$didTooltip.= !empty($didData['alertinfo']) 	? sprintf(_('Alert Info= %s\\n'), $didData['alertinfo']) : '';
+			$didTooltip.= !empty($didData['grppre']) 		? sprintf(_('CID Prefix= %s\\n'), $didData['grppre']) : '';
+			$didTooltip.= !empty($didData['mohclass']) 		? sprintf(_('MOH Class= %s\\n'), $didData['mohclass']) : '';
 	
 			$node_extension = array(
 				'label'		=> $this->sanitizeLabels($didLabel),
-				'tooltip'	=> $this->sanitizeLabels($didLabel),
+				'tooltip'	=> $this->sanitizeLabels($didTooltip),
 				'width'		=> 2,
 				'margin'	=> '.13',
 				'shape'		=> 'cds',
@@ -500,7 +508,8 @@ class dpp {
 			$this->log(9, "NOT making an edge from $ptxt -> $ntxt");
 			$edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
 			$edge->attribute('label', $this->sanitizeLabels($route['parent_edge_label']));
-			$edge->attribute('labeltooltip', $this->sanitizeLabels($route['parent_edge_label']));
+			$edge->attribute('labeltooltip', $this->sanitizeLabels($ptxt));
+			$edge->attribute('edgetooltip', $this->sanitizeLabels($ptxt));
 			
 		}
 		else
@@ -510,15 +519,19 @@ class dpp {
 			$edge->attribute('label', $this->sanitizeLabels($route['parent_edge_label']));
 			$edge->attribute('labeltooltip', $this->sanitizeLabels($route['parent_edge_label']));
 			
-			if (preg_match("/^( Match| NoMatch)/", $route['parent_edge_label']))
+			if (preg_match("/^( Match| No Match)/", $route['parent_edge_label']))
 			{
 				$edge->attribute('URL', $route['parent_edge_url']);
 				$edge->attribute('target', $route['parent_edge_target']);
+				$edge->attribute('labeltooltip', $this->sanitizeLabels($route['parent_edge_labeltooltip']));
+				$edge->attribute('edgetooltip', $this->sanitizeLabels($route['parent_edge_labeltooltip']));
 			}
 			if (preg_match("/^( IVR)./", $route['parent_edge_label']))
 			{
 				$edge->attribute('style', 'dashed');
 			}
+
+			//start from node
 			if (preg_match("/^ +$/", $route['parent_edge_label']))
 			{
 				$edge->attribute('style', 'dotted');

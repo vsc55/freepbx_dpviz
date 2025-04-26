@@ -5,7 +5,7 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableDynrouteDests extends baseTables
 {
-    public function __construct($dpp)
+    public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "dynroute_dests", true);
         $this->key_id   = "dynroute_id";

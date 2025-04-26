@@ -14,20 +14,20 @@ class TableTimegroupsDetails extends baseTables
         $this->key_name = "timegroups";
     }
 
-    public function callback_load()
+    public function callback_load(&$dproute)
     {
         foreach($this->getTableData() as $tgd)
 		{
 			$id = $tgd[$this->key_id];
-			if (! isset($this->route[$this->key_name][$id]))
+			if (! isset($dproute[$this->key_name][$id]))
 			{
 				$this->log(1, sprintf("timegroups_details id found for unknown timegroup, id=%s", $id));
                 continue;
 			}
 			
-            if (!isset($this->route[$this->key_name][$id]['time']))
+            if (!isset($dproute[$this->key_name][$id]['time']))
             {
-                $this->route[$this->key_name][$id]['time'] = '';
+                $dproute[$this->key_name][$id]['time'] = '';
             }
             $exploded = explode("|", $tgd['time']);
             $time 	  = ($exploded[0] !== '*') ? $exploded[0] : '';
@@ -35,7 +35,7 @@ class TableTimegroupsDetails extends baseTables
             $date 	  = ($exploded[2] !== '*') ? sprintf("%s ", $exploded[2]) : '';
             $month 	  = ($exploded[3] !== '*') ? sprintf("%s ", ucfirst($exploded[3])) : '';
 
-            $this->route[$this->key_name][$id]['time'] .= sprintf("%s%s%s%s\\l", $dow, $month, $date, $time);
+            $dproute[$this->key_name][$id]['time'] .= sprintf("%s%s%s%s\\l", $dow, $month, $date, $time);
 		}
         return true;
     }

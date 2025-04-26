@@ -16,11 +16,13 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 	public $dpp = null;
 
 	Const default_setting = [
-		'panzoom'	  => 1,
-		'horizontal'  => 0,
-		'datetime'	  => 1,
-		'scale'		  => 1,
-		'dynmembers'  => 0
+		'panzoom'	  		 => 1,
+		'horizontal'  		 => 0,
+		'datetime'	  		 => 1,
+		'scale'		  		 => 1,
+		'dynmembers'  		 => 0,
+		'combine_queue_ring' => 0,
+		'ext_optional' 		 => 0,
 	];
 
     public function __construct($freepbx = null)
@@ -164,13 +166,13 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 		$request = freepbxGetSanitizedRequest();
 		// $request = $_REQUEST;
 
-		$setting = $this->getSettingAll();
+		$settings = $this->getSettingAll();
 
 		$data = array(
 			"dpviz"	  	 => $this,
 			'request' 	 => $request,
 			'page' 	  	 => $page ?? '',
-			'setting' 	 => $setting,
+			'settings' 	 => $settings,
 			'extdisplay' => $request['extdisplay'] ?? '',
 			'cid' 		 => $request['cid'] ?? '',
 		);
@@ -185,12 +187,12 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				break;
 
 			case 'options':
-				$data['datetime'] 			= $setting['datetime'];
-				$data['horizontal'] 		= $setting['horizontal'];
-				$data['panzoom'] 			= $setting['panzoom'];
-				$data['scale'] 				= $setting['scale'];
-				$data['dynmembers'] 		= $setting['dynmembers'];
-				$data['direction'] 			= $setting['direction'];
+				// $data['datetime'] 			= $settings['datetime'];
+				$data['horizontal'] 		= $settings['horizontal'];
+				$data['panzoom'] 			= $settings['panzoom'];
+				$data['scale'] 				= $settings['scale'];
+				$data['dynmembers'] 		= $settings['dynmembers'];
+				$data['direction'] 			= $settings['direction'];
 				$data['clickedNodeTitle'] 	= $request['clickedNodeTitle'] ?? '';
 				
 				$data_return = load_view(__DIR__."/views/view.options.php", $data);
@@ -210,10 +212,10 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				}
 				else
 				{
-					$data['datetime'] 	= $setting['datetime'];
-					$data['scale'] 		= $setting['scale'];
-					$data['panzoom'] 	= $setting['panzoom'];
-					$data['direction'] 	= $setting['direction'];
+					$data['datetime'] 	= $settings['datetime'];
+					$data['scale'] 		= $settings['scale'];
+					$data['panzoom'] 	= $settings['panzoom'];
+					$data['direction'] 	= $settings['direction'];
 
 					$this->dpp->setDirection($data['direction']);
 

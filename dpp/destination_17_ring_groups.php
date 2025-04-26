@@ -8,30 +8,34 @@ class DestinationRingGroups extends baseDestinations
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp);
-        $this->regex = "/^ext-group,(\d+),(\d+)/";
+        $this->regex = "/^ext-group,(\d+)/";
     }
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
         $rgnum 	 = $matches[1];
-        $rgother = $matches[2];
         $rg      = $route['ringgroups'][$rgnum];
 
         $label   = sprintf(_('Ring Group: %s %s'), $rgnum, $this->dpp->sanitizeLabels($rg['description']));
 
+        //TODO: change metod to getSetting() in Dpviz class
+        $combineQueueRing  = \FreePBX::Dpviz()->getSetting('combine_queue_ring');
+        
         $node->attribute('label', $label);
         $node->attribute('URL', $this->genUrlConfig('ringgroups', $rgnum)); //'/admin/config.php?display=ringgroups&view=form&extdisplay='.$rgnum
         $node->attribute('target', '_blank');
         $node->attribute('fillcolor', self::pastels[12]);
         $node->attribute('style', 'filled');
         
-        $grplist = preg_split("/-/", $rg['grplist']);
+        $grplist=str_replace('#', '', $rg['grplist']);
+		$grplist = preg_split("/-/", $grplist);
     
         foreach ($grplist as $member)
         {
             $route['parent_node']       = $node;
             $route['parent_edge_label'] = '';
-            $this->dpp->followDestinations($route, sprintf("rg%s", $member), '');
+
+            $this->dpp->followDestinations($route, sprintf( $combineQueueRing ? "qmember%s" : "rg%s", $member), '');
         } 
         
         # The destinations we need to follow are the no-answer destination

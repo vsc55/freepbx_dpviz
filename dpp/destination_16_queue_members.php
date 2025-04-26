@@ -44,6 +44,5 @@ class DestinationQueueMembers extends baseDestinations
         {
             $node->attribute('fillcolor', self::pastels[8]);
         }
-        $node->attribute('style', 'filled');
     }
 }

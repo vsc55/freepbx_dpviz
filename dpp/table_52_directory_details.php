@@ -5,7 +5,7 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableDirectoryDetails extends baseTables
 {
-    public function __construct($dpp)
+    public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "directory_details", true);
         $this->key_id   = "id";

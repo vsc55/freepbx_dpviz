@@ -71,10 +71,13 @@ class DestinationIvr extends baseDestinations
         #are the invalid and timeout destinations the same?
         if ($ivr['invalid_destination'] == $ivr['timeout_destination'])
         {
-            $route['parent_node']       = $node;
-            $route['parent_edge_label'] = sprintf(_(' Invalid Input, Timeout (%s secs)'), $ivr['timeout_time']);
+            if (!empty($ivr['invalid_destination']))
+            {
+                $route['parent_node']       = $node;
+                $route['parent_edge_label'] = sprintf(_(' Invalid Input, Timeout (%s secs)'), $ivr['timeout_time']);
             
-            $this->dpp->followDestinations($route, $ivr['invalid_destination'], '');
+                $this->dpp->followDestinations($route, $ivr['invalid_destination'], '');
+            }
         }
         else
         {

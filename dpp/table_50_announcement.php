@@ -12,14 +12,14 @@ class TableAnnouncement extends baseTables
         $this->key_name    = "announcements";
     }
 
-    public function callback_load()
+    public function callback_load(&$dproute)
     {
         foreach($this->getTableData() as $an)
 		{
             $id   = $an[$this->key_id];
             $dest = $an['post_dest'];
-            $this->route[$this->key_name][$id] = $an;
-            $this->route[$this->key_name][$id]['dest'] = $dest;
+            $dproute[$this->key_name][$id] = $an;
+            $dproute[$this->key_name][$id]['dest'] = $dest;
 
             $this->log(9, sprintf("announcement dest:  an=%s   dest=%s", $id, $dest));
 		}

@@ -5,7 +5,7 @@ require_once __DIR__ . '/baseTables.php';
 
 class TableKvstoreFreepbxModulesCustomappsreg extends baseTables
 {
-    public function __construct($dpp)
+    public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "kvstore_FreePBX_modules_Customappsreg", true);
         $this->key_id   = "key";
