@@ -1046,15 +1046,10 @@ function dpp_load_tables(&$dproute) {
   foreach($results as $users) {
 		$emailResult=array();
     $id = $users['extension'];
-    $u[$id]= $users;
     $dproute['extensions'][$id]= $users;
 		$email='grep -E \'^'.$id.'[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3';
 		exec($email, $emailResult);
-		if (!empty($emailResult[0])){
-			$dproute['extensions'][$id]['email'] =$emailResult[0];
-		}else{
-			$dproute['extensions'][$id]['email'] ='unassigned';
-		}
+		$dproute['extensions'][$id]['email'] = !empty($emailResult[0]) ? $emailResult[0] : 'unassigned';
   }
 
 	# Inbound Routes

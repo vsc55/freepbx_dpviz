@@ -2,7 +2,9 @@
 $options=options_gets();
 $destinationColumn= isset($options[0]['destination']) ? $options[0]['destination'] : '0';
 ?>
-
+<div id="toolbar-all">
+<h1>Inbound Routes</h1>
+</div>
 <table id="dpviz-side" data-escape="true" data-url="ajax.php?module=core&amp;command=getJSON&amp;jdata=allDID" data-cache="true" data-toolbar="#toolbar-all" data-toggle="table" data-search="true" class="table">
 	<thead>
 		<tr>			
