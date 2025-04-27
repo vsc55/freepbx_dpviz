@@ -5,29 +5,7 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="fpbx-container">
-
-				<div class="panel panel-info panel-help" style="position: relative;">
-					<button type="button" class="close" aria-label="Close" style="position: absolute; top: 2px; right: 5px; z-index: 10;" onclick="this.closest('.panel').remove();">&times;</button>
-					<div class="panel-heading collapsed" data-toggle="collapse" href="#panelId67f91e1a7403f" role="button" aria-expanded="false" aria-controls="panelId67f91e1a7403f">
-						<h3 class="panel-title">
-							<span class="pull-left"><i class="fa fa-info-circle fa-lg fa-fw"></i></span><?= _("Navigation and usage") ?><span class="pull-right"><i class="chevron fa fa-fw"></i></span>
-						</h3>
-					</div>
-					<div id="panelId67f91e1a7403f" class="panel-collapse collapse">
-						<div class="panel-body">
-							<ul class="list-unstyled">
-								<li><strong><?= _("Redraw from a Node:") ?></strong> <?= _("Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a node to make it the new starting point in the diagram. To revert, <strong>Ctrl/Cmd + left-click</strong> the parent node.") ?></li>
-								<li><strong><?= _("Highlight Paths:") ?></strong> <?= _("Click <strong>Highlight Paths</strong>, then select a node or edge (links are inactive). Click <strong>Remove Highlights</strong> to clear.") ?></li>
-								<li><strong><?= _("Hover:") ?></strong> <?= _("Hover over a path to highlight between destinations.") ?></li>
-								<li><strong><?= _("Open Destinations:") ?></strong> <?= _("Click a destination to open it in a new tab.") ?></li>
-								<li><strong><?= _("Open Time Groups:") ?></strong> <?= _("Click on a \"<strong>Match: (timegroup)</strong>\" or \"<strong>NoMatch</strong>\" to open in a new tab.") ?></li>
-								<li><strong><?= _("Pan:") ?></strong> <?= _("Hold the left mouse button and drag to move the view.") ?></li>
-								<li><strong><?= _("Zoom:") ?></strong> <?= _("Use the mouse wheel to zoom in and out.") ?></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-
+				
 				<div class="btn-toolbar bg-light border rounded p-3 shadow-sm mb-4" role="toolbar">
 					<div class="btn-toolbar" role="toolbar">
 						<div class="btn-group mr-2" role="group">

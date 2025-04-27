@@ -18,13 +18,21 @@
 								<?= _("Settings") ?>
 							</a>
 						</li>
+						<li role="presentation" data-name="NavAndUsage" class="change-tab">
+							<a href="#NavAndUsage" aria-controls="NavAndUsage" role="tab" data-toggle="tab">
+								<?= _("Navigation and Usage") ?>
+							</a>
+						</li>
 					</ul>
 					<div class="tab-content display">
 						<div role="tabpanel" id="dpbox" class="tab-pane active">
 							<?= $dpviz->showPage('dialplan') ?>
 						</div>
 						<div role="tabpanel" id="settings" class="tab-pane">
-							<?= $dpviz->showPage('options') ?>						
+							<?= $dpviz->showPage('options') ?>
+						</div>
+						<div role="tabpanel" id="NavAndUsage" class="tab-pane">
+							<?= $dpviz->showPage('NavAndUsage') ?>
 						</div>
 					</div>
 				</div>

@@ -186,6 +186,10 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				$data_return = load_view(__DIR__."/views/page.main.php", $data);
 				break;
 
+			case 'NavAndUsage':
+				$data_return = load_view(__DIR__."/views/view.nav_and_usage.php", $data);
+				break;
+
 			case 'options':
 				// definition the parameters for the dynamic generation of the options list of the settings tab
 				$data['tab']['settings'] = array();
