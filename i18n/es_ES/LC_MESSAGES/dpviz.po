@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-26 22:16+0200\n"
-"PO-Revision-Date: 2025-04-26 22:17+0200\n"
+"POT-Creation-Date: 2025-04-27 12:15+0200\n"
+"PO-Revision-Date: 2025-04-27 12:25+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -13,35 +13,35 @@ msgstr ""
 "X-Generator: Poedit 3.6\n"
 "X-Poedit-Basepath: .\n"
 
-#: Dpviz.class.php:199
+#: Dpviz.class.php:203
 msgid "Date & Time Stamp"
 msgstr "Sello de fecha y hora"
 
-#: Dpviz.class.php:203
+#: Dpviz.class.php:207
 msgid "Displays the date and time on the graph."
 msgstr "Muestra la fecha y la hora en el gráfico."
 
-#: Dpviz.class.php:210
+#: Dpviz.class.php:214
 msgid "Export as High-Resolution PNG"
 msgstr "Exportar como PNG de alta resolución"
 
-#: Dpviz.class.php:216
+#: Dpviz.class.php:220
 msgid "Increases PNG resolution during export."
 msgstr "Aumenta la resolución PNG durante la exportación."
 
-#: Dpviz.class.php:223
+#: Dpviz.class.php:227
 msgid "Horizontal Layout"
 msgstr "Diseño horizontal"
 
-#: Dpviz.class.php:227
+#: Dpviz.class.php:231
 msgid "Displays the dial plan in a horizontal layout."
 msgstr "Muestra el plan de marcación en formato horizontal."
 
-#: Dpviz.class.php:234
+#: Dpviz.class.php:238
 msgid "Combine Queue Agents and RG Members into one node"
 msgstr "Combinar agentes de cola y miembros de RG en un nodo"
 
-#: Dpviz.class.php:238
+#: Dpviz.class.php:242
 msgid ""
 "When an extension is part of both a queue and a ring group, it will be shown "
 "as a single node instead of two."
@@ -49,11 +49,11 @@ msgstr ""
 "Cuando una extensión forma parte tanto de una cola como de un grupo de "
 "anillos, se mostrará como un único nodo en lugar de dos."
 
-#: Dpviz.class.php:245
+#: Dpviz.class.php:249
 msgid "Pan & Zoom"
 msgstr "Panorámica y zoom"
 
-#: Dpviz.class.php:249
+#: Dpviz.class.php:253
 msgid ""
 "Allows you to use pan and zoom functions. Click and hold to pan, and use the "
 "mouse wheel to zoom."
@@ -61,20 +61,20 @@ msgstr ""
 "Permite utilizar las funciones de panorámica y zoom. Mantenga pulsado para "
 "desplazarse y utilice la rueda del ratón para hacer zoom."
 
-#: Dpviz.class.php:255
+#: Dpviz.class.php:259
 msgid "Show Dynamic Members for Queues"
 msgstr "Mostrar miembros dinámicos para colas"
 
-#: Dpviz.class.php:259
+#: Dpviz.class.php:263
 msgid "Displays the list of dynamic agents currently assigned to the queues."
 msgstr ""
 "Muestra la lista de agentes dinámicos asignados actualmente a las colas."
 
-#: Dpviz.class.php:265
+#: Dpviz.class.php:269
 msgid "Show Extension Optional Destinations"
 msgstr "Mostrar destinos opcionales de la ampliación"
 
-#: Dpviz.class.php:269
+#: Dpviz.class.php:273
 msgid ""
 "Displays and follows the optional destinations (No Answer, Busy, Not "
 "Reachable) set for the extension in the Advanced tab."
@@ -82,42 +82,42 @@ msgstr ""
 "Muestra y sigue los destinos opcionales (Sin respuesta, Ocupado, No "
 "localizable) configurados para la extensión en la pestaña Avanzado."
 
-#: Dpviz.class.php:323
+#: Dpviz.class.php:327
 #, php-format
 msgid "❌Unknown page: %s"
 msgstr "❌Página desconocida: %s"
 
-#: Dpviz.class.php:373
+#: Dpviz.class.php:377
 msgid "✔ Settings saved successfully"
 msgstr "✔ Configuración guardados correctamente"
 
-#: Dpviz.class.php:380
+#: Dpviz.class.php:384
 msgid "❌ Failed to save settings"
 msgstr "❌ No se ha podido guardar la configuración"
 
-#: Dpviz.class.php:390
+#: Dpviz.class.php:394
 msgid "✔ Settings reset to default values"
 msgstr "✔ Configuración restablecida a los valores predeterminados"
 
-#: Dpviz.class.php:419
+#: Dpviz.class.php:423
 #, php-format
 msgid "✔ You are using the latest version: %s"
 msgstr "✔ Está utilizando la última versión: %s"
 
-#: Dpviz.class.php:423
+#: Dpviz.class.php:427
 #, php-format
 msgid "⚠ A new version is available: %s, current version: %s"
 msgstr "⚠ Una nueva versión está disponible: %s, versión actual: %s"
 
-#: Dpviz.class.php:429
+#: Dpviz.class.php:433
 msgid "❌ Unknown command"
 msgstr "❌ Comando desconocido"
 
-#: Dpviz.class.php:450
+#: Dpviz.class.php:454
 msgid "Failed to fetch release info."
 msgstr ""
 
-#: Dpviz.class.php:456
+#: Dpviz.class.php:460
 msgid "Invalid response from GitHub."
 msgstr "Respuesta no válida de GitHub."
 
@@ -346,6 +346,11 @@ msgstr "Difusión VM: %s %s"
 msgid "Ext %s %s\\n%s"
 msgstr "Ext %s %s\\n%s"
 
+#: dpp/destination_13500_trunk.php:23
+#, php-format
+msgid "Trunk (%s): %s"
+msgstr "Troncal (%s): %s"
+
 #: dpp/destination_1500_blackhole.php:18
 msgid "Music On Hold"
 msgstr "Música en espera"
@@ -545,9 +550,9 @@ msgstr "Cust Dest: %s\\nDestino: %s\\l"
 msgid "unassigned"
 msgstr "no asignado"
 
-#: views/page.main.php:1 views/rnav.php:2 views/view.dialplan.err.route.php:1
-#: views/view.dialplan.php:2 views/view.dialplan.select.null.php:1
-#: views/view.options.php:1
+#: views/page.main.php:1 views/rnav.php:1 views/view.dialplan.err.route.php:1
+#: views/view.dialplan.php:1 views/view.dialplan.select.null.php:1
+#: views/view.nav_and_usage.php:1 views/view.options.php:1
 msgid "No direct script access allowed"
 msgstr "No se permite el acceso directo a los scripts"
 
@@ -555,23 +560,27 @@ msgstr "No se permite el acceso directo a los scripts"
 msgid "Dial Plan Vizualizer"
 msgstr "Visualizador del Plan de Marcación"
 
-#: views/page.main.php:13
+#: views/page.main.php:12
 msgid "Dial Plan"
 msgstr "Plan de Marcado"
 
-#: views/page.main.php:18
+#: views/page.main.php:17
 msgid "Settings"
 msgstr "Configuraciones"
 
-#: views/rnav.php:18
+#: views/page.main.php:22
+msgid "Navigation and Usage"
+msgstr "Navegación y Uso"
+
+#: views/rnav.php:17
 msgid "DID / CID"
 msgstr "DID / CID"
 
-#: views/rnav.php:19
+#: views/rnav.php:18 views/view.nav_and_usage.php:19
 msgid "Description"
 msgstr "Descripción"
 
-#: views/rnav.php:20
+#: views/rnav.php:19
 msgid "Destination"
 msgstr "Destino"
 
@@ -597,98 +606,20 @@ msgstr ""
 "rutas entrantes y asegúrese de que el destino esté correctamente definido "
 "dentro de su Plan de Marcado."
 
-#: views/view.dialplan.php:13
-msgid "Navigation and usage"
-msgstr "Navegación y uso"
-
-#: views/view.dialplan.php:19
-msgid "Redraw from a Node:"
-msgstr "Redibujar desde un Nodo:"
-
-#: views/view.dialplan.php:19
-msgid ""
-"Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a "
-"node to make it the new starting point in the diagram. To revert, "
-"<strong>Ctrl/Cmd + left-click</strong> the parent node."
-msgstr ""
-"Pulsa <strong>Ctrl</strong><strong>(Cmd</strong> en macOS) y haz clic con el "
-"botón izquierdo en un nodo para convertirlo en el nuevo punto de partida del "
-"diagrama. Para revertir, <strong>Ctrl/Cmd + clic izquierdo en</strong> el "
-"nodo padre."
-
-#: views/view.dialplan.php:20
-msgid "Highlight Paths:"
-msgstr "Resaltar rutas:"
-
-#: views/view.dialplan.php:20
-msgid ""
-"Click <strong>Highlight Paths</strong>, then select a node or edge (links "
-"are inactive). Click <strong>Remove Highlights</strong> to clear."
-msgstr ""
-"Haga clic en <strong>Resaltar rutas</strong> y, a continuación, seleccione "
-"un nodo o arista (los enlaces están inactivos). Haga clic en "
-"<strong>Eliminar resaltados</strong> para borrar."
-
-#: views/view.dialplan.php:21
-msgid "Hover:"
-msgstr ""
-
-#: views/view.dialplan.php:21
-msgid "Hover over a path to highlight between destinations."
-msgstr "Pase el ratón por encima de una ruta para resaltar entre los destinos."
-
-#: views/view.dialplan.php:22
-msgid "Open Destinations:"
-msgstr "Destinos abiertos:"
-
-#: views/view.dialplan.php:22
-msgid "Click a destination to open it in a new tab."
-msgstr "Haga clic en un destino para abrirlo en una nueva pestaña."
-
-#: views/view.dialplan.php:23
-msgid "Open Time Groups:"
-msgstr "Grupos de Tiempo Abierto:"
-
-#: views/view.dialplan.php:23
-msgid ""
-"Click on a \"<strong>Match: (timegroup)</strong>\" or \"<strong>NoMatch</"
-"strong>\" to open in a new tab."
-msgstr ""
-"Haga clic en<strong>\"Match: (timegroup)</strong>\" o<strong>\"NoMatch</"
-"strong>\" para abrir en una nueva pestaña."
-
-#: views/view.dialplan.php:24
-msgid "Pan:"
-msgstr "Pan:"
-
-#: views/view.dialplan.php:24
-msgid "Hold the left mouse button and drag to move the view."
-msgstr ""
-"Mantenga pulsado el botón izquierdo del ratón y arrástrelo para mover la "
-"vista."
-
-#: views/view.dialplan.php:25
-msgid "Zoom:"
-msgstr "Zoom:"
-
-#: views/view.dialplan.php:25
-msgid "Use the mouse wheel to zoom in and out."
-msgstr "Utiliza la rueda del ratón para acercar y alejar la imagen."
-
-#: views/view.dialplan.php:34
+#: views/view.dialplan.php:11
 msgid "Reload Page"
 msgstr "Recargar página"
 
-#: views/view.dialplan.php:35
+#: views/view.dialplan.php:12
 #, php-format
 msgid "Export as %s"
 msgstr "Exportar como %s"
 
-#: views/view.dialplan.php:36
+#: views/view.dialplan.php:13 views/view.nav_and_usage.php:28
 msgid "Highlight Paths"
 msgstr "Resaltar rutas"
 
-#: views/view.dialplan.php:46
+#: views/view.dialplan.php:23
 #, php-format
 msgid "Dial Plan For Inbound Route %s%s:%s"
 msgstr "Plan de marcación para la ruta de entrada %s%s:%s"
@@ -714,6 +645,85 @@ msgstr ""
 "enrutamiento de llamadas para dicho plan. Esta selección es imprescindible "
 "para continuar con la inspección o edición del flujo de llamadas."
 
+#: views/view.nav_and_usage.php:10
+msgid "Information on how to navigate and use the dial plane flow"
+msgstr ""
+"Información sobre cómo navegar y utilizar el flujo del Plano de Marcado"
+
+#: views/view.nav_and_usage.php:18
+msgid "Feature"
+msgstr "Característica"
+
+#: views/view.nav_and_usage.php:24
+msgid "Redraw from a Node"
+msgstr "Redibujar desde un Nodo"
+
+#: views/view.nav_and_usage.php:25
+msgid ""
+"Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a "
+"node to make it the new starting point in the diagram. To revert, "
+"<strong>Ctrl/Cmd + left-click</strong> the parent node."
+msgstr ""
+"Pulsa <strong>Ctrl</strong><strong>(Cmd</strong> en macOS) y haz clic con el "
+"botón izquierdo en un nodo para convertirlo en el nuevo punto de partida del "
+"diagrama. Para revertir, <strong>Ctrl/Cmd + clic izquierdo en</strong> el "
+"nodo padre."
+
+#: views/view.nav_and_usage.php:29
+msgid ""
+"Click <strong>Highlight Paths</strong>, then select a node or edge (links "
+"are inactive). Click <strong>Remove Highlights</strong> to clear."
+msgstr ""
+"Haga clic en <strong>Resaltar rutas</strong> y, a continuación, seleccione "
+"un nodo o arista (los enlaces están inactivos). Haga clic en "
+"<strong>Eliminar resaltados</strong> para borrar."
+
+#: views/view.nav_and_usage.php:32
+msgid "Hover"
+msgstr ""
+
+#: views/view.nav_and_usage.php:33
+msgid "Hover over a path to highlight between destinations."
+msgstr "Pase el ratón por encima de una ruta para resaltar entre los destinos."
+
+#: views/view.nav_and_usage.php:36
+msgid "Open Destinations"
+msgstr "Abrir Destinos"
+
+#: views/view.nav_and_usage.php:37
+msgid "Click a destination to open it in a new tab."
+msgstr "Haga clic en un destino para abrirlo en una nueva pestaña."
+
+#: views/view.nav_and_usage.php:40
+msgid "Open Time Groups"
+msgstr "Grupos de Horarios Abiertos"
+
+#: views/view.nav_and_usage.php:41
+msgid ""
+"Click on a \"<strong>Match: (timegroup)</strong>\" or \"<strong>NoMatch</"
+"strong>\" to open in a new tab."
+msgstr ""
+"Haga clic en<strong>\"Match: (timegroup)</strong>\" o<strong>\"NoMatch</"
+"strong>\" para abrir en una nueva pestaña."
+
+#: views/view.nav_and_usage.php:44
+msgid "Pan"
+msgstr "Pan"
+
+#: views/view.nav_and_usage.php:45
+msgid "Hold the left mouse button and drag to move the view."
+msgstr ""
+"Mantenga pulsado el botón izquierdo del ratón y arrástrelo para mover la "
+"vista."
+
+#: views/view.nav_and_usage.php:48
+msgid "Zoom"
+msgstr "Zoom"
+
+#: views/view.nav_and_usage.php:49
+msgid "Use the mouse wheel to zoom in and out."
+msgstr "Utiliza la rueda del ratón para acercar y alejar la imagen."
+
 #: views/view.options.php:14
 msgid "Check for Updates"
 msgstr "Comprobar si hay actualizaciones"
@@ -733,6 +743,9 @@ msgstr "Guardar Cambios"
 #: views/view.options.php:75
 msgid "Reset Default"
 msgstr "Restablecer a valores por defecto"
+
+#~ msgid "Highlight Paths:"
+#~ msgstr "Resaltar rutas:"
 
 #~ msgid "Error!"
 #~ msgstr "Error!"

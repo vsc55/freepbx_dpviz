@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-26 22:16+0200\n"
+"POT-Creation-Date: 2025-04-27 12:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,104 +24,104 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-1: i18n\n"
 "X-Poedit-SearchPathExcluded-2: assets\n"
 
-#: Dpviz.class.php:199
+#: Dpviz.class.php:203
 msgid "Date & Time Stamp"
 msgstr ""
 
-#: Dpviz.class.php:203
+#: Dpviz.class.php:207
 msgid "Displays the date and time on the graph."
 msgstr ""
 
-#: Dpviz.class.php:210
+#: Dpviz.class.php:214
 msgid "Export as High-Resolution PNG"
 msgstr ""
 
-#: Dpviz.class.php:216
+#: Dpviz.class.php:220
 msgid "Increases PNG resolution during export."
 msgstr ""
 
-#: Dpviz.class.php:223
+#: Dpviz.class.php:227
 msgid "Horizontal Layout"
 msgstr ""
 
-#: Dpviz.class.php:227
+#: Dpviz.class.php:231
 msgid "Displays the dial plan in a horizontal layout."
 msgstr ""
 
-#: Dpviz.class.php:234
+#: Dpviz.class.php:238
 msgid "Combine Queue Agents and RG Members into one node"
 msgstr ""
 
-#: Dpviz.class.php:238
+#: Dpviz.class.php:242
 msgid ""
 "When an extension is part of both a queue and a ring group, it will be shown "
 "as a single node instead of two."
 msgstr ""
 
-#: Dpviz.class.php:245
+#: Dpviz.class.php:249
 msgid "Pan & Zoom"
 msgstr ""
 
-#: Dpviz.class.php:249
+#: Dpviz.class.php:253
 msgid ""
 "Allows you to use pan and zoom functions. Click and hold to pan, and use the "
 "mouse wheel to zoom."
 msgstr ""
 
-#: Dpviz.class.php:255
+#: Dpviz.class.php:259
 msgid "Show Dynamic Members for Queues"
 msgstr ""
 
-#: Dpviz.class.php:259
+#: Dpviz.class.php:263
 msgid "Displays the list of dynamic agents currently assigned to the queues."
 msgstr ""
 
-#: Dpviz.class.php:265
+#: Dpviz.class.php:269
 msgid "Show Extension Optional Destinations"
 msgstr ""
 
-#: Dpviz.class.php:269
+#: Dpviz.class.php:273
 msgid ""
 "Displays and follows the optional destinations (No Answer, Busy, Not "
 "Reachable) set for the extension in the Advanced tab."
 msgstr ""
 
-#: Dpviz.class.php:323
+#: Dpviz.class.php:327
 #, php-format
 msgid "❌Unknown page: %s"
 msgstr ""
 
-#: Dpviz.class.php:373
+#: Dpviz.class.php:377
 msgid "✔ Settings saved successfully"
 msgstr ""
 
-#: Dpviz.class.php:380
+#: Dpviz.class.php:384
 msgid "❌ Failed to save settings"
 msgstr ""
 
-#: Dpviz.class.php:390
+#: Dpviz.class.php:394
 msgid "✔ Settings reset to default values"
-msgstr ""
-
-#: Dpviz.class.php:419
-#, php-format
-msgid "✔ You are using the latest version: %s"
 msgstr ""
 
 #: Dpviz.class.php:423
 #, php-format
+msgid "✔ You are using the latest version: %s"
+msgstr ""
+
+#: Dpviz.class.php:427
+#, php-format
 msgid "⚠ A new version is available: %s, current version: %s"
 msgstr ""
 
-#: Dpviz.class.php:429
+#: Dpviz.class.php:433
 msgid "❌ Unknown command"
 msgstr ""
 
-#: Dpviz.class.php:450
+#: Dpviz.class.php:454
 msgid "Failed to fetch release info."
 msgstr ""
 
-#: Dpviz.class.php:456
+#: Dpviz.class.php:460
 msgid "Invalid response from GitHub."
 msgstr ""
 
@@ -350,6 +350,11 @@ msgstr ""
 msgid "Ext %s %s\\n%s"
 msgstr ""
 
+#: dpp/destination_13500_trunk.php:23
+#, php-format
+msgid "Trunk (%s): %s"
+msgstr ""
+
 #: dpp/destination_1500_blackhole.php:18
 msgid "Music On Hold"
 msgstr ""
@@ -549,9 +554,9 @@ msgstr ""
 msgid "unassigned"
 msgstr ""
 
-#: views/page.main.php:1 views/rnav.php:2 views/view.dialplan.err.route.php:1
-#: views/view.dialplan.php:2 views/view.dialplan.select.null.php:1
-#: views/view.options.php:1
+#: views/page.main.php:1 views/rnav.php:1 views/view.dialplan.err.route.php:1
+#: views/view.dialplan.php:1 views/view.dialplan.select.null.php:1
+#: views/view.nav_and_usage.php:1 views/view.options.php:1
 msgid "No direct script access allowed"
 msgstr ""
 
@@ -559,23 +564,27 @@ msgstr ""
 msgid "Dial Plan Vizualizer"
 msgstr ""
 
-#: views/page.main.php:13
+#: views/page.main.php:12
 msgid "Dial Plan"
 msgstr ""
 
-#: views/page.main.php:18
+#: views/page.main.php:17
 msgid "Settings"
 msgstr ""
 
-#: views/rnav.php:18
+#: views/page.main.php:22
+msgid "Navigation and Usage"
+msgstr ""
+
+#: views/rnav.php:17
 msgid "DID / CID"
 msgstr ""
 
-#: views/rnav.php:19
+#: views/rnav.php:18 views/view.nav_and_usage.php:19
 msgid "Description"
 msgstr ""
 
-#: views/rnav.php:20
+#: views/rnav.php:19
 msgid "Destination"
 msgstr ""
 
@@ -595,87 +604,20 @@ msgid ""
 "configuration."
 msgstr ""
 
-#: views/view.dialplan.php:13
-msgid "Navigation and usage"
-msgstr ""
-
-#: views/view.dialplan.php:19
-msgid "Redraw from a Node:"
-msgstr ""
-
-#: views/view.dialplan.php:19
-msgid ""
-"Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a "
-"node to make it the new starting point in the diagram. To revert, "
-"<strong>Ctrl/Cmd + left-click</strong> the parent node."
-msgstr ""
-
-#: views/view.dialplan.php:20
-msgid "Highlight Paths:"
-msgstr ""
-
-#: views/view.dialplan.php:20
-msgid ""
-"Click <strong>Highlight Paths</strong>, then select a node or edge (links "
-"are inactive). Click <strong>Remove Highlights</strong> to clear."
-msgstr ""
-
-#: views/view.dialplan.php:21
-msgid "Hover:"
-msgstr ""
-
-#: views/view.dialplan.php:21
-msgid "Hover over a path to highlight between destinations."
-msgstr ""
-
-#: views/view.dialplan.php:22
-msgid "Open Destinations:"
-msgstr ""
-
-#: views/view.dialplan.php:22
-msgid "Click a destination to open it in a new tab."
-msgstr ""
-
-#: views/view.dialplan.php:23
-msgid "Open Time Groups:"
-msgstr ""
-
-#: views/view.dialplan.php:23
-msgid ""
-"Click on a \"<strong>Match: (timegroup)</strong>\" or \"<strong>NoMatch</"
-"strong>\" to open in a new tab."
-msgstr ""
-
-#: views/view.dialplan.php:24
-msgid "Pan:"
-msgstr ""
-
-#: views/view.dialplan.php:24
-msgid "Hold the left mouse button and drag to move the view."
-msgstr ""
-
-#: views/view.dialplan.php:25
-msgid "Zoom:"
-msgstr ""
-
-#: views/view.dialplan.php:25
-msgid "Use the mouse wheel to zoom in and out."
-msgstr ""
-
-#: views/view.dialplan.php:34
+#: views/view.dialplan.php:11
 msgid "Reload Page"
 msgstr ""
 
-#: views/view.dialplan.php:35
+#: views/view.dialplan.php:12
 #, php-format
 msgid "Export as %s"
 msgstr ""
 
-#: views/view.dialplan.php:36
+#: views/view.dialplan.php:13 views/view.nav_and_usage.php:28
 msgid "Highlight Paths"
 msgstr ""
 
-#: views/view.dialplan.php:46
+#: views/view.dialplan.php:23
 #, php-format
 msgid "Dial Plan For Inbound Route %s%s:%s"
 msgstr ""
@@ -691,6 +633,73 @@ msgid ""
 "information will load automatically, allowing you to review and analyze the "
 "call routing configuration associated with that plan. This selection is "
 "required to proceed with inspecting or editing the call flow."
+msgstr ""
+
+#: views/view.nav_and_usage.php:10
+msgid "Information on how to navigate and use the dial plane flow"
+msgstr ""
+
+#: views/view.nav_and_usage.php:18
+msgid "Feature"
+msgstr ""
+
+#: views/view.nav_and_usage.php:24
+msgid "Redraw from a Node"
+msgstr ""
+
+#: views/view.nav_and_usage.php:25
+msgid ""
+"Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a "
+"node to make it the new starting point in the diagram. To revert, "
+"<strong>Ctrl/Cmd + left-click</strong> the parent node."
+msgstr ""
+
+#: views/view.nav_and_usage.php:29
+msgid ""
+"Click <strong>Highlight Paths</strong>, then select a node or edge (links "
+"are inactive). Click <strong>Remove Highlights</strong> to clear."
+msgstr ""
+
+#: views/view.nav_and_usage.php:32
+msgid "Hover"
+msgstr ""
+
+#: views/view.nav_and_usage.php:33
+msgid "Hover over a path to highlight between destinations."
+msgstr ""
+
+#: views/view.nav_and_usage.php:36
+msgid "Open Destinations"
+msgstr ""
+
+#: views/view.nav_and_usage.php:37
+msgid "Click a destination to open it in a new tab."
+msgstr ""
+
+#: views/view.nav_and_usage.php:40
+msgid "Open Time Groups"
+msgstr ""
+
+#: views/view.nav_and_usage.php:41
+msgid ""
+"Click on a \"<strong>Match: (timegroup)</strong>\" or \"<strong>NoMatch</"
+"strong>\" to open in a new tab."
+msgstr ""
+
+#: views/view.nav_and_usage.php:44
+msgid "Pan"
+msgstr ""
+
+#: views/view.nav_and_usage.php:45
+msgid "Hold the left mouse button and drag to move the view."
+msgstr ""
+
+#: views/view.nav_and_usage.php:48
+msgid "Zoom"
+msgstr ""
+
+#: views/view.nav_and_usage.php:49
+msgid "Use the mouse wheel to zoom in and out."
 msgstr ""
 
 #: views/view.options.php:14
