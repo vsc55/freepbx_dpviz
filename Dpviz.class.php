@@ -232,19 +232,8 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                             );
                         break;
 
-                        case 'combine_queue_ring':
-                            $data['tab']['settings']["3"] = array(
-                                'type' 	=> 'checkbox',
-                                'label' => _("Combine Queue Agents and RG Members into one node"),
-                                'key' 	=> $key,
-                                'val' 	=> $val,
-                                'id' 	=> $key,
-                                'help' 	=> _("When an extension is part of both a queue and a ring group, it will be shown as a single node instead of two."),
-                            );
-                        break;
-
                         case 'panzoom':
-                            $data['tab']['settings']["4"] = array(
+                            $data['tab']['settings']["3"] = array(
                                 'type' 	=> 'checkbox',
                                 'label' => _("Pan & Zoom"),
                                 'key' 	=> $key,
@@ -253,6 +242,32 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                                 'help' 	=> _("Allows you to use pan and zoom functions. Click and hold to pan, and use the mouse wheel to zoom."),
                             );
                             break;
+
+                        case 'combine_queue_ring':
+                                $data['tab']['settings']["4"] = array(
+                                    'type' 	=> 'radioset',
+                                    'label' => _("Shared extension node handling"),
+                                    'key' 	=> $key,
+                                    'val' 	=> $val,
+                                    'id' 	=> $key,
+                                    'options' => array(
+                                        sprintf('%s_none', $key) => [
+                                            'value' => '0',
+                                            'label' => _("None"),
+                                        ],
+                                        sprintf('%s_only', $key) => [
+                                            'value' => '1',
+                                            'label' => _("Queues and Ring Groups Only"),
+                                        ],
+                                        sprintf('%s_all', $key) => [
+                                            'value' => '2',
+                                            'label' => _("All Destinations"),
+                                        ],
+                                    ),
+                                    'help' 	=> _('"None" displays individual extension nodes. "Queues and Ring Groups Only" combines them into one node. "All" merges all destinations into a single extension node.'),
+                                );
+                            break;
+
                         case 'dynmembers':
                             $data['tab']['settings']["5"] = array(
                                 'type' 	=> 'checkbox',
@@ -263,6 +278,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                                 'help' 	=> _("Displays the list of dynamic agents currently assigned to the queues."),
                             );
                         break;
+
                         case 'ext_optional':
                             $data['tab']['settings']["6"] = array(
                                 'type' 	=> 'checkbox',

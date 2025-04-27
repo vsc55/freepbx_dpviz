@@ -103,17 +103,29 @@
         const $edge = $('#' + edgeId);
         if (!$edge.length) return;
 
-        if (highlightedEdges.has(edgeId)) {
+        // Check if this edge is already highlighted
+        if (highlightedEdges.has(edgeId))
+        {
+            // Remove highlight
             highlightedEdges.delete(edgeId);
 
+            // Reset edge style
             $edge.find('path').css({ stroke: '', strokeWidth: '' });
+            // Reset arrowhead
             $edge.find('polygon').css({ fill: '', stroke: '' });
+            // Reset edge text
             $edge.find('text').css({ fill: '', fontWeight: '' });
-        } else {
+        }
+        else
+        {
+            // Add highlight
             highlightedEdges.add(edgeId);
 
+            // Highlight edge
             $edge.find('path').css({ stroke: 'red', strokeWidth: '3px' });
+            // Highlight arrowhead
             $edge.find('polygon').css({ fill: 'red', stroke: 'red' });
+            // Highlight edge text
             $edge.find('text').css({ fill: 'red', fontWeight: 'bold' });
         }
     }
@@ -121,10 +133,14 @@
     function resetEdges() {
         if (!svgContainer) return;
 
+        // Clear highlighted edges set
         highlightedEdges.clear();
 
+        // Reset only edge paths
         $(svgContainer).find('g.edge path').css({ stroke: '', strokeWidth: '' });
+        // Reset only arrowheads in edges
         $(svgContainer).find('g.edge polygon').css({ fill: '', stroke: '' });
+        // Reset edge text (labels)
         $(svgContainer).find('g.edge text').css({ fill: '', fontWeight: '' });
     }
 
@@ -152,9 +168,6 @@
                 .removeClass('btn-default');
         }
     }
-
-
-
 
     function disableLinks() {
         if (!svgContainer) return;

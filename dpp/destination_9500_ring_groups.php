@@ -37,7 +37,21 @@ class DestinationRingGroups extends baseDestinations
             $route['parent_node']       = $node;
             $route['parent_edge_label'] = '';
 
-            $this->dpp->followDestinations($route, sprintf( $combineQueueRing ? "qmember%s" : "rg%s", $member), '');
+            switch ($combineQueueRing)
+            {
+                case "1":
+                    $go = sprintf("qmember%s", $member);
+                    break;
+
+                case "2":
+                    $go = sprintf("from-did-direct,%s,1", $member);
+                    break;
+
+                default:
+                    $go = sprintf("rg%s", $member);
+            }
+            $this->dpp->followDestinations($route, $go, '');
+            //$this->dpp->followDestinations($route, sprintf( $combineQueueRing ? "qmember%s" : "rg%s", $member), '');
         }
 
         # The destinations we need to follow are the no-answer destination

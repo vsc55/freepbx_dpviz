@@ -17,18 +17,27 @@ class DestinationFromDidDirect extends baseDestinations
     {
         $extnum    = $matches[1];
         $extother  = $matches[2];
-        $extension = $route['extensions'][$extnum];
-        $extname   = $extension['name'];
-        $extemail  = $extension['email'];
-        $extemail  = str_replace("|",",\\n",$extemail);
 
-        $label     = sprintf(_('Extension: %s %s\\n%s'), $extnum, $extname, $extemail);
+        if (isset($route['extensions'][$extnum]))
+        {
+        	$extension = $route['extensions'][$extnum];
+ 			$extname   = $extension['name'];
+ 			$extemail  = $extension['email'];
+ 			$extemail  = str_replace("|",",\\n",$extemail);
+            $label     = sprintf(_('Extension: %s %s\\n%s'), $extnum, $extname, $extemail);
+
+            $node->attribute('label', $this->dpp->sanitizeLabels($label));
+            $node->attribute('URL', $this->genUrlConfig('extensions', $extnum, null)); //'/admin/config.php?display=extensions&extdisplay='.$extnum
+ 			$node->attribute('target', '_blank');
+ 		}
+        else
+        {
+ 			$node->attribute('label', $extnum);
+ 		}
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
-        $node->attribute('URL', $this->genUrlConfig('extensions', $extnum, null)); //'/admin/config.php?display=extensions&extdisplay='.$extnum
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'house');
+        $node->attribute('shape', 'rect');
         $node->attribute('fillcolor', self::pastels[15]);
         $node->attribute('style', 'filled');
 

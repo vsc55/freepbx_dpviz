@@ -59,6 +59,37 @@
                                 </div>
                                 <?php
                             break;
+
+                            case 'radioset':
+                                $setting['options'] = $setting['options'] ?? [];
+                                ?>
+                                <div class="element-container">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <div class="col-md-3">
+                                                        <label class="control-label" for="<?= $setting['id'] ?>"><?= $setting['label'] ?></label>
+                                                        <i class="fa fa-question-circle fpbx-help-icon" data-for="<?= $setting['id'] ?>"></i>
+                                                    </div>
+                                                    <div class="col-md-9 radioset">
+                                                        <?php foreach ($setting['options'] as $key_option => $val_option): ?>
+                                                            <input type="radio" name="<?= $setting['id'] ?>" id="<?= $key_option ?>" value="<?= $val_option['value'] ?>" <?= ($setting['val'] == $val_option['value'] ? "CHECKED" : "") ?>>
+                                                            <label for="<?= $key_option ?>"><?= $val_option['label'] ?></label>
+                                                        <?php endforeach; ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span id="<?= $setting['key'] ?>-help" class="help-block fpbx-help-block"><?= $setting['help'] ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            break;
                         }
                     }
                     ?>

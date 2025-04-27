@@ -28,6 +28,9 @@ class DestinationQueues extends baseDestinations
             $maxwait = $this->dpp->secondsToTimes($q['maxwait']);
         }
 
+        //TODO: change metod to getSetting() in Dpviz class
+        $combineQueueRing  = \FreePBX::Dpviz()->getSetting('combine_queue_ring');
+
         $label = sprintf(_('Queue %s: %s'), $qnum, $q['descr']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
@@ -41,13 +44,22 @@ class DestinationQueues extends baseDestinations
         {
             foreach ($q['members'] as $types => $type)
             {
-                foreach ($type as $members)
+                foreach ($type as $member)
                 {
                     $route['parent_node']             = $node;
-                    //TODO: Check if it works since it is used in query_members!!
                     $route['parent_edge_label']       = ($types == 'static') ? _(' Static') : _(' Dynamic');
                     $route['parent_edge_data_status'] = $types;
-                    $this->dpp->followDestinations($route, sprintf('qmember%s', $members),'');
+                    switch ($combineQueueRing)
+                    {
+						case "2":
+							$go = sprintf("from-did-direct,%s,1", $member);
+							break;
+
+						default:
+                            $go = sprintf('qmember%s', $member);
+					}
+                    $this->dpp->followDestinations($route, $go,'');
+                    // $this->dpp->followDestinations($route, sprintf('qmember%s', $member),'');
                 }
             }
         }
