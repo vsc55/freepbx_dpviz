@@ -417,15 +417,19 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 		
 		$extnum = $matches[1];
 		$extother = $matches[2];
-		$extension = $route['extensions'][$extnum];
-		$extname= $extension['name'];
-		$extemail= $extension['email'];
-		$extemail= str_replace("|",",\\n",$extemail);
-
-		$node->attribute('label', 'Extension: '.$extnum.' '.sanitizeLabels($extname).'\\n'.sanitizeLabels($extemail));
+		if (isset($route['extensions'][$extnum])){
+			$extension = $route['extensions'][$extnum];
+			$extname= $extension['name'];
+			$extemail= $extension['email'];
+			$extemail= str_replace("|",",\\n",$extemail);
+			$node->attribute('label', 'Extension: '.$extnum.' '.sanitizeLabels($extname).'\\n'.sanitizeLabels($extemail));
+			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$extnum));
+			$node->attribute('target', '_blank');
+		}else{
+			$node->attribute('label', $extnum);
+		}
+		
 		$node->attribute('tooltip', $node->getAttribute('label'));
-		$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$extnum));
-		$node->attribute('target', '_blank');
 		$node->attribute('shape', 'rect');
 		$node->attribute('fillcolor', $pastels[15]);
 		$node->attribute('style', 'filled');
