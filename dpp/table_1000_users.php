@@ -7,7 +7,7 @@ class TableUsers extends baseTables
 {
     # Users
     public const PRIORITY = 1000;
-    
+
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "users");
@@ -18,15 +18,15 @@ class TableUsers extends baseTables
     public function callback_load(&$dproute)
     {
         foreach($this->getTableData() as $user)
-		{
-			$id 	     = $user[$this->key_id];
+        {
+            $id 	     = $user[$this->key_id];
             $email       = sprintf('grep -E \'^%s[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3', $id);
             $emailResult = [];
-		    exec($email, $emailResult);
+            exec($email, $emailResult);
 
-			$dproute[$this->key_name][$id]= $user;
-			$dproute[$this->key_name][$id]['email'] = !empty($emailResult[0]) ? $emailResult[0] : _('unassigned');
-		}
+            $dproute[$this->key_name][$id]= $user;
+            $dproute[$this->key_name][$id]['email'] = !empty($emailResult[0]) ? $emailResult[0] : _('unassigned');
+        }
         return true;
     }
 }

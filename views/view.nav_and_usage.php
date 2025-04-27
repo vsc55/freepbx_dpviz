@@ -1,16 +1,15 @@
 <?php if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); } ?>
 
 <div class="display no-border">
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="fpbx-container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="fpbx-container">
 
                 <div class="panel  panel-info panel-help">
                     <div class="panel-heading">
                         <h3 class="panel-title"><i class="fa fa-info-circle fa-lg fa-fw"></i> <?= _("Information on how to navigate and use the dial plane flow") ?></h3>
                     </div>
                     <div class="panel-body">
-                        
 
                         <div class="table-responsive rounded">
                             <table class="table table-striped table-bordered table-hover">
@@ -57,7 +56,7 @@
                     <div class="panel-footer"></div>
                 </div>
 
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </div>

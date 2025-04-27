@@ -18,14 +18,14 @@ class TableTimegroupsDetails extends baseTables
     public function callback_load(&$dproute)
     {
         foreach($this->getTableData() as $tgd)
-		{
-			$id = $tgd[$this->key_id];
-			if (! isset($dproute[$this->key_name][$id]))
-			{
-				$this->log(1, sprintf("timegroups_details id found for unknown timegroup, id=%s", $id));
+        {
+            $id = $tgd[$this->key_id];
+            if (! isset($dproute[$this->key_name][$id]))
+            {
+                $this->log(1, sprintf("timegroups_details id found for unknown timegroup, id=%s", $id));
                 continue;
-			}
-			
+            }
+
             if (!isset($dproute[$this->key_name][$id]['time']))
             {
                 $dproute[$this->key_name][$id]['time'] = '';
@@ -37,7 +37,7 @@ class TableTimegroupsDetails extends baseTables
             $month 	  = ($exploded[3] !== '*') ? sprintf("%s ", ucfirst($exploded[3])) : '';
 
             $dproute[$this->key_name][$id]['time'] .= sprintf("%s%s%s%s\\l", $dow, $month, $date, $time);
-		}
+        }
         return true;
     }
 }

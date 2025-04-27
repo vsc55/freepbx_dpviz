@@ -17,14 +17,14 @@ class TableAnnouncement extends baseTables
     public function callback_load(&$dproute)
     {
         foreach($this->getTableData() as $an)
-		{
+        {
             $id   = $an[$this->key_id];
             $dest = $an['post_dest'];
             $dproute[$this->key_name][$id] = $an;
             $dproute[$this->key_name][$id]['dest'] = $dest;
 
             $this->log(9, sprintf("announcement dest:  an=%s   dest=%s", $id, $dest));
-		}
+        }
         return true;
     }
 }

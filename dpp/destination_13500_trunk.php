@@ -6,7 +6,7 @@ require_once __DIR__ . '/baseDestinations.php';
 class DestinationTrunk extends baseDestinations
 {
     public const PRIORITY = 13500;
-    
+
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp);
@@ -21,7 +21,7 @@ class DestinationTrunk extends baseDestinations
         $trunk_name     = $route['trunk'][$trunk_id]['name'];
 
         $label = sprintf(_('Trunk (%s): %s'), $trunk_tech, $trunk_name);
-        
+
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
         $node->attribute('URL', htmlentities(sprintf('/admin/config.php?display=trunks&tech=%s&extdisplay=OUT_%s', $trunk_tech, $trunk_id)));

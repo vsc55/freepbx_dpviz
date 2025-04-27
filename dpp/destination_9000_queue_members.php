@@ -36,7 +36,7 @@ class DestinationQueueMembers extends baseDestinations
             $node->attribute('URL', $this->genUrlConfig('extensions', $qextension, null)); // '/admin/config.php?display=extensions&extdisplay='.$qextension
             $node->attribute('target', '_blank');
         }
-        
+
         if ($route['parent_edge_data_status'] == 'static')
         {
             $node->attribute('fillcolor', self::pastels[20]);

@@ -7,7 +7,7 @@ class TableIncoming extends baseTables
 {
     # Inbound Routes
     public const PRIORITY = 1500;
-    
+
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "incoming");

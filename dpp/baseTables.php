@@ -26,7 +26,7 @@ abstract class baseTables
         $this->dpp       = &$dpp;
         $this->route     = &$dpp->dproutes;
     }
-    
+
     /**
      * Get is the table is optional or not
      * @return bool true if the table is optional, false otherwise

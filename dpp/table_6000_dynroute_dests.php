@@ -17,14 +17,14 @@ class TableDynrouteDests extends baseTables
     public function callback_load(&$dproute)
     {
         foreach($this->getTableData() as $dynroute_dests)
-		{
+        {
             $id    = $dynroute_dests[$this->key_id];
             $selid = $dynroute_dests['selection'];
-            
+
             $dproute[$this->key_name][$id]['routes'][$selid] = $dynroute_dests;
 
             $this->log(9, "dynroute_dests: dynroute=$id match=$selid");
-		}
+        }
         return true;
     }
 }

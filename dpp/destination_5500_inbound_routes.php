@@ -19,10 +19,10 @@ class DestinationInboundRoutes extends baseDestinations
         $numother = $matches[2];
 
         $incoming = $route['incoming'][$num];
-        
+
         $didLabel = sprintf("%s\\n%s", ($num == '') ? _('ANY') : $this->dpp->formatPhoneNumbers($num), $incoming['description']);
         $didLink  = $num.'/';
-        
+
         $node->attribute('label', $this->dpp->sanitizeLabels($didLabel));
         $node->attribute('tooltip', $node->getAttribute('label'));
         $node->attribute('URL', $this->genUrlConfig('did', urlencode($didLink))); //'/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)
@@ -30,10 +30,10 @@ class DestinationInboundRoutes extends baseDestinations
         $node->attribute('shape', 'cds');
         $node->attribute('fillcolor', 'darkseagreen');
         $node->attribute('style', 'filled');
-        
+
         $route['parent_node']       = $node;
         $route['parent_edge_label'] = _(' Continue');
-        
+
         $this->dpp->followDestinations($route, $incoming['destination'], '');
     }
 }

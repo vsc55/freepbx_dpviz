@@ -7,7 +7,7 @@ class TableTrunks extends baseTables
 {
     # Trunks
     public const PRIORITY = 15000;
-    
+
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "trunks");

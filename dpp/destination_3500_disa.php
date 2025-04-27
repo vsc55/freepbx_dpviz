@@ -18,7 +18,7 @@ class DestinationDisa extends baseDestinations
         $disanum   = $matches[1];
         $disaother = $matches[2];
         $disa 	   = $route['disa'][$disanum];
-        
+
         $label     = sprintf(_('DISA: %s'), $disa['displayname']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));

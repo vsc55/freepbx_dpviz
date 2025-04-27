@@ -35,7 +35,7 @@ class DestinationSetCid extends baseDestinations
         {
             $route['parent_node']       = $node;
             $route['parent_edge_label'] = _(' Continue');
-            
+
             $this->dpp->followDestinations($route, $cid['dest'], '');
         }
     }

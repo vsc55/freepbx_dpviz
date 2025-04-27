@@ -18,7 +18,7 @@ class DestinationDaynight extends baseDestinations
         $daynightnum   = $matches[1];
         $daynightother = $matches[2];
         $daynight 	   = $route['daynight'][$daynightnum];
-    
+
         #feature code exist?
         $code = '';
         if ( isset($route['featurecodes']['*28'.$daynightnum]) )
@@ -35,7 +35,7 @@ class DestinationDaynight extends baseDestinations
             #is it enabled?
             $code = sprintf(_("\\nToggle (%s): %s"), ($route['featurecodes']['*28'.$daynightnum]['enabled'] == '1') ? _('enabled') : _('disabled'), $featurenum);
         }
-        
+
         #check current status and set path to active
         $current_daynight = array();
         $C                = sprintf('/usr/sbin/asterisk -rx "database show DAYNIGHT/C%s" | cut -d \':\' -f2 | tr -d \' \' | head -1', $daynightnum);
@@ -51,7 +51,7 @@ class DestinationDaynight extends baseDestinations
         {
             $nactive = _("(Active)");
         }
-    
+
         foreach ($daynight as $d)
         {
             switch ($d['dmode'])
@@ -59,14 +59,14 @@ class DestinationDaynight extends baseDestinations
                 case 'day':
                     $route['parent_node']       = $node;
                     $route['parent_edge_label'] = sprintf(_(' Day Mode %s'), $dactive);
-                
+
                     $this->dpp->followDestinations($route, $d['dest'], '');
                     break;
 
                 case 'night':
                     $route['parent_node']       = $node;
                     $route['parent_edge_label'] = sprintf(_(' Night Mode %s'), $nactive);
-                
+
                     $this->dpp->followDestinations($route, $d['dest'],'');
                     break;
 
@@ -75,7 +75,7 @@ class DestinationDaynight extends baseDestinations
                     break;
             }
         }
-        
+
         $daynight = $route['daynight'][$daynightnum];
         $node->attribute('URL', htmlentities('/admin/config.php?display=daynight&view=form&itemid='.$daynightnum.'&extdisplay='.$daynightnum));
         $node->attribute('target', '_blank');

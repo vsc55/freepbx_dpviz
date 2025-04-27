@@ -6,7 +6,7 @@ require_once __DIR__ . '/baseDestinations.php';
 class DestinationAnnouncement extends baseDestinations
 {
     public const PRIORITY = 1000;
-    
+
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp);
@@ -20,7 +20,7 @@ class DestinationAnnouncement extends baseDestinations
 
         $an    = $route['announcements'][$annum];
         $recID = $an['recording_id'];
-        
+
         $announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : _('None');
         #feature code exist?
         if ( isset($route['featurecodes']['*29'.$recID]) )
@@ -42,9 +42,9 @@ class DestinationAnnouncement extends baseDestinations
             $rec_status = _('disabled');
             $rec_active = _('no');
         }
-        
+
         $label = sprintf(_('Announcements: %s\\nRecording: %s\\nRecord (%s): %s'), $an['description'], $announcement, $rec_active, $rec_status);
-        
+
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
         $node->attribute('URL', $this->genUrlConfig('announcement', $annum)); //'/admin/config.php?display=announcement&view=form&extdisplay='.$annum

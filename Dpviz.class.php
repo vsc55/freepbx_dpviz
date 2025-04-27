@@ -9,151 +9,151 @@ include __DIR__ . '/vendor/autoload.php';
 include __DIR__ . '/dpp.php';
 
 class Dpviz extends \FreePBX_Helpers implements \BMO {
-    
+
     private $freepbx;
-	private $db;
+    private $db;
 
-	public $dpp = null;
+    public $dpp = null;
 
-	Const default_setting = [
-		'panzoom'	  		 => 1,
-		'horizontal'  		 => 0,
-		'datetime'	  		 => 1,
-		'scale'		  		 => 1,
-		'dynmembers'  		 => 0,
-		'combine_queue_ring' => 0,
-		'ext_optional' 		 => 0,
-	];
+    Const default_setting = [
+        'panzoom'	  		 => 1,
+        'horizontal'  		 => 0,
+        'datetime'	  		 => 1,
+        'scale'		  		 => 1,
+        'dynmembers'  		 => 0,
+        'combine_queue_ring' => 0,
+        'ext_optional' 		 => 0,
+    ];
 
     public function __construct($freepbx = null)
-	{
-		if ($freepbx == null) {
-			throw new \Exception("Not given a FreePBX Object");
-		}
+    {
+        if ($freepbx == null) {
+            throw new \Exception("Not given a FreePBX Object");
+        }
 
         // parent::__construct($freepbx);
         $this->freepbx = $freepbx;
         $this->db 	   = $freepbx->Database;
-		$this->dpp 	   = new \FreePBX\modules\Dpviz\dpp($this->freepbx);
+        $this->dpp 	   = new \FreePBX\modules\Dpviz\dpp($this->freepbx);
     }
 
     public function install()
-	{
-		// Save the default configuration in the kvstore.
-		$this->setSettingAll($this->getSettingAll());
+    {
+        // Save the default configuration in the kvstore.
+        $this->setSettingAll($this->getSettingAll());
     }
 
     public function uninstall() {
         // Required by BMO, but can remain empty
     }
-	
-	/**
-	 * Get all configuration values.
-	 * @return array An associative array of configuration settings, with default values if not set.
-	 */
-	public function getSettingAll(): array
-	{
-		$settings = $this->getAll("setting");
 
-		// Filter only valid keys defined in default_setting
-		$settings = array_merge(self::default_setting, $settings);
+    /**
+     * Get all configuration values.
+     * @return array An associative array of configuration settings, with default values if not set.
+     */
+    public function getSettingAll(): array
+    {
+        $settings = $this->getAll("setting");
 
-		// Direction: LR (left-to-right) o TB (top-to-bottom)
-		$settings['direction'] = ($settings['horizontal']) == 1 ? 'LR' : 'TB';
-		return $settings;
-	}
+        // Filter only valid keys defined in default_setting
+        $settings = array_merge(self::default_setting, $settings);
 
-	/**
-	 * Set multiple configuration values at once.
-	 * @param array $settings An associative array of configuration settings to set.
-	 * @return bool True if the configuration was set successfully, false otherwise.
-	 * @throws \Exception If the settings is not an array.
-	 */
-	public function setSettingAll(array $settings): bool
-	{
-		if (empty($settings))
-		{
-			return false;
-		}
+        // Direction: LR (left-to-right) o TB (top-to-bottom)
+        $settings['direction'] = ($settings['horizontal']) == 1 ? 'LR' : 'TB';
+        return $settings;
+    }
 
-		// Filter only valid keys defined in default_setting
-		$validSettings = array_intersect_key($settings, self::default_setting);
-		foreach ($validSettings as $key => $val)
-		{
-			if (is_null($val))
-			{
-				$val = self::default_setting[$key];
-			}
-			parent::setConfig($key, $val, "setting");
-		}
-		return true;
-	}
+    /**
+     * Set multiple configuration values at once.
+     * @param array $settings An associative array of configuration settings to set.
+     * @return bool True if the configuration was set successfully, false otherwise.
+     * @throws \Exception If the settings is not an array.
+     */
+    public function setSettingAll(array $settings): bool
+    {
+        if (empty($settings))
+        {
+            return false;
+        }
 
-	/**
-	 * Get a configuration value.
-	 * @param string $key The configuration key to retrieve.
-	 * @param string|null $default The default value to return if the key does not exist.
-	 * @return string|null The configuration value or null if not found.
-	 * @throws \Exception If the key is not a string.
-	 */
-	public function getSetting(string $key, ?string $default = null): ?string
-	{
-		if ($key === '') {
-			return $default ?? null;
-		}
-		$settings = $this->getSettingAll();
-		return $settings[$key] ?? $default ?? (self::default_setting[$key] ?? null);
-	}
+        // Filter only valid keys defined in default_setting
+        $validSettings = array_intersect_key($settings, self::default_setting);
+        foreach ($validSettings as $key => $val)
+        {
+            if (is_null($val))
+            {
+                $val = self::default_setting[$key];
+            }
+            parent::setConfig($key, $val, "setting");
+        }
+        return true;
+    }
 
-	/**
-	 * Set a configuration value.
-	 * @param string $key The configuration key to set.
-	 * @param string|null $val The value to set. If null, the key will be deleted.
-	 * @return bool True if the configuration was set successfully, false otherwise.
-	 */
-	public function setSetting(string $key, ?string $val): bool
-	{
-		if ($key == '')
-		{
-			return false;
-		}
-		parent::setConfig($key, $val, "setting");
-		return true;
-	}
+    /**
+     * Get a configuration value.
+     * @param string $key The configuration key to retrieve.
+     * @param string|null $default The default value to return if the key does not exist.
+     * @return string|null The configuration value or null if not found.
+     * @throws \Exception If the key is not a string.
+     */
+    public function getSetting(string $key, ?string $default = null): ?string
+    {
+        if ($key === '') {
+            return $default ?? null;
+        }
+        $settings = $this->getSettingAll();
+        return $settings[$key] ?? $default ?? (self::default_setting[$key] ?? null);
+    }
 
-	/**
-	 * Reset the configuration to default values.
-	 * This will delete the current configuration and set it to the default values.
-	 * @return bool
-	 */
-	public function resetSetting(): bool
-	{
-		$this->delById('setting');
-		$this->setSettingAll($this->getSettingAll());
-		return true;
-	}
-	
+    /**
+     * Set a configuration value.
+     * @param string $key The configuration key to set.
+     * @param string|null $val The value to set. If null, the key will be deleted.
+     * @return bool True if the configuration was set successfully, false otherwise.
+     */
+    public function setSetting(string $key, ?string $val): bool
+    {
+        if ($key == '')
+        {
+            return false;
+        }
+        parent::setConfig($key, $val, "setting");
+        return true;
+    }
+
+    /**
+     * Reset the configuration to default values.
+     * This will delete the current configuration and set it to the default values.
+     * @return bool
+     */
+    public function resetSetting(): bool
+    {
+        $this->delById('setting');
+        $this->setSettingAll($this->getSettingAll());
+        return true;
+    }
+
     public function doConfigPageInit($page) {
         $request = freepbxGetSanitizedRequest();
-		// $request = $_REQUEST;
+        // $request = $_REQUEST;
         $action	 = $request['action'] ?? '';
 
         switch ($action)
-		{
+        {
             case 'edit':
-				//TODO: Implement via AJAX
-				if (isset($request['reset']))
-				{
-					$this->resetSetting();
-				}
-				else
-				{
-					$new_setting = array_intersect_key($request, self::default_setting);
-					if (!empty($new_setting))
-					{
-						$this->setSettingAll($new_setting);
-					}
-				}
+                //TODO: Implement via AJAX
+                if (isset($request['reset']))
+                {
+                    $this->resetSetting();
+                }
+                else
+                {
+                    $new_setting = array_intersect_key($request, self::default_setting);
+                    if (!empty($new_setting))
+                    {
+                        $this->setSettingAll($new_setting);
+                    }
+                }
                 break;
 
             default:
@@ -161,312 +161,312 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         }
     }
 
-	public function showPage($page, $params = array())
-	{
-		$request = freepbxGetSanitizedRequest();
-		// $request = $_REQUEST;
+    public function showPage($page, $params = array())
+    {
+        $request = freepbxGetSanitizedRequest();
+        // $request = $_REQUEST;
 
-		$settings = $this->getSettingAll();
+        $settings = $this->getSettingAll();
 
-		$data = array(
-			"dpviz"	  	 => $this,
-			'request' 	 => $request,
-			'page' 	  	 => $page ?? '',
-			'settings' 	 => $settings,
-			'extdisplay' => $request['extdisplay'] ?? '',
-			'cid' 		 => $request['cid'] ?? '',
-		);
+        $data = array(
+            "dpviz"	  	 => $this,
+            'request' 	 => $request,
+            'page' 	  	 => $page ?? '',
+            'settings' 	 => $settings,
+            'extdisplay' => $request['extdisplay'] ?? '',
+            'cid' 		 => $request['cid'] ?? '',
+        );
 
-		$data = array_merge($data, $params);
-		switch ($page) 
-		{
-			case 'main':
-				$data['action'] = $request['action'] ?? '';
+        $data = array_merge($data, $params);
+        switch ($page)
+        {
+            case 'main':
+                $data['action'] = $request['action'] ?? '';
 
-				$data_return = load_view(__DIR__."/views/page.main.php", $data);
-				break;
+                $data_return = load_view(__DIR__."/views/page.main.php", $data);
+                break;
 
-			case 'NavAndUsage':
-				$data_return = load_view(__DIR__."/views/view.nav_and_usage.php", $data);
-				break;
+            case 'NavAndUsage':
+                $data_return = load_view(__DIR__."/views/view.nav_and_usage.php", $data);
+                break;
 
-			case 'options':
-				// definition the parameters for the dynamic generation of the options list of the settings tab
-				$data['tab']['settings'] = array();
-				foreach ($settings as $key => $val)
-				{
-					switch($key)
-					{
-						case 'datetime':
-							$data['tab']['settings']["0"] = array(
-								'type' 	=> 'checkbox',
-								'label' => _("Date & Time Stamp"),
-								'key' 	=> $key,
-								'val' 	=> $val,
-								'id' 	=> $key,
-								'help' 	=> _("Displays the date and time on the graph."),
-							);
-						break;
+            case 'options':
+                // definition the parameters for the dynamic generation of the options list of the settings tab
+                $data['tab']['settings'] = array();
+                foreach ($settings as $key => $val)
+                {
+                    switch($key)
+                    {
+                        case 'datetime':
+                            $data['tab']['settings']["0"] = array(
+                                'type' 	=> 'checkbox',
+                                'label' => _("Date & Time Stamp"),
+                                'key' 	=> $key,
+                                'val' 	=> $val,
+                                'id' 	=> $key,
+                                'help' 	=> _("Displays the date and time on the graph."),
+                            );
+                        break;
 
-						case 'scale':
-							$data['tab']['settings']["1"] = array(
-								'type'	  => 'checkbox',
-								'label'	  => _("Export as High-Resolution PNG"),
-								'key'	  => $key,
-								'val'	  => $val,
-								'id'	  => $key,
-								// 'val_yes' => "3",
-								// 'val_no'  => "1",
-								'help'	  => _("Increases PNG resolution during export."),
-							);
-						break;
+                        case 'scale':
+                            $data['tab']['settings']["1"] = array(
+                                'type'	  => 'checkbox',
+                                'label'	  => _("Export as High-Resolution PNG"),
+                                'key'	  => $key,
+                                'val'	  => $val,
+                                'id'	  => $key,
+                                // 'val_yes' => "3",
+                                // 'val_no'  => "1",
+                                'help'	  => _("Increases PNG resolution during export."),
+                            );
+                        break;
 
-						case 'horizontal':
-							$data['tab']['settings']["2"] = array(
-								'type' 	=> 'checkbox',
-								'label' => _("Horizontal Layout"),
-								'key' 	=> $key,
-								'val' 	=> $val,
-								'id' 	=> $key,
-								'help' 	=> _("Displays the dial plan in a horizontal layout."),
-							);
-						break;
+                        case 'horizontal':
+                            $data['tab']['settings']["2"] = array(
+                                'type' 	=> 'checkbox',
+                                'label' => _("Horizontal Layout"),
+                                'key' 	=> $key,
+                                'val' 	=> $val,
+                                'id' 	=> $key,
+                                'help' 	=> _("Displays the dial plan in a horizontal layout."),
+                            );
+                        break;
 
-						case 'combine_queue_ring':
-							$data['tab']['settings']["3"] = array(
-								'type' 	=> 'checkbox',
-								'label' => _("Combine Queue Agents and RG Members into one node"),
-								'key' 	=> $key,
-								'val' 	=> $val,
-								'id' 	=> $key,
-								'help' 	=> _("When an extension is part of both a queue and a ring group, it will be shown as a single node instead of two."),
-							);
-						break;
+                        case 'combine_queue_ring':
+                            $data['tab']['settings']["3"] = array(
+                                'type' 	=> 'checkbox',
+                                'label' => _("Combine Queue Agents and RG Members into one node"),
+                                'key' 	=> $key,
+                                'val' 	=> $val,
+                                'id' 	=> $key,
+                                'help' 	=> _("When an extension is part of both a queue and a ring group, it will be shown as a single node instead of two."),
+                            );
+                        break;
 
-						case 'panzoom':
-							$data['tab']['settings']["4"] = array(
-								'type' 	=> 'checkbox',
-								'label' => _("Pan & Zoom"),
-								'key' 	=> $key,
-								'val' 	=> $val,
-								'id' 	=> $key,
-								'help' 	=> _("Allows you to use pan and zoom functions. Click and hold to pan, and use the mouse wheel to zoom."),
-							);
-							break;
-						case 'dynmembers':
-							$data['tab']['settings']["5"] = array(
-								'type' 	=> 'checkbox',
-								'label' => _("Show Dynamic Members for Queues"),
-								'key' 	=> $key,
-								'val' 	=> $val,
-								'id' 	=> $key,
-								'help' 	=> _("Displays the list of dynamic agents currently assigned to the queues."),
-							);
-						break;
-						case 'ext_optional':
-							$data['tab']['settings']["6"] = array(
-								'type' 	=> 'checkbox',
-								'label' => _("Show Extension Optional Destinations"),
-								'key' 	=> $key,
-								'val' 	=> $val,
-								'id' 	=> $key,
-								'help' 	=> _("Displays and follows the optional destinations (No Answer, Busy, Not Reachable) set for the extension in the Advanced tab."),
-							);
-						break;
-					}
+                        case 'panzoom':
+                            $data['tab']['settings']["4"] = array(
+                                'type' 	=> 'checkbox',
+                                'label' => _("Pan & Zoom"),
+                                'key' 	=> $key,
+                                'val' 	=> $val,
+                                'id' 	=> $key,
+                                'help' 	=> _("Allows you to use pan and zoom functions. Click and hold to pan, and use the mouse wheel to zoom."),
+                            );
+                            break;
+                        case 'dynmembers':
+                            $data['tab']['settings']["5"] = array(
+                                'type' 	=> 'checkbox',
+                                'label' => _("Show Dynamic Members for Queues"),
+                                'key' 	=> $key,
+                                'val' 	=> $val,
+                                'id' 	=> $key,
+                                'help' 	=> _("Displays the list of dynamic agents currently assigned to the queues."),
+                            );
+                        break;
+                        case 'ext_optional':
+                            $data['tab']['settings']["6"] = array(
+                                'type' 	=> 'checkbox',
+                                'label' => _("Show Extension Optional Destinations"),
+                                'key' 	=> $key,
+                                'val' 	=> $val,
+                                'id' 	=> $key,
+                                'help' 	=> _("Displays and follows the optional destinations (No Answer, Busy, Not Reachable) set for the extension in the Advanced tab."),
+                            );
+                        break;
+                    }
 
-					// We sort the array so that the html is generated in the correct order
-					ksort($data['tab']['settings']);
-				}
+                    // We sort the array so that the html is generated in the correct order
+                    ksort($data['tab']['settings']);
+                }
 
-				$data['clickedNodeTitle'] 	= $request['clickedNodeTitle'] ?? '';
-				
-				$data_return = load_view(__DIR__."/views/view.options.php", $data);
-				break;
+                $data['clickedNodeTitle'] 	= $request['clickedNodeTitle'] ?? '';
 
-			case 'dialplan':
-				$data['iroute'] 	  = sprintf("%s%s", $data['extdisplay'], $data['cid']);
-				$data['isExistRoute'] = $this->dpp->isExistRoute($data['iroute']);
+                $data_return = load_view(__DIR__."/views/view.options.php", $data);
+                break;
 
-				if (!isset($_GET['extdisplay']))
-				{
-					$data_return = load_view(__DIR__."/views/view.dialplan.select.null.php", $data);
-				}
-				else if (! $data['isExistRoute'])
-				{
-					$data_return = load_view(__DIR__."/views/view.dialplan.err.route.php", $data);
-				}
-				else
-				{
-					$this->dpp->setDirection($settings['direction']);
+            case 'dialplan':
+                $data['iroute'] 	  = sprintf("%s%s", $data['extdisplay'], $data['cid']);
+                $data['isExistRoute'] = $this->dpp->isExistRoute($data['iroute']);
 
-					$data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
-					$data['basefilename']	  = ($data['iroute'] == '') ? 'ANY' : $data['iroute'];
-					$data['filename'] 		  = sprintf("%s.png", $data['basefilename']);
-					$data['isExistRoute'] 	  = $this->dpp->isExistRoute($data['iroute']);
+                if (!isset($_GET['extdisplay']))
+                {
+                    $data_return = load_view(__DIR__."/views/view.dialplan.select.null.php", $data);
+                }
+                else if (! $data['isExistRoute'])
+                {
+                    $data_return = load_view(__DIR__."/views/view.dialplan.err.route.php", $data);
+                }
+                else
+                {
+                    $this->dpp->setDirection($settings['direction']);
 
-					if (is_numeric($data['extdisplay']) && (strlen($data['extdisplay'])==10 || strlen($data['extdisplay'])==11))
-					{
-						$data['number'] = $this->dpp->formatPhoneNumbers($data['extdisplay']);
-					}
-					else
-					{
-						$data['number'] = $data['extdisplay'];
-					}
+                    $data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
+                    $data['basefilename']	  = ($data['iroute'] == '') ? 'ANY' : $data['iroute'];
+                    $data['filename'] 		  = sprintf("%s.png", $data['basefilename']);
+                    $data['isExistRoute'] 	  = $this->dpp->isExistRoute($data['iroute']);
 
-					$gtext = $this->dpp->render($data['iroute'], $data['clickedNodeTitle']);
-					$this->dpp->log(5, sprintf("Dial Plan Graph for %s %s:\n%s", $data['extdisplay'], $data['cid'], $gtext));
-					$gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);  // ugh, apparently viz chokes on newlines, wtf?
-					$data['gtext'] = $gtext;
+                    if (is_numeric($data['extdisplay']) && (strlen($data['extdisplay'])==10 || strlen($data['extdisplay'])==11))
+                    {
+                        $data['number'] = $this->dpp->formatPhoneNumbers($data['extdisplay']);
+                    }
+                    else
+                    {
+                        $data['number'] = $data['extdisplay'];
+                    }
 
-					$data_return = load_view(__DIR__."/views/view.dialplan.php", $data);
-				}
-				break;
+                    $gtext = $this->dpp->render($data['iroute'], $data['clickedNodeTitle']);
+                    $this->dpp->log(5, sprintf("Dial Plan Graph for %s %s:\n%s", $data['extdisplay'], $data['cid'], $gtext));
+                    $gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);  // ugh, apparently viz chokes on newlines, wtf?
+                    $data['gtext'] = $gtext;
 
-			default:
-				$data_return = sprintf(_("❌Unknown page: %s"), $page);
-				break;
-		}
-		return $data_return;
-	}
+                    $data_return = load_view(__DIR__."/views/view.dialplan.php", $data);
+                }
+                break;
 
-	public function getRightNav($request, $params = array())
-	{
-		$data = array(
-			'request'  => $request,
-			'url_ajax' => 'ajax.php?module=core&amp;command=getJSON&amp;jdata=allDID'
-		);
-		$data = array_merge($data, $params);
-		return load_view(__DIR__.'/views/rnav.php', $data);
-	}
-		
-	public function ajaxRequest($req, &$setting)
-	{
-		// ** Allow remote consultation with Postman, debugging, etc. **
-		// ********************************************
-		// $setting['authenticate'] = false;
-		// $setting['allowremote'] = true;
-		// return true;
-		// ********************************************
-		switch ($req)
-		{
-			case 'reset_setting_default':
-			case 'save_settings':
-			case 'get_destinations':
-			case 'check_update':
-				return true;
-				break;
-		}
-		return false;
-	}
+            default:
+                $data_return = sprintf(_("❌Unknown page: %s"), $page);
+                break;
+        }
+        return $data_return;
+    }
 
-	public function ajaxHandler()
-	{
-		$request = freepbxGetSanitizedRequest();
-		$command = $request['command'] ?? '';
-		$data_return = false;
-		switch ($command)
-		{
-			case 'save_settings':
+    public function getRightNav($request, $params = array())
+    {
+        $data = array(
+            'request'  => $request,
+            'url_ajax' => 'ajax.php?module=core&amp;command=getJSON&amp;jdata=allDID'
+        );
+        $data = array_merge($data, $params);
+        return load_view(__DIR__.'/views/rnav.php', $data);
+    }
 
-				$new_setting = $request['data'] ?? [];
-				if ($this->setSettingAll($new_setting))
-				{
-					$data_return = [
-						'status' => 'success',
-						'message' => _('✔ Settings saved successfully')
-					];
-				}
-				else
-				{
-					$data_return = [
-						'status' => 'error',
-						'message' => _('❌ Failed to save settings')
-					];
-				}
-				break;
+    public function ajaxRequest($req, &$setting)
+    {
+        // ** Allow remote consultation with Postman, debugging, etc. **
+        // ********************************************
+        // $setting['authenticate'] = false;
+        // $setting['allowremote'] = true;
+        // return true;
+        // ********************************************
+        switch ($req)
+        {
+            case 'reset_setting_default':
+            case 'save_settings':
+            case 'get_destinations':
+            case 'check_update':
+                return true;
+                break;
+        }
+        return false;
+    }
 
-			case 'reset_setting_default':
-				// Reset the settings to default values
-				$this->resetSetting();
-				$data_return = [
-					'status' => "success",
-					'message' => _('✔ Settings reset to default values')
-				];
-				break;
+    public function ajaxHandler()
+    {
+        $request = freepbxGetSanitizedRequest();
+        $command = $request['command'] ?? '';
+        $data_return = false;
+        switch ($command)
+        {
+            case 'save_settings':
 
-			case 'get_destinations':
-				$data_return = [
-					'status' => 'success',
-					'message' => '',
-					'destinations' => $this->freepbx->Modules->getDestinations()
-				];
-				break;
+                $new_setting = $request['data'] ?? [];
+                if ($this->setSettingAll($new_setting))
+                {
+                    $data_return = [
+                        'status' => 'success',
+                        'message' => _('✔ Settings saved successfully')
+                    ];
+                }
+                else
+                {
+                    $data_return = [
+                        'status' => 'error',
+                        'message' => _('❌ Failed to save settings')
+                    ];
+                }
+                break;
 
-			case 'check_update':
-				// Call the function to check for updates
-				$result = $this->checkForGitHubUpdate();
-				if (isset($result['error']))
-				{
-					$data_return = ['status' => 'error', 'message' => $result['error']];
-				}
-				else
-				{
-					$data_return = [
-						'status'  	 => 'success',
-						'current' 	 => $result['current'],
-						'latest'  	 => $result['latest'],
-						'up_to_date' => $result['up_to_date'],
-					];
-					if ($result['up_to_date'])
-					{
-						$data_return['message'] = sprintf(_('✔ You are using the latest version: %s'), $result['current']);
-					}
-					else
-					{
-						$data_return['message'] = sprintf(_('⚠ A new version is available: %s, current version: %s'), $result['latest'], $result['current']);
-					}
-				}
-				break;
+            case 'reset_setting_default':
+                // Reset the settings to default values
+                $this->resetSetting();
+                $data_return = [
+                    'status' => "success",
+                    'message' => _('✔ Settings reset to default values')
+                ];
+                break;
 
-			default:
-				$data_return = ['status' => 'error', 'message' => _('❌ Unknown command')];
-		}
-		return $data_return;
-	}
-	
-	public function checkForGitHubUpdate()
-	{
-		$ver = $this->freepbx->Modules->getInfo('dpviz')['dpviz']['version']; // current version
-		$url = "https://api.github.com/repos/madgen78/dpviz/releases/latest"; // GitHub version
+            case 'get_destinations':
+                $data_return = [
+                    'status' => 'success',
+                    'message' => '',
+                    'destinations' => $this->freepbx->Modules->getDestinations()
+                ];
+                break;
 
-		$opts = [
-			"http" => [
-				"method" => "GET",
-				"header" => "User-Agent: dpviz\r\n"
-			]
-		];
+            case 'check_update':
+                // Call the function to check for updates
+                $result = $this->checkForGitHubUpdate();
+                if (isset($result['error']))
+                {
+                    $data_return = ['status' => 'error', 'message' => $result['error']];
+                }
+                else
+                {
+                    $data_return = [
+                        'status'  	 => 'success',
+                        'current' 	 => $result['current'],
+                        'latest'  	 => $result['latest'],
+                        'up_to_date' => $result['up_to_date'],
+                    ];
+                    if ($result['up_to_date'])
+                    {
+                        $data_return['message'] = sprintf(_('✔ You are using the latest version: %s'), $result['current']);
+                    }
+                    else
+                    {
+                        $data_return['message'] = sprintf(_('⚠ A new version is available: %s, current version: %s'), $result['latest'], $result['current']);
+                    }
+                }
+                break;
 
-		$context = stream_context_create($opts);
-		$json 	 = file_get_contents($url, false, $context);
-		if ($json === false)
-		{
-			return ['error' => _('Failed to fetch release info.')];
-		}
+            default:
+                $data_return = ['status' => 'error', 'message' => _('❌ Unknown command')];
+        }
+        return $data_return;
+    }
 
-		$data = json_decode($json, true);
-		if (!isset($data['tag_name']))
-		{
-			return ['error' => _('Invalid response from GitHub.')];
-		}
+    public function checkForGitHubUpdate()
+    {
+        $ver = $this->freepbx->Modules->getInfo('dpviz')['dpviz']['version']; // current version
+        $url = "https://api.github.com/repos/madgen78/dpviz/releases/latest"; // GitHub version
 
-		$latestVersion = ltrim($data['tag_name'], 'v');
-		$upToDate = version_compare($ver, $latestVersion, '>=');
-		
-		return [
-			'current' => $ver,
-			'latest' => $latestVersion,
-			'up_to_date' => $upToDate,
-		];
-	}	
+        $opts = [
+            "http" => [
+                "method" => "GET",
+                "header" => "User-Agent: dpviz\r\n"
+            ]
+        ];
+
+        $context = stream_context_create($opts);
+        $json 	 = file_get_contents($url, false, $context);
+        if ($json === false)
+        {
+            return ['error' => _('Failed to fetch release info.')];
+        }
+
+        $data = json_decode($json, true);
+        if (!isset($data['tag_name']))
+        {
+            return ['error' => _('Invalid response from GitHub.')];
+        }
+
+        $latestVersion = ltrim($data['tag_name'], 'v');
+        $upToDate = version_compare($ver, $latestVersion, '>=');
+
+        return [
+            'current' => $ver,
+            'latest' => $latestVersion,
+            'up_to_date' => $upToDate,
+        ];
+    }
 }

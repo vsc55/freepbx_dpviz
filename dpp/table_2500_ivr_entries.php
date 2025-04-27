@@ -18,14 +18,14 @@ class TableIvrEntries extends baseTables
     public function callback_load(&$dproute)
     {
         foreach($this->getTableData() as $ent)
-		{
-			$id    = $ent[$this->key_id];
-			$selid = $ent['selection'];
+        {
+            $id    = $ent[$this->key_id];
+            $selid = $ent['selection'];
 
-			$dproute[$this->key_name][$id]['entries'][$selid] = $ent;
+            $dproute[$this->key_name][$id]['entries'][$selid] = $ent;
 
             $this->log(9, sprintf("entry:  ivr=%s   selid=%s", $id, $selid));
-		}
+        }
         return true;
     }
 }

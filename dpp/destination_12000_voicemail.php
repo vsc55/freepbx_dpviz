@@ -18,7 +18,7 @@ class DestinationVoicemail extends baseDestinations
         $vmtype	 = $matches[1];
         $vmnum 	 = $matches[2];
         $vmother = $matches[3];
-        
+
         $vm_array = array(
             'b' => _('(Busy Message)'),
             'i' => _('(Instructions Only)'),
@@ -28,7 +28,7 @@ class DestinationVoicemail extends baseDestinations
         $vmname   = $route['extensions'][$vmnum]['name'];
         $vmemail  = $route['extensions'][$vmnum]['email'];
         $vmemail  = str_replace("|",",\\n",$vmemail);
-    
+
         $label = sprintf(_('Voicemail: %s %s %s\\n%s'), $vmnum, $vmname, $vm_array[$vmtype], $vmemail);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));

@@ -1,9 +1,9 @@
 <?php if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); } ?>
 
 <div class="display no-border">
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="fpbx-container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="fpbx-container">
 
                 <div class="card" style="max-width: 50%; margin: 0 auto;">
                     <div class="card-header"></div>
@@ -21,7 +21,7 @@
                     <div class="card-footer"></div>
                 </div>
 
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </div>

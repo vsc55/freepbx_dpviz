@@ -20,7 +20,7 @@ $(document).ready(function() {
             method: 'POST',
             data: post_data,
             dataType: 'json',
-            
+
             success: function(response)
             {
                 $('#update-result').html('');
@@ -63,32 +63,32 @@ $(document).ready(function() {
             }
         });
     });
-		
-	document.querySelectorAll('g.node').forEach(node => {
-		node.addEventListener('click', function(e) {
-			if (e.ctrlKey || e.metaKey) {  // Support Ctrl on Windows/Linux, Command on Mac
-				e.preventDefault();
 
-				let titleElement = node.querySelector('title');
-				if (titleElement) {
-					let titleText = titleElement.textContent || titleElement.innerText;
+    document.querySelectorAll('g.node').forEach(node => {
+        node.addEventListener('click', function(e) {
+            if (e.ctrlKey || e.metaKey) {  // Support Ctrl on Windows/Linux, Command on Mac
+                e.preventDefault();
 
-					let form = document.createElement('form');
-					form.method = 'POST';
-					form.action = window.location.href;
+                let titleElement = node.querySelector('title');
+                if (titleElement) {
+                    let titleText = titleElement.textContent || titleElement.innerText;
 
-					let input = document.createElement('input');
-					input.type = 'hidden';
-					input.name = 'clickedNodeTitle';
-					input.value = titleText;
-					form.appendChild(input);
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = window.location.href;
 
-					document.body.appendChild(form);
-					form.submit();
-				}
-			}
-		});
-	});
+                    let input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'clickedNodeTitle';
+                    input.value = titleText;
+                    form.appendChild(input);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        });
+    });
 
 
 
@@ -97,43 +97,43 @@ $(document).ready(function() {
      */
 
     $(document).on('click', '#toolbar_btn_download', function (e) {
-		e.preventDefault();
-	
-		const $vizContainer = $('#vizContainer');
-		if (!$vizContainer.length) return;
+        e.preventDefault();
 
-		const $btn	   = $(this);
-		const scale    = parseFloat($btn.data('scale')) || 1;
-		const filename = $btn.data('filename') || 'diagram.png';
+        const $vizContainer = $('#vizContainer');
+        if (!$vizContainer.length) return;
 
-		html2canvas($vizContainer[0], {
-			scale: scale,
-			useCORS: true,
-			allowTaint: true
-		}).then(function(canvas) {
-			const imgData = canvas.toDataURL("image/png");
-			triggerDownload(imgData, filename);
-		});
-	});
+        const $btn	   = $(this);
+        const scale    = parseFloat($btn.data('scale')) || 1;
+        const filename = $btn.data('filename') || 'diagram.png';
+
+        html2canvas($vizContainer[0], {
+            scale: scale,
+            useCORS: true,
+            allowTaint: true
+        }).then(function(canvas) {
+            const imgData = canvas.toDataURL("image/png");
+            triggerDownload(imgData, filename);
+        });
+    });
 
     function triggerDownload(uri, filename) {
-		const link = document.createElement('a');
-		if ('download' in link)
-		{
-			link.href = uri;
-			link.download = filename;
-			//Firefox requires the link to be in the body
-			document.body.appendChild(link);
-			//simulate click
-			link.click();
-			//remove the link when done
-			document.body.removeChild(link);
-		}
-		else
-		{
-			window.open(uri);
-		}
-	}
+        const link = document.createElement('a');
+        if ('download' in link)
+        {
+            link.href = uri;
+            link.download = filename;
+            //Firefox requires the link to be in the body
+            document.body.appendChild(link);
+            //simulate click
+            link.click();
+            //remove the link when done
+            document.body.removeChild(link);
+        }
+        else
+        {
+            window.open(uri);
+        }
+    }
 
 
 
@@ -173,14 +173,14 @@ $(document).ready(function() {
 
     $(document).on('click', '#settings_submit', function (e) {
         e.preventDefault();
-    
+
         const $form = $(this).closest('form');
-        
+
         fpbxConfirm(
             _("Are you sure you want to save the settings?"),
             _("Yes"),_("No"),
             function() {
-                
+
                 const formArray = $form.serializeArray();
                 const formData = {};
                 formArray.forEach(item => {
@@ -207,8 +207,8 @@ $(document).ready(function() {
             }
         );
     });
-    
-    
+
+
 
 
 
@@ -230,16 +230,16 @@ $(document).ready(function() {
     window.dpviz.rnav = window.dpviz.rnav || {};
 
     // Set default values
-	window.dpviz.rnav.destinations       = {};
+    window.dpviz.rnav.destinations       = {};
     window.dpviz.rnav.destinationsReady  = false;
-	window.dpviz.rnav.destinationsLoaded = false;
+    window.dpviz.rnav.destinationsLoaded = false;
 
-	function dpvizRNavLoadDestinations()
+    function dpvizRNavLoadDestinations()
     {
         if (window.dpviz.rnav.destinationsLoaded) return;
 
         window.dpviz.rnav.destinationsLoaded = true;
-	    window.dpviz.rnav.destinationsReady  = false;
+        window.dpviz.rnav.destinationsReady  = false;
         window.dpviz.rnav.destinations       = {};
 
         const post_data = {
@@ -248,25 +248,25 @@ $(document).ready(function() {
         };
         $.post(window.FreePBX.ajaxurl, post_data, function (response)
         {
-			if (response.status === "success" && response.destinations)
+            if (response.status === "success" && response.destinations)
             {
-				window.dpviz.rnav.destinations      = response.destinations;
+                window.dpviz.rnav.destinations      = response.destinations;
                 window.dpviz.rnav.destinationsReady = true;
-			}
+            }
             else
             {
-				fpbxToast(response.message || _("⚠ Unknown error while loading destinations"), '', 'error');
-			}
-		}, 'json').fail(function ()
+                fpbxToast(response.message || _("⚠ Unknown error while loading destinations"), '', 'error');
+            }
+        }, 'json').fail(function ()
         {
             fpbxToast(_("⚠ Could not connect to the server"), '', 'error');
-		});
-	}
+        });
+    }
 
-	// Formatter the "destination" column
-	window.DIDdestFormatter = function (value, row, index)
+    // Formatter the "destination" column
+    window.DIDdestFormatter = function (value, row, index)
     {
-		if (!value) return _("No Destination");
+        if (!value) return _("No Destination");
 
         if (!window.dpviz.rnav.destinationsReady)
         {
@@ -278,18 +278,18 @@ $(document).ready(function() {
             return '<span class="text-muted"><span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>' + _('Loading...') + '</span>';
         }
 
-		const dest = window.dpviz.rnav.destinations?.[value];
-		if (!dest) return value;
+        const dest = window.dpviz.rnav.destinations?.[value];
+        if (!dest) return value;
 
-		const prefix = dest.category || dest.name;
-		return `${prefix}: ${dest.description}`;
-	};
+        const prefix = dest.category || dest.name;
+        return `${prefix}: ${dest.description}`;
+    };
 
     function retryUpdateDestinationCell(index, value, attempt = 0)
     {
         // Maximum number of attempts and delay, e.g., 10 attempts with 500ms delay = 5 seconds
         const MAX_ATTEMPTS = 10;
-    	const DELAY_MS     = 500; // 500ms delay
+        const DELAY_MS     = 500; // 500ms delay
 
         if (window.dpviz.rnav.destinationsReady)
         {
@@ -304,20 +304,20 @@ $(document).ready(function() {
             $('#dpviz-side').bootstrapTable('updateCell', { index: index, field: 'destination', value: '__dpviz_error__' });
         }
     }
-   
+
     // Formatter for "extension / cidnum" column
-	window.bootnavvizFormatter = function (value, row) {
-		const extension = decodeURIComponent(row['extension'] || "").trim() || "ANY";
-		const cidnum = decodeURIComponent(row['cidnum'] || "").trim();
-		return cidnum ? `${extension} / ${cidnum}` : extension;
-	};
+    window.bootnavvizFormatter = function (value, row) {
+        const extension = decodeURIComponent(row['extension'] || "").trim() || "ANY";
+        const cidnum = decodeURIComponent(row['cidnum'] || "").trim();
+        return cidnum ? `${extension} / ${cidnum}` : extension;
+    };
 
     // Click over row → redirect
-	$(document).on('click-row.bs.table', '#dpviz-side', function (e, row) {
-		const extension = row['extension'];
-		const cid = row['cidnum'];
-		window.location = `?display=dpviz&extdisplay=${extension}&cid=${cid}`;
-	});
+    $(document).on('click-row.bs.table', '#dpviz-side', function (e, row) {
+        const extension = row['extension'];
+        const cid = row['cidnum'];
+        window.location = `?display=dpviz&extdisplay=${extension}&cid=${cid}`;
+    });
 
     $('#dpviz-side').on('post-body.bs.table', function () {
         dpvizRNavLoadDestinations();

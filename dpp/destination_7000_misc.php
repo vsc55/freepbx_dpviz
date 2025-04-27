@@ -6,7 +6,7 @@ require_once __DIR__ . '/baseDestinations.php';
 class DestinationMisc extends baseDestinations
 {
     public const PRIORITY = 7000;
-    
+
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp);

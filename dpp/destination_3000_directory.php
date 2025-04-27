@@ -18,7 +18,7 @@ class DestinationDirectory extends baseDestinations
         $directorynum 	= $matches[1];
         $directoryother = $matches[2];
         $directory 		= $route['directory'][$directorynum];
-        
+
         $label          = sprintf(_('Directory: %s'), $directory['dirname']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
@@ -27,12 +27,12 @@ class DestinationDirectory extends baseDestinations
         $node->attribute('fillcolor', self::pastels[9]);
         $node->attribute('shape', 'folder');
         $node->attribute('style', 'filled');
-        
+
         if ($directory['invalid_destination'] != '')
         {
             $route['parent_node']       = $node;
             $route['parent_edge_label'] = _(' Invalid Input');
-            
+
             $this->dpp->followDestinations($route, $directory['invalid_destination'], '');
         }
     }

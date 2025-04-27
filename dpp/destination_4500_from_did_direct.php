@@ -31,7 +31,7 @@ class DestinationFromDidDirect extends baseDestinations
         $node->attribute('shape', 'house');
         $node->attribute('fillcolor', self::pastels[15]);
         $node->attribute('style', 'filled');
-        
+
         //Optional Destinations
         //TODO: change metod to getSetting() in Dpviz class
         $extOptional = \FreePBX::Dpviz()->getSetting('ext_optional');
@@ -42,7 +42,7 @@ class DestinationFromDidDirect extends baseDestinations
                 // All three are equal
                 $route['parent_node']       = $node;
                 $route['parent_edge_label'] = _(' No Answer, Busy, Not Reachable');
-                
+
                 $this->dpp->followDestinations($route, $extension['noanswer_dest'], '');
             }
             elseif ($extension['noanswer_dest'] === $extension['busy_dest'] && $extension['chanunavail_dest'] !== $extension['noanswer_dest'])
@@ -52,7 +52,7 @@ class DestinationFromDidDirect extends baseDestinations
                     // No Answer and Busy are the same, but Not Reachable is different
                     $route['parent_node']       = $node;
                     $route['parent_edge_label'] = _(' No Answer & Busy');
-                
+
                     $this->dpp->followDestinations($route, $extension['noanswer_dest'], '');
                 }
 
@@ -61,7 +61,7 @@ class DestinationFromDidDirect extends baseDestinations
                 {
                     $route['parent_node']       = $node;
                     $route['parent_edge_label'] = _(' Not Reachable');
-                    
+
                     $this->dpp->followDestinations($route, $extension['chanunavail_dest'], '');
                 }
             }
@@ -72,7 +72,7 @@ class DestinationFromDidDirect extends baseDestinations
                     // No Answer and Not Reachable are the same
                     $route['parent_node']       = $node;
                     $route['parent_edge_label'] = _(' No Answer & Not Reachable');
-                
+
                     $this->dpp->followDestinations($route, $extension['noanswer_dest'], '');
                 }
 
@@ -81,7 +81,7 @@ class DestinationFromDidDirect extends baseDestinations
                 {
                     $route['parent_node']       = $node;
                     $route['parent_edge_label'] = _(' Busy');
-                    
+
                     $this->dpp->followDestinations($route, $extension['busy_dest'], '');
                 }
             }
@@ -92,7 +92,7 @@ class DestinationFromDidDirect extends baseDestinations
                     // Busy and Not Reachable are the same
                     $route['parent_node']       = $node;
                     $route['parent_edge_label'] = _(' Busy & Not Reachable');
-                
+
                     $this->dpp->followDestinations($route, $extension['busy_dest'], '');
                 }
 
@@ -101,7 +101,7 @@ class DestinationFromDidDirect extends baseDestinations
                 {
                     $route['parent_node']       = $node;
                     $route['parent_edge_label'] = _(' No Answer');
-                    
+
                     $this->dpp->followDestinations($route, $extension['noanswer_dest'], '');
                 }
             }
@@ -112,21 +112,21 @@ class DestinationFromDidDirect extends baseDestinations
                 {
                     $route['parent_node']       = $node;
                     $route['parent_edge_label'] = _(' No Answer');
-                    
+
                     $this->dpp->followDestinations($route, $extension['noanswer_dest'], '');
                 }
                 if (!empty($extension['busy_dest']))
                 {
                     $route['parent_node']       = $node;
                     $route['parent_edge_label'] = _(' Busy');
-                    
+
                     $this->dpp->followDestinations($route, $extension['busy_dest'], '');
                 }
                 if (!empty($extension['chanunavail_dest']))
                 {
                     $route['parent_node']       = $node;
                     $route['parent_edge_label'] = _(' Not Reachable');
-                    
+
                     $this->dpp->followDestinations($route, $extension['chanunavail_dest'],'');
                 }
             }

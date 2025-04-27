@@ -7,7 +7,7 @@ class TableDynroute extends baseTables
 {
     public const PRIORITY = 5500;
 
-	public function __construct(object &$dpp)
+    public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "dynroute", true);
         $this->key_id   = "id";

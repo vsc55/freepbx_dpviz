@@ -7,7 +7,7 @@ class TableIvrDetails extends baseTables
 {
     # IVRs
     public const PRIORITY = 2000;
-    
+
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "ivr_details");

@@ -16,9 +16,9 @@ class DestinationMeetme extends baseDestinations
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
         $meetmenum 	 = $matches[1];
-		$meetmeother = $matches[2];
-		$meetme 	 = $route['meetme'][$meetmenum];
-        
+        $meetmeother = $matches[2];
+        $meetme 	 = $route['meetme'][$meetmenum];
+
         $label       = sprintf(_('Conferences: %s %s'), $meetme['exten'], $meetme['description']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));

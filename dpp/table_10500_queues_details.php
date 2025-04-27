@@ -17,7 +17,7 @@ class TableQueuesDetails extends baseTables
     public function callback_load(&$dproute)
     {
         foreach($this->getTableData() as $qd)
-		{
+        {
             $id = $qd[$this->key_id];
 
             if ($qd['keyword'] == 'member')
@@ -34,11 +34,11 @@ class TableQueuesDetails extends baseTables
             {
                 $dproute[$this->key_name][$id]['data'][$qd['keyword']] = $qd['data'];
             }
-		}
+        }
 
         //TODO: $dynmembers= isset($options[0]['dynmembers']) ? $options[0]['dynmembers'] : '0';
-		//TODO: change metod to getSetting() in Dpviz class
-		$dynmembers = \FreePBX::Dpviz()->getSetting('dynmembers');
+        //TODO: change metod to getSetting() in Dpviz class
+        $dynmembers = \FreePBX::Dpviz()->getSetting('dynmembers');
 
         # Queue members (dynamic) //options
         if ($dynmembers && !empty($dproute[$this->key_name]))
@@ -52,9 +52,9 @@ class TableQueuesDetails extends baseTables
                 foreach ($dynmem as $enum)
                 {
                     list($ext, $pen) = explode(':', $enum);
-					$ext = trim($ext);
-					$pen = trim($pen);
-					$dproute[$this->key_name][$id]['members']['dynamic'][] = $ext;
+                    $ext = trim($ext);
+                    $pen = trim($pen);
+                    $dproute[$this->key_name][$id]['members']['dynamic'][] = $ext;
                 }
             }
         }

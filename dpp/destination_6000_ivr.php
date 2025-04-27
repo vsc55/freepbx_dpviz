@@ -26,7 +26,7 @@ class DestinationIvr extends baseDestinations
 
         $ivrDestination        = $ivr['invalid_destination'] ?? '';
         $ivrDestinationTimeout = $ivr['timeout_destination'] ?? '';
-        
+
         #feature code exist?
         if ( isset($route['featurecodes']['*29'.$recID]) )
         {
@@ -60,7 +60,7 @@ class DestinationIvr extends baseDestinations
 
         # The destinations we need to follow are the invalid_destination,
         # timeout_destination, and the selection targets
-        
+
         #now go through the selections
         if (!empty($ivr['entries']))
         {
@@ -69,11 +69,11 @@ class DestinationIvr extends baseDestinations
             {
                 $route['parent_node']       = $node;
                 $route['parent_edge_label'] = sprintf(_(' Selection %s'), $this->dpp->sanitizeLabels($ent['selection']));
-                
+
                 $this->dpp->followDestinations($route, $ent['dest'], '');
             }
         }
-        
+
         #are the invalid and timeout destinations the same?
         if ($ivrDestination == $ivrDestinationTimeout)
         {
@@ -81,24 +81,24 @@ class DestinationIvr extends baseDestinations
             {
                 $route['parent_node']       = $node;
                 $route['parent_edge_label'] = sprintf(_(' Invalid Input, Timeout (%s secs)'), $ivr['timeout_time']);
-            
+
                 $this->dpp->followDestinations($route, $ivrDestination, '');
             }
         }
         else
         {
-            if ($ivrDestination != '') 
+            if ($ivrDestination != '')
             {
                 $route['parent_node']       = $node;
                 $route['parent_edge_label'] = _(' Invalid Input');
-                
+
                 $this->dpp->followDestinations($route, $ivrDestination, '');
             }
             if ($ivrDestinationTimeout != '')
             {
                 $route['parent_node']       = $node;
                 $route['parent_edge_label'] = sprintf(_(' Timeout (%s secs)'), $ivr['timeout_time']);
-                
+
                 $this->dpp->followDestinations($route, $ivrDestinationTimeout, '');
             }
         }

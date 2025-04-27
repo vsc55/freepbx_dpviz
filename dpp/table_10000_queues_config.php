@@ -18,12 +18,12 @@ class TableQueuesConfig extends baseTables
     public function callback_load(&$dproute)
     {
         foreach($this->getTableData() as $result)
-		{
+        {
             $id = $result[$this->key_id];
             $dproute[$this->key_name][$id] = $result;
             $dproute[$this->key_name][$id]['members']['static']  = array();
             $dproute[$this->key_name][$id]['members']['dynamic'] = array();
-		}
+        }
         return true;
     }
 }

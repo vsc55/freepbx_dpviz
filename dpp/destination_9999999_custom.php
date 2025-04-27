@@ -35,7 +35,7 @@ class DestinationCustom extends baseDestinations
             $custId	   = $entry['destid'];
             $custLabel = sprintf(_('Cust Dest: %s\\nTarget: %s\\l'), $entry['description'], $entry['target']);
             $custNotes = $entry['notes'];
-            
+
             $node->attribute('label', $this->dpp->sanitizeLabels($custLabel));
             if (empty($custNotes))
             {

@@ -17,7 +17,7 @@ class TableKvstoreFreepbxModulesCustomappsreg extends baseTables
     public function callback_load(&$dproute)
     {
         foreach($this->getTableData() as $customappsreg)
-		{
+        {
             if (is_numeric($customappsreg[$this->key_id]))
             {
                 $id  = $customappsreg[$this->key_id];
@@ -27,7 +27,7 @@ class TableKvstoreFreepbxModulesCustomappsreg extends baseTables
 
                 $this->log(9, "customapps=$id");
             }
-		}
+        }
         return true;
     }
 }

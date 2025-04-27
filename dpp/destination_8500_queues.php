@@ -36,7 +36,7 @@ class DestinationQueues extends baseDestinations
         $node->attribute('shape', 'hexagon');
         $node->attribute('fillcolor', 'mediumaquamarine');
         $node->attribute('style', 'filled');
-            
+
         if (!empty($q['members']))
         {
             foreach ($q['members'] as $types => $type)
@@ -51,22 +51,22 @@ class DestinationQueues extends baseDestinations
                 }
             }
         }
-        
+
         # The destinations we need to follow are the queue members (extensions)
         # and the no-answer destination.
-        if ($q['dest'] != '') 
+        if ($q['dest'] != '')
         {
             $route['parent_node']       = $node;
             $route['parent_edge_label'] = sprintf(_(' No Answer (%s)'), $maxwait);
-            
+
             $this->dpp->followDestinations($route, $q['dest'],'');
         }
-        
+
         if (is_numeric($q['ivr_id']))
         {
             $route['parent_node']       = $node;
             $route['parent_edge_label'] = sprintf(_(' IVR Break Out (every %s)'), $this->dpp->secondsToTimes($q['data']['min-announce-frequency']));
-            
+
             $this->dpp->followDestinations($route, sprintf('ivr-%s,s,1', $q['ivr_id']),'');
         }
     }

@@ -6,7 +6,7 @@ require_once __DIR__ . '/baseTables.php';
 class TableVmblast extends baseTables
 {
     public const PRIORITY = 14000;
-    
+
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "vmblast", true);

@@ -16,7 +16,7 @@ class TableKvstoreFreepbxMmodulesCalendar extends baseTables
 
     public function callback_load(&$dproute)
     {
-        foreach($this->getTableData() as $calendar) 
+        foreach($this->getTableData() as $calendar)
         {
             switch ($calendar['id'])
             {
@@ -26,7 +26,7 @@ class TableKvstoreFreepbxMmodulesCalendar extends baseTables
                     $dproute[$this->key_name][$id] = json_decode($calendar['val'],true);
                     dpplog(9, "calendars=$id");
                     break;
-                
+
                 default:
                     dpplog(1, "Unknown calendar type: {$calendar['id']}");
             }
