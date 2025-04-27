@@ -33,7 +33,6 @@ $combineQueueRing= isset($options[0]['combineQueueRing']) ? $options[0]['combine
 $extOptional= isset($options[0]['extOptional']) ? $options[0]['extOptional'] : '0';
 $direction=($horizontal== 1) ? 'LR' : 'TB';
 $clickedNodeTitle= isset($_REQUEST['clickedNodeTitle']) ? $_REQUEST['clickedNodeTitle'] : '';
-
 ?>
 <div class="container-fluid">
 	<div class="display full-border">

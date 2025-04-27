@@ -426,7 +426,7 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$extnum));
 		$node->attribute('target', '_blank');
-		$node->attribute('shape', 'house');
+		$node->attribute('shape', 'rect');
 		$node->attribute('fillcolor', $pastels[15]);
 		$node->attribute('style', 'filled');
 		
@@ -720,10 +720,18 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
 		
 		if (!empty($q['members'])){
 			foreach ($q['members'] as $types=>$type) {
-				foreach ($type as $members){
+				foreach ($type as $member){
 					$route['parent_node'] = $node;
 					$route['parent_edge_label'] = ($types == 'static') ? ' Static' : ' Dynamic';
-					dpp_follow_destinations($route, 'qmember'.$members,'');
+					switch ($combineQueueRing) {
+						case "2":
+								$go="from-did-direct,$member,1";
+								break;
+						default:
+								$go="qmember$member";
+					}
+					dpp_follow_destinations($route, $go,'');
+					//dpp_follow_destinations($route, 'qmember'.$members,'');
 				}
 			}
 		}
@@ -783,7 +791,18 @@ function dpp_follow_destinations (&$route, $destination, $optional) {
     foreach ($grplist as $member) {
       $route['parent_node'] = $node;
 			$route['parent_edge_label'] = '';
-			dpp_follow_destinations($route, $combineQueueRing ? "qmember$member" : "rg$member", '');
+			switch ($combineQueueRing) {
+					case "1":
+							$go="qmember$member";
+							break;
+					case "2":
+							$go="from-did-direct,$member,1";
+							break;
+					default:
+							$go="rg$member";
+			}
+			dpp_follow_destinations($route,$go, '');
+			//dpp_follow_destinations($route, $combineQueueRing ? "qmember$member" : "rg$member", '');
     } 
 		
 		# The destinations we need to follow are the no-answer destination
