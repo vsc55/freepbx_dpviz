@@ -1,4 +1,15 @@
 <?php if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); } ?>
+<?php
+$options=options_gets();
+$datetime = isset($options[0]['datetime']) ? $options[0]['datetime'] : '1';
+$panzoom = isset($options[0]['panzoom']) ? $options[0]['panzoom'] : '0';
+$horizontal = isset($options[0]['horizontal']) ? $options[0]['horizontal'] : '0';
+$destinationColumn= isset($options[0]['destination']) ? $options[0]['destination'] : '0';
+$dynmembers= isset($options[0]['dynmembers']) ? $options[0]['dynmembers'] : '0';
+$combineQueueRing= isset($options[0]['combineQueueRing']) ? $options[0]['combineQueueRing'] : '0';
+$extOptional= isset($options[0]['extOptional']) ? $options[0]['extOptional'] : '0';
+
+?>
 <div class="display no-border">
 	<div class="row">
 		<div class="col-sm-12">
@@ -18,7 +29,7 @@
 						</div>
 					</div>
 				</div>
-				<form class="fpbx-submit" name="editDpviz" action="?display=dpviz&action=edit" method="post">
+				<form id="dpvizForm" action="ajax.php?module=dpviz&command=save_options" method="post">
 				<!--datetime-->
 				<div class="element-container">
 					<div class="row">
@@ -45,61 +56,7 @@
 						</div>
 					</div>
 				</div>
-				<!--END datetime-->	
-				<!--Higher Resolution-->
-				<div class="element-container">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="row">
-								<div class="form-group">
-									<div class="col-md-3">
-										<label class="control-label" for="scale"><?php echo _("Export as High-Resolution PNG") ?></label>
-										<i class="fa fa-question-circle fpbx-help-icon" data-for="scale"></i>
-									</div>
-									<div class="col-md-9 radioset">
-										<input type="radio" name="scale" id="scaleyes" value="3" <?php echo ($scale == 3 ? "CHECKED" : ""); ?>>
-										<label for="scaleyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="scale" id="scaleno" value="1" <?php echo ($scale == 1 ? "CHECKED" : ""); ?>>
-										<label for="scaleno"><?php echo _("No");?></label>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<span id="scale-help" class="help-block fpbx-help-block"><?php echo _("Increases PNG resolution during export.")?></span>
-						</div>
-					</div>
-				</div>
-				<!--END Higher Resolution-->
-				<!--horizontal-->
-				<div class="element-container">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="row">
-								<div class="form-group">
-									<div class="col-md-3">
-										<label class="control-label" for="horizontal"><?php echo _("Horizontal Layout") ?></label>
-										<i class="fa fa-question-circle fpbx-help-icon" data-for="horizontal"></i>
-									</div>
-									<div class="col-md-9 radioset">
-										<input type="radio" name="horizontal" id="horizontalyes" value="1" <?php echo ($horizontal?"CHECKED":"") ?>>
-										<label for="horizontalyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="horizontal" id="horizontalno" value="0" <?php echo ($horizontal?"":"CHECKED") ?>>
-										<label for="horizontalno"><?php echo _("No");?></label>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<span id="horizontal-help" class="help-block fpbx-help-block"><?php echo _("Displays the dial plan in a horizontal layout.")?></span>
-						</div>
-					</div>
-				</div>
-				<!--END horizontal-->
+				<!--END datetime-->
 				<!--panzoom-->
 				<div class="element-container">
 					<div class="row">
@@ -127,6 +84,33 @@
 					</div>
 				</div>
 				<!--END panzoom-->
+				<!--horizontal-->
+				<div class="element-container">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3">
+										<label class="control-label" for="horizontal"><?php echo _("Horizontal Layout") ?></label>
+										<i class="fa fa-question-circle fpbx-help-icon" data-for="horizontal"></i>
+									</div>
+									<div class="col-md-9 radioset">
+										<input type="radio" name="horizontal" id="horizontalyes" value="1" <?php echo ($horizontal?"CHECKED":"") ?>>
+										<label for="horizontalyes"><?php echo _("Yes");?></label>
+										<input type="radio" name="horizontal" id="horizontalno" value="0" <?php echo ($horizontal?"":"CHECKED") ?>>
+										<label for="horizontalno"><?php echo _("No");?></label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<span id="horizontal-help" class="help-block fpbx-help-block"><?php echo _("Displays the dial plan in a horizontal layout.")?></span>
+						</div>
+					</div>
+				</div>
+				<!--END horizontal-->
 				<!--destination-->
 				<div class="element-container">
 					<div class="row">
@@ -242,7 +226,10 @@
 
 				<div class="row">
 					<div class="col-md-12 text-right">
-						<input class="btn btn-primary" name="submit" type="submit" value="Submit" id="submit">
+						<button class="btn btn-primary" name="submit" id="saveButton" type="submit">
+							<i class="fa fa-save"></i> Save
+						</button>
+						<div id="saveResponse"></div>
 					</div>
 				</div>
 				</form>

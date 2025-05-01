@@ -30,13 +30,12 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    public function editDpviz($panzoom, $horizontal, $datetime, $destination, $scale, $dynmembers, $combineQueueRing, $extOptional) {
+    public function editDpviz($panzoom, $horizontal, $datetime, $destination, $dynmembers, $combineQueueRing, $extOptional) {
         $sql = "UPDATE dpviz SET
             `panzoom` = :panzoom,
-            `horizontal` = :horizontal,
+						`horizontal` = :horizontal,
 						`datetime` = :datetime,
 						`destination` = :destination,
-						`scale` = :scale,
 						`dynmembers` = :dynmembers,
 						`combineQueueRing` = :combineQueueRing,
 						`extOptional` = :extOptional
@@ -46,7 +45,6 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
             ':horizontal' => $horizontal,
 						':datetime' => $datetime,
 						':destination' => $destination,
-						':scale' => $scale,
 						':dynmembers' => $dynmembers,
 						':combineQueueRing' => $combineQueueRing,
 						':extOptional' => $extOptional
@@ -62,28 +60,28 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $horizontal = isset($request['horizontal']) ? $request['horizontal'] : '';
 				$datetime = isset($request['datetime']) ? $request['datetime'] : '';
 				$destination = isset($request['destination']) ? $request['destination'] : '';
-				$scale = isset($request['scale']) ? $request['scale'] : '';
 				$dynmembers = isset($request['dynmembers']) ? $request['dynmembers'] : '';
 				$combineQueueRing = isset($request['combineQueueRing']) ? $request['combineQueueRing'] : '';
 				$extOptional = isset($request['extOptional']) ? $request['extOptional'] : '';
 				
         switch ($action) {
             case 'edit':
-                $this->editDpviz($panzoom, $horizontal, $datetime, $destination, $scale, $dynmembers, $combineQueueRing, $extOptional);
-								header("Location: " . $_SERVER['HTTP_REFERER']);
-								exit;
+                $this->editDpviz($panzoom,$horizontal, $datetime, $destination, $dynmembers, $combineQueueRing, $extOptional);
                 break;
             default:
                 break;
         }
     }
+		
 		public function getRightNav($request) {
 			return load_view(__DIR__."/views/rnav.php",[]);
 		}
 		
 		public function ajaxRequest($req, &$setting){
 			switch ($req) {
+				case 'save_options':
 				case 'check_update':
+				case 'make':
 				return true;
 				break;
 			}
@@ -93,6 +91,26 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 		public function ajaxHandler() {
 				$action = isset($_REQUEST['command']) ? $_REQUEST['command'] : '';
 				switch ($action) {
+					
+						case 'save_options':
+							$panzoom = isset($_POST['panzoom']) ? $_POST['panzoom'] : '';
+							$horizontal = isset($_POST['horizontal']) ? $_POST['horizontal'] : '';
+							$datetime = isset($_POST['datetime']) ? $_POST['datetime'] : '';
+							$destination = isset($_POST['destination']) ? $_POST['destination'] : '';
+							$dynmembers = isset($_POST['dynmembers']) ? $_POST['dynmembers'] : '';
+							$combineQueueRing = isset($_POST['combineQueueRing']) ? $_POST['combineQueueRing'] : '';
+							$extOptional = isset($_POST['extOptional']) ? $_POST['extOptional'] : '';
+
+							// Call your function
+							$success = $this->editDpviz(
+								$panzoom, $horizontal, $datetime, $destination, 
+								$dynmembers, $combineQueueRing, $extOptional
+							);
+
+							// Return JSON response
+							echo json_encode(array('success' => $success));
+							exit;
+							break;
 						case 'check_update':
 								// Call the function to check for updates
 								$result = $this->checkForGitHubUpdate();
@@ -104,8 +122,21 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 										'status' => 'success',
 										'current' => $result['current'],
 										'latest' => $result['latest'],
-										'up_to_date' => $result['up_to_date'],
+										'up_to_date' => $result['up_to_date']
 								];
+								break;
+						case 'make':
+								
+								include 'process.php';
+								
+								return [
+										'vizButtons' => $buttons,
+										'vizHeader' => $header,
+										'gtext' => json_decode($gtext),
+										
+										//'vizReload' => $vizReload //debug
+								];
+								break;
 						default:
 								return ['status' => 'error', 'message' => 'Unknown command'];
 				}
@@ -144,4 +175,5 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 			];
 			
 		}
+
 }

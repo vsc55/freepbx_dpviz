@@ -1,6 +1,8 @@
 <?php
 $options=options_gets();
+$panzoom= isset($options[0]['panzoom']) ? $options[0]['panzoom'] : '1';
 $destinationColumn= isset($options[0]['destination']) ? $options[0]['destination'] : '0';
+
 ?>
 <div id="toolbar-all">
 <h1>Inbound Routes</h1>
@@ -42,10 +44,14 @@ function DIDdestFormatter(value){
 <?php } ?>
 
 <script type="text/javascript">
-$("#dpviz-side").on('click-row.bs.table',function(e,row,elem){
-	var extension = row['extension'];
-	var cid = row['cidnum'];
-	window.location = '?display=dpviz&extdisplay='+extension+'&cid='+cid;
+$("#dpviz-side").on('click-row.bs.table', function(e, row, elem) {
+	//e.preventDefault();
+    var extension = row['extension'];
+    var cid = row['cidnum'];
+		var jump= '';
+		var pan='<?php echo $panzoom; ?>';
+
+    generateVisualization(extension, cid, '', pan);
 });
 
 function bootnavvizFormatter(value, row) {
