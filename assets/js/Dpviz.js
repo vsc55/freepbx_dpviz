@@ -12,6 +12,13 @@ function loadScript(url, callback) {
     document.head.appendChild(script);
 }
 
+function loadScripts(urls, callback) {
+    const promises = urls.map(url => new Promise((resolve, reject) => {
+        loadScript(url, resolve);
+    }));
+    Promise.all(promises).then(callback).catch(err => console.error('❌ Script loading error:', err));
+}
+
 function enableToolbarButtons() {
     $('.btn-toolbar').find('button, input, select, textarea').prop('disabled', false);
 }
@@ -20,31 +27,38 @@ function disableToolbarButtons() {
     $('.btn-toolbar').find('button, input, select, textarea').prop('disabled', true);
 }
 
-$(document).ready(function() {
+function safeDecode(value) {
+    return decodeURIComponent(value || '').trim();
+}
 
-    // loadScript('modules/dpviz/assets/js/viz.min.js', function() {
-    //     console.log('Script is ready, you can call its functions now.');
-    // });
-
-    loadScript('modules/dpviz/assets/js/viz.min.js');
-    loadScript('modules/dpviz/assets/js/full.render.js');
-    loadScript('modules/dpviz/assets/js/panzoom.min.js');
-    loadScript('modules/dpviz/assets/js/html2canvas.min.js');
+$(document).ready(function()
+{
+    loadScripts([
+        'modules/dpviz/assets/js/viz.min.js',
+        'modules/dpviz/assets/js/full.render.js',
+        'modules/dpviz/assets/js/panzoom.min.js',
+        'modules/dpviz/assets/js/html2canvas.min.js'
+    ]);
 
     // create namespaces
-    window.dpviz                   = window.dpviz || {};
-    window.dpviz.settings          = window.dpviz.settings || {};
-    window.dpviz.settingsLoaded    = false;
-    window.dpviz.settingsIsLoading = false;
-
-    window.dpviz.viz              = null;
-    window.dpviz.isFocused        = false;
-    window.dpviz.svgContainer     = null;
-    window.dpviz.selectedNodeId   = null;
-    window.dpviz.originalLinks    = null;
-    window.dpviz.highlightedEdges = null;
-    window.dpviz.ext              = '';
-    window.dpviz.cid              = '';
+    window.dpviz = Object.assign({
+        settings: {},
+        rnav: {
+            destinations: {},
+            destinationsReady: false,
+            destinationsLoaded: false
+        },
+        settingsLoaded: false,
+        settingsIsLoading: false,
+        viz: null,
+        isFocused: false,
+        svgContainer: null,
+        selectedNodeId: null,
+        originalLinks: new Map(),
+        highlightedEdges: new Set(),
+        ext: '',
+        cid: ''
+    }, window.dpviz);
 
     // Read settings
     getSettings();
@@ -62,125 +76,6 @@ $(document).ready(function() {
         }, 500); // Check every 500m
     }
 
-    //github update check
-    $('#check-update-btn').click(function() {
-        $('#update-result').html('<div style="margin-top: 10px;">Checking...</div>');
-
-        const $btn = $(this);
-        $btn.removeClass("btn-primary btn-success btn-danger").addClass("btn-primary");
-
-        const post_data = {
-            'module': 'dpviz',
-            'command': 'check_update'
-        };
-
-        $.ajax({
-            url: window.FreePBX.ajaxurl,
-            method: 'POST',
-            data: post_data,
-            dataType: 'json',
-
-            success: function(response)
-            {
-                $('#update-result').html('');
-                if (response.status === 'success')
-                {
-                    $btn.addClass("btn-success");
-                    fpbxToast(response.message, '', 'success');
-                    if (response.up_to_date)
-                    {
-                        // $('#update-result').html('<div style="margin-top: 10px;">You are up to date.</div>');
-                    }
-                    else
-                    {
-                        $('#update-result').html(
-                            '<a href="https://github.com/madgen78/dpviz/releases/latest" target="_blank" class="btn btn-default">' + response.latest + ' available! View on <i class="fa fa-github"></i> GitHub <i class="fa fa-external-link" aria-hidden="true"></i></a>'
-                        );
-                    }
-                }
-                else
-                {
-                    $btn.addClass("btn-danger");
-                    fpbxToast(response.message, '', 'error');
-                    // $('#update-result').html('Error: ' + response.message);
-                }
-
-                // Optional: Reset the button after a delay
-                setTimeout(() => {
-                    $btn.removeClass("btn-success btn-danger").addClass("btn-primary");
-                }, 3000);
-            },
-            error: function(xhr, status, error) {
-                $btn.addClass("btn-danger");
-                // $('#update-result').html('AJAX error: ' + error);
-                fpbxToast('AJAX error: ' + error, '', 'error' );
-
-                // Optional: Reset the button after a delay
-                setTimeout(() => {
-                    $btn.removeClass("btn-danger").addClass("btn-primary");
-                }, 3000);
-            }
-        });
-    });
-
-
-
-
-    /**
-     * Download dialplan diagram as image
-     */
-    $(document).on('click', '.export-option-scale', function (e)
-    {
-        e.preventDefault();
-
-        const scale    = parseFloat($(this).data('scale') || 1);
-        const filename = $('#filename_input').val() || '';
-        if (! filename)
-        {
-            fpbxToast(_("Error: Filename is Empty!"), '', 'error');
-            return false;
-        }
-
-        const container = $('#vizContainer')[0];
-        html2canvas(container, {
-            scale: scale,
-            useCORS: true,
-            allowTaint: true
-        }).then(function(canvas) {
-            const imgData = canvas.toDataURL("image/png");
-            triggerDownload(imgData, filename);
-        }).catch(function(error) {
-            console.error(_('❌ Error exporting image:'), error);
-        });
-    });
-
-    function triggerDownload(uri, filename)
-    {
-        const link = document.createElement('a');
-        if ('download' in link)
-        {
-            link.href     = uri;
-            link.download = filename;
-
-            //Firefox requires the link to be in the body
-            document.body.appendChild(link);
-            //simulate click
-            link.click();
-            //remove the link when done
-            document.body.removeChild(link);
-        }
-        else
-        {
-            window.open(uri);
-        }
-    }
-
-
-
-
-    /**
-     * Code settings
-     */
 
     /**
      * Retrieves the backend settings for the dpviz module and updates window.dpviz.
@@ -327,7 +222,56 @@ $(document).ready(function() {
         }
     }
 
-    $(document).on('click', '#settings_reset', function (e) {
+
+    /**
+     * Event handler for various button clicks in the dpviz module.
+     * - Handles settings reset and submit actions.
+     * - Generates a visualization based on the clicked node.
+     * - Toggles focus mode for the visualization.
+     * - Handles export options for the visualization.
+     * - Checks for updates to the dpviz module.
+     */
+    $(document).on('click', function(e)
+    {
+        const target = $(e.target);
+
+        if (target.is('#settings_reset'))
+        {
+            handleSettingsReset(e);
+        }
+        else if (target.is('#settings_submit'))
+        {
+            handleSettingsSubmit(e, target);
+        }
+        else if (target.is('#reload-dpp'))
+        {
+            e.preventDefault();
+            generateVisualization('');
+        }
+        else if (target.is('#toolbar_btn_focus'))   // Use the most reliable way to prevent default for focus button
+        {
+            e.stopPropagation();
+            // Prevent the default action
+            e.preventDefault();
+
+            // Toggle focus mode
+            toggleFocusMode();
+
+            // Return false for extra measure
+            return false;
+        }
+        else if (target.hasClass('export-option-scale'))
+        {
+            handleExportClick(e, target);
+        }
+        else if (target.is('#check-update-btn'))
+        {
+            handleUpdateClick(e, target);
+        }
+    });
+
+    function handleSettingsReset(e)
+    {
         e.preventDefault();
         fpbxConfirm(
             _("Are you sure you want to reset all settings to default?"),
@@ -355,20 +299,21 @@ $(document).ready(function() {
                 });
             }
         );
-    });
+    };
 
-    $(document).on('click', '#settings_submit', function (e) {
+    function handleSettingsSubmit(e, target)
+    {
         e.preventDefault();
 
-        const $form = $(this).closest('form');
+        const form = target.closest('form');
 
         fpbxConfirm(
             _("Are you sure you want to save the settings?"),
             _("Yes"),_("No"),
             function() {
 
-                const formArray = $form.serializeArray();
-                const formData = {};
+                const formArray = form.serializeArray();
+                const formData  = {};
                 formArray.forEach(item => {
                     formData[item.name] = item.value;
                 });
@@ -402,14 +347,7 @@ $(document).ready(function() {
 
             }
         );
-    });
-
-
-    $('#reload-dpp').on('click', function (e)
-    {
-        e.preventDefault();
-        generateVisualization('');
-    });
+    };
 
     function generateVisualization(jump = '')
     {
@@ -460,8 +398,9 @@ $(document).ready(function() {
                     let dot = response.gtext
                     .replace(/\\\\n/g, '\n')
                     .replace(/\\n/g, '\n')
-                    .replace(/\\\\l/g, '\l')
-                    .replace(/\\l/g, '\l');
+                    .replace(/\\l/g, '\l')
+                    .replace(/\\\\l/g, '\l');
+
 
                     window.dpviz.viz.renderSVGElement(dot)
                     .then(function(element) {
@@ -477,40 +416,38 @@ $(document).ready(function() {
                             });
                         }
 
-                        $(element).find('g.node').each(function () {
-                            $(this).on('click', function (e) {
+                        $(element).find('g.node').on('click', function (e)
+                        {
+                            const $node = $(this);
 
-                                if (e.ctrlKey || e.metaKey) {  // Ctrl on Windows/Linux, Command on Mac
-                                    e.preventDefault();
+                            if (e.ctrlKey || e.metaKey) {  // Ctrl on Windows/Linux, Command on Mac
+                                e.preventDefault();
 
-                                    let titleElement = $(this).find('title');
-                                    if (titleElement.length)
-                                    {
-                                        let titleText = titleElement.text() || titleElement.html();
-                                        generateVisualization(titleText);
-                                    }
-                                    return false;
+                                const titleElement = $node.find('title');
+                                if (titleElement.length) {
+                                    const titleText = titleElement.text() || titleElement.html();
+                                    generateVisualization(titleText);
                                 }
+                                return false;
+                            }
 
-                                if (window.dpviz.isFocused) {
-                                    window.dpviz.selectedNodeId = this.id;
-                                    highlightPathToNode(this.id);
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    return false;
-                                }
-                            });
+                            if (window.dpviz.isFocused) {
+                                window.dpviz.selectedNodeId = this.id;
+                                highlightPathToNode(this.id);
+                                e.preventDefault();
+                                e.stopPropagation();
+                                return false;
+                            }
                         });
 
-                        $(element).find('g.edge').each(function () {
-                            $(this).on('click', function (e) {
-                                if (window.dpviz.isFocused) {
-                                    toggleEdgeHighlight(this.id);
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    return false;
-                                }
-                            });
+                        $(element).find('g.edge').on('click', function (e)
+                        {
+                            if (window.dpviz.isFocused) {
+                                toggleEdgeHighlight(this.id);
+                                e.preventDefault();
+                                e.stopPropagation();
+                                return false;
+                            }
                         });
 
                         enableToolbarButtons();
@@ -541,25 +478,119 @@ $(document).ready(function() {
         });
     }
 
+    function handleExportClick(e, target)
+    {
+        e.preventDefault();
 
+        const scale    = parseFloat(target.data('scale') || 1);
+        const filename = $('#filename_input').val() || '';
+        if (! filename)
+        {
+            fpbxToast(_("Error: Filename is Empty!"), '', 'error');
+            return false;
+        }
+
+        const container = $('#vizContainer')[0];
+        html2canvas(container, {
+            scale: scale,
+            useCORS: true,
+            allowTaint: true
+        }).then(function(canvas) {
+            const imgData = canvas.toDataURL("image/png");
+            triggerDownload(imgData, filename);
+        }).catch(function(error) {
+            console.error(_('❌ Error exporting image:'), error);
+        });
+    };
+
+    function triggerDownload(uri, filename)
+    {
+        const link = document.createElement('a');
+        if ('download' in link)
+        {
+            link.href     = uri;
+            link.download = filename;
+
+            //Firefox requires the link to be in the body
+            document.body.appendChild(link);
+            //simulate click
+            link.click();
+            //remove the link when done
+            document.body.removeChild(link);
+        }
+        else
+        {
+            window.open(uri);
+        }
+    }
+
+    function handleUpdateClick(e, target)
+     {
+        e.preventDefault();
+
+        $('#update-result').html('<div style="margin-top: 10px;">Checking...</div>');
+
+        target.removeClass("btn-primary btn-success btn-danger").addClass("btn-primary");
+
+        const post_data = {
+            'module': 'dpviz',
+            'command': 'check_update'
+        };
+
+        $.ajax({
+            url: window.FreePBX.ajaxurl,
+            method: 'POST',
+            data: post_data,
+            dataType: 'json',
+
+            success: function(response)
+            {
+                $('#update-result').html('');
+                if (response.status === 'success')
+                {
+                    target.addClass("btn-success");
+                    fpbxToast(response.message, '', 'success');
+                    if (response.up_to_date)
+                    {
+                        // $('#update-result').html('<div style="margin-top: 10px;">You are up to date.</div>');
+                    }
+                    else
+                    {
+                        $('#update-result').html(
+                            '<a href="https://github.com/madgen78/dpviz/releases/latest" target="_blank" class="btn btn-default">' + response.latest + ' available! View on <i class="fa fa-github"></i> GitHub <i class="fa fa-external-link" aria-hidden="true"></i></a>'
+                        );
+                    }
+                }
+                else
+                {
+                    target.addClass("btn-danger");
+                    fpbxToast(response.message, '', 'error');
+                    // $('#update-result').html('Error: ' + response.message);
+                }
+
+                // Optional: Reset the button after a delay
+                setTimeout(() => {
+                    target.removeClass("btn-success btn-danger").addClass("btn-primary");
+                }, 3000);
+            },
+            error: function(xhr, status, error) {
+                target.addClass("btn-danger");
+                // $('#update-result').html('AJAX error: ' + error);
+                fpbxToast('AJAX error: ' + error, '', 'error' );
+
+                // Optional: Reset the button after a delay
+                setTimeout(() => {
+                    target.removeClass("btn-danger").addClass("btn-primary");
+                }, 3000);
+            }
+        });
+    };
 
 
 
     // focus
-    // Use the most reliable way to prevent default for focus button
-    $(document).on('click', '#toolbar_btn_focus', function (e) {
-        e.stopPropagation();
-        // Prevent the default action
-	    e.preventDefault();
-
-        // Toggle focus mode
-        toggleFocusMode();
-
-        // Return false for extra measure
-	    return false;
-    });
-
-    function toggleEdgeHighlight(edgeId) {
+    function toggleEdgeHighlight(edgeId)
+    {
         if (!window.dpviz.svgContainer) return;
 
         const $edge = $('#' + edgeId);
@@ -570,41 +601,45 @@ $(document).ready(function() {
         {
             // Remove highlight
             window.dpviz.highlightedEdges.delete(edgeId);
-
-            // Reset edge style
-            $edge.find('path').css({ stroke: '', strokeWidth: '' });
-            // Reset arrowhead
-            $edge.find('polygon').css({ fill: '', stroke: '' });
-            // Reset edge text
-            $edge.find('text').css({ fill: '', fontWeight: '' });
+            resetEdgeStyle($edge);
         }
         else
         {
             // Add highlight
             window.dpviz.highlightedEdges.add(edgeId);
-
-            // Highlight edge
-            $edge.find('path').css({ stroke: 'red', strokeWidth: '3px' });
-            // Highlight arrowhead
-            $edge.find('polygon').css({ fill: 'red', stroke: 'red' });
-            // Highlight edge text
-            $edge.find('text').css({ fill: 'red', fontWeight: 'bold' });
+            applyEdgeHighlight($edge);
         }
     }
 
-    function resetEdges() {
+    function resetEdges()
+    {
         if (!window.dpviz.svgContainer) return;
 
         // Clear highlighted edges set
         window.dpviz.highlightedEdges.clear();
 
-        // Reset only edge paths
-        $(window.dpviz.svgContainer).find('g.edge path').css({ stroke: '', strokeWidth: '' });
-        // Reset only arrowheads in edges
-        $(window.dpviz.svgContainer).find('g.edge polygon').css({ fill: '', stroke: '' });
-        // Reset edge text (labels)
-        $(window.dpviz.svgContainer).find('g.edge text').css({ fill: '', fontWeight: '' });
+        $(window.dpviz.svgContainer).find('g.edge').each(function() {
+            resetEdgeStyle($(this));
+        });
     }
+
+    function applyEdgeHighlight($edge)
+    {
+        if (!$edge.length) return;
+        $edge.find('path').css({ stroke: 'red', strokeWidth: '3px' });  // Highlight edge
+        $edge.find('polygon').css({ fill: 'red', stroke: 'red' });      // Highlight arrowhead
+        $edge.find('text').css({ fill: 'red', fontWeight: 'bold' });    // Highlight edge text
+    }
+
+    function resetEdgeStyle($edge)
+    {
+        if (!$edge.length) return;
+        $edge.find('path').css({ stroke: '', strokeWidth: '' });    // Reset only edge paths
+        $edge.find('polygon').css({ fill: '', stroke: '' });        // Reset only arrowheads in edges
+        $edge.find('text').css({ fill: '', fontWeight: '' });       // Reset edge text (labels)
+    }
+
+
 
     function toggleFocusMode() {
         if (!window.dpviz.svgContainer) return;
@@ -748,14 +783,6 @@ $(document).ready(function() {
      * - Handles row click for redirection and shows the navbar if needed.
      */
 
-    // Namespace for rnav
-    window.dpviz.rnav = window.dpviz.rnav || {};
-
-    // Set default values
-    window.dpviz.rnav.destinations       = {};
-    window.dpviz.rnav.destinationsReady  = false;
-    window.dpviz.rnav.destinationsLoaded = false;
-
     function dpvizRNavLoadDestinations()
     {
         if (window.dpviz.rnav.destinationsLoaded) return;
@@ -830,9 +857,8 @@ $(document).ready(function() {
     // Formatter for "extension / cidnum" column
     window.bootnavvizFormatter = function (value, row)
     {
-        const extension = decodeURIComponent(row['extension'] || "").trim() || "ANY";
-        const cidnum    = decodeURIComponent(row['cidnum'] || "").trim();
-        return cidnum ? `${extension} / ${cidnum}` : extension;
+        const extension = safeDecode(row['extension']) || _("ANY");
+        const cidnum    = safeDecode(row['cidnum']);
         return cidnum ? sprintf("%s / %s", extension, cidnum) : extension;
     };
 
@@ -841,8 +867,8 @@ $(document).ready(function() {
     {
         //e.preventDefault();
 
-        window.dpviz.ext = decodeURIComponent(row['extension'] || '');
-        window.dpviz.cid = decodeURIComponent(row['cidnum'] || '');
+        window.dpviz.ext = safeDecode(row['extension']);
+        window.dpviz.cid = safeDecode(row['cidnum']);
 
         generateVisualization('');
     });
