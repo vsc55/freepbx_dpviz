@@ -208,18 +208,16 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                             );
                         break;
 
-                        case 'scale':
+                        case 'panzoom':
                             $data['tab']['settings']["1"] = array(
-                                'type'	  => 'checkbox',
-                                'label'	  => _("Export as High-Resolution PNG"),
-                                'key'	  => $key,
-                                'val'	  => $val,
-                                'id'	  => $key,
-                                // 'val_yes' => "3",
-                                // 'val_no'  => "1",
-                                'help'	  => _("Increases PNG resolution during export."),
+                                'type' 	=> 'checkbox',
+                                'label' => _("Pan & Zoom"),
+                                'key' 	=> $key,
+                                'val' 	=> $val,
+                                'id' 	=> $key,
+                                'help' 	=> _("Allows you to use pan and zoom functions. Click and hold to pan, and use the mouse wheel to zoom."),
                             );
-                        break;
+                            break;
 
                         case 'horizontal':
                             $data['tab']['settings']["2"] = array(
@@ -232,44 +230,33 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                             );
                         break;
 
-                        case 'panzoom':
+                        case 'combine_queue_ring':
                             $data['tab']['settings']["3"] = array(
-                                'type' 	=> 'checkbox',
-                                'label' => _("Pan & Zoom"),
+                                'type' 	=> 'radioset',
+                                'label' => _("Shared extension node handling"),
                                 'key' 	=> $key,
                                 'val' 	=> $val,
                                 'id' 	=> $key,
-                                'help' 	=> _("Allows you to use pan and zoom functions. Click and hold to pan, and use the mouse wheel to zoom."),
+                                'options' => array(
+                                    sprintf('%s_none', $key) => [
+                                        'value' => '0',
+                                        'label' => _("None"),
+                                    ],
+                                    sprintf('%s_only', $key) => [
+                                        'value' => '1',
+                                        'label' => _("Queues and Ring Groups Only"),
+                                    ],
+                                    sprintf('%s_all', $key) => [
+                                        'value' => '2',
+                                        'label' => _("All Destinations"),
+                                    ],
+                                ),
+                                'help' 	=> _('"None" displays individual extension nodes. "Queues and Ring Groups Only" combines them into one node. "All" merges all destinations into a single extension node.'),
                             );
-                            break;
-
-                        case 'combine_queue_ring':
-                                $data['tab']['settings']["4"] = array(
-                                    'type' 	=> 'radioset',
-                                    'label' => _("Shared extension node handling"),
-                                    'key' 	=> $key,
-                                    'val' 	=> $val,
-                                    'id' 	=> $key,
-                                    'options' => array(
-                                        sprintf('%s_none', $key) => [
-                                            'value' => '0',
-                                            'label' => _("None"),
-                                        ],
-                                        sprintf('%s_only', $key) => [
-                                            'value' => '1',
-                                            'label' => _("Queues and Ring Groups Only"),
-                                        ],
-                                        sprintf('%s_all', $key) => [
-                                            'value' => '2',
-                                            'label' => _("All Destinations"),
-                                        ],
-                                    ),
-                                    'help' 	=> _('"None" displays individual extension nodes. "Queues and Ring Groups Only" combines them into one node. "All" merges all destinations into a single extension node.'),
-                                );
-                            break;
+                        break;
 
                         case 'dynmembers':
-                            $data['tab']['settings']["5"] = array(
+                            $data['tab']['settings']["4"] = array(
                                 'type' 	=> 'checkbox',
                                 'label' => _("Show Dynamic Members for Queues"),
                                 'key' 	=> $key,
@@ -280,7 +267,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                         break;
 
                         case 'ext_optional':
-                            $data['tab']['settings']["6"] = array(
+                            $data['tab']['settings']["5"] = array(
                                 'type' 	=> 'checkbox',
                                 'label' => _("Show Extension Optional Destinations"),
                                 'key' 	=> $key,
@@ -301,42 +288,43 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 break;
 
             case 'dialplan':
+
                 $data['iroute'] 	  = sprintf("%s%s", $data['extdisplay'], $data['cid']);
-                $data['isExistRoute'] = $this->dpp->isExistRoute($data['iroute']);
+                // $data['isExistRoute'] = $this->dpp->isExistRoute($data['iroute']);
 
-                if (!isset($_GET['extdisplay']))
-                {
-                    $data_return = load_view(__DIR__."/views/view.dialplan.select.null.php", $data);
-                }
-                else if (! $data['isExistRoute'])
-                {
-                    $data_return = load_view(__DIR__."/views/view.dialplan.err.route.php", $data);
-                }
-                else
-                {
-                    $this->dpp->setDirection($settings['direction']);
+                // if (!isset($_GET['extdisplay']))
+                // {
+                //     $data_return = load_view(__DIR__."/views/view.dialplan.select.null.php", $data);
+                // }
+                // else if (! $data['isExistRoute'])
+                // {
+                //     $data_return = load_view(__DIR__."/views/view.dialplan.err.route.php", $data);
+                // }
+                // else
+                // {
+                    // $this->dpp->setDirection($settings['direction']);
 
-                    $data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
+                    // $data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
                     $data['basefilename']	  = ($data['iroute'] == '') ? 'ANY' : $data['iroute'];
                     $data['filename'] 		  = sprintf("%s.png", $data['basefilename']);
-                    $data['isExistRoute'] 	  = $this->dpp->isExistRoute($data['iroute']);
+                    // $data['isExistRoute'] 	  = $this->dpp->isExistRoute($data['iroute']);
 
-                    if (is_numeric($data['extdisplay']) && (strlen($data['extdisplay'])==10 || strlen($data['extdisplay'])==11))
-                    {
-                        $data['number'] = $this->dpp->formatPhoneNumbers($data['extdisplay']);
-                    }
-                    else
-                    {
-                        $data['number'] = $data['extdisplay'];
-                    }
+                    // if (is_numeric($data['extdisplay']) && (strlen($data['extdisplay'])==10 || strlen($data['extdisplay'])==11))
+                    // {
+                    //     $data['number'] = $this->dpp->formatPhoneNumbers($data['extdisplay']);
+                    // }
+                    // else
+                    // {
+                    //     $data['number'] = $data['extdisplay'];
+                    // }
 
-                    $gtext = $this->dpp->render($data['iroute'], $data['clickedNodeTitle']);
-                    $this->dpp->log(5, sprintf("Dial Plan Graph for %s %s:\n%s", $data['extdisplay'], $data['cid'], $gtext));
-                    $gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);  // ugh, apparently viz chokes on newlines, wtf?
-                    $data['gtext'] = $gtext;
+                    // $gtext = $this->dpp->render($data['iroute'], $data['clickedNodeTitle']);
+                    // $this->dpp->log(5, sprintf("Dial Plan Graph for %s %s:\n%s", $data['extdisplay'], $data['cid'], $gtext));
+                    // $gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);  // ugh, apparently viz chokes on newlines, wtf?
+                    // $data['gtext'] = $gtext;
 
                     $data_return = load_view(__DIR__."/views/view.dialplan.php", $data);
-                }
+                // }
                 break;
 
             default:
@@ -360,15 +348,17 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
     {
         // ** Allow remote consultation with Postman, debugging, etc. **
         // ********************************************
-        // $setting['authenticate'] = false;
-        // $setting['allowremote'] = true;
-        // return true;
+        $setting['authenticate'] = false;
+        $setting['allowremote'] = true;
+        return true;
         // ********************************************
         switch ($req)
         {
+            case 'make':
             case 'reset_setting_default':
             case 'save_settings':
             case 'get_destinations':
+            case 'get_settings':
             case 'check_update':
                 return true;
                 break;
@@ -383,8 +373,81 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $data_return = false;
         switch ($command)
         {
-            case 'save_settings':
+            case 'make':
 
+                $extdisplay   = $request['ext'] ?? '';
+                $cid          = $request['cid'] ?? '';
+                $iroute 	  = sprintf("%s%s", $extdisplay, $cid);
+                $isExistRoute = $this->dpp->isExistRoute($iroute);
+
+                if (! $isExistRoute)
+                {
+                    $data_return = [
+                        'status'       => 'error',
+                        'message'      => sprintf(_('❌ Error: Could not find inbound route for %s / %s'), $extdisplay, $cid),
+                        'iroute'       => $iroute,
+                        'ext'          => $extdisplay,
+                        'cid'          => $cid,
+                        'isExistRoute' => $isExistRoute,
+                    ];
+                }
+                else
+                {
+                    $settings         = $this->getSettingAll();
+                    $clickedNodeTitle = $request['clickedNodeTitle'] ?? '';
+                    $jump             = $request['jump'] ?? '';
+                    $vizReload        = sprintf('%s,%s', $extdisplay, $cid);
+
+                    $basefilename	  = ($iroute == '') ? 'ANY' : $iroute;
+                    $filename 		  = sprintf("%s.png", $basefilename);
+
+                    if (is_numeric($extdisplay) && (in_array(strlen($extdisplay), [10, 11, 12])))
+                    {
+                        $number = $this->dpp->formatPhoneNumbers($extdisplay);
+                    }
+                    else
+                    {
+                        $number = $extdisplay;
+                    }
+
+                    $this->dpp->setDirection($settings['direction']);
+
+
+                    $gtext = $this->dpp->render($iroute, $clickedNodeTitle);
+
+
+                    $this->dpp->log(5, sprintf("Dial Plan Graph for %s %s:\n%s", $extdisplay, $cid, $gtext));
+
+                    // $gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);  // ugh, apparently viz chokes on newlines, wtf?
+                    $gtext = str_replace(["\n"], ["\\n"], $gtext);
+
+                    $data_return = [
+                        'status'       => 'success',
+                        'message'      => _('✔ Graph generated successfully'),
+                        'filename'     => $filename,
+                        'basefilename' => $basefilename,
+                        'ext'          => $extdisplay,
+                        'cid'          => $cid,
+                        'number'       => $number,
+                        'isExistRoute' => $isExistRoute,
+                        'iroute'       => $iroute,
+                        'gtext'        => $gtext,
+                        'title'        => sprintf(_("Dial Plan For Inbound Route %s%s: %s"), $number, ((!empty($cid)) ?  sprintf(' / %s', $this->dpp->formatPhoneNumbers($cid)) : ''),  $this->dpp->dproutes['description']),
+                        'datetime'     => $settings['datetime'] == '1' ? date('Y-m-d H:i:s') : '',
+                    ];
+                }
+                break;
+
+            case 'get_settings':
+                $settings = $this->getSettingAll();
+                $data_return = [
+                    'status' => 'success',
+                    'message' => '',
+                    'settings' => $settings
+                ];
+                break;
+
+            case 'save_settings':
                 $new_setting = $request['data'] ?? [];
                 if ($this->setSettingAll($new_setting))
                 {

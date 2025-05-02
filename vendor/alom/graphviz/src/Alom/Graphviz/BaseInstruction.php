@@ -46,16 +46,16 @@ abstract class BaseInstruction implements InstructionInterface
      */
     protected function escape($value)
     {
-dpplog(5, "in escape: value: $value");
-dpplog(5, "in escape: print_r(value): " . print_r($value,true));
+// dpplog(5, "in escape: value: $value");
+// dpplog(5, "in escape: print_r(value): " . print_r($value,true));
         $x = ($this->needsEscaping($value)) ? '"' . str_replace('"', '""', str_replace('\\', '\\\\', $value)) . '"' : $value;
-dpplog(5, "in escape: value2: $x");
+// dpplog(5, "in escape: value2: $x");
         return ($this->needsEscaping($value)) ? '"' . str_replace('"', '""', str_replace('\\', '\\\\', $value)) . '"' : $value;
     }
 
     protected function escapePath(array $path)
     {
-dpplog(9, "in escapePath: value: zzzzz");
+// dpplog(9, "in escapePath: value: zzzzz");
         $list = array();
         foreach ($path as $element) {
             $list[] = $this->escape($element);

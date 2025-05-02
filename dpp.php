@@ -2,6 +2,8 @@
 
 Namespace FreePBX\Modules\Dpviz;
 
+include __DIR__ . '/vendor/autoload.php';
+
 class dpp {
 
     public $freepbx = null;
@@ -322,24 +324,27 @@ class dpp {
      */
     public function formatPhoneNumbers(string $phoneNumber) : string
     {
-        $phoneNumber = preg_replace('/[^0-9]/','',$phoneNumber);
+        $hasPlusOne = strpos($phoneNumber, '+1') === 0;
 
-        if(strlen($phoneNumber) > 10) {
-            $countryCode = substr($phoneNumber, 0, strlen($phoneNumber)-10);
-            $areaCode 	 = substr($phoneNumber, -10, 3);
-            $nextThree 	 = substr($phoneNumber, -7, 3);
-            $lastFour 	 = substr($phoneNumber, -4, 4);
+        // Strip all non-digit characters
+        $digits = preg_replace('/\D/', '', $phoneNumber);
 
-            $phoneNumber = sprintf("+%s (%s) %s-%s", $countryCode, $areaCode, $nextThree, $lastFour);
-        }
-        else if(strlen($phoneNumber) == 10)
+        // If +1 was present, remove the leading '1' from digits so we format the last 10
+        if ($hasPlusOne && strlen($digits) === 11 && $digits[0] === '1')
         {
-            $areaCode  = substr($phoneNumber, 0, 3);
-            $nextThree = substr($phoneNumber, 3, 3);
-            $lastFour  = substr($phoneNumber, 6, 4);
-
-            $phoneNumber = sprintf("(%s) %s-%s", $areaCode, $nextThree, $lastFour);
+            $digits = substr($digits, 1);
         }
+
+        if (strlen($digits) === 10)
+        {
+            $areaCode  = substr($digits, 0, 3);
+            $nextThree = substr($digits, 3, 3);
+            $lastFour  = substr($digits, 6, 4);
+
+            return sprintf("%s(%s) %s-%s", $hasPlusOne ? '+1 ' : '', $areaCode, $nextThree, $lastFour);
+        }
+
+        // Return original if it doesn't fit expected pattern
         return $phoneNumber;
     }
 
@@ -354,11 +359,11 @@ class dpp {
             $text = '';
         }
 
-        // Convert HTML special characters
-        $text = htmlentities($text, ENT_QUOTES, 'UTF-8');
+        // // Convert HTML special characters
+        // $text = htmlentities($text, ENT_QUOTES, 'UTF-8');
 
-        // Replace actual newlines with Graphviz-style escaped newline
-        $text = str_replace(["\r\n", "\r", "\n"], '\\n', $text);
+        // // Replace actual newlines with Graphviz-style escaped newline
+        // $text = str_replace(["\r\n", "\r", "\n"], '\\n', $text);
 
         return $text;
     }

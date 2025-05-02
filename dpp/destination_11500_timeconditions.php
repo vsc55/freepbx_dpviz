@@ -42,7 +42,7 @@ class DestinationTimeconditions extends baseDestinations
             $tg        = $route['timegroups'][$tc['time']];
             $tgnum     = $tg['id'];
             $tgname    = $tg['description'];
-            $tgtime    = !empty($tg['time']) ? $tg['time'] : _('No times defined');
+            $tgtime    = !empty($tg['time']) ? $tg['time'] : _("No times defined");
             $tgLabel   = sprintf("%s\\n%s", $tgname, $tgtime);
             $tgLink    = $this->genUrlConfig('timegroups', $tgnum); // '/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum;
             $tgTooltip = $tgLabel;
