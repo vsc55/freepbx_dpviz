@@ -19,7 +19,6 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         'panzoom'	  		 => 1,
         'horizontal'  		 => 0,
         'datetime'	  		 => 1,
-        'scale'		  		 => 1,
         'dynmembers'  		 => 0,
         'combine_queue_ring' => 0,
         'ext_optional' 		 => 0,
@@ -288,43 +287,13 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 break;
 
             case 'dialplan':
+                $data['iroute'] 	      = sprintf("%s%s", $data['extdisplay'], $data['cid']);
+                $data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
+                $data['basefilename']	  = ($data['iroute'] == '') ? 'ANY' : $data['iroute'];
+                $data['filename'] 		  = sprintf("%s.png", $data['basefilename']);
 
-                $data['iroute'] 	  = sprintf("%s%s", $data['extdisplay'], $data['cid']);
-                // $data['isExistRoute'] = $this->dpp->isExistRoute($data['iroute']);
+                $data_return = load_view(__DIR__."/views/view.dialplan.php", $data);
 
-                // if (!isset($_GET['extdisplay']))
-                // {
-                //     $data_return = load_view(__DIR__."/views/view.dialplan.select.null.php", $data);
-                // }
-                // else if (! $data['isExistRoute'])
-                // {
-                //     $data_return = load_view(__DIR__."/views/view.dialplan.err.route.php", $data);
-                // }
-                // else
-                // {
-                    // $this->dpp->setDirection($settings['direction']);
-
-                    // $data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
-                    $data['basefilename']	  = ($data['iroute'] == '') ? 'ANY' : $data['iroute'];
-                    $data['filename'] 		  = sprintf("%s.png", $data['basefilename']);
-                    // $data['isExistRoute'] 	  = $this->dpp->isExistRoute($data['iroute']);
-
-                    // if (is_numeric($data['extdisplay']) && (strlen($data['extdisplay'])==10 || strlen($data['extdisplay'])==11))
-                    // {
-                    //     $data['number'] = $this->dpp->formatPhoneNumbers($data['extdisplay']);
-                    // }
-                    // else
-                    // {
-                    //     $data['number'] = $data['extdisplay'];
-                    // }
-
-                    // $gtext = $this->dpp->render($data['iroute'], $data['clickedNodeTitle']);
-                    // $this->dpp->log(5, sprintf("Dial Plan Graph for %s %s:\n%s", $data['extdisplay'], $data['cid'], $gtext));
-                    // $gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);  // ugh, apparently viz chokes on newlines, wtf?
-                    // $data['gtext'] = $gtext;
-
-                    $data_return = load_view(__DIR__."/views/view.dialplan.php", $data);
-                // }
                 break;
 
             default:
@@ -348,9 +317,9 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
     {
         // ** Allow remote consultation with Postman, debugging, etc. **
         // ********************************************
-        $setting['authenticate'] = false;
-        $setting['allowremote'] = true;
-        return true;
+        // $setting['authenticate'] = false;
+        // $setting['allowremote'] = true;
+        // return true;
         // ********************************************
         switch ($req)
         {
@@ -411,10 +380,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     }
 
                     $this->dpp->setDirection($settings['direction']);
-
-
                     $gtext = $this->dpp->render($iroute, $clickedNodeTitle);
-
 
                     $this->dpp->log(5, sprintf("Dial Plan Graph for %s %s:\n%s", $extdisplay, $cid, $gtext));
 
