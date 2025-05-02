@@ -13,8 +13,9 @@ if (!is_array($input)) {
 $ext  = isset($input['ext']) ? $input['ext'] : '';
 $cid  = isset($input['cid']) ? $input['cid'] : '';
 $jump = isset($input['jump']) ? $input['jump'] : '';
-$iroute=$ext.$cid;
-$vizReload=$ext.','.$cid;
+
+$iroute = (empty($ext) && empty($cid)) ? 'ANY' : $ext . $cid;
+//$vizReload=$ext.','.$cid;
 
 
 // load graphviz library
@@ -49,17 +50,19 @@ function dpp_load_incoming_routes() {
     foreach ($results as $route) {
       $num = $route['extension'];
       $cid = $route['cidnum'];
-      $routes[$num.$cid] = $route;
+			if (empty($num) && empty($cid)){$exten='ANY';}else{$exten=$num.$cid;}
+      $routes[$exten] = $route;
     }
   }
 	
 	return $routes;
 }
 
+
 function dpp_find_route($routes, $num) {
 
   $match = array();
-  $pattern = '/[^_xX+0-9\[\]]/';   # remove all non-digits
+  $pattern = '/[^ANY_xX+0-9\[\]]/';   # remove all non-digits
   $num =  preg_replace($pattern, '', $num);
 
   // "extension" is the key for the routes hash
@@ -73,7 +76,7 @@ function dpp_find_route($routes, $num) {
 
 $inroutes=dpp_load_incoming_routes();
 $dproute= dpp_find_route($inroutes, $iroute);
-
+$dproute['extension'] = empty($dproute['extension']) ? 'ANY' : $dproute['extension'];
 	if (empty($dproute)) {
 		//$header = "<div><h2>Error: Could not find inbound route for ".formatPhoneNumbers($ext)." / ".formatPhoneNumbers($cid)."</h2></div>";
 		$header = "<div><h2>Error: Could not find inbound route for ".$ext." / ".$cid."</h2></div>";
@@ -81,6 +84,8 @@ $dproute= dpp_find_route($inroutes, $iroute);
 		//$gtext=json_encode($gtext);
 	}else{
 		$filename = ($ext == '') ? 'ANY.png' : $ext.'.png';
+		//$ext = ($ext == '') ? 'ANY' : $ext;
+		
 		dpp_load_tables($dproute);   # adds data for time conditions, IVRs, etc.
 		if (!empty($jump)){
 			dpp_follow_destinations($dproute, '', $jump ,$options); #starts with destination
@@ -88,16 +93,16 @@ $dproute= dpp_find_route($inroutes, $iroute);
 			dpp_follow_destinations($dproute, '', '',$options); #starts with empty destination
 		}
 		$gtext = $dproute['dpgraph']->render();
-		//$gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);
-		//$gtext = str_replace(["\\", "\r\n", "\n", "\l"], ["\\\\", "\\n", "\\n", "\\l"], $gtext);
 		$gtext = str_replace(["\n"], ["\\n"], $gtext);
 		$gtext=json_encode($gtext);
 		
 		if (is_numeric($ext) && in_array(strlen($ext), [10, 11, 12])) {
 			$number=formatPhoneNumbers($ext);
+		}elseif(empty($ext)){
+			$number='ANY';
 		}else{
 			$number=$ext;
-		}		
+		}
 		
 		$header='<h2>Dial Plan For Inbound Route: '.$number;
 			
@@ -207,8 +212,9 @@ $neons = [
     "#ff66ff", "#f2003c", "#ffcc00", "#ff69b4", "#0aff02"
 ];
 	
-	$optional = preg_match('/^[_xX+\d\[\]]+$/', $optional) ? '' : $optional;
+	$optional = preg_match('/^[ANY_xX+\d\[\]]+$/', $optional) ? '' : $optional;
   if (! isset ($route['dpgraph'])) {
+		
     $route['dpgraph'] = new Alom\Graphviz\Digraph('"'.$route['extension'].'"');
 		$route['dpgraph']->attr('graph',array('rankdir'=>$direction));
   }
@@ -223,15 +229,17 @@ $neons = [
 			$didLabel='ANY';
 		}elseif (is_numeric($route['extension']) && (strlen($route['extension'])==10 || strlen($route['extension'])==11)){
 			$didLabel=formatPhoneNumbers($route['extension']);
+		}elseif ($route['extension']=="ANY"){
+			$didLabel=" ANY";
 		}else{
 			$didLabel=$route['extension'];
 		}
-		$didLink=$route['extension'].'/';
+		$didLink = ($route['extension'] === "ANY") ? '/' : $route['extension'] . '/';
 		if (!empty($route['cidnum'])){
-			$didLabel.=' / '.formatPhoneNumbers($route['cidnum']);
+			$didLabel.=" / ".formatPhoneNumbers($route['cidnum']);
 			$didLink.=$route['cidnum'];
 		}
-		//$didLabel.="\\n".$route['description'];
+		$didLabel.="\n".$route['description'];
 		$didData=$route['incoming'][$route['extension']];
 		$didTooltip=$didData['extension']."\n";
 		$didTooltip.= !empty($didData['cidnum']) ? "Caller ID Number= " . $didData['cidnum']."\n" : "";
@@ -240,18 +248,17 @@ $neons = [
 		$didTooltip.= !empty($didData['grppre']) ? "CID Prefix= " . $didData['grppre']."\n" : "";
 		$didTooltip.= !empty($didData['mohclass']) ? "MOH Class= " . $didData['mohclass']."\n" : "";
 
-		$dpgraph->node($route['extension'],
-			array(
-				'label' => sanitizeLabels($didLabel)."\n".$route['description'],
-				'tooltip' => sanitizeLabels($didTooltip),
-				'width' => 2,
-				'margin' => '.13',
-				'shape' => 'cds',
-				'style' => 'filled',
-				'URL'   => htmlentities('/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)),
-				'target'=>'_blank',
-				'fillcolor' => 'darkseagreen')
-			);
+		$dpgraph->node($route['extension'], array(
+    'label' => sanitizeLabels($didLabel),
+    'tooltip' => sanitizeLabels($didTooltip),
+    'width' => 2,
+    'margin' => '.13',
+    'shape' => 'cds',
+    'style' => 'filled',
+    'URL' => htmlspecialchars('/admin/config.php?display=did&view=form&extdisplay=' . urlencode($didLink)),
+    'target' => '_blank',
+    'fillcolor' => 'darkseagreen'
+));
     // $graph->node() returns the graph, not the node, so we always
     // have to get() the node after adding to the graph if we want
     // to save it for something.
@@ -667,7 +674,6 @@ $neons = [
 		
 		$num = $matches[1];
 		$numother = $matches[2];
-
 		$incoming = $route['incoming'][$num];
 		
 		$didLabel = ($num == "") ? "ANY" : formatPhoneNumbers($num);
@@ -1218,7 +1224,7 @@ function dpp_load_tables(&$dproute) {
     die_freepbx($results->getMessage()."<br><br>Error selecting from incoming");
   }
   foreach($results as $incoming) {
-    $id = $incoming['extension'];
+		$id = empty($incoming['extension']) ? 'ANY' : $incoming['extension'];
     $dproute['incoming'][$id] = $incoming;
   }	
 	

@@ -85,8 +85,9 @@ function generateVisualization(ext, cid, jump, pan) {
       document.getElementById("vizContainer").innerHTML = "";
       $('#vizButtons').html(response.vizButtons);
       $('#vizContainer').html(response.vizHeader);
-
+			
       if (response.gtext) {
+				//console.log(response.gtext);
 				let dot = response.gtext
 					.replace(/\\n/g, '\n')
 					.replace(/\\l/g, '\l');
