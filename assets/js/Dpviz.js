@@ -255,7 +255,7 @@ $(document).ready(function()
             e.preventDefault();
 
             // Toggle focus mode
-            toggleFocusMode();
+            toggleFocusMode(e, target);
 
             // Return false for extra measure
             return false;
@@ -639,22 +639,24 @@ $(document).ready(function()
         $edge.find('text').css({ fill: '', fontWeight: '' });       // Reset edge text (labels)
     }
 
-
-
-    function toggleFocusMode() {
+    function toggleFocusMode(e, target)
+    {
         if (!window.dpviz.svgContainer) return;
 
-        const $btn = $('#toolbar_btn_focus');
+        const txt = target.contents().filter(function()
+        {
+            return this.nodeType === 3 && $.trim(this.nodeValue) !== '';
+        });
 
-        if (window.dpviz.isFocused) {
+        if (window.dpviz.isFocused)
+        {
             // Exit focus mode
             resetEdges();
             restoreLinks();
             window.dpviz.isFocused = false;
 
-            $btn.text(_('Highlight Paths'))
-                .removeClass('active')
-                .addClass('btn-default');
+            txt[0].nodeValue = sprintf(' %s', _('Highlight Paths'));
+            target.removeClass('active').addClass('btn-default');
         }
         else
         {
@@ -662,9 +664,8 @@ $(document).ready(function()
             disableLinks();
             window.dpviz.isFocused = true;
 
-            $btn.text(_('Remove Highlights'))
-                .addClass('active')
-                .removeClass('btn-default');
+            txt[0].nodeValue = sprintf(' %s', _('Remove Highlights'));
+            target.addClass('active').removeClass('btn-default');
         }
     }
 

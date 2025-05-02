@@ -9,7 +9,7 @@
                     <div class="btn-toolbar w-100" role="toolbar">
                         <div class="btn-group mr-2" role="group">
                             <button type="button" class="btn btn-primary" id="reload-dpp" disabled>
-                                <i class="fa fa-refresh"></i> <?= _("Reload Page") ?>
+                                <i class="fa fa-refresh"></i> <?= _("Reload Dial Plan") ?>
                             </button>
                         </div>
                         <div class="btn-group mr-2" role="group">
