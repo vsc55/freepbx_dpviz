@@ -67,6 +67,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         switch ($action) {
             case 'edit':
                 $this->editDpviz($panzoom,$horizontal, $datetime, $destination, $dynmembers, $combineQueueRing, $extOptional);
+								load_view(__DIR__."/views/rnav.php",[]);
                 break;
             default:
                 break;

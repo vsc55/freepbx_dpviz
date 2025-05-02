@@ -1,12 +1,21 @@
 <?php
 if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
-if (isset($_POST['ext']) && isset($_POST['cid'])){
-header('Content-Type: application/json');
-$ext=urldecode($_POST['ext']);
-$cid=$_POST['cid'];
+header('Content-Type: application/json; charset=utf-8');
+$input = json_decode(file_get_contents('php://input'), true);
+
+// Basic check
+if (!is_array($input)) {
+    http_response_code(400);
+    echo json_encode(array('error' => 'Invalid JSON'));
+    exit;
+}
+
+$ext  = isset($input['ext']) ? $input['ext'] : '';
+$cid  = isset($input['cid']) ? $input['cid'] : '';
+$jump = isset($input['jump']) ? $input['jump'] : '';
 $iroute=$ext.$cid;
 $vizReload=$ext.','.$cid;
-$jump = isset($_POST['jump']) ? $_POST['jump'] : '';
+
 
 // load graphviz library
 require_once 'graphviz/src/Alom/Graphviz/InstructionInterface.php';
@@ -65,11 +74,11 @@ function dpp_find_route($routes, $num) {
 $inroutes=dpp_load_incoming_routes();
 $dproute= dpp_find_route($inroutes, $iroute);
 
-
 	if (empty($dproute)) {
-		$header = "<div><h2>Error: Could not find inbound route for ".formatPhoneNumbers($ext)." / ".formatPhoneNumbers($cid)."</h2></div>";
-		$buttons = $gtext = '';
-		$gtext=json_encode($gtext);
+		//$header = "<div><h2>Error: Could not find inbound route for ".formatPhoneNumbers($ext)." / ".formatPhoneNumbers($cid)."</h2></div>";
+		$header = "<div><h2>Error: Could not find inbound route for ".$ext." / ".$cid."</h2></div>";
+		//$buttons = $gtext = '';
+		//$gtext=json_encode($gtext);
 	}else{
 		$filename = ($ext == '') ? 'ANY.png' : $ext.'.png';
 		dpp_load_tables($dproute);   # adds data for time conditions, IVRs, etc.
@@ -79,14 +88,16 @@ $dproute= dpp_find_route($inroutes, $iroute);
 			dpp_follow_destinations($dproute, '', '',$options); #starts with empty destination
 		}
 		$gtext = $dproute['dpgraph']->render();
+		//$gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);
+		//$gtext = str_replace(["\\", "\r\n", "\n", "\l"], ["\\\\", "\\n", "\\n", "\\l"], $gtext);
+		$gtext = str_replace(["\n"], ["\\n"], $gtext);
+		$gtext=json_encode($gtext);
 		
-		if (is_numeric($ext) && (strlen($ext)==10 || strlen($ext)==11)){
+		if (is_numeric($ext) && in_array(strlen($ext), [10, 11, 12])) {
 			$number=formatPhoneNumbers($ext);
 		}else{
 			$number=$ext;
-		}
-		
-		$gtext=json_encode($gtext);
+		}		
 		
 		$header='<h2>Dial Plan For Inbound Route: '.$number;
 			
@@ -158,7 +169,7 @@ $dproute= dpp_find_route($inroutes, $iroute);
 				</script>';
 
 	}
-}
+
 
 
 
@@ -1027,7 +1038,7 @@ $neons = [
 			$tg=$route['timegroups'][$tc['time']];
 			$tgnum = $tg['id'];
 			$tgname = $tg['description'];
-			$tgtime = !empty($tg['time']) ? $tg['time'] : 'No times defined';
+			$tgtime = !empty($tg['time']) ? $tg['time'] : "No times defined";
 			$tgLabel= $tgname."\n".$tgtime;
 			$tgLink = '/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum;
 			$tgTooltip= $tgLabel;
@@ -1064,6 +1075,7 @@ $neons = [
 		}
 		
 		# Now set the current node to be the parent and recurse on both the true and false branches
+    //$route['parent_edge_label'] = " Match:\nline 555\lLine2";
     $route['parent_edge_label'] = " Match:\n".sanitizeLabels($tgLabel);
     $route['parent_edge_url'] = htmlentities($tgLink);
 		$route['parent_edge_target'] = '_blank';
@@ -1425,14 +1437,14 @@ function dpp_load_tables(&$dproute) {
 					if (!isset($dproute['timegroups'][$id])) {
 						dpplog(1, "timegroups_details id found for unknown timegroup, id=$id");
 					} else {
-						if (!isset($dproute['timegroups'][$id]['time'])){$dproute['timegroups'][$id]['time']='';}
+						if (!isset($dproute['timegroups'][$id]['time'])){$dproute['timegroups'][$id]['time']="";}
 						$exploded=explode("|",$tgd['time']); 
-						if ($exploded[0]!=='*'){$time=$exploded[0];}else{$time='';}
-						if ($exploded[1]!=='*'){$dow=ucwords($exploded[1],'-').', ';}else{$dow='';}
-						if ($exploded[2]!=='*'){$date=$exploded[2].' ';}else{$date='';}
-						if ($exploded[3]!=='*'){$month=ucfirst($exploded[3]).' ';}else{$month='';}
+						if ($exploded[0]!=="*"){$time=$exploded[0];}else{$time="";}
+						if ($exploded[1]!=="*"){$dow=ucwords($exploded[1],"-").", ";}else{$dow="";}
+						if ($exploded[2]!=="*"){$date=$exploded[2]." ";}else{$date="";}
+						if ($exploded[3]!=="*"){$month=ucfirst($exploded[3])." ";}else{$month="";}
 
-						$dproute['timegroups'][$id]['time'] .=$dow . $month . $date . $time."\n";
+						$dproute['timegroups'][$id]['time'].=$dow . $month . $date . $time."\l";
 					}
 				}
     }elseif ($table == 'tts') {
@@ -1462,13 +1474,6 @@ function sanitizeLabels($text) {
     if ($text === null) {
         $text = '';
     }
-    // Convert HTML special characters
-    //$text = htmlentities($text, ENT_QUOTES, 'UTF-8');
-
-    // Replace actual newlines with Graphviz-style escaped newline
-    $text = str_replace(["\r\n", "\r", "\\n"], '\n', $text);
-		//$text = str_replace(["\\l"], '\l', $text);
-
     return $text;
 }
 
@@ -1504,25 +1509,32 @@ function secondsToTimes($seconds) {
 }
 
 function formatPhoneNumbers($phoneNumber) {
-    $phoneNumber = preg_replace('/[^0-9]/','',$phoneNumber);
+    $hasPlusOne = strpos($phoneNumber, '+1') === 0;
 
-    if(strlen($phoneNumber) > 10) {
-        $countryCode = substr($phoneNumber, 0, strlen($phoneNumber)-10);
-        $areaCode = substr($phoneNumber, -10, 3);
-        $nextThree = substr($phoneNumber, -7, 3);
-        $lastFour = substr($phoneNumber, -4, 4);
+    // Strip all non-digit characters
+    $digits = preg_replace('/\D/', '', $phoneNumber);
 
-        $phoneNumber = '+'.$countryCode.' ('.$areaCode.') '.$nextThree.'-'.$lastFour;
+    // If +1 was present, remove the leading '1' from digits so we format the last 10
+    if ($hasPlusOne && strlen($digits) === 11 && $digits[0] === '1') {
+        $digits = substr($digits, 1);
     }
-    else if(strlen($phoneNumber) == 10) {
-        $areaCode = substr($phoneNumber, 0, 3);
-        $nextThree = substr($phoneNumber, 3, 3);
-        $lastFour = substr($phoneNumber, 6, 4);
 
-        $phoneNumber = '('.$areaCode.') '.$nextThree.'-'.$lastFour;
+    if (strlen($digits) === 10) {
+        $areaCode = substr($digits, 0, 3);
+        $nextThree = substr($digits, 3, 3);
+        $lastFour = substr($digits, 6, 4);
+
+        if ($hasPlusOne) {
+            return '+1 (' . $areaCode . ') ' . $nextThree . '-' . $lastFour;
+        } else {
+            return '(' . $areaCode . ') ' . $nextThree . '-' . $lastFour;
+        }
     }
+
+    // Return original if it doesn't fit expected pattern
     return $phoneNumber;
 }
+
 
 function options_gets() {
 	$row = \FreePBX::Dpviz()->getOptions();

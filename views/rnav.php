@@ -7,13 +7,14 @@ $destinationColumn= isset($options[0]['destination']) ? $options[0]['destination
 <div id="toolbar-all">
 <h1>Inbound Routes</h1>
 </div>
-<table id="dpviz-side" data-escape="true" data-url="ajax.php?module=core&amp;command=getJSON&amp;jdata=allDID" data-cache="true" data-toolbar="#toolbar-all" data-toggle="table" data-search="true" class="table">
+<table id="dpviz-side" data-escape="true" data-url="ajax.php?module=core&amp;command=getJSON&amp;jdata=allDID" data-cache="true" data-toolbar="#toolbar-all" data-toggle="table" data-search="true" data-show-columns="true"
+    data-show-refresh="true" class="table" data-cookie="true" data-cookie-id-table="dpviz-rnav-side">
 	<thead>
 		<tr>			
-			<th data-field="extension" data-formatter="bootnavvizFormatter" data-sortable="true"><?php echo _("DID / CID")?></th>
+			<th data-field="extension" data-formatter="bootnavvizFormatter" data-sortable="true" data-switchable="false"><?php echo _("DID / CID")?></th>
 			<th data-field="description" data-sortable="true"><?php echo _("Description")?></th>
 			<?php if ($destinationColumn==1) { ?>
-      <th data-field="destination" data-formatter="DIDdestFormatter" data-sortable="true"><?php echo _("Destination")?></th>
+      <th data-field="destination" data-formatter="DIDdestFormatter" data-sortable="true" data-visible="false"><?php echo _("Destination")?></th>
       <?php } ?>
 		</tr>
 	</thead>
@@ -46,8 +47,8 @@ function DIDdestFormatter(value){
 <script type="text/javascript">
 $("#dpviz-side").on('click-row.bs.table', function(e, row, elem) {
 	//e.preventDefault();
-    var extension = row['extension'];
-    var cid = row['cidnum'];
+    var extension = decodeURIComponent(row['extension']);
+    var cid = decodeURIComponent(row['cidnum']);
 		var jump= '';
 		var pan='<?php echo $panzoom; ?>';
 
@@ -62,8 +63,10 @@ function bootnavvizFormatter(value, row) {
     return cidnum ? extension + ' / ' + cidnum : extension;
 }
 
+
+//load side bar if svgContainer is empty
 document.addEventListener("DOMContentLoaded", function () {
-    <?php if (!isset($_GET['extdisplay'])) : ?>
+    if (!svgContainer){
         // Wait for the element to exist before modifying it
         let checkExist = setInterval(function () {
             let navbar = document.getElementById("floating-nav-bar");
@@ -72,6 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 clearInterval(checkExist);
             }
         }, 100); // Check every 100ms
-    <?php endif; ?>
+    }
 });
 </script>

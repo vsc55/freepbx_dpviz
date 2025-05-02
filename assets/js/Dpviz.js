@@ -32,10 +32,10 @@ $(document).ready(function() {
 
 //Save Setting, then show Dial Plan tab.
 $('#dpvizForm').submit(function(event) {
-	event.preventDefault(); // Always prevent first
+	event.preventDefault(); 
 
 	var $form = $(this);
-	var formData = $form.serialize(); // serialize() is okay here
+	var formData = $form.serialize();
 	var processed = document.getElementById('processed')?.value || '';
 	var ext = document.getElementById('ext')?.value || '';
 	var cid = document.getElementById('cid')?.value || '';
@@ -44,12 +44,12 @@ $('#dpvizForm').submit(function(event) {
 
 	$.ajax({
 		type: 'POST',
-		url: $form.attr('action'), // Use the form's action attribute
+		url: $form.attr('action'),
 		data: formData,
 		success: function(response) {
 			var saveButton = document.getElementById("saveButton");
 			var originalContent = saveButton.innerHTML;
-
+		
 			saveButton.innerHTML = '<i class="fa fa-check"></i> Saved!';
 			
 			setTimeout(function() {
@@ -68,35 +68,41 @@ $('#dpvizForm').submit(function(event) {
 	});
 });
 
-function generateVisualization(ext, cid, jump, pan) {
-	
+function generateVisualization(ext, cid, jump, pan) {	
   $.ajax({
     url: 'ajax.php?module=dpviz&command=make',
     type: 'POST',
-    data: {
-      ext: ext,
-      cid: cid,
-      jump: jump,
-    },
+    data: JSON.stringify({
+			ext: ext,
+			cid: cid,
+			jump: jump
+		}),
 		
     dataType: 'json',
     success: function(response) {
+			
       document.getElementById("floating-nav-bar").classList.remove("show");
       document.getElementById("vizContainer").innerHTML = "";
       $('#vizButtons').html(response.vizButtons);
       $('#vizContainer').html(response.vizHeader);
 
       if (response.gtext) {
-				
-        viz.renderSVGElement(response.gtext)
-          .then(function(element) {
+				let dot = response.gtext
+					.replace(/\\n/g, '\n')
+					.replace(/\\l/g, '\l');
+
+				viz.renderSVGElement(dot)
+					.then(function(element) {
 						isFocused = false;
             svgContainer = element;
             document.getElementById("vizContainer").appendChild(element);
 
             var svgElement = document.querySelector('#graph0');
             if (svgElement && pan === "1") {
-							panzoom(svgElement);
+							panzoom(svgElement, {
+								zoomDoubleClickSpeed: 1, //disables double click to zoom
+							});
+							//panzoom(svgElement);
 						}
 
             element.querySelectorAll("g.node").forEach(node => {
@@ -131,9 +137,10 @@ function generateVisualization(ext, cid, jump, pan) {
       }
     },
     error: function(xhr, status, error) {
+			
       console.error('AJAX Error:', status, error);
     }
-  });
+  });	
 }
 
 

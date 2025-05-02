@@ -20,6 +20,7 @@ let highlightedEdges = new Set(); // Track highlighted edges
 
 
 </script>
+<meta charset="UTF-8">
 <div class="container-fluid">
 	<div class="display full-border">
 		<h1><?php echo _("Dial Plan Vizualizer"); ?></h1>
