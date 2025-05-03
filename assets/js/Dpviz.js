@@ -25,12 +25,12 @@ function loadScripts(urls, callback)
 
 function enableToolbarButtons()
 {
-    $('.btn-toolbar').find('button, input, select, textarea').prop('disabled', false);
+    $('.btn-toolbar').find('button, input, select, textarea, spinner').prop('disabled', false);
 }
 
 function disableToolbarButtons()
 {
-    $('.btn-toolbar').find('button, input, select, textarea').prop('disabled', true);
+    $('.btn-toolbar').find('button, input, select, textarea, spinner').prop('disabled', true);
 }
 
 function safeDecode(value, defaultValue = '')
@@ -130,8 +130,11 @@ $(document).ready(function()
         let checkExist = setInterval(function ()
         {
             const activeHref = $('.nav-tabs li.active a').attr('href');
-            handleTabChange(activeHref);
-            clearInterval(checkExist);
+            if (activeHref)
+            {
+                handleTabChange(activeHref);
+                clearInterval(checkExist);
+            }
         }, 500); // Check every 500m
     }
 
