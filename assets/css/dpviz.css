@@ -57,3 +57,63 @@ svg {
 	fill: #ff0000 !important;
 }
 
+
+
+.dropdown-large {
+	width: 600px;
+	padding: 20px;
+}
+
+.dropdown-menu {
+	left: auto;
+}
+
+.dropdown-menu > li {
+	padding: 0;
+}
+
+/* Inline layout */
+.header-inline {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.header-inline h3 {
+	margin: 0;
+	margin-right: 20px;
+}
+
+/* Prevent closing when clicking inside */
+.dropdown-menu {
+	overflow: visible;
+}
+
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  font-size: 1.2em;
+}
+
+.close {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+}

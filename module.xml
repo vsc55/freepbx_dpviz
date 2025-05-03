@@ -21,6 +21,7 @@
 			<field name="dynmembers" type="boolean" default="1"/>
 			<field name="combineQueueRing" type="boolean" default="0"/>
 			<field name="extOptional" type="boolean" default="0"/>
+			<field name="fmfm" type="boolean" default="0"/>
 		</table>
   </database>
 	<changelog>

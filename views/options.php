@@ -8,6 +8,7 @@ $destinationColumn= isset($options[0]['destination']) ? $options[0]['destination
 $dynmembers= isset($options[0]['dynmembers']) ? $options[0]['dynmembers'] : '0';
 $combineQueueRing= isset($options[0]['combineQueueRing']) ? $options[0]['combineQueueRing'] : '0';
 $extOptional= isset($options[0]['extOptional']) ? $options[0]['extOptional'] : '0';
+$fmfm= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
 
 ?>
 <div class="display no-border">
@@ -196,6 +197,33 @@ $extOptional= isset($options[0]['extOptional']) ? $options[0]['extOptional'] : '
 					</div>
 				</div>
 				<!--END dynmembers-->
+				<!--fmfm-->
+				<div class="element-container">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3">
+										<label class="control-label" for="fmfm"><?php echo _("Show Find Me Follow Me for Extensions") ?></label>
+										<i class="fa fa-question-circle fpbx-help-icon" data-for="fmfm"></i>
+									</div>
+									<div class="col-md-9 radioset">
+										<input type="radio" name="fmfm" id="fmfmyes" value="1" <?php echo ($fmfm?"CHECKED":"") ?>>
+										<label for="fmfmyes"><?php echo _("Yes");?></label>
+										<input type="radio" name="fmfm" id="fmfmno" value="0" <?php echo ($fmfm?"":"CHECKED") ?>>
+										<label for="fmfmno"><?php echo _("No");?></label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<span id="fmfm-help" class="help-block fpbx-help-block"><?php echo _("Displays Find Me Follow Me data for extensions.")?></span>
+						</div>
+					</div>
+				</div>
+				<!--END fmfm-->
 				<!--extOptional-->
 				<div class="element-container">
 					<div class="row">
@@ -203,7 +231,7 @@ $extOptional= isset($options[0]['extOptional']) ? $options[0]['extOptional'] : '
 							<div class="row">
 								<div class="form-group">
 									<div class="col-md-3">
-										<label class="control-label" for="dynmembers"><?php echo _("Show Extension Optional Destinations") ?></label>
+										<label class="control-label" for="extOptional"><?php echo _("Show Extension Optional Destinations") ?></label>
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="extOptional"></i>
 									</div>
 									<div class="col-md-9 radioset">

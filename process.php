@@ -34,7 +34,6 @@ require_once 'graphviz/src/Alom/Graphviz/Subgraph.php';
 $options=options_gets();
 $datetime = isset($options[0]['datetime']) ? $options[0]['datetime'] : '1';
 $panzoom = isset($options[0]['panzoom']) ? $options[0]['panzoom'] : '1';
-
 function dpp_load_incoming_routes() {
   global $db;
 	
@@ -86,7 +85,7 @@ $dproute['extension'] = empty($dproute['extension']) ? 'ANY' : $dproute['extensi
 		$filename = ($ext == '') ? 'ANY' : $ext;
 		//$ext = ($ext == '') ? 'ANY' : $ext;
 		
-		dpp_load_tables($dproute);   # adds data for time conditions, IVRs, etc.
+		dpp_load_tables($dproute,$options);   # adds data for time conditions, IVRs, etc.
 		if (!empty($jump)){
 			dpp_follow_destinations($dproute, '', $jump ,$options); #starts with destination
 		}else{
@@ -220,6 +219,7 @@ $direction=($horizontal== 1) ? 'LR' : 'TB';
 $dynmembers= isset($options[0]['dynmembers']) ? $options[0]['dynmembers'] : '0';
 $combineQueueRing= isset($options[0]['combineQueueRing']) ? $options[0]['combineQueueRing'] : '0';
 $extOptional= isset($options[0]['extOptional']) ? $options[0]['extOptional'] : '0';
+$fmfmOption= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
 	
 
   $pastels = [
@@ -579,6 +579,7 @@ $neons = [
 		#
   } elseif (preg_match("/^from-did-direct,(\d+),(\d+)/", $destination, $matches)) {
 		
+		//print_r($route['extensions']);
 		$extnum = $matches[1];
 		$extother = $matches[2];
 		if (isset($route['extensions'][$extnum])){
@@ -586,14 +587,51 @@ $neons = [
 			$extname= $extension['name'];
 			$extemail= $extension['email'];
 			$extemail= str_replace("|",",\n",$extemail);
+			
+			if ($fmfmOption){
+				if (isset($extension['fmfm']) && $extension['fmfm']['ddial']=='DIRECT'){
+				//if ($extension['fmfm']['ddial']=='DIRECT'){
+					$fmfmLabel="FMFM Enabled\nInitial Ring Time=".secondsToTimes($extension['fmfm']['prering'])."\nRing Time=".secondsToTimes($extension['fmfm']['grptime'])."\nConfirm Calls=".$extension['fmfm']['grpconf'];
+				}else{
+					$fmfmLabel="FMFM Disabled";
+				}
+			}else{
+				$fmfmLabel='';
+			}
+			
 			$node->attribute('label', 'Extension: '.$extnum.' '.sanitizeLabels($extname)."\n".sanitizeLabels($extemail));
+			$node->attribute('tooltip', $node->getAttribute('label')."\n".$fmfmLabel);
 			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$extnum));
 			$node->attribute('target', '_blank');
+			
+			if (isset($extension['fmfm'])){
+				if ($extension['fmfm']['ddial']=='DIRECT'){
+						
+						$grplist = preg_split("/-/", $extension['fmfm']['grplist']);
+						foreach ($grplist as $g){
+							//echo $g."<br>";
+							$g=trim($g);
+							if (isset($route['extensions'][$g])){
+								$follow='from-did-direct,'.$g.',1';
+							}else{
+								$follow=$g;
+							}
+							$route['parent_edge_label'] = ' FMFM ('.secondsToTimes($extension['fmfm']['prering']).')';
+							$route['parent_node'] = $node;
+							dpp_follow_destinations($route, $follow,'',$options);
+						}
+						//print_r($grplist);
+						//print_r($route['extensions'][$extnum]['fmfm']);
+				}
+				
+			}
+			
 		}else{
 			$node->attribute('label', $extnum);
+			$node->attribute('tooltip', $node->getAttribute('label'));
 		}
 		
-		$node->attribute('tooltip', $node->getAttribute('label'));
+		
 		$node->attribute('shape', 'rect');
 		$node->attribute('fillcolor', $pastels[15]);
 		$node->attribute('style', 'filled');
@@ -1225,10 +1263,11 @@ $neons = [
 }
 
 # load gobs of data.  Save it in hashrefs indexed by ints
-function dpp_load_tables(&$dproute) {
+function dpp_load_tables(&$dproute,$options) {
 	global $db;
-	global $dynmembers;
-  
+	$dynmembers= isset($options[0]['dynmembers']) ? $options[0]['dynmembers'] : '0';
+	$fmfmOption= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
+	
 	# Users
   $query = "select * from users";
   $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
@@ -1242,8 +1281,24 @@ function dpp_load_tables(&$dproute) {
     $dproute['extensions'][$id]= $users;
 		$email='grep -E \'^'.$id.'[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3';
 		exec($email, $emailResult);
-		$dproute['extensions'][$id]['email'] = !empty($emailResult[0]) ? $emailResult[0] : 'unassigned';
+		$dproute['extensions'][$id]['email'] = !empty($emailResult[0]) ? $emailResult[0] : 'unassigned';		
   }
+	
+	if ($fmfmOption){
+		//fmfm
+		$D='/usr/sbin/asterisk -rx "database show AMPUSER" | grep \'followme\' | cut -d \'/\' -f3,5';
+		exec($D, $fmfm);
+		foreach ($fmfm as $line){
+					// Split into key and value
+			list($left, $value) = explode(':', $line, 2);
+			$left = trim($left);
+			$value = trim($value);
+
+			// Split the left part into extension and subkey
+			list($ext, $subkey) = explode('/', $left, 2);
+			$dproute['extensions'][$ext]['fmfm'][$subkey]=$value;
+		}
+	}
 
 	# Inbound Routes
   $query = "select * from incoming";
@@ -1536,10 +1591,15 @@ function secondsToTimes($seconds) {
 
     $hours = (int) ($seconds / 3600);
     $minutes = (int) (($seconds % 3600) / 60);
-    $seconds = $seconds % 60;
+    $remainingSeconds = $seconds % 60;
 
-    return $hours > 0 ? "$hours hrs, $minutes mins" : 
-           ($minutes > 0 ? "$minutes mins, $seconds secs" : "$seconds secs");
+    if ($hours > 0) {
+        return $remainingSeconds === 0 ? "$hours hrs, $minutes mins" : "$hours hrs, $minutes mins, $remainingSeconds secs";
+    } elseif ($minutes > 0) {
+        return $remainingSeconds === 0 ? "$minutes mins" : "$minutes mins, $remainingSeconds secs";
+    } else {
+        return "$remainingSeconds secs";
+    }
 }
 
 function formatPhoneNumbers($phoneNumber) {
