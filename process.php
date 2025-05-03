@@ -83,7 +83,7 @@ $dproute['extension'] = empty($dproute['extension']) ? 'ANY' : $dproute['extensi
 		//$buttons = $gtext = '';
 		//$gtext=json_encode($gtext);
 	}else{
-		$filename = ($ext == '') ? 'ANY.png' : $ext.'.png';
+		$filename = ($ext == '') ? 'ANY' : $ext;
 		//$ext = ($ext == '') ? 'ANY' : $ext;
 		
 		dpp_load_tables($dproute);   # adds data for time conditions, IVRs, etc.
@@ -110,24 +110,49 @@ $dproute['extension'] = empty($dproute['extension']) ? 'ANY' : $dproute['extensi
 		$header.=': '.$dproute['description'].'</h2>';
 		if ($datetime==1){$header.= "<h6>".date('Y-m-d H:i:s')."</h6>";}
 		
-		$buttons='
-				<div class="btn-toolbar" style="margin: 10px 0; padding: 10px 0;">
-						<div class="btn-group">
-								
-								<button type="button" class="btn btn-default" id="reloadButton" onclick="generateVisualization(\''.$ext.'\',\''.$cid.'\',\''.$jump.'\',\''.$panzoom.'\')">Reload</button>
-								<button type="button" class="btn btn-default" style="pointer-events: none; cursor: default;">Export as '.htmlspecialchars($filename).'</button>
-								<button type="button" class="btn btn-default" onclick="exportImage(4, \''.htmlspecialchars($filename).'\')">High</button>
-								<button type="button" class="btn btn-default" onclick="exportImage(2, \''. htmlspecialchars($filename).'\')">Standard</button>
-								<button type="button" id="focus" class="btn btn-default">Highlight Paths</button>
-						</div>
-				</div>
-				<input type="hidden" id="processed" value="yes">
-				<input type="hidden" id="ext" value="'.$ext.'">
-				<input type="hidden" id="cid" value="'.$cid.'">
-				<input type="hidden" id="jump" value="'.$jump.'">
-				<input type="hidden" id="panzoom" value="'.$panzoom.'">
-				';
-			$header.=' 
+$buttons='
+<div class="color-box" style="border-radius: 10px; background-color:#f9f9f9; margin: 10px 10px; padding: 10px 10px;">
+	<div class="input-group" style="max-width:50%;">
+		<!-- Reload Button -->
+		<span class="input-group-btn">
+			<button type="button" class="btn btn-default" id="reloadButton"
+				onclick="generateVisualization(\''.$ext.'\',\''.$cid.'\',\''.$jump.'\',\''.$panzoom.'\')">
+				<i class="fa fa-refresh"></i> Reload
+			</button>
+		</span>
+		<!-- Export Label -->
+		<span class="input-group-addon input-group-text" style="width: auto;"><i class="fa fa-file"></i> Export as</span>
+		<!-- Input Field -->
+		<input type="text" id="filenameInput" name="nohistory" autocomplete="off" value="'.$filename.'" class="form-control">
+		
+		<!-- File Type Suffix -->
+		<span class="input-group-addon input-group-text" style="width: auto;">.png</span>
+		<!-- Download Dropdown -->
+		<span class="input-group-btn">
+			<div class="dropdown">
+				<button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown" aria-expanded="false">
+					<i class="fa fa-download"></i> Download <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu dropdown-menu-right dropdown-menu-end">
+					<li><a class="dropdown-item" href="#" onclick="handleExport(4)"><i class="fa fa-star"></i> High</a></li>
+					<li><a class="dropdown-item" href="#" onclick="handleExport(2)"><i class="fa fa-circle"></i> Standard</a></li>
+				</ul>
+			</div>
+		</span>
+		<!-- Highlight Button -->
+		<span class="input-group-btn">
+			<button type="button" id="focus" class="btn btn-default"><i class="fa fa-magic"></i> Highlight Paths</button>
+		</span>
+	</div>
+</div>
+<input type="hidden" id="processed" value="yes">
+<input type="hidden" id="ext" value="'.$ext.'">
+<input type="hidden" id="cid" value="'.$cid.'">
+<input type="hidden" id="jump" value="'.$jump.'">
+<input type="hidden" id="panzoom" value="'.$panzoom.'">
+'; 
+
+$header.=' 
 				<script>
 				$(document).ready(function() {
 					document.querySelectorAll(\'g.node\').forEach(node => {
@@ -171,12 +196,15 @@ $dproute['extension'] = empty($dproute['extension']) ? 'ANY' : $dproute['extensi
 									window.open(uri);
 							}
 					}
+					
+					function handleExport(scale) {
+							var input = document.getElementById(\'filenameInput\');
+							var filename = input.value.trim() || \'export\';
+							exportImage(scale, filename + \'.png\');
+					}
 				</script>';
 
 	}
-
-
-
 
 #
 # This is a recursive function.  It digs through various nodes

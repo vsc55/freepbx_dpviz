@@ -32,17 +32,17 @@ let highlightedEdges = new Set(); // Track highlighted edges
 				<ul class="nav nav-tabs" role="tablist">
 					<li role="presentation" data-name="dpbox" class="active">
 						<a href="#dpbox" aria-controls="dpbox" role="tab" data-toggle="tab">
-							<?php echo _("Dial Plan") ?>
+							<i class="fa fa-sitemap"></i> <?php echo _("Dial Plan") ?>
 						</a>
 					</li>
 					<li role="presentation" data-name="navigation" class="change-tab">
 						<a href="#navigation" aria-controls="navigation" role="tab" data-toggle="tab">
-							<?php echo _("Navigation & Usage") ?>
+							<i class="fa fa-compass"></i> <?php echo _("Navigation & Usage") ?>
 						</a>
 					</li>
 					<li role="presentation" data-name="settings" class="change-tab">
 						<a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
-							<?php echo _("Settings") ?>
+							<i class="fa fa-cog"></i> <?php echo _("Settings") ?>
 						</a>
 					</li>
 				</ul>

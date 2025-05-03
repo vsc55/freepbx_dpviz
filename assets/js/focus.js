@@ -100,21 +100,23 @@ function toggleFocusMode() {
 	if (!svgContainer) return;
 
 	if (isFocused) {
-		// Exit focus mode
-		resetEdges();
-		restoreLinks();
-		isFocused = false;
-		document.getElementById("focus").textContent = "Highlight Paths";
+    // Exit focus mode
+    resetEdges();
+    restoreLinks();
+    isFocused = false;
+    document.getElementById("focus").innerHTML  = '<i class="fa fa-magic"></i> Highlight Paths';
+    document.getElementById("focus").classList.add("btn-default");
+		document.getElementById("focus").classList.remove("btn-info");
 		document.getElementById("focus").classList.remove("active");
-		document.getElementById("focus").classList.add("btn-default");
-	} else {
-		// Enter focus mode
-		disableLinks();
-		isFocused = true;
-		document.getElementById("focus").textContent = "Remove Highlights";
+} else {
+    // Enter focus mode
+    disableLinks();
+    isFocused = true;
+    document.getElementById("focus").innerHTML  = '<i class="fa fa-magic"></i> Remove Highlights';
+    document.getElementById("focus").classList.remove("btn-default");
+		document.getElementById("focus").classList.add("btn-info");
 		document.getElementById("focus").classList.add("active");
-		document.getElementById("focus").classList.remove("btn-default");
-	}
+}
 }
 
 function disableLinks() {
