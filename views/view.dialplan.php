@@ -9,7 +9,7 @@
                     <div class="btn-toolbar w-100" role="toolbar">
                         <div class="btn-group mr-2" role="group">
                             <button type="button" class="btn btn-primary" id="reload-dpp" disabled>
-                                <i class="fa fa-refresh"></i> <?= _("Reload Dial Plan") ?>
+                                <i class="fa fa-refresh"></i> <?= _("Reload") ?>
                             </button>
                         </div>
                         <div class="btn-group mr-2" role="group">
@@ -17,13 +17,18 @@
                                 <i class="fa fa-magic"></i> <?= _("Highlight Paths") ?>
                             </button>
                         </div>
-                        <div class="input-group mr-2 flex-grow-1" role="group">
+                        <div class="input-group mr-2 ml-auto" role="group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text">
+                                <span class="input-group-text px-5">
                                     <i class="fa fa-file mr-2"></i> <?= _("Export as") ?>
                                 </span>
                             </div>
-                            <input type="text" class="form-control flex-grow-1" id="filename_input" value="" disabled>
+                            <input type="text" class="form-control" id="filename_input" value="" placeholder="<?= _('Enter filename') ?>"  disabled>
+                            <div class="input-group-append">
+                                <span class="input-group-text px-3">
+                                    <i class="fa fa-file-image-o mr-1"></i> .png
+                                </span>
+                            </div>
                             <div class="input-group-append">
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
                                     <i class="fa fa-download"></i> <?= _("Download") ?>

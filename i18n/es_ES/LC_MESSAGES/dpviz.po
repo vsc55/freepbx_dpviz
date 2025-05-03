@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-03 01:16+0200\n"
-"PO-Revision-Date: 2025-05-03 01:19+0200\n"
+"POT-Creation-Date: 2025-05-03 12:14+0200\n"
+"PO-Revision-Date: 2025-05-03 12:19+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -13,19 +13,19 @@ msgstr ""
 "X-Generator: Poedit 3.6\n"
 "X-Poedit-Basepath: .\n"
 
-#: Dpviz.class.php:202
+#: Dpviz.class.php:203
 msgid "Date & Time Stamp"
 msgstr "Sello de fecha y hora"
 
-#: Dpviz.class.php:206
+#: Dpviz.class.php:207
 msgid "Displays the date and time on the graph."
 msgstr "Muestra la fecha y la hora en el gráfico."
 
-#: Dpviz.class.php:213
+#: Dpviz.class.php:214
 msgid "Pan & Zoom"
 msgstr "Panorámica y zoom"
 
-#: Dpviz.class.php:217
+#: Dpviz.class.php:218
 msgid ""
 "Allows you to use pan and zoom functions. Click and hold to pan, and use the "
 "mouse wheel to zoom."
@@ -33,32 +33,32 @@ msgstr ""
 "Permite utilizar las funciones de panorámica y zoom. Mantenga pulsado para "
 "desplazarse y utilice la rueda del ratón para hacer zoom."
 
-#: Dpviz.class.php:224
+#: Dpviz.class.php:225
 msgid "Horizontal Layout"
 msgstr "Diseño horizontal"
 
-#: Dpviz.class.php:228
+#: Dpviz.class.php:229
 msgid "Displays the dial plan in a horizontal layout."
 msgstr "Muestra el plan de marcación en formato horizontal."
 
-#: Dpviz.class.php:235
+#: Dpviz.class.php:236
 msgid "Shared extension node handling"
 msgstr ""
 
-#: Dpviz.class.php:242 dpp/destination_1000_announcement.php:24
+#: Dpviz.class.php:243 dpp/destination_1000_announcement.php:24
 #: dpp/destination_4000_dynroute.php:21 dpp/destination_7500_recording.php:20
 msgid "None"
 msgstr "Ninguno"
 
-#: Dpviz.class.php:246
+#: Dpviz.class.php:247
 msgid "Queues and Ring Groups Only"
 msgstr ""
 
-#: Dpviz.class.php:250
+#: Dpviz.class.php:251
 msgid "All Destinations"
 msgstr "Todos los Destinos"
 
-#: Dpviz.class.php:253
+#: Dpviz.class.php:254
 msgid ""
 "\"None\" displays individual extension nodes. \"Queues and Ring Groups "
 "Only\" combines them into one node. \"All\" merges all destinations into a "
@@ -68,20 +68,20 @@ msgstr ""
 "grupos de timbres\" los combina en un solo nodo. \"Todos\" combina todos los "
 "destinos en un único nodo de extensión."
 
-#: Dpviz.class.php:260
+#: Dpviz.class.php:261
 msgid "Show Dynamic Members for Queues"
 msgstr "Mostrar miembros dinámicos para colas"
 
-#: Dpviz.class.php:264
+#: Dpviz.class.php:265
 msgid "Displays the list of dynamic agents currently assigned to the queues."
 msgstr ""
 "Muestra la lista de agentes dinámicos asignados actualmente a las colas."
 
-#: Dpviz.class.php:271
+#: Dpviz.class.php:272
 msgid "Show Extension Optional Destinations"
 msgstr "Mostrar destinos opcionales de la ampliación"
 
-#: Dpviz.class.php:275
+#: Dpviz.class.php:276
 msgid ""
 "Displays and follows the optional destinations (No Answer, Busy, Not "
 "Reachable) set for the extension in the Advanced tab."
@@ -89,56 +89,127 @@ msgstr ""
 "Muestra y sigue los destinos opcionales (Sin respuesta, Ocupado, No "
 "localizable) configurados para la extensión en la pestaña Avanzado."
 
-#: Dpviz.class.php:300
+#: Dpviz.class.php:302
 #, php-format
 msgid "❌Unknown page: %s"
 msgstr "❌Página desconocida: %s"
 
-#: Dpviz.class.php:356
+#: Dpviz.class.php:353 views/view.options.php:46
+msgid "Yes"
+msgstr "Sí"
+
+#: Dpviz.class.php:354 views/view.options.php:48
+msgid "No"
+msgstr "No"
+
+#: Dpviz.class.php:355
+msgid "Loading..."
+msgstr "Cargando..."
+
+#: Dpviz.class.php:356 dpp.php:484 dpp/destination_5500_inbound_routes.php:23
+msgid "ANY"
+msgstr "CUALQUIERA"
+
+#: Dpviz.class.php:357
+msgid "⚠ Could not connect to the server"
+msgstr "⚠ No se ha podido conectar con el servidor"
+
+#: Dpviz.class.php:358
+msgid "⚠ Something went wrong"
+msgstr "⚠ Algo salió mal!"
+
+#: Dpviz.class.php:359
+msgid "⚠ Received empty or invalid response"
+msgstr "⚠ Recibida respuesta vacía o no válida"
+
+#: Dpviz.class.php:360
+msgid "Are you sure you want to reset all settings to default?"
+msgstr ""
+"¿Estás seguro de que quieres restablecer todos los ajustes por defecto?"
+
+#: Dpviz.class.php:361
+msgid "Are you sure you want to save the settings?"
+msgstr "¿Estás seguro de que quieres guardar los ajustes?"
+
+#: Dpviz.class.php:362
+#, php-format
+msgid "⚠ An unexpected error occurred: %s"
+msgstr "⚠ Se ha producido un error inesperado: %s"
+
+#: Dpviz.class.php:363
+msgid "Error: Filename is Empty!"
+msgstr "Error: ¡El nombre del archivo está vacío!"
+
+#: Dpviz.class.php:364
+msgid "❌ Error exporting image:"
+msgstr "❌ Error al exportar la imagen:"
+
+#: Dpviz.class.php:365 views/view.dialplan.php:17
+#: views/view.nav_and_usage.php:28
+msgid "Highlight Paths"
+msgstr "Resaltar Rutas"
+
+#: Dpviz.class.php:366
+msgid "Remove Highlights"
+msgstr "Eliminar Resaltar Rutas"
+
+#: Dpviz.class.php:367
+msgid "No Destination"
+msgstr "Sin Destino"
+
+#: Dpviz.class.php:368
+msgid "⚠ Error loading destination"
+msgstr "⚠ Error al cargar el destino"
+
+#: Dpviz.class.php:369
+msgid "⚠ Unknown error while loading destinations"
+msgstr "⚠ Error desconocido al cargar destinos"
+
+#: Dpviz.class.php:386
 #, php-format
 msgid "❌ Error: Could not find inbound route for %s / %s"
 msgstr "❌ Error: No se pudo encontrar la ruta de entrada para %s / %s"
 
-#: Dpviz.class.php:392
+#: Dpviz.class.php:426
 msgid "✔ Graph generated successfully"
 msgstr "✔ Gráfico generado correctamente"
 
-#: Dpviz.class.php:401
+#: Dpviz.class.php:435
 #, php-format
 msgid "Dial Plan For Inbound Route %s%s: %s"
 msgstr "Plan de Marcación para Ruta Entrante %s%s: %s"
 
-#: Dpviz.class.php:422
+#: Dpviz.class.php:456
 msgid "✔ Settings saved successfully"
 msgstr "✔ Configuración guardados correctamente"
 
-#: Dpviz.class.php:429
+#: Dpviz.class.php:463
 msgid "❌ Failed to save settings"
 msgstr "❌ No se ha podido guardar la configuración"
 
-#: Dpviz.class.php:439
+#: Dpviz.class.php:473
 msgid "✔ Settings reset to default values"
 msgstr "✔ Configuración restablecida a los valores predeterminados"
 
-#: Dpviz.class.php:468
+#: Dpviz.class.php:502
 #, php-format
 msgid "✔ You are using the latest version: %s"
 msgstr "✔ Está utilizando la última versión: %s"
 
-#: Dpviz.class.php:472
+#: Dpviz.class.php:506
 #, php-format
 msgid "⚠ A new version is available: %s, current version: %s"
 msgstr "⚠ Una nueva versión está disponible: %s, versión actual: %s"
 
-#: Dpviz.class.php:478
+#: Dpviz.class.php:512
 msgid "❌ Unknown command"
 msgstr "❌ Comando desconocido"
 
-#: Dpviz.class.php:499
+#: Dpviz.class.php:533
 msgid "Failed to fetch release info."
 msgstr ""
 
-#: Dpviz.class.php:505
+#: Dpviz.class.php:539
 msgid "Invalid response from GitHub."
 msgstr "Respuesta no válida de GitHub."
 
@@ -181,40 +252,36 @@ msgstr "No se ha podido abrir el archivo de registro: %s"
 msgid "[%s] [Level %d] %s\n"
 msgstr "[%s] [Nivel %d] %s\n"
 
-#: dpp.php:483 dpp/destination_5500_inbound_routes.php:23
-msgid "ANY"
-msgstr "CUALQUIERA"
-
-#: dpp.php:504
+#: dpp.php:507
 #, php-format
 msgid "Caller ID Number= %s\\n"
 msgstr "Número de Identificación de llamada= %s\\n"
 
-#: dpp.php:505
+#: dpp.php:508
 #, php-format
 msgid "Description= %s\\n"
 msgstr "Descripción= %s\\n"
 
-#: dpp.php:506
+#: dpp.php:509
 #, php-format
 msgid "Alert Info= %s\\n"
 msgstr "Alerta Info= %s\\n"
 
-#: dpp.php:507
+#: dpp.php:510
 #, php-format
 msgid "CID Prefix= %s\\n"
 msgstr "Prefijo CID= %s\\n"
 
-#: dpp.php:508
+#: dpp.php:511
 #, php-format
 msgid "MOH Class= %s\\n"
 msgstr ""
 
-#: dpp.php:545
+#: dpp.php:548
 msgid " Always"
 msgstr " Siempre"
 
-#: dpp.php:574
+#: dpp.php:577
 #, php-format
 msgid "(new node: %s)"
 msgstr "(nuevo nodo: %s)"
@@ -255,8 +322,8 @@ msgstr " Continuar"
 
 #: dpp/destination_10500_set_cid.php:24
 #, php-format
-msgid "Set CID\\nName= %s\\lNumber= %s\\l"
-msgstr "Set CID\\nNombre= %s\\lNúmero= %s\\l"
+msgid "Set CID\\nName= %s\\nNumber= %s\\n"
+msgstr "Set CID\\nNombre= %s\\nNúmero= %s\\n"
 
 #: dpp/destination_11000_tts.php:22
 #, php-format
@@ -487,8 +554,8 @@ msgstr "Código de función: %s \\<%s\\>"
 
 #: dpp/destination_6000_ivr.php:51
 #, php-format
-msgid "IVR: %s\\nAnnouncement: %s\\lRecord (%s): %s\\l"
-msgstr "IVR: %s\\nAnuncio: %s\\nGrabar (%s): %s"
+msgid "IVR: %s\\nAnnouncement: %s\\nRecord (%s): %s\\n"
+msgstr "IVR: %s\\nAnuncio: %s\\nGrabar (%s): %s\\n"
 
 #: dpp/destination_6000_ivr.php:71
 #, php-format
@@ -559,8 +626,8 @@ msgstr "Grupo de timbres: %s %s"
 
 #: dpp/destination_9999999_custom.php:36
 #, php-format
-msgid "Cust Dest: %s\\nTarget: %s\\l"
-msgstr "Cust Dest: %s\\nDestino: %s\\l"
+msgid "Cust Dest: %s\\nTarget: %s\\n"
+msgstr "Cust Dest: %s\\nDestino: %s\\n"
 
 #: dpp/table_1000_users.php:28
 msgid "unassigned"
@@ -627,36 +694,36 @@ msgstr ""
 "dentro de su Plan de Marcado."
 
 #: views/view.dialplan.php:12
-msgid "Reload Dial Plan"
-msgstr "Recargar Plan de Marcado"
-
-#: views/view.dialplan.php:17 views/view.nav_and_usage.php:28
-msgid "Highlight Paths"
-msgstr "Resaltar rutas"
+msgid "Reload"
+msgstr "Recargar"
 
 #: views/view.dialplan.php:23
 msgid "Export as"
 msgstr "Exportar como"
 
-#: views/view.dialplan.php:29
+#: views/view.dialplan.php:26
+msgid "Enter filename"
+msgstr "Introduzca el nombre del archivo"
+
+#: views/view.dialplan.php:34
 msgid "Download"
 msgstr "Descargar"
 
-#: views/view.dialplan.php:33
+#: views/view.dialplan.php:38
 msgid "High"
 msgstr "Alta"
 
-#: views/view.dialplan.php:36
+#: views/view.dialplan.php:41
 msgid "Standard"
 msgstr "Estándar"
 
-#: views/view.dialplan.php:65 views/view.dialplan.select.null.php:16
+#: views/view.dialplan.php:70 views/view.dialplan.select.null.php:16
 msgid "No Dial Plan has been selected for display!"
 msgstr ""
 "Actualmente no se ha seleccionado ningún Plan de Marcado para su "
 "visualización!"
 
-#: views/view.dialplan.php:66 views/view.dialplan.select.null.php:17
+#: views/view.dialplan.php:71 views/view.dialplan.select.null.php:17
 msgid ""
 "In order to generate and view the corresponding call flow, please select a "
 "Dial Plan from the available menu. Once selected, the detailed call flow "
@@ -754,14 +821,6 @@ msgstr "Utiliza la rueda del ratón para acercar y alejar la imagen."
 msgid "Check for Updates"
 msgstr "Comprobar si hay actualizaciones"
 
-#: views/view.options.php:46
-msgid "Yes"
-msgstr "Sí"
-
-#: views/view.options.php:48
-msgid "No"
-msgstr "No"
-
 #: views/view.options.php:102
 msgid "Save Changes"
 msgstr "Guardar Cambios"
@@ -769,6 +828,9 @@ msgstr "Guardar Cambios"
 #: views/view.options.php:106
 msgid "Reset Default"
 msgstr "Restablecer a valores por defecto"
+
+#~ msgid "Reload Dial Plan"
+#~ msgstr "Recargar Plan de Marcado"
 
 #~ msgid "Export as High-Resolution PNG"
 #~ msgstr "Exportar como PNG de alta resolución"
@@ -785,9 +847,6 @@ msgstr "Restablecer a valores por defecto"
 #~ msgstr ""
 #~ "Cuando una extensión forma parte tanto de una cola como de un grupo de "
 #~ "anillos, se mostrará como un único nodo en lugar de dos."
-
-#~ msgid "Reload Page"
-#~ msgstr "Recargar página"
 
 #~ msgid "Highlight Paths:"
 #~ msgstr "Resaltar rutas:"

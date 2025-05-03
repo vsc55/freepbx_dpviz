@@ -1,34 +1,90 @@
-function loadScript(url, callback) {
+function loadScript(url, callback)
+{
     const script = document.createElement('script');
     script.src = url;
     script.type = 'text/javascript';
-    script.onload = function() {
-        // console.log(`✅ Script loaded: ${url}`);
+    script.onload = function()
+    {
+        console.log(sprintf(_("✅ Script loaded: %s"), url));
         if (callback) callback();
     };
-    script.onerror = function() {
-        console.error(`❌ Failed to load script: ${url}`);
+    script.onerror = function()
+    {
+        console.error(sprintf(_("❌ Failed to load script: %s"), url));
     };
     document.head.appendChild(script);
 }
 
-function loadScripts(urls, callback) {
+function loadScripts(urls, callback)
+{
     const promises = urls.map(url => new Promise((resolve, reject) => {
         loadScript(url, resolve);
     }));
-    Promise.all(promises).then(callback).catch(err => console.error('❌ Script loading error:', err));
+    Promise.all(promises).then(callback).catch(err => console.error(_('❌ Script loading error:'), err));
 }
 
-function enableToolbarButtons() {
+function enableToolbarButtons()
+{
     $('.btn-toolbar').find('button, input, select, textarea').prop('disabled', false);
 }
 
-function disableToolbarButtons() {
+function disableToolbarButtons()
+{
     $('.btn-toolbar').find('button, input, select, textarea').prop('disabled', true);
 }
 
-function safeDecode(value) {
-    return decodeURIComponent(value || '').trim();
+function safeDecode(value, defaultValue = '')
+{
+    return decodeURIComponent(value || defaultValue).trim();
+}
+
+function i18nLoadStrings()
+{
+    const post_data = {
+        module: 'dpviz',
+        command: 'get_i18n'
+    };
+    return $.post(window.FreePBX.ajaxurl, post_data, 'json')
+    .done(function (response)
+    {
+        if (response.status === "success" && response.i18n)
+        {
+            window.dpviz.i18nStrings = response.i18n;
+            console.log(_("✅ i18n strings loaded successfully"));
+        }
+        else
+        {
+            const err_msg = response ? response.message || _("⚠ Something went wrong") : _("⚠ Received empty or invalid response");
+            fpbxToast(err_msg, '', 'error');
+            console.error(err_msg);
+        }
+    })
+    .fail(function (xhr, status, error)
+    {
+        fpbxToast(_("⚠ Could not connect to the server"), '', 'error');
+        console.error(_("❌ Network error:"), error || status);
+    });
+}
+async function i18nAwait(key)
+{
+    if (! window.dpviz.i18nStrings || ! window.dpviz.i18nStrings[key])
+    {
+        await i18nLoadStrings();
+    }
+    if (window.dpviz.i18nStrings && window.dpviz.i18nStrings[key])
+    {
+        return window.dpviz.i18nStrings[key];
+    }
+    return key;
+}
+
+function i18nStr(key)
+{
+    if (window.dpviz.i18nStrings && window.dpviz.i18nStrings[key])
+    {
+        return window.dpviz.i18nStrings[key];
+    }
+    return key;
 }
 
 $(document).ready(function()
@@ -57,8 +113,12 @@ $(document).ready(function()
         originalLinks: new Map(),
         highlightedEdges: new Set(),
         ext: '',
-        cid: ''
+        cid: '',
+        i18nStrings: {}
     }, window.dpviz);
+
+    // Load i18n strings
+    i18nLoadStrings();
 
     // Read settings
     getSettings();
@@ -67,12 +127,11 @@ $(document).ready(function()
     if (!window.dpviz.svgContainer)
     {
         // Wait for the element to exist before modifying it
-        let checkExist = setInterval(function () {
-            let $navbar = $('#floating-nav-bar');
-            if ($navbar.length) {
-                $navbar.addClass('show');
-                clearInterval(checkExist);
-            }
+        let checkExist = setInterval(function ()
+        {
+            const activeHref = $('.nav-tabs li.active a').attr('href');
+            handleTabChange(activeHref);
+            clearInterval(checkExist);
         }, 500); // Check every 500m
     }
 
@@ -154,14 +213,14 @@ $(document).ready(function()
                         return resolve(true);
                     }
 
-                    const err_msg = response ? response.message || _("⚠ Something went wrong") : _("⚠ Received empty or invalid response");
+                    const err_msg = response ? response.message || i18nStr('ajax_response_status_err') : i18nStr('ajax_response_empty');
                     fpbxToast(err_msg, '', 'error');
                     // console.warn(err_msg);
                     return resolve(false);
                 }
                 catch (error)
                 {
-                    const err_msg  = sprintf(_("⚠ An unexpected error occurred: %s"), error.message);
+                    const err_msg  = sprintf(i18nStr('settings_get_error'), error.message);
                     fpbxToast(err_msg, '', 'error');
                     // console.error(err_msg);
                     return reject(new Error(err_msg));
@@ -169,7 +228,7 @@ $(document).ready(function()
             })
             .fail(function (xhr, status, error)
             {
-                fpbxToast(_("⚠ Could not connect to the server"), '', 'error');
+                fpbxToast(i18nStr('ajax_failed'), '', 'error');
                 console.error("Network error:", error || status);
                 return reject(new Error("Network error: " + (error || status)));
             })
@@ -274,15 +333,16 @@ $(document).ready(function()
     {
         e.preventDefault();
         fpbxConfirm(
-            _("Are you sure you want to reset all settings to default?"),
-            _("Yes"),_("No"),
+            i18nStr("reset_settings_confirm"),
+            i18nStr("yes"), i18nStr("no"),
             function() {
                 const post_data = {
                     module: 'dpviz',
                     command: 'reset_setting_default'
                 };
-                $.post(window.FreePBX.ajaxurl, post_data)
-                .done(function(response) {
+                $.post(window.FreePBX.ajaxurl, post_data, 'json')
+                .done(function(response)
+                {
                     if (response.status === "success")
                     {
                         fpbxToast(response.message, '', 'success');
@@ -293,9 +353,10 @@ $(document).ready(function()
                     {
                         fpbxToast(response.message, '', 'error');
                     }
-                }, 'json')
-                .fail(function() {
-                    fpbxToast(_("⚠ Could not connect to the server"), '', 'error');
+                })
+                .fail(function()
+                {
+                    fpbxToast(i18nStr('ajax_failed'), '', 'error');
                 });
             }
         );
@@ -308,10 +369,10 @@ $(document).ready(function()
         const form = target.closest('form');
 
         fpbxConfirm(
-            _("Are you sure you want to save the settings?"),
-            _("Yes"),_("No"),
-            function() {
-
+            i18nStr("submit_settings_confirm"),
+            i18nStr("yes"), i18nStr("no"),
+            function()
+            {
                 const formArray = form.serializeArray();
                 const formData  = {};
                 formArray.forEach(item => {
@@ -323,28 +384,31 @@ $(document).ready(function()
                     command: 'save_settings',
                     data: formData
                 };
-
-                $.post(window.FreePBX.ajaxurl, post_data, function (response) {
+                $.post(window.FreePBX.ajaxurl, post_data, 'json')
+                .done(function(response)
+                {
                     if (response.status === "success")
                     {
                         fpbxToast(response.message, '', 'success');
                         getSettings();
 
-                        //TODO: show question to reload page
-                        setTimeout(function() {
+                        // Reload the visualization after settings are saved
+                        setTimeout(function()
+                        {
                             const pan = getSettingPanZoom();
                             generateVisualization('');
                         }, 1000);
-
                     }
                     else
                     {
-                        fpbxToast(response.message || _("⚠ Something went wrong"), '', 'error');
+                        const err_msg = response ? response.message || i18nStr('ajax_response_status_err') : i18nStr('ajax_response_empty');
+                        fpbxToast(err_msg, '', 'error');
                     }
-                }, 'json').fail(function () {
-                    fpbxToast(_("⚠ Could not connect to the server"), '', 'error');
+                })
+                .fail(function ()
+                {
+                    fpbxToast(i18nStr('ajax_failed'), '', 'error');
                 });
-
             }
         );
     };
@@ -397,10 +461,7 @@ $(document).ready(function()
                 {
                     let dot = response.gtext
                     .replace(/\\\\n/g, '\n')
-                    .replace(/\\n/g, '\n')
-                    .replace(/\\l/g, '\l')
-                    .replace(/\\\\l/g, '\l');
-
+                    .replace(/\\n/g, '\n');
 
                     window.dpviz.viz.renderSVGElement(dot)
                     .then(function(element) {
@@ -466,14 +527,14 @@ $(document).ready(function()
             }
             else
             {
-                const err_msg = response.message || _("⚠ Something went wrong");
+                const err_msg = response ? response.message || i18nStr('ajax_response_status_err') : i18nStr('ajax_response_empty');
                 fpbxToast(err_msg, '', 'error');
                 // console.warn(err_msg);
             }
         })
         .fail(function (xhr, status, error)
         {
-            fpbxToast(_("⚠ Could not connect to the server"), '', 'error');
+            fpbxToast(i18nStr('ajax_failed'), '', 'error');
             console.error("AJAX network error:", error || status);
         });
     }
@@ -486,7 +547,7 @@ $(document).ready(function()
         const filename = $('#filename_input').val() || '';
         if (! filename)
         {
-            fpbxToast(_("Error: Filename is Empty!"), '', 'error');
+            fpbxToast(i18nStr('export_filename_missing'), '', 'error');
             return false;
         }
 
@@ -499,7 +560,7 @@ $(document).ready(function()
             const imgData = canvas.toDataURL("image/png");
             triggerDownload(imgData, filename);
         }).catch(function(error) {
-            console.error(_('❌ Error exporting image:'), error);
+            console.error(i18nStr('export_error_image'), error);
         });
     };
 
@@ -655,8 +716,8 @@ $(document).ready(function()
             restoreLinks();
             window.dpviz.isFocused = false;
 
-            txt[0].nodeValue = sprintf(' %s', _('Highlight Paths'));
-            target.removeClass('active').addClass('btn-default');
+            txt[0].nodeValue = sprintf(' %s', i18nStr('btn_highlight'));
+            target.removeClass('active btn-info').addClass('btn-default');
         }
         else
         {
@@ -664,8 +725,8 @@ $(document).ready(function()
             disableLinks();
             window.dpviz.isFocused = true;
 
-            txt[0].nodeValue = sprintf(' %s', _('Remove Highlights'));
-            target.addClass('active').removeClass('btn-default');
+            txt[0].nodeValue = sprintf(' %s', i18nStr('btn_highlight_remove'));
+            target.removeClass('btn-default btn-info').addClass('active');
         }
     }
 
@@ -796,7 +857,8 @@ $(document).ready(function()
             'module' : 'dpviz',
             'command': 'get_destinations'
         };
-        $.post(window.FreePBX.ajaxurl, post_data, function (response)
+        $.post(window.FreePBX.ajaxurl, post_data, 'json')
+        .done(function(response)
         {
             if (response.status === "success" && response.destinations)
             {
@@ -805,34 +867,36 @@ $(document).ready(function()
             }
             else
             {
-                fpbxToast(response.message || _("⚠ Unknown error while loading destinations"), '', 'error');
+                fpbxToast(response.message || i18nStr('destination_err_unknown'), '', 'error');
             }
-        }, 'json').fail(function ()
+        })
+        .fail(function ()
         {
-            fpbxToast(_("⚠ Could not connect to the server"), '', 'error');
+            fpbxToast(i18nStr('ajax_failed'), '', 'error');
         });
     }
 
     // Formatter the "destination" column
     window.DIDdestFormatter = function (value, row, index)
     {
-        if (!value) return _("No Destination");
+        if (!value) return i18nStr('destination_empty');
 
         if (!window.dpviz.rnav.destinationsReady)
         {
-            if (value === '__dpviz_error__') {
-                return '<span class="text-danger">' + _('⚠ Error loading destination') + '</span>';
+            if (value === '__dpviz_error__')
+            {
+                return sprintf('<span class="text-danger">%s</span>', i18nStr('destination_err_loading'));
             }
 
             retryUpdateDestinationCell(index, value);
-            return '<span class="text-muted"><span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>' + _('Loading...') + '</span>';
+            return sprintf('<span class="text-muted"><span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>%s</span>', i18nStr('loading'));
         }
 
         const dest = window.dpviz.rnav.destinations?.[value];
         if (!dest) return value;
 
         const prefix = dest.category || dest.name;
-        return `${prefix}: ${dest.description}`;
+        return sprintf("%s: %s", prefix, dest.description);
     };
 
     function retryUpdateDestinationCell(index, value, attempt = 0)
@@ -858,9 +922,10 @@ $(document).ready(function()
     // Formatter for "extension / cidnum" column
     window.bootnavvizFormatter = function (value, row)
     {
-        const extension = safeDecode(row['extension']) || _("ANY");
-        const cidnum    = safeDecode(row['cidnum']);
-        return cidnum ? sprintf("%s / %s", extension, cidnum) : extension;
+        const extension  = safeDecode(row['extension']) || i18nStr("ANY");
+        const cidnum     = safeDecode(row['cidnum']);
+        const return_val = (cidnum !== "") ? sprintf("%s / %s", extension, cidnum) : extension;
+        return return_val;
     };
 
     // Click over row → redirect
@@ -877,4 +942,39 @@ $(document).ready(function()
     $('#dpviz-side').on('post-body.bs.table', function () {
         dpvizRNavLoadDestinations();
     });
+
+
+    /**
+     * Manager navigation tab change event.
+     */
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e)
+    {
+        const activeHref = $(e.target).attr('href');
+        handleTabChange(activeHref);
+    });
+
+    /**
+     * Handles the visibility of the floating navbar based on the active tab.
+     *
+     */
+    function handleTabChange(activeHref)
+    {
+        const navbar = $('#floating-nav-bar');
+        if (navbar.length)
+        {
+            if (activeHref === '#dpbox')
+            {
+                navbar.show();
+                if (! window.dpviz.svgContainer)
+                {
+                    navbar.addClass('show');
+                }
+            }
+            else
+            {
+                navbar.removeClass('show').hide();
+            }
+        }
+    }
+
 });

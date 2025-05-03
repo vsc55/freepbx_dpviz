@@ -399,6 +399,7 @@ class dpp {
             foreach ($results as $route)
             {
                 $key = sprintf("%s%s", $route['extension'], $route['cidnum']);
+                $key = (empty($key)) ? 'ANY' : $key;
                 $this->inroutes[$key] = $route;
             }
         }
@@ -412,7 +413,7 @@ class dpp {
     public function findRoute($num)
     {
         $match   = array();
-        $pattern = '/[^_xX+0-9\[\]]/';   # remove all non-digits
+        $pattern = '/[^ANY_xX+0-9\[\]]/';   # remove all non-digits
         $num     = preg_replace($pattern, '', $num);
 
         // "extension" is the key for the routes hash
@@ -456,7 +457,7 @@ class dpp {
     #
     public function followDestinations(&$route, $destination, $optional)
     {
-        $optional = preg_match('/^[_xX+\d\[\]]+$/', $optional) ? '' : $optional;
+        $optional = preg_match('/^[ANY_xX+\d\[\]]+$/', $optional) ? '' : $optional;
 
         if (! isset ($route['dpgraph']))
         {
@@ -478,11 +479,12 @@ class dpp {
 
         if ($destination == '')
         {
-            if (empty($route['extension']))
+            if (empty($route['extension']) || $route['extension'] == "ANY")
             {
-                $didLabel = _('ANY');
+                $didLabel           = _('ANY');
+                $route['extension'] = "ANY";
             }
-            elseif (is_numeric($route['extension']) && (strlen($route['extension'])==10 || strlen($route['extension'])==11))
+            elseif (is_numeric($route['extension']) && (in_array(strlen($route['extension']), [10, 11, 12])))
             {
                 $didLabel = $this->formatPhoneNumbers($route['extension']);
             }
@@ -491,15 +493,16 @@ class dpp {
                 $didLabel = $route['extension'];
             }
 
-            $didLink = sprintf("%s/", $route['extension']);
+            $didLink = ($route['extension'] === "ANY") ? '/' : sprintf("%s/", $route['extension']);
             if (!empty($route['cidnum']))
             {
-                $didLabel .= sprintf(' / %s', $this->formatPhoneNumbers($route['cidnum']));
+                $didLabel = sprintf("%s / %s", $didLabel, $this->formatPhoneNumbers($route['cidnum']));
                 $didLink  .= $route['cidnum'];
             }
-            $didLabel  .= sprintf('\\n%s', $route['description']);
 
-            $didData	= $route['incoming'][$route['extension']];
+            $didLabel = sprintf("%s\\n%s", $didLabel, $route['description']);
+
+            $didData    = $route['incoming'][$route['extension']];
             $didTooltip = sprintf("%s\\n", $didData['extension']);
             $didTooltip.= !empty($didData['cidnum']) 		? sprintf(_('Caller ID Number= %s\\n'), $didData['cidnum']) : '';
             $didTooltip.= !empty($didData['description']) 	? sprintf(_('Description= %s\\n'), $didData['description']) : '';

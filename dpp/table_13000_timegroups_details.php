@@ -36,7 +36,7 @@ class TableTimegroupsDetails extends baseTables
             $date 	  = ($exploded[2] !== "*") ? sprintf("%s ", $exploded[2]) : "";
             $month 	  = ($exploded[3] !== "*") ? sprintf("%s ", ucfirst($exploded[3])) : "";
 
-            $dproute[$this->key_name][$id]['time'] .= sprintf("%s%s%s%s\\l", $dow, $month, $date, $time);
+            $dproute[$this->key_name][$id]['time'] .= sprintf("%s%s%s%s\\n", $dow, $month, $date, $time);
         }
         return true;
     }

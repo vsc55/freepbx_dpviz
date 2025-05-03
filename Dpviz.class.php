@@ -132,7 +132,8 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         return true;
     }
 
-    public function doConfigPageInit($page) {
+    public function doConfigPageInit($page)
+    {
         $request = freepbxGetSanitizedRequest();
         // $request = $_REQUEST;
         $action	 = $request['action'] ?? '';
@@ -288,6 +289,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
             case 'dialplan':
                 $data['iroute'] 	      = sprintf("%s%s", $data['extdisplay'], $data['cid']);
+                $data['iroute'] 		  = (empty($data['iroute'])) ? 'ANY' : $data['iroute'];
                 $data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
                 $data['basefilename']	  = ($data['iroute'] == '') ? 'ANY' : $data['iroute'];
                 $data['filename'] 		  = sprintf("%s.png", $data['basefilename']);
@@ -323,6 +325,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         // ********************************************
         switch ($req)
         {
+            case 'get_i18n':
             case 'make':
             case 'reset_setting_default':
             case 'save_settings':
@@ -342,11 +345,38 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $data_return = false;
         switch ($command)
         {
+            case 'get_i18n':
+                $data_return = [
+                    'status' => 'success',
+                    'message' => '',
+                    'i18n' => [
+                        'yes'                      => _("Yes"),
+                        'no'                       => _("No"),
+                        'loading'                  => _('Loading...'),
+                        'ANY'                      => _('ANY'),
+                        'ajax_failed'              => _("⚠ Could not connect to the server"),
+                        'ajax_response_status_err' => _("⚠ Something went wrong"),
+                        'ajax_response_empty'      => _("⚠ Received empty or invalid response"),
+                        'reset_settings_confirm'   => _("Are you sure you want to reset all settings to default?"),
+                        'submit_settings_confirm'  => _("Are you sure you want to save the settings?"),
+                        'settings_get_error'       => _("⚠ An unexpected error occurred: %s"),
+                        'export_filename_missing'  => _("Error: Filename is Empty!"),
+                        'export_error_image'       => _("❌ Error exporting image:"),
+                        'btn_highlight'            => _("Highlight Paths"),
+                        'btn_highlight_remove'     => _("Remove Highlights"),
+                        'destination_empty'        => _("No Destination"),
+                        'destination_err_loading'  => _('⚠ Error loading destination'),
+                        'destination_err_unknown'  => _("⚠ Unknown error while loading destinations"),
+                    ]
+                ];
+                break;
+
             case 'make':
 
                 $extdisplay   = $request['ext'] ?? '';
                 $cid          = $request['cid'] ?? '';
-                $iroute 	  = sprintf("%s%s", $extdisplay, $cid);
+                $iroute       = sprintf("%s%s", $extdisplay, $cid);
+                $iroute       = (empty($iroute)) ? 'ANY' : $iroute;
                 $isExistRoute = $this->dpp->isExistRoute($iroute);
 
                 if (! $isExistRoute)
@@ -374,6 +404,10 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     {
                         $number = $this->dpp->formatPhoneNumbers($extdisplay);
                     }
+                    else if (empty($extdisplay))
+                    {
+                        $number = 'ANY';
+                    }
                     else
                     {
                         $number = $extdisplay;
@@ -384,7 +418,6 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
                     $this->dpp->log(5, sprintf("Dial Plan Graph for %s %s:\n%s", $extdisplay, $cid, $gtext));
 
-                    // $gtext = str_replace(["\n","+"], ["\\n","\\+"], $gtext);  // ugh, apparently viz chokes on newlines, wtf?
                     $gtext = str_replace(["\n"], ["\\n"], $gtext);
 
                     $data_return = [

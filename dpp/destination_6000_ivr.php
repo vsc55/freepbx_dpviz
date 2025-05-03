@@ -48,7 +48,7 @@ class DestinationIvr extends baseDestinations
             $rec_status = _('disabled');
             $rec_active = _('no');
         }
-        $label = sprintf(_('IVR: %s\\nAnnouncement: %s\\lRecord (%s): %s\\l'), $ivrName, $ivrRecName, $rec_active, $rec_status);
+        $label = sprintf(_('IVR: %s\\nAnnouncement: %s\\nRecord (%s): %s\\n'), $ivrName, $ivrRecName, $rec_active, $rec_status);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));

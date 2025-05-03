@@ -14,4 +14,14 @@ class TableIncoming extends baseTables
         $this->key_id   = "extension";
         $this->key_name = "incoming";
     }
+
+    public function callback_load(&$dproute)
+    {
+        foreach($this->getTableData() as $incoming)
+        {
+            $id = empty($incoming[$this->key_id]) ? 'ANY' : $incoming[$this->key_id];
+            $dproute[$this->key_name][$id] = $incoming;
+        }
+        return true;
+    }
 }
