@@ -92,8 +92,9 @@ $(document).ready(function()
     loadScripts([
         'modules/dpviz/assets/js/viz.min.js',
         'modules/dpviz/assets/js/full.render.js',
-        'modules/dpviz/assets/js/panzoom.min.js',
-        'modules/dpviz/assets/js/html2canvas.min.js'
+        // 'modules/dpviz/assets/js/panzoom.min.js',
+        'modules/dpviz/assets/js/svg-pan-zoom.min.js',
+        'modules/dpviz/assets/js/html2canvas.min.js',
     ]);
 
     // create namespaces
@@ -246,44 +247,6 @@ $(document).ready(function()
         return promise;
     }
 
-    /**
-     * Retrieves the 'panzoom' setting from window.dpviz.settings, ensuring it returns a valid number.
-     *
-     * This function:
-     * - Calls getSettings() to load the latest backend settings.
-     * - If the 'panzoom' setting is present and can be converted to a valid number, returns that number.
-     * - If 'panzoom' is null, undefined, non-numeric, or if there is an error fetching settings,
-     *   it safely returns the provided default value (1).
-     *
-     * @returns {Promise<number>} A promise that resolves to the numeric value of the 'panzoom' setting,
-     *                            or the default value if unavailable or invalid.
-     *
-     * Example usage:
-     * const zoomLevel = await getSettingPanZoom();
-     * console.log("PanZoom value:", zoomLevel);
-     */
-    async function getSettingPanZoom()
-    {
-        const def_value = 1; // Default value
-        try
-        {
-            if (await getSettings())
-            {
-                let value = window.dpviz.settings['panzoom'];
-                if (value === null) {
-                    value = undefined; // force to NaN on Number()
-                }
-                const num = Number(value);
-                return (!isNaN(num)) ? num : def_value;
-            }
-            return def_value;
-        }
-        catch (error)
-        {
-            return def_value;
-        }
-    }
-
 
     /**
      * Event handler for various button clicks in the dpviz module.
@@ -398,7 +361,6 @@ $(document).ready(function()
                         // Reload the visualization after settings are saved
                         setTimeout(function()
                         {
-                            const pan = getSettingPanZoom();
                             generateVisualization('');
                         }, 1000);
                     }
@@ -437,13 +399,12 @@ $(document).ready(function()
         {
             if (response && response.status === "success")
             {
-                const $vizContainerHeader = $('#vizContainerHeader');
-                const $vizContainerBody   = $('#vizContainerBody');
-                const $floatingNavBar     = $('#floating-nav-bar');
+                const vizContainerHeader = $('#vizContainerHeader');
+                const vizContainerBody   = $('#vizContainerBody');
+                const floatingNavBar     = $('#floating-nav-bar');
 
-
-                $floatingNavBar.removeClass('show');
-                $vizContainerBody.empty();
+                floatingNavBar.removeClass('show');
+                vizContainerBody.empty();
 
                 $('#vizContainerTitle').html(response.title);
                 $('#vizContainerDatetime').html(response.datetime);
@@ -462,21 +423,47 @@ $(document).ready(function()
 
                 if (response.gtext)
                 {
-                    let dot = response.gtext
-                    .replace(/\\\\n/g, '\n')
-                    .replace(/\\n/g, '\n');
+                    let dot = response.gtext.replace(/\\\\n/g, '\n').replace(/\\n/g, '\n');
 
                     window.dpviz.viz.renderSVGElement(dot)
                     .then(function(element) {
                         window.dpviz.isFocused = false;
                         window.dpviz.svgContainer = element;
-                        $vizContainerBody.append(element);
+                        vizContainerBody.append(element);
 
                         const $svgElement = $('#graph0');
-                        if ($svgElement.length && response.panzoom === "1")
+                        const $svgRoot    = $svgElement.closest('svg');
+
+                        if ($svgElement.length && window.dpviz.settings.panzoom === "1")
                         {
-                            panzoom($svgElement[0], {
-                                zoomDoubleClickSpeed: 1, // disables double click to zoom
+                            // panzoom($svgElement[0], {
+                            //     zoomDoubleClickSpeed: 1, // disables double click to zoom
+                            // });
+                            svgPanZoom($svgRoot[0], {
+                                zoomEnabled: true,           // enables zooming
+                                controlIconsEnabled: true,   // active control icons
+                                fit: true,                   // fit the SVG to the viewport
+                                center: true,                // center the SVG in the viewport
+                                panEnabled: true,            // enables panning
+                                mouseWheelZoomEnabled: true, // enables mouse wheel zoom
+                                minZoom: 0.5,                // minimum zoom level
+                                maxZoom: 10,                 // maximum zoom level
+                                zoomScaleSensitivity: 0.2,   // controls how fast the wheel zooms (higher = faster)
+                                dblClickZoomEnabled: false,  // disables double click to zoom
+                                // beforeZoom: function(oldZoom, newZoom) {
+                                //     console.log('Antes del zoom:', oldZoom, '→', newZoom);
+                                //     return true; // si devuelves false, cancela el zoom
+                                // },
+                                // onZoom: function(zoom) {
+                                //     console.log('Después del zoom:', zoom);
+                                // },
+                                // beforePan: function(oldPan, newPan) {
+                                //     console.log('Antes del pan:', oldPan, '→', newPan);
+                                //     return true;
+                                // },
+                                // onPan: function(pan) {
+                                //     console.log('Después del pan:', pan);
+                                // }
                             });
                         }
 
@@ -548,44 +535,64 @@ $(document).ready(function()
 
         const scale    = parseFloat(target.data('scale') || 1);
         const filename = $('#filename_input').val() || '';
-        if (! filename)
+
+        const container     = $('#vizContainer')[0];
+        const containerBody = $('#vizContainerBody');
+        const controlsIcons = containerBody.find('.svg-pan-zoom-control');
+
+        // Hide the controls
+        if (controlsIcons.length)
         {
-            fpbxToast(i18nStr('export_filename_missing'), '', 'error');
-            return false;
+            controlsIcons.hide();
         }
 
-        const container = $('#vizContainer')[0];
         html2canvas(container, {
             scale: scale,
             useCORS: true,
             allowTaint: true
-        }).then(function(canvas) {
+        }).then(function(canvas)
+        {
+            // Restore the controls
+            if (controlsIcons.length)
+            {
+                controlsIcons.show();
+            }
+
             const imgData = canvas.toDataURL("image/png");
             triggerDownload(imgData, filename);
-        }).catch(function(error) {
+        })
+        .catch(function(error)
+        {
+            // Restore the controls
+            if (controlsIcons.length)
+            {
+                controlsIcons.show();
+            }
             console.error(i18nStr('export_error_image'), error);
         });
     };
 
     function triggerDownload(uri, filename)
     {
-        const link = document.createElement('a');
-        if ('download' in link)
-        {
-            link.href     = uri;
-            link.download = filename;
+        if (!uri) return false;
 
+        if ('download' in document.createElement('a') && filename !== '')
+        {
             //Firefox requires the link to be in the body
-            document.body.appendChild(link);
-            //simulate click
-            link.click();
-            //remove the link when done
-            document.body.removeChild(link);
+            const $link = $('<a>').attr('href', uri).attr('download', filename).appendTo('body');
+            $link[0].click();       //simulate click
+            $link.remove();         //remove the link when done
         }
         else
         {
-            window.open(uri);
+            const newWindow = window.open(uri);
+            if (!newWindow)
+            {
+                fpbxToast(i18nStr('export_blocked_popup'), '', 'error');
+                return false;
+            }
         }
+        return true;
     }
 
     function handleUpdateClick(e, target)

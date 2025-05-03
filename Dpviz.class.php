@@ -362,6 +362,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                         'settings_get_error'       => _("⚠ An unexpected error occurred: %s"),
                         'export_filename_missing'  => _("Error: Filename is Empty!"),
                         'export_error_image'       => _("❌ Error exporting image:"),
+                        'export_blocked_popup'     => _("⚠ The browser blocked the popup."),
                         'btn_highlight'            => _("Highlight Paths"),
                         'btn_highlight_remove'     => _("Remove Highlights"),
                         'destination_empty'        => _("No Destination"),

@@ -57,7 +57,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12" id="vizContainerBody">
+                        <div class="col-sm-12 d-flex justify-content-center align-items-center" id="vizContainerBody">
 
                             <div class="card" style="max-width: 50%; margin: 0 auto;">
                                 <div class="card-header"></div>
