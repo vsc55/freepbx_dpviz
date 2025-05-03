@@ -578,8 +578,7 @@ $neons = [
 		# Extension (from-did-direct)
 		#
   } elseif (preg_match("/^from-did-direct,(\d+),(\d+)/", $destination, $matches)) {
-		
-		//print_r($route['extensions']);
+	
 		$extnum = $matches[1];
 		$extother = $matches[2];
 		if (isset($route['extensions'][$extnum])){
@@ -609,19 +608,14 @@ $neons = [
 						
 						$grplist = preg_split("/-/", $extension['fmfm']['grplist']);
 						foreach ($grplist as $g){
-							//echo $g."<br>";
 							$g=trim($g);
-							if (isset($route['extensions'][$g])){
-								$follow='from-did-direct,'.$g.',1';
-							}else{
-								$follow=$g;
-							}
+							$g=str_replace('#', '', $g);
+							$follow='from-did-direct,'.$g.',1';
+							
 							$route['parent_edge_label'] = ' FMFM ('.secondsToTimes($extension['fmfm']['prering']).')';
 							$route['parent_node'] = $node;
 							dpp_follow_destinations($route, $follow,'',$options);
 						}
-						//print_r($grplist);
-						//print_r($route['extensions'][$extnum]['fmfm']);
 				}
 				
 			}

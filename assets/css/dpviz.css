@@ -89,31 +89,3 @@ svg {
 	overflow: visible;
 }
 
-
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  border: 1px solid #ccc;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-}
-
-.modal-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  font-size: 1.2em;
-}
-
-.close {
-  background: none;
-  border: none;
-  font-size: 1.5em;
-  cursor: pointer;
-}
