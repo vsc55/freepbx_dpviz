@@ -505,7 +505,7 @@ class dpp {
         {
             if (empty($route['extension']) || $route['extension'] == "ANY")
             {
-                $didLabel           = _('ANY');
+                $didLabel           = _("ANY");
                 $route['extension'] = "ANY";
             }
             elseif (is_numeric($route['extension']) && (in_array(strlen($route['extension']), [10, 11, 12])))
@@ -528,11 +528,11 @@ class dpp {
 
             $didData    = $route['incoming'][$route['extension']];
             $didTooltip = sprintf("%s\\n", $didData['extension']);
-            $didTooltip.= !empty($didData['cidnum'])        ? sprintf(_('Caller ID Number= %s\\n'), $didData['cidnum']) : '';
-            $didTooltip.= !empty($didData['description'])   ? sprintf(_('Description= %s\\n'), $didData['description']) : '';
-            $didTooltip.= !empty($didData['alertinfo'])     ? sprintf(_('Alert Info= %s\\n'), $didData['alertinfo']) : '';
-            $didTooltip.= !empty($didData['grppre'])        ? sprintf(_('CID Prefix= %s\\n'), $didData['grppre']) : '';
-            $didTooltip.= !empty($didData['mohclass'])      ? sprintf(_('MOH Class= %s\\n'), $didData['mohclass']) : '';
+            $didTooltip.= !empty($didData['cidnum'])        ? sprintf(_("Caller ID Number= %s\\n"), $didData['cidnum']) : '';
+            $didTooltip.= !empty($didData['description'])   ? sprintf(_("Description= %s\\n"), $didData['description']) : '';
+            $didTooltip.= !empty($didData['alertinfo'])     ? sprintf(_("Alert Info= %s\\n"), $didData['alertinfo']) : '';
+            $didTooltip.= !empty($didData['grppre'])        ? sprintf(_("CID Prefix= %s\\n"), $didData['grppre']) : '';
+            $didTooltip.= !empty($didData['mohclass'])      ? sprintf(_("MOH Class= %s\\n"), $didData['mohclass']) : '';
 
             $node_extension = array(
                 'label'     => $this->sanitizeLabels($didLabel),
@@ -569,7 +569,7 @@ class dpp {
             }
             elseif ($route['destination'] != '')
             {
-                $route['parent_edge_label'] = _(' Always');
+                $route['parent_edge_label'] = _(" Always");
                 $this->followDestinations($route, $route['destination'], '');
             }
             return;

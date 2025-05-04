@@ -1,4 +1,4 @@
-<?php if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); } ?>
+<?php if (!defined('FREEPBX_IS_AUTH')) { exit(_("No direct script access allowed")); } ?>
 
 <div class="display no-border">
     <div class="row">
@@ -31,7 +31,7 @@
                                     <i class="fa fa-file mr-2"></i> <?= _("Export as") ?>
                                 </span>
                             </div>
-                            <input type="text" class="form-control" id="filename_input" value="" placeholder="<?= _('Enter filename') ?>"  disabled>
+                            <input type="text" class="form-control" id="filename_input" value="" placeholder="<?= _("Enter filename") ?>"  disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text px-3">
                                     <i class="fa fa-file-image-o mr-1"></i> .png

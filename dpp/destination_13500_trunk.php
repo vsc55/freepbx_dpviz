@@ -20,7 +20,7 @@ class DestinationTrunk extends baseDestinations
         $trunk_tech     = $route['trunk'][$trunk_id]['tech'];
         $trunk_name     = $route['trunk'][$trunk_id]['name'];
 
-        $label = sprintf(_('Trunk (%s): %s'), $trunk_tech, $trunk_name);
+        $label = sprintf(_("Trunk (%s): %s"), $trunk_tech, $trunk_name);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));

@@ -22,14 +22,14 @@ class DestinationQueues extends baseDestinations
         $q = $route['queues'][$qnum];
         if ($q['maxwait'] == 0 || $q['maxwait'] == '' || !is_numeric($q['maxwait']))
         {
-            $maxwait = _('Unlimited');
+            $maxwait = _("Unlimited");
         }
         else
         {
             $maxwait = $this->dpp->secondsToTimes($q['maxwait']);
         }
 
-        $label = sprintf(_('Queue %s: %s'), $qnum, $q['descr']);
+        $label = sprintf(_("Queue %s: %s"), $qnum, $q['descr']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('URL', $this->genUrlConfig('queues', $qnum)); //'/admin/config.php?display=queues&view=form&extdisplay='.$qnum
@@ -45,7 +45,7 @@ class DestinationQueues extends baseDestinations
                 foreach ($type as $member)
                 {
                     $route['parent_node']             = $node;
-                    $route['parent_edge_label']       = ($types == 'static') ? _(' Static') : _(' Dynamic');
+                    $route['parent_edge_label']       = ($types == 'static') ? _(" Static") : _(" Dynamic");
                     $route['parent_edge_data_status'] = $types;
                     switch ($combineQueueRing)
                     {
@@ -67,7 +67,7 @@ class DestinationQueues extends baseDestinations
         if ($q['dest'] != '')
         {
             $route['parent_node']       = $node;
-            $route['parent_edge_label'] = sprintf(_(' No Answer (%s)'), $maxwait);
+            $route['parent_edge_label'] = sprintf(_(" No Answer (%s)"), $maxwait);
 
             $this->dpp->followDestinations($route, $q['dest'],'');
         }
@@ -75,7 +75,7 @@ class DestinationQueues extends baseDestinations
         if (is_numeric($q['ivr_id']))
         {
             $route['parent_node']       = $node;
-            $route['parent_edge_label'] = sprintf(_(' IVR Break Out (every %s)'), $this->dpp->secondsToTimes($q['data']['min-announce-frequency']));
+            $route['parent_edge_label'] = sprintf(_(" IVR Break Out (every %s)"), $this->dpp->secondsToTimes($q['data']['min-announce-frequency']));
 
             $this->dpp->followDestinations($route, sprintf('ivr-%s,s,1', $q['ivr_id']),'');
         }

@@ -57,7 +57,7 @@ class TableUsers extends baseTables
 
     private function getVoicemailEmail($id)
     {
-        $unassigned = _('unassigned');
+        $unassigned = _("unassigned");
         if (! is_numeric($id))
         {
             return $unassigned;

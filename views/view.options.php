@@ -1,4 +1,4 @@
-<?php if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); } ?>
+<?php if (!defined('FREEPBX_IS_AUTH')) { exit(_("No direct script access allowed")); } ?>
 
 <div class="display no-border">
     <div class="row">
@@ -99,11 +99,11 @@
                             <div class="btn-group" role="group" aria-label="Actions">
                                 <button type="button" class="btn btn-primary" name="submit" id="settings_submit">
                                     <i class="fa fa-save me-2"></i>
-                                    <?= _('Save Changes') ?>
+                                    <?= _("Save Changes") ?>
                                 </button>
                                 <button type="button" class="btn btn-danger" name="reset"  id="settings_reset">
                                     <i class="fa fa-undo me-2"></i>
-                                    <?= _('Reset Default') ?>
+                                    <?= _("Reset Default") ?>
                                 </button>
                             </div>
                         </div>

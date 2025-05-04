@@ -18,9 +18,9 @@ class DestinationDynroute extends baseDestinations
         $dynnum       = $matches[1];
         $dynrt        = $route['dynroute'][$dynnum];
         $recID        = $dynrt['announcement_id'];
-        $announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : _('None');
+        $announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : _("None");
 
-        $label        = sprintf(_('DYN: %s\\nAnnouncement: %s'), $dynrt['name'], $announcement);
+        $label        = sprintf(_("DYN: %s\\nAnnouncement: %s"), $dynrt['name'], $announcement);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
@@ -36,7 +36,7 @@ class DestinationDynroute extends baseDestinations
             foreach ($dynrt['routes'] as $selid => $ent)
             {
                 $route['parent_node']       = $node;
-                $route['parent_edge_label'] = $this->dpp->sanitizeLabels(sprintf(_('  Match: %s\\n%s'), $ent['selection'], $ent['description']));
+                $route['parent_edge_label'] = $this->dpp->sanitizeLabels(sprintf(_("  Match: %s\\n%s"), $ent['selection'], $ent['description']));
 
                 $this->dpp->followDestinations($route, $ent['dest'], '');
             }
@@ -46,7 +46,7 @@ class DestinationDynroute extends baseDestinations
         if ($dynrt['invalid_dest'] == $dynrt['default_dest'])
         {
             $route['parent_node']       = $node;
-            $route['parent_edge_label'] = sprintf(_(' Invalid Input, Default (%s secs)'), $dynrt['timeout']);
+            $route['parent_edge_label'] = sprintf(_(" Invalid Input, Default (%s secs)"), $dynrt['timeout']);
 
             $this->dpp->followDestinations($route, $dynrt['invalid_dest'], '');
         }
@@ -55,14 +55,14 @@ class DestinationDynroute extends baseDestinations
             if ($dynrt['invalid_dest'] != '')
             {
                 $route['parent_node']       = $node;
-                $route['parent_edge_label'] = _(' Invalid Input');
+                $route['parent_edge_label'] = _(" Invalid Input");
 
                 $this->dpp->followDestinations($route, $dynrt['invalid_dest'], '');
             }
             if ($dynrt['default_dest'] != '')
             {
                 $route['parent_node']       = $node;
-                $route['parent_edge_label'] = sprintf(_(' Default (%s secs)'), $dynrt['timeout']);
+                $route['parent_edge_label'] = sprintf(_(" Default (%s secs)"), $dynrt['timeout']);
 
                 $this->dpp->followDestinations($route, $dynrt['default_dest'], '');
             }

@@ -40,15 +40,15 @@ class DestinationIvr extends baseDestinations
                 $featurenum = $route['featurecodes']['*29'.$recID]['defaultcode'];
             }
             #is it enabled?
-            $rec_active = ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ? _('yes'): _('no');
+            $rec_active = ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ? _("yes"): _("no");
             $rec_status = $featurenum;
         }
         else
         {
-            $rec_status = _('disabled');
-            $rec_active = _('no');
+            $rec_status = _("disabled");
+            $rec_active = _("no");
         }
-        $label = sprintf(_('IVR: %s\\nAnnouncement: %s\\nRecord (%s): %s\\n'), $ivrName, $ivrRecName, $rec_active, $rec_status);
+        $label = sprintf(_("IVR: %s\\nAnnouncement: %s\\nRecord (%s): %s\\n"), $ivrName, $ivrRecName, $rec_active, $rec_status);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
@@ -68,7 +68,7 @@ class DestinationIvr extends baseDestinations
             foreach ($ivr['entries'] as $selid => $ent)
             {
                 $route['parent_node']       = $node;
-                $route['parent_edge_label'] = sprintf(_(' Selection %s'), $this->dpp->sanitizeLabels($ent['selection']));
+                $route['parent_edge_label'] = sprintf(_(" Selection %s"), $this->dpp->sanitizeLabels($ent['selection']));
 
                 $this->dpp->followDestinations($route, $ent['dest'], '');
             }
@@ -80,7 +80,7 @@ class DestinationIvr extends baseDestinations
             if (!empty($ivrDestination))
             {
                 $route['parent_node']       = $node;
-                $route['parent_edge_label'] = sprintf(_(' Invalid Input, Timeout (%s secs)'), $ivr['timeout_time']);
+                $route['parent_edge_label'] = sprintf(_(" Invalid Input, Timeout (%s secs)"), $ivr['timeout_time']);
 
                 $this->dpp->followDestinations($route, $ivrDestination, '');
             }
@@ -90,14 +90,14 @@ class DestinationIvr extends baseDestinations
             if ($ivrDestination != '')
             {
                 $route['parent_node']       = $node;
-                $route['parent_edge_label'] = _(' Invalid Input');
+                $route['parent_edge_label'] = _(" Invalid Input");
 
                 $this->dpp->followDestinations($route, $ivrDestination, '');
             }
             if ($ivrDestinationTimeout != '')
             {
                 $route['parent_node']       = $node;
-                $route['parent_edge_label'] = sprintf(_(' Timeout (%s secs)'), $ivr['timeout_time']);
+                $route['parent_edge_label'] = sprintf(_(" Timeout (%s secs)"), $ivr['timeout_time']);
 
                 $this->dpp->followDestinations($route, $ivrDestinationTimeout, '');
             }

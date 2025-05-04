@@ -19,13 +19,13 @@ class DestinationTimeconditions extends baseDestinations
         $tcother = $matches[2];
         $tc      = $route['timeconditions'][$tcnum];
 
-        $tcTooltip  = sprintf(_('%s\\nMode= %s'), $tc['displayname'], $tc['mode']);
+        $tcTooltip  = sprintf(_("%s\\nMode= %s"), $tc['displayname'], $tc['mode']);
         if (!empty($tc['timezone']))
         {
             $tcTooltip .= ($tc['timezone'] !== 'default') ? sprintf(_("\\nTimezone= %s"), $tc['timezone']) : _("Undefined");
         }
 
-        $label = sprintf(_('TC: %s'), $tc['displayname']);
+        $label = sprintf(_("TC: %s"), $tc['displayname']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $this->dpp->sanitizeLabels($tcTooltip));
@@ -58,25 +58,25 @@ class DestinationTimeconditions extends baseDestinations
                 $tgLabel   = $cal['name'];
                 $tgLink    = '/admin/config.php?display=calendar&action=view&type=calendar&id='.$tc['calendar_id'];
                 $tz        = empty($cal['timezone']) ? _("Undefined") : $cal['timezone'];
-                $tgTooltip = sprintf(_('Name= %s\\nDescription= %s\\nType= %s\\nTimezone= %s'), $cal['name'], $cal['description'], $cal['type'], $tz);
+                $tgTooltip = sprintf(_("Name= %s\\nDescription= %s\\nType= %s\\nTimezone= %s"), $cal['name'], $cal['description'], $cal['type'], $tz);
             }
             elseif (!empty($route['calendar'][$tc['calendar_group_id']]))
             {
                 $cal      = $route['calendar'][$tc['calendar_group_id']];
                 $tgLabel  = $cal['name'];
                 $tgLink   = '/admin/config.php?display=calendargroups&action=edit&id='.$tc['calendar_group_id'];
-                $calNames = _('Calendars= ');
+                $calNames = _("Calendars= ");
                 if (!empty($cal['calendars']))
                 {
                     foreach ($cal['calendars'] as $c)
                     {
-                        $calNames .= sprintf('%s\\n', $route['calendar'][$c]['name']);
+                        $calNames .= sprintf("%s\\n", $route['calendar'][$c]['name']);
                     }
                 }
-                $cats       = !empty($cal['categories']) ? count($cal['categories']) : _('All');
-                $categories = sprintf(_('Categories= %s'), $cats);
-                $eves       = !empty($cal['events']) ? count($cal['events']) : _('All');
-                $events     = sprintf(_('Events= %s'), $eves);
+                $cats       = !empty($cal['categories']) ? count($cal['categories']) : _("All");
+                $categories = sprintf(_("Categories= %s"), $cats);
+                $eves       = !empty($cal['events']) ? count($cal['events']) : _("All");
+                $events     = sprintf(_("Events= %s"), $eves);
                 $expand     = $cal['expand'] ? 'true' : 'false';
                 $tgTooltip  = sprintf(_("Name= %s\\n%s\\n%s\\n%s\\nExpand= %s"), $cal['name'], $calNames, $categories, $events, $expand);
             }

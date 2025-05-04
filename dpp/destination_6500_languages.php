@@ -19,7 +19,7 @@ class DestinationLanguages extends baseDestinations
         $langother = $matches[2];
         $lang      = $route['languages'][$langnum];
 
-        $lable = sprintf(_('Languages: %s'), $lang['description']);
+        $lable = sprintf(_("Languages: %s"), $lang['description']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($lable));
         $node->attribute('URL', $this->genUrlConfig('languages', $langnum)); //'/admin/config.php?display=languages&view=form&extdisplay='.$langnum
@@ -31,7 +31,7 @@ class DestinationLanguages extends baseDestinations
         if ($lang['dest'] != '')
         {
             $route['parent_node']       = $node;
-            $route['parent_edge_label'] = _(' Continue');
+            $route['parent_edge_label'] = _(" Continue");
 
             $this->dpp->followDestinations($route, $lang['dest'],'');
         }

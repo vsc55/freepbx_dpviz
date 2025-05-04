@@ -21,7 +21,7 @@ class DestinationQueuePriorities extends baseDestinations
         $queueprio        = $route['queueprio'][$queueprioID];
 
 
-        $queueprioLabel= sprintf(_('Queue Priorities: %s\\nPriority: %s'), $queueprio['description'], $queueprio['queue_priority']);
+        $queueprioLabel= sprintf(_("Queue Priorities: %s\\nPriority: %s"), $queueprio['description'], $queueprio['queue_priority']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($queueprioLabel));
         $node->attribute('tooltip', $node->getAttribute('label'));
@@ -34,7 +34,7 @@ class DestinationQueuePriorities extends baseDestinations
         if ($queueprio['dest'] != '')
         {
             $route['parent_node']       = $node;
-            $route['parent_edge_label'] = _(' Continue');
+            $route['parent_edge_label'] = _(" Continue");
 
             $this->dpp->follow_destinations($route, $queueprio['dest'], '');
         }

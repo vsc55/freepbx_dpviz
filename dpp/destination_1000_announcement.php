@@ -21,7 +21,7 @@ class DestinationAnnouncement extends baseDestinations
         $an    = $route['announcements'][$annum];
         $recID = $an['recording_id'];
 
-        $announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : _('None');
+        $announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : _("None");
         #feature code exist?
         if ( isset($route['featurecodes']['*29'.$recID]) )
         {
@@ -34,16 +34,16 @@ class DestinationAnnouncement extends baseDestinations
             {
                 $featurenum = $route['featurecodes']['*29'.$an['recording_id']]['defaultcode'];
             }
-            $rec_active = ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ? _('yes'): _('no');
+            $rec_active = ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ? _("yes"): _("no");
             $rec_status = $featurenum;
         }
         else
         {
-            $rec_status = _('disabled');
-            $rec_active = _('no');
+            $rec_status = _("disabled");
+            $rec_active = _("no");
         }
 
-        $label = sprintf(_('Announcements: %s\\nRecording: %s\\nRecord (%s): %s'), $an['description'], $announcement, $rec_active, $rec_status);
+        $label = sprintf(_("Announcements: %s\\nRecording: %s\\nRecord (%s): %s"), $an['description'], $announcement, $rec_active, $rec_status);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
@@ -59,7 +59,7 @@ class DestinationAnnouncement extends baseDestinations
         if ($an['post_dest'] != '')
         {
             $route['parent_node']       = $node;
-            $route['parent_edge_label'] = _(' Continue');
+            $route['parent_edge_label'] = _(" Continue");
 
             $this->dpp->followDestinations($route, $an['post_dest'], '');
         }

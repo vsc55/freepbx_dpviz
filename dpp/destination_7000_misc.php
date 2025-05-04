@@ -19,7 +19,7 @@ class DestinationMisc extends baseDestinations
         $miscdestother = $matches[2];
         $miscdest      = $route['miscdest'][$miscdestnum];
 
-        $label = sprintf(_('Misc Dest: %s (%s)'), $this->dpp->sanitizeLabels($miscdest['description']), $miscdest['destdial']);
+        $label = sprintf(_("Misc Dest: %s (%s)"), $this->dpp->sanitizeLabels($miscdest['description']), $miscdest['destdial']);
 
         $node->attribute('label', $label);
         $node->attribute('URL', $this->genUrlConfig('miscdests', $miscdestnum)); //'/admin/config.php?display=miscdests&view=form&extdisplay='.$miscdestnum

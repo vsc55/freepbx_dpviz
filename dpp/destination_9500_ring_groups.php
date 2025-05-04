@@ -19,7 +19,7 @@ class DestinationRingGroups extends baseDestinations
         $rg               = $route['ringgroups'][$rgnum];
         $combineQueueRing = $this->getSetting('combine_queue_ring');
 
-        $label   = sprintf(_('Ring Group: %s %s'), $rgnum, $rg['description']);
+        $label   = sprintf(_("Ring Group: %s %s"), $rgnum, $rg['description']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('URL', $this->genUrlConfig('ringgroups', $rgnum)); //'/admin/config.php?display=ringgroups&view=form&extdisplay='.$rgnum
@@ -27,7 +27,7 @@ class DestinationRingGroups extends baseDestinations
         $node->attribute('fillcolor', self::pastels[12]);
         $node->attribute('style', 'filled');
 
-        $grplist=str_replace('#', '', $rg['grplist']);
+        $grplist = str_replace('#', '', $rg['grplist']);
         $grplist = preg_split("/-/", $grplist);
 
         foreach ($grplist as $member)
@@ -56,8 +56,8 @@ class DestinationRingGroups extends baseDestinations
         # (postdest) and the members of the group.
         if ($rg['postdest'] != '')
         {
-            $route['parent_node'] = $node;
-            $route['parent_edge_label'] = sprintf(_(' No Answer (%s)'), $this->dpp->secondsToTimes($rg['grptime']));
+            $route['parent_node']       = $node;
+            $route['parent_edge_label'] = sprintf(_(" No Answer (%s)"), $this->dpp->secondsToTimes($rg['grptime']));
 
             $this->dpp->followDestinations($route, $rg['postdest'], '');
         }

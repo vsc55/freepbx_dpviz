@@ -38,7 +38,7 @@ abstract class baseDestinations extends baseDpp
         }
         else
         {
-            $this->log('error', sprintf(_('No callback function found for followDestinations in "%s"'), get_class($this)));
+            $this->log('error', sprintf(_("No callback function found for followDestinations in '%s'"), get_class($this)));
             return false;
         }
     }

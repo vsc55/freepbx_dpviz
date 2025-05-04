@@ -1,4 +1,4 @@
-<?php if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); } ?>
+<?php if (!defined('FREEPBX_IS_AUTH')) { exit(_("No direct script access allowed")); } ?>
 
 <div class="display no-border">
     <div class="row">

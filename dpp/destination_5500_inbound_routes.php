@@ -20,7 +20,7 @@ class DestinationInboundRoutes extends baseDestinations
 
         $incoming = $route['incoming'][$num];
 
-        $didLabel = sprintf("%s\\n%s", ($num == '') ? _('ANY') : $this->dpp->formatPhoneNumbers($num), $incoming['description']);
+        $didLabel = sprintf("%s\\n%s", ($num == '') ? _("ANY") : $this->dpp->formatPhoneNumbers($num), $incoming['description']);
         $didLink  = $num.'/';
 
         $node->attribute('label', $this->dpp->sanitizeLabels($didLabel));
@@ -32,7 +32,7 @@ class DestinationInboundRoutes extends baseDestinations
         $node->attribute('style', 'filled');
 
         $route['parent_node']       = $node;
-        $route['parent_edge_label'] = _(' Continue');
+        $route['parent_edge_label'] = _(" Continue");
 
         $this->dpp->followDestinations($route, $incoming['destination'], '');
     }

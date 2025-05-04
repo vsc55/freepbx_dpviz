@@ -19,7 +19,7 @@ class DestinationMeetme extends baseDestinations
         $meetmeother = $matches[2];
         $meetme      = $route['meetme'][$meetmenum];
 
-        $label       = sprintf(_('Conferences: %s %s'), $meetme['exten'], $meetme['description']);
+        $label       = sprintf(_("Conferences: %s %s"), $meetme['exten'], $meetme['description']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('URL', $this->genUrlConfig('conferences', $meetmenum));  // '/admin/config.php?display=conferences&view=form&extdisplay='.$meetmenum

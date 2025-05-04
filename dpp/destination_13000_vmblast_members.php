@@ -20,7 +20,7 @@ class DestinationVmblastMembers extends baseDestinations
         $vmblastemail = $route['extensions'][$member]['email'];
         $vmblastemail = str_replace("|",",\\n",$vmblastemail);
 
-        $label = sprintf(_('Ext %s %s\\n%s'), $member , $vmblastname, $vmblastemail);
+        $label = sprintf(_("Ext %s %s\\n%s"), $member , $vmblastname, $vmblastemail);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));

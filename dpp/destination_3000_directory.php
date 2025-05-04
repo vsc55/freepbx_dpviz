@@ -19,7 +19,7 @@ class DestinationDirectory extends baseDestinations
         $directoryother = $matches[2];
         $directory      = $route['directory'][$directorynum];
 
-        $label          = sprintf(_('Directory: %s'), $directory['dirname']);
+        $label          = sprintf(_("Directory: %s"), $directory['dirname']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('URL', $this->genUrlConfig('directory', $directorynum)); //'/admin/config.php?display=directory&view=form&id='.$directorynum
@@ -31,7 +31,7 @@ class DestinationDirectory extends baseDestinations
         if ($directory['invalid_destination'] != '')
         {
             $route['parent_node']       = $node;
-            $route['parent_edge_label'] = _(' Invalid Input');
+            $route['parent_edge_label'] = _(" Invalid Input");
 
             $this->dpp->followDestinations($route, $directory['invalid_destination'], '');
         }

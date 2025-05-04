@@ -20,7 +20,7 @@ class DestinationQueueMembers extends baseDestinations
 
         if (isset($route['extensions'][$qextension]['name']))
         {
-            $label = sprintf(_('Ext %s\\n%s'), $qextension, $route['extensions'][$qextension]['name']);
+            $label = sprintf(_("Ext %s\\n%s"), $qextension, $route['extensions'][$qextension]['name']);
         }
         else
         {

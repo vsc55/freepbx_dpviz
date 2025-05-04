@@ -242,7 +242,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                                 'key'   => $key,
                                 'val'   => $val,
                                 'id'    => $key,
-                                'help'  => _('"None" displays individual extension nodes. "Queues and Ring Groups Only" combines them into one node. "All" merges all destinations into a single extension node.'),
+                                'help'  => _("'None' displays individual extension nodes. 'Queues and Ring Groups Only' combines them into one node. 'All' merges all destinations into a single extension node."),
                                 'options' => array(
                                     sprintf('%s_none', $key) => [
                                         'value' => '0',
@@ -368,8 +368,8 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     'i18n' => [
                         'yes'                      => _("Yes"),
                         'no'                       => _("No"),
-                        'loading'                  => _('Loading...'),
-                        'ANY'                      => _('ANY'),
+                        'loading'                  => _("Loading..."),
+                        'ANY'                      => _("ANY"),
                         'ajax_failed'              => _("⚠ Could not connect to the server"),
                         'ajax_response_status_err' => _("⚠ Something went wrong"),
                         'ajax_response_empty'      => _("⚠ Received empty or invalid response"),
@@ -382,7 +382,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                         'btn_highlight'            => _("Highlight Paths"),
                         'btn_highlight_remove'     => _("Remove Highlights"),
                         'destination_empty'        => _("No Destination"),
-                        'destination_err_loading'  => _('⚠ Error loading destination'),
+                        'destination_err_loading'  => _("⚠ Error loading destination"),
                         'destination_err_unknown'  => _("⚠ Unknown error while loading destinations"),
                     ]
                 ];
@@ -400,7 +400,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 {
                     $data_return = [
                         'status'       => 'error',
-                        'message'      => sprintf(_('❌ Error: Could not find inbound route for %s / %s'), $extdisplay, $cid),
+                        'message'      => sprintf(_("❌ Error: Could not find inbound route for %s / %s"), $extdisplay, $cid),
                         'iroute'       => $iroute,
                         'ext'          => $extdisplay,
                         'cid'          => $cid,
@@ -435,11 +435,11 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
                     $this->dpp->log(5, sprintf("Dial Plan Graph for %s %s:\n%s", $extdisplay, $cid, $gtext));
 
-                    $gtext = str_replace(["\n"], ["\\n"], $gtext);
+                    //$gtext = str_replace(["\n"], ["\\n"], $gtext);
 
                     $data_return = [
                         'status'       => 'success',
-                        'message'      => _('✔ Graph generated successfully'),
+                        'message'      => _("✔ Graph generated successfully"),
                         'filename'     => $filename,
                         'basefilename' => $basefilename,
                         'ext'          => $extdisplay,
@@ -469,14 +469,14 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 {
                     $data_return = [
                         'status' => 'success',
-                        'message' => _('✔ Settings saved successfully')
+                        'message' => _("✔ Settings saved successfully")
                     ];
                 }
                 else
                 {
                     $data_return = [
                         'status' => 'error',
-                        'message' => _('❌ Failed to save settings')
+                        'message' => _("❌ Failed to save settings")
                     ];
                 }
                 break;
@@ -486,7 +486,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 $this->resetSetting();
                 $data_return = [
                     'status' => "success",
-                    'message' => _('✔ Settings reset to default values')
+                    'message' => _("✔ Settings reset to default values")
                 ];
                 break;
 
@@ -515,17 +515,17 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     ];
                     if ($result['up_to_date'])
                     {
-                        $data_return['message'] = sprintf(_('✔ You are using the latest version: %s'), $result['current']);
+                        $data_return['message'] = sprintf(_("✔ You are using the latest version: %s"), $result['current']);
                     }
                     else
                     {
-                        $data_return['message'] = sprintf(_('⚠ A new version is available: %s, current version: %s'), $result['latest'], $result['current']);
+                        $data_return['message'] = sprintf(_("⚠ A new version is available: %s, current version: %s"), $result['latest'], $result['current']);
                     }
                 }
                 break;
 
             default:
-                $data_return = ['status' => 'error', 'message' => _('❌ Unknown command')];
+                $data_return = ['status' => 'error', 'message' => _("❌ Unknown command")];
         }
         return $data_return;
     }
@@ -546,13 +546,13 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $json    = file_get_contents($url, false, $context);
         if ($json === false)
         {
-            return ['error' => _('Failed to fetch release info.')];
+            return ['error' => _("Failed to fetch release info.")];
         }
 
         $data = json_decode($json, true);
         if (!isset($data['tag_name']))
         {
-            return ['error' => _('Invalid response from GitHub.')];
+            return ['error' => _("Invalid response from GitHub.")];
         }
 
         $latestVersion = ltrim($data['tag_name'], 'v');

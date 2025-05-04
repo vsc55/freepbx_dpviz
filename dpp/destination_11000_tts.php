@@ -19,8 +19,8 @@ class DestinationTts extends baseDestinations
         $ttsother   = $matches[2];
         $tts        = $route['tts'][$ttsnum];
 
-        $ttsLabel   = sprintf(_('TTS: %s'), $tts['name']);
-        $ttsTooltip = sprintf(_('Engine: %s\\nDesc: %s'), $tts['engine'], $tts['text']);
+        $ttsLabel   = sprintf(_("TTS: %s"), $tts['name']);
+        $ttsTooltip = sprintf(_("Engine: %s\\nDesc: %s"), $tts['engine'], $tts['text']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($ttsLabel));
         $node->attribute('tooltip', $this->dpp->sanitizeLabels($ttsTooltip));
@@ -33,7 +33,7 @@ class DestinationTts extends baseDestinations
         if ($tts['goto'] != '')
         {
             $route['parent_node']       = $node;
-            $route['parent_edge_label'] = _(' Continue');
+            $route['parent_edge_label'] = _(" Continue");
 
             $this->dpp->followDestinations($route, $tts['goto'], '');
         }

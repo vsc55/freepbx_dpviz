@@ -20,16 +20,16 @@ class DestinationVoicemail extends baseDestinations
         $vmother = $matches[3];
 
         $vm_array = array(
-            'b' => _('(Busy Message)'),
-            'i' => _('(Instructions Only)'),
-            's' => _('(No Message)'),
-            'u' => _('(Unavailable Message)')
+            'b' => _("(Busy Message)"),
+            'i' => _("(Instructions Only)"),
+            's' => _("(No Message)"),
+            'u' => _("(Unavailable Message)")
         );
         $vmname   = $route['extensions'][$vmnum]['name'];
         $vmemail  = $route['extensions'][$vmnum]['email'];
         $vmemail  = str_replace("|",",\\n",$vmemail);
 
-        $label = sprintf(_('Voicemail: %s %s %s\\n%s'), $vmnum, $vmname, $vm_array[$vmtype], $vmemail);
+        $label = sprintf(_("Voicemail: %s %s %s\\n%s"), $vmnum, $vmname, $vm_array[$vmtype], $vmemail);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));

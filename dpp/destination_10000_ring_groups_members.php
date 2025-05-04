@@ -19,7 +19,7 @@ class DestinationRingGroupsMembers extends baseDestinations
 
         if (isset($route['extensions'][$rgext]))
         {
-            $label = sprintf(_('Ext %s\\n%s'), $rgext, $route['extensions'][$rgext]['name']);
+            $label = sprintf(_("Ext %s\\n%s"), $rgext, $route['extensions'][$rgext]['name']);
         }
         else
         {

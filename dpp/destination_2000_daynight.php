@@ -33,7 +33,7 @@ class DestinationDaynight extends baseDestinations
                 $featurenum = $route['featurecodes']['*28'.$daynightnum]['defaultcode'];
             }
             #is it enabled?
-            $code = sprintf(_("\\nToggle (%s): %s"), ($route['featurecodes']['*28'.$daynightnum]['enabled'] == '1') ? _('enabled') : _('disabled'), $featurenum);
+            $code = sprintf(_("\\nToggle (%s): %s"), ($route['featurecodes']['*28'.$daynightnum]['enabled'] == '1') ? _("enabled") : _("disabled"), $featurenum);
         }
 
         #check current status and set path to active
@@ -70,14 +70,14 @@ class DestinationDaynight extends baseDestinations
             {
                 case 'day':
                     $route['parent_node']       = $node;
-                    $route['parent_edge_label'] = sprintf(_(' Day Mode %s'), $dactive);
+                    $route['parent_edge_label'] = sprintf(_(" Day Mode %s"), $dactive);
 
                     $this->dpp->followDestinations($route, $d['dest'], '');
                     break;
 
                 case 'night':
                     $route['parent_node']       = $node;
-                    $route['parent_edge_label'] = sprintf(_(' Night Mode %s'), $nactive);
+                    $route['parent_edge_label'] = sprintf(_(" Night Mode %s"), $nactive);
 
                     $this->dpp->followDestinations($route, $d['dest'],'');
                     break;
