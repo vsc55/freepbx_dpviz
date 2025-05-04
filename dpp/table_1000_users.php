@@ -8,15 +8,11 @@ class TableUsers extends baseTables
     # Users
     public const PRIORITY = 1000;
 
-    private $voicemail = null;
-
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp, "users");
         $this->key_id   = "extension";
         $this->key_name = "extensions";
-
-        $this->voicemail = \FreePBX::Voicemail();
     }
 
     public function callback_load(&$dproute)
@@ -25,12 +21,10 @@ class TableUsers extends baseTables
 
         foreach($this->getTableData() as $user)
         {
-            $id 	 = $user[$this->key_id];
-            $mailbox = $this->voicemail->getMailbox($id);
-            $email   = $mailbox['email'] ?: _('unassigned');
+            $id = $user[$this->key_id];
 
             $dproute[$this->key_name][$id] = $user;
-            $dproute[$this->key_name][$id]['email'] = $email;
+            $dproute[$this->key_name][$id]['email'] = $this->getVoicemailEmail($id);
         }
 
         if ($fmfmOption)
@@ -59,5 +53,16 @@ class TableUsers extends baseTables
         }
 
         return true;
+    }
+
+    private function getVoicemailEmail($id)
+    {
+        $unassigned = _('unassigned');
+        if (! is_numeric($id))
+        {
+            return $unassigned;
+        }
+        $mailbox = \FreePBX::Voicemail()->getMailbox($id);
+        return $mailbox['email'] ?: $unassigned;
     }
 }
