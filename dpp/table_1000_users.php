@@ -34,7 +34,6 @@ class TableUsers extends baseTables
         if ($fmfmOption)
         {
             $ampuser = \FreePBX::Dpviz()->asterisk_runcmd('database show AMPUSER', false);
-
             foreach ($ampuser as $line)
             {
                 $line = trim($line);
@@ -51,7 +50,7 @@ class TableUsers extends baseTables
 
                 // Example: /AMPUSER/6055/followme/strategy : ringallv2-prim
                 [$key, $value] = explode(':', $line, 2);
-                $parts = explode('/', trim($key));
+                $parts         = explode('/', trim($key));
 
                 if (!isset($parts[2], $parts[4]))
                 {

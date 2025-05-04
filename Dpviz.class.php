@@ -34,7 +34,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
         // parent::__construct($freepbx);
         $this->freepbx = $freepbx;
-        $this->db 	   = $freepbx->Database;
+        $this->db      = $freepbx->Database;
         $this->astman  = $freepbx->astman;
         $this->dpp     = new \FreePBX\modules\Dpviz\dpp($this->freepbx);
     }

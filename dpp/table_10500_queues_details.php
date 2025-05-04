@@ -45,15 +45,26 @@ class TableQueuesDetails extends baseTables
         {
             foreach ($dproute[$this->key_name] as $id => $details)
             {
-                $dynmem = array();
-                $D      = sprintf('/usr/sbin/asterisk -rx "database show QPENALTY %s" | grep \'/agents/\' | cut -d\'/\' -f5', $id);
-                exec($D, $dynmem);
-
-                foreach ($dynmem as $enum)
+                $qp_raw = \FreePBX::Dpviz()->asterisk_runcmd(sprintf('database show QPENALTY %s', $id), false);
+                foreach ($qp_raw as $line)
                 {
-                    list($ext, $pen) = explode(':', $enum);
-                    $ext = trim($ext);
-                    $pen = trim($pen);
+                    $line = trim($line);
+                    if (strpos($line, '/') !== 0) {
+                        continue; // skip lines not starting with '/'
+                    }
+                    if (strpos($line, '/agents/') === false) {
+                        continue; // only keep lines with '/agents/'
+                    }
+
+                    [$key, $value] = explode(':', $line, 2);
+                    $parts         = explode('/', trim($key));
+
+                    if (!isset($parts[4]))
+                    {
+                        continue; // ensure fifth field exists
+                    }
+                    $ext = trim($parts[4]); // fifth part (index 4)
+
                     $dproute[$this->key_name][$id]['members']['dynamic'][] = $ext;
                 }
             }

@@ -37,13 +37,28 @@ class DestinationDaynight extends baseDestinations
         }
 
         #check current status and set path to active
-        $current_daynight = array();
-        $C                = sprintf('/usr/sbin/asterisk -rx "database show DAYNIGHT/C%s" | cut -d \':\' -f2 | tr -d \' \' | head -1', $daynightnum);
-        exec($C, $current_daynight);
+
+        $dn_raw = \FreePBX::Dpviz()->asterisk_runcmd(sprintf('database show DAYNIGHT/C%s', $daynightnum), false);
+        foreach ($dn_raw as $line)
+        {
+            $line = trim($line);
+            if ($line === '')
+            {
+                continue;
+            }
+
+            if (strpos($line, ':') !== false)
+            {
+                [, $value] = explode(':', $line, 2);
+                $value            = str_replace(' ', '', trim($value)); // remove all spaces
+                $current_daynight = trim($value);
+                break; // only the first line needed
+            }
+        }
 
         $dactive = "";
         $nactive = "";
-        if ($current_daynight[0] == 'DAY')
+        if ($current_daynight == 'DAY')
         {
             $dactive = _("(Active)");
         }
