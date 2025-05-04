@@ -48,8 +48,13 @@ let highlightedEdges = new Set(); // Track highlighted edges
 				</ul>
 				<div class="tab-content display">
 					<div role="tabpanel" id="dpbox" class="tab-pane active">
-						<div id="vizButtons"></div>
-						<div id="vizContainer" class="display full-border" style="min-height: 65vh;"><p><strong>Inbound Route Not Selected</strong><br>Use the menu on the right to choose an inbound route.</p></div>
+						<div id="vizWrapper">
+							<div id="vizSpinner" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+								<div class="loader"></div>
+							</div>
+							<div id="vizButtons"></div>
+							<div id="vizContainer" class="display full-border" style="min-height: 65vh;"><p><strong>Inbound Route Not Selected</strong><br>Use the menu on the right to choose an inbound route.</p></div>
+						</div>
 					</div>
 					<div role="tabpanel" id="navigation" class="tab-pane">
 						<p>

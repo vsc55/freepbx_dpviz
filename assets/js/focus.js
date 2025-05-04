@@ -106,7 +106,7 @@ function toggleFocusMode() {
     isFocused = false;
     document.getElementById("focus").innerHTML  = '<i class="fa fa-magic"></i> Highlight Paths';
     document.getElementById("focus").classList.add("btn-default");
-		document.getElementById("focus").classList.remove("btn-info");
+		document.getElementById("focus").classList.remove("btn-primary");
 		document.getElementById("focus").classList.remove("active");
 } else {
     // Enter focus mode
@@ -114,7 +114,7 @@ function toggleFocusMode() {
     isFocused = true;
     document.getElementById("focus").innerHTML  = '<i class="fa fa-magic"></i> Remove Highlights';
     document.getElementById("focus").classList.remove("btn-default");
-		document.getElementById("focus").classList.add("btn-info");
+		document.getElementById("focus").classList.add("btn-primary");
 		document.getElementById("focus").classList.add("active");
 }
 }

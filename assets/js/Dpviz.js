@@ -69,6 +69,10 @@ $('#dpvizForm').submit(function(event) {
 });
 
 function generateVisualization(ext, cid, jump, pan) {	
+	const vizContainer = document.getElementById("vizContainer");
+	const spinner = document.getElementById("vizSpinner");
+	vizContainer.innerHTML = "";  //clear contents
+	spinner.style.display = "block"; //show spinner
   $.ajax({
     url: 'ajax.php?module=dpviz&command=make',
     type: 'POST',
@@ -82,7 +86,6 @@ function generateVisualization(ext, cid, jump, pan) {
     success: function(response) {
 			
       document.getElementById("floating-nav-bar").classList.remove("show");
-      document.getElementById("vizContainer").innerHTML = "";
       $('#vizButtons').html(response.vizButtons);
       $('#vizContainer').html(response.vizHeader);
 			
@@ -97,7 +100,7 @@ function generateVisualization(ext, cid, jump, pan) {
 						isFocused = false;
             svgContainer = element;
             document.getElementById("vizContainer").appendChild(element);
-
+						spinner.style.display = "none";  //hide spinner
             var svgElement = document.querySelector('#graph0');
             if (svgElement && pan === "1") {
 							panzoom(svgElement, {

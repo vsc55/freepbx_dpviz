@@ -29,6 +29,9 @@ require_once 'graphviz/src/Alom/Graphviz/Graph.php';
 require_once 'graphviz/src/Alom/Graphviz/Digraph.php';
 require_once 'graphviz/src/Alom/Graphviz/AttributeSet.php';
 require_once 'graphviz/src/Alom/Graphviz/Subgraph.php';
+?>
+
+<?php
 
 //options
 $options=options_gets();
@@ -109,49 +112,49 @@ $dproute['extension'] = empty($dproute['extension']) ? 'ANY' : $dproute['extensi
 		$header.=': '.$dproute['description'].'</h2>';
 		if ($datetime==1){$header.= "<h6>".date('Y-m-d H:i:s')."</h6>";}
 		
-$buttons='
+$buttons = '
 <div class="color-box" style="border-radius: 10px; background-color:#f9f9f9; margin: 10px 10px; padding: 10px 10px;">
-	<div class="input-group" style="max-width:50%;">
-		<!-- Reload Button -->
-		<span class="input-group-btn">
-			<button type="button" class="btn btn-default" id="reloadButton"
-				onclick="generateVisualization(\''.$ext.'\',\''.$cid.'\',\''.$jump.'\',\''.$panzoom.'\')">
-				<i class="fa fa-refresh"></i> Reload
-			</button>
-		</span>
-		<!-- Export Label -->
-		<span class="input-group-addon input-group-text" style="width: auto;"><i class="fa fa-file"></i> Export as</span>
-		<!-- Input Field -->
-		<input type="text" id="filenameInput" name="nohistory" autocomplete="off" value="'.$filename.'" class="form-control">
-		
-		<!-- File Type Suffix -->
-		<span class="input-group-addon input-group-text" style="width: auto;">.png</span>
-		<!-- Download Dropdown -->
-		<span class="input-group-btn">
-			<div class="dropdown">
-				<button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown" aria-expanded="false">
-					<i class="fa fa-download"></i> Download <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu dropdown-menu-right dropdown-menu-end">
-					<li><a class="dropdown-item" href="#" onclick="handleExport(4)"><i class="fa fa-star"></i> High</a></li>
-					<li><a class="dropdown-item" href="#" onclick="handleExport(2)"><i class="fa fa-circle"></i> Standard</a></li>
-				</ul>
-			</div>
-		</span>
-		<!-- Highlight Button -->
-		<span class="input-group-btn">
-			<button type="button" id="focus" class="btn btn-default"><i class="fa fa-magic"></i> Highlight Paths</button>
-		</span>
-	</div>
+  <div class="row">
+    <!-- Left Side: Reload & Highlight -->
+    <div class="col-sm-8">
+      <button type="button" class="btn btn-default" id="reloadButton"
+        onclick="generateVisualization(\''.$ext.'\',\''.$cid.'\',\''.$jump.'\',\''.$panzoom.'\')">
+        <i class="fa fa-refresh"></i> Reload
+      </button>
+
+      <button type="button" id="focus" class="btn btn-default">
+        <i class="fa fa-magic"></i> Highlight Paths
+      </button>
+    </div>
+
+    <!-- Right Side: Export Group -->
+    <div class="col-sm-4">
+      <div class="input-group">
+        <span class="input-group-addon">
+          <i class="fa fa-file"></i>  Export as
+        </span>
+        <input type="text" id="filenameInput" name="nohistory" autocomplete="off" value="'.$filename.'" class="form-control">
+        <span class="input-group-addon" style="width:40px;"> .png</span>
+        <div class="input-group-btn">
+          <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" data-toggle="dropdown" aria-expanded="false">
+            <i class="fa fa-download"></i> Download <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li><a class="dropdown-item" href="#" onclick="handleExport(4)"><i class="fa fa-star"></i> High</a></li>
+            <li><a class="dropdown-item" href="#" onclick="handleExport(2)"><i class="fa fa-circle"></i> Standard</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <input type="hidden" id="processed" value="yes">
 <input type="hidden" id="ext" value="'.$ext.'">
 <input type="hidden" id="cid" value="'.$cid.'">
 <input type="hidden" id="jump" value="'.$jump.'">
-<input type="hidden" id="panzoom" value="'.$panzoom.'">
-'; 
+<input type="hidden" id="panzoom" value="'.$panzoom.'">';
 
-$header.=' 
+$header.='
 				<script>
 				$(document).ready(function() {
 					document.querySelectorAll(\'g.node\').forEach(node => {
