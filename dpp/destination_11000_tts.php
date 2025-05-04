@@ -15,11 +15,11 @@ class DestinationTts extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $ttsnum 	= $matches[1];
-        $ttsother 	= $matches[2];
-        $tts 		= $route['tts'][$ttsnum];
+        $ttsnum     = $matches[1];
+        $ttsother   = $matches[2];
+        $tts        = $route['tts'][$ttsnum];
 
-        $ttsLabel	= sprintf(_('TTS: %s'), $tts['name']);
+        $ttsLabel   = sprintf(_('TTS: %s'), $tts['name']);
         $ttsTooltip = sprintf(_('Engine: %s\\nDesc: %s'), $tts['engine'], $tts['text']);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($ttsLabel));

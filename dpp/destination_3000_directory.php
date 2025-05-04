@@ -15,9 +15,9 @@ class DestinationDirectory extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $directorynum 	= $matches[1];
+        $directorynum   = $matches[1];
         $directoryother = $matches[2];
-        $directory 		= $route['directory'][$directorynum];
+        $directory      = $route['directory'][$directorynum];
 
         $label          = sprintf(_('Directory: %s'), $directory['dirname']);
 

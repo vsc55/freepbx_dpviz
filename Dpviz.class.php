@@ -19,12 +19,12 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
     public $dpp    = null;
 
     Const default_setting = [
-        'panzoom'	  		 => 1,
-        'horizontal'  		 => 0,
-        'datetime'	  		 => 1,
-        'dynmembers'  		 => 0,
+        'panzoom'            => 1,
+        'horizontal'         => 0,
+        'datetime'           => 1,
+        'dynmembers'         => 0,
         'combine_queue_ring' => 0,
-        'ext_optional' 		 => 0,
+        'ext_optional'       => 0,
         'fmfm'               => 0,
     ];
 
@@ -139,9 +139,9 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
     public function doConfigPageInit($page)
     {
-        $request = freepbxGetSanitizedRequest();
         // $request = $_REQUEST;
-        $action	 = $request['action'] ?? '';
+        $request = freepbxGetSanitizedRequest();
+        $action  = $request['action'] ?? '';
 
         switch ($action)
         {
@@ -174,12 +174,12 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $settings = $this->getSettingAll();
 
         $data = array(
-            "dpviz"	  	 => $this,
-            'request' 	 => $request,
-            'page' 	  	 => $page ?? '',
-            'settings' 	 => $settings,
+            "dpviz"      => $this,
+            'request'    => $request,
+            'page'       => $page ?? '',
+            'settings'   => $settings,
             'extdisplay' => $request['extdisplay'] ?? '',
-            'cid' 		 => $request['cid'] ?? '',
+            'cid'        => $request['cid'] ?? '',
         );
 
         $data = array_merge($data, $params);
@@ -204,44 +204,45 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     {
                         case 'datetime':
                             $data['tab']['settings']["0"] = array(
-                                'type' 	=> 'checkbox',
+                                'type'  => 'checkbox',
                                 'label' => _("Date & Time Stamp"),
-                                'key' 	=> $key,
-                                'val' 	=> $val,
-                                'id' 	=> $key,
-                                'help' 	=> _("Displays the date and time on the graph."),
+                                'key'   => $key,
+                                'val'   => $val,
+                                'id'    => $key,
+                                'help'  => _("Displays the date and time on the graph."),
                             );
                         break;
 
                         case 'panzoom':
                             $data['tab']['settings']["1"] = array(
-                                'type' 	=> 'checkbox',
+                                'type'  => 'checkbox',
                                 'label' => _("Pan & Zoom"),
-                                'key' 	=> $key,
-                                'val' 	=> $val,
-                                'id' 	=> $key,
-                                'help' 	=> _("Allows you to use pan and zoom functions. Click and hold to pan, and use the mouse wheel to zoom."),
+                                'key'   => $key,
+                                'val'   => $val,
+                                'id'    => $key,
+                                'help'  => _("Allows you to use pan and zoom functions. Click and hold to pan, and use the mouse wheel to zoom."),
                             );
-                            break;
+                        break;
 
                         case 'horizontal':
                             $data['tab']['settings']["2"] = array(
-                                'type' 	=> 'checkbox',
+                                'type'  => 'checkbox',
                                 'label' => _("Horizontal Layout"),
-                                'key' 	=> $key,
-                                'val' 	=> $val,
-                                'id' 	=> $key,
-                                'help' 	=> _("Displays the dial plan in a horizontal layout."),
+                                'key'   => $key,
+                                'val'   => $val,
+                                'id'    => $key,
+                                'help'  => _("Displays the dial plan in a horizontal layout."),
                             );
                         break;
 
                         case 'combine_queue_ring':
                             $data['tab']['settings']["3"] = array(
-                                'type' 	=> 'radioset',
+                                'type'  => 'radioset',
                                 'label' => _("Shared extension node handling"),
-                                'key' 	=> $key,
-                                'val' 	=> $val,
-                                'id' 	=> $key,
+                                'key'   => $key,
+                                'val'   => $val,
+                                'id'    => $key,
+                                'help'  => _('"None" displays individual extension nodes. "Queues and Ring Groups Only" combines them into one node. "All" merges all destinations into a single extension node.'),
                                 'options' => array(
                                     sprintf('%s_none', $key) => [
                                         'value' => '0',
@@ -256,40 +257,39 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                                         'label' => _("All Destinations"),
                                     ],
                                 ),
-                                'help' 	=> _('"None" displays individual extension nodes. "Queues and Ring Groups Only" combines them into one node. "All" merges all destinations into a single extension node.'),
                             );
                         break;
 
                         case 'dynmembers':
                             $data['tab']['settings']["4"] = array(
-                                'type' 	=> 'checkbox',
+                                'type'  => 'checkbox',
                                 'label' => _("Show Dynamic Members for Queues"),
-                                'key' 	=> $key,
-                                'val' 	=> $val,
-                                'id' 	=> $key,
-                                'help' 	=> _("Displays the list of dynamic agents currently assigned to the queues."),
+                                'key'   => $key,
+                                'val'   => $val,
+                                'id'    => $key,
+                                'help'  => _("Displays the list of dynamic agents currently assigned to the queues."),
                             );
                         break;
 
                         case 'fmfm':
                             $data['tab']['settings']["5"] = array(
-                                'type' 	=> 'checkbox',
+                                'type'  => 'checkbox',
                                 'label' => _("Show Find Me Follow Me for Extensions"),
-                                'key' 	=> $key,
-                                'val' 	=> $val,
-                                'id' 	=> $key,
-                                'help' 	=> _("Displays Find Me Follow Me data for extensions."),
+                                'key'   => $key,
+                                'val'   => $val,
+                                'id'    => $key,
+                                'help'  => _("Displays Find Me Follow Me data for extensions."),
                             );
                         break;
 
                         case 'ext_optional':
                             $data['tab']['settings']["6"] = array(
-                                'type' 	=> 'checkbox',
+                                'type'  => 'checkbox',
                                 'label' => _("Show Extension Optional Destinations"),
-                                'key' 	=> $key,
-                                'val' 	=> $val,
-                                'id' 	=> $key,
-                                'help' 	=> _("Displays and follows the optional destinations (No Answer, Busy, Not Reachable) set for the extension in the Advanced tab."),
+                                'key'   => $key,
+                                'val'   => $val,
+                                'id'    => $key,
+                                'help'  => _("Displays and follows the optional destinations (No Answer, Busy, Not Reachable) set for the extension in the Advanced tab."),
                             );
                         break;
                     }
@@ -298,17 +298,17 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     ksort($data['tab']['settings']);
                 }
 
-                $data['clickedNodeTitle'] 	= $request['clickedNodeTitle'] ?? '';
+                $data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
 
                 $data_return = load_view(__DIR__."/views/view.options.php", $data);
                 break;
 
             case 'dialplan':
-                $data['iroute'] 	      = sprintf("%s%s", $data['extdisplay'], $data['cid']);
-                $data['iroute'] 		  = (empty($data['iroute'])) ? 'ANY' : $data['iroute'];
+                $data['iroute']           = sprintf("%s%s", $data['extdisplay'], $data['cid']);
+                $data['iroute']           = (empty($data['iroute'])) ? 'ANY' : $data['iroute'];
                 $data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
-                $data['basefilename']	  = ($data['iroute'] == '') ? 'ANY' : $data['iroute'];
-                $data['filename'] 		  = sprintf("%s.png", $data['basefilename']);
+                $data['basefilename']     = ($data['iroute'] == '') ? 'ANY' : $data['iroute'];
+                $data['filename']         = sprintf("%s.png", $data['basefilename']);
 
                 $data_return = load_view(__DIR__."/views/view.dialplan.php", $data);
 
@@ -414,8 +414,8 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     $jump             = $request['jump'] ?? '';
                     $vizReload        = sprintf('%s,%s', $extdisplay, $cid);
 
-                    $basefilename	  = ($iroute == '') ? 'ANY' : $iroute;
-                    $filename 		  = sprintf("%s.png", $basefilename);
+                    $basefilename     = ($iroute == '') ? 'ANY' : $iroute;
+                    $filename         = sprintf("%s.png", $basefilename);
 
                     if (is_numeric($extdisplay) && (in_array(strlen($extdisplay), [10, 11, 12])))
                     {
@@ -508,9 +508,9 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 else
                 {
                     $data_return = [
-                        'status'  	 => 'success',
-                        'current' 	 => $result['current'],
-                        'latest'  	 => $result['latest'],
+                        'status'     => 'success',
+                        'current'    => $result['current'],
+                        'latest'     => $result['latest'],
                         'up_to_date' => $result['up_to_date'],
                     ];
                     if ($result['up_to_date'])
@@ -543,7 +543,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         ];
 
         $context = stream_context_create($opts);
-        $json 	 = file_get_contents($url, false, $context);
+        $json    = file_get_contents($url, false, $context);
         if ($json === false)
         {
             return ['error' => _('Failed to fetch release info.')];
@@ -567,22 +567,22 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
     public function asteriskRunCmd($cmd, $return_string = false)
     {
-		if ($this->astman)
+        if ($this->astman)
         {
-			$response = $this->astman->send_request('Command', [ 'Command' => $cmd ]);
-			if (!empty($response['data']))
+            $response = $this->astman->send_request('Command', [ 'Command' => $cmd ]);
+            if (!empty($response['data']))
             {
-				$response = explode("\n", (string) $response['data']);
-				unset($response[0]); //remove the Priviledge Command line
+                $response = explode("\n", (string) $response['data']);
+                unset($response[0]); //remove the Priviledge Command line
 
                 if ($return_string)
                 {
                     $response = implode("\n", $response);
                     $response = htmlspecialchars($response);
                 }
-				return $response;
-			}
-		}
+                return $response;
+            }
+        }
         return $return_string ? '' : [];
-	}
+    }
 }

@@ -49,13 +49,13 @@ class DestinationQueues extends baseDestinations
                     $route['parent_edge_data_status'] = $types;
                     switch ($combineQueueRing)
                     {
-						case "2":
-							$go = sprintf("from-did-direct,%s,1", $member);
-							break;
+                        case "2":
+                            $go = sprintf("from-did-direct,%s,1", $member);
+                            break;
 
-						default:
+                        default:
                             $go = sprintf('qmember%s', $member);
-					}
+                    }
                     $this->dpp->followDestinations($route, $go,'');
                     // $this->dpp->followDestinations($route, sprintf('qmember%s', $member),'');
                 }

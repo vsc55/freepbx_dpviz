@@ -15,7 +15,7 @@ class DestinationRingGroups extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $rgnum 	          = $matches[1];
+        $rgnum            = $matches[1];
         $rg               = $route['ringgroups'][$rgnum];
         $combineQueueRing = $this->getSetting('combine_queue_ring');
 

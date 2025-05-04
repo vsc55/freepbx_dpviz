@@ -15,7 +15,7 @@ class DestinationAnnouncement extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $annum	 = $matches[1];
+        $annum   = $matches[1];
         $another = $matches[2];
 
         $an    = $route['announcements'][$annum];

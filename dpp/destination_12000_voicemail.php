@@ -15,8 +15,8 @@ class DestinationVoicemail extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $vmtype	 = $matches[1];
-        $vmnum 	 = $matches[2];
+        $vmtype  = $matches[1];
+        $vmnum   = $matches[2];
         $vmother = $matches[3];
 
         $vm_array = array(

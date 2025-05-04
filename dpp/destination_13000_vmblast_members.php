@@ -15,7 +15,7 @@ class DestinationVmblastMembers extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $member 	  = $matches[1];
+        $member       = $matches[1];
         $vmblastname  = $route['extensions'][$member]['name'];
         $vmblastemail = $route['extensions'][$member]['email'];
         $vmblastemail = str_replace("|",",\\n",$vmblastemail);

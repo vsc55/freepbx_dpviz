@@ -17,7 +17,7 @@ class DestinationDaynight extends baseDestinations
     {
         $daynightnum   = $matches[1];
         $daynightother = $matches[2];
-        $daynight 	   = $route['daynight'][$daynightnum];
+        $daynight      = $route['daynight'][$daynightnum];
 
         #feature code exist?
         $code = '';

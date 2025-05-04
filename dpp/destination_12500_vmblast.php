@@ -17,7 +17,7 @@ class DestinationVmblast extends baseDestinations
     {
         $vmblastnum   = $matches[1];
         $vmblastother = $matches[2];
-        $vmblast 	  = $route['vmblasts'][$vmblastnum];
+        $vmblast      = $route['vmblasts'][$vmblastnum];
 
         $label = sprintf(_('VM Blast: %s %s'), $vmblastnum , $vmblast['description']);
 

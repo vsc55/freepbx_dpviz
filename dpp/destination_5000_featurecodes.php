@@ -17,7 +17,7 @@ class DestinationFeaturecodes extends baseDestinations
     {
         $featurenum   = $matches[1];
         $featureother = $matches[2];
-        $feature 	  = $route['featurecodes'][$featurenum];
+        $feature      = $route['featurecodes'][$featurenum];
 
         if ($feature['customcode'] != '')
         {

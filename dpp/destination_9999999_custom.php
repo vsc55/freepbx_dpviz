@@ -32,7 +32,7 @@ class DestinationCustom extends baseDestinations
 
         if (!empty($custDest))
         {
-            $custId	   = $entry['destid'];
+            $custId    = $entry['destid'];
             $custLabel = sprintf(_('Cust Dest: %s\\nTarget: %s\\n'), $entry['description'], $entry['target']);
             $custNotes = $entry['notes'];
 
@@ -53,7 +53,7 @@ class DestinationCustom extends baseDestinations
         }
         else
         {
-            $this->log(1, "Unknown destination type: $destination");
+            $this->log(1, sprintf(_("Unknown destination type: %s), $destination));
             $node->attribute('fillcolor', self::pastels[12]);
             $node->attribute('label', $this->dpp->sanitizeLabels($destination));
             $node->attribute('style', 'filled');

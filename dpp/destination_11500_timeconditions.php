@@ -15,7 +15,7 @@ class DestinationTimeconditions extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $tcnum 	 = $matches[1];
+        $tcnum   = $matches[1];
         $tcother = $matches[2];
         $tc      = $route['timeconditions'][$tcnum];
 

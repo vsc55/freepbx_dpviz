@@ -19,8 +19,8 @@ class DestinationIvr extends baseDestinations
         $iflag  = $matches[2];
         $iother = $matches[3];
 
-        $ivr		= $route['ivrs'][$inum];
-        $recID		= $ivr['announcement'] ?? '';
+        $ivr        = $route['ivrs'][$inum];
+        $recID      = $ivr['announcement'] ?? '';
         $ivrName    = $ivr['name'] ?? '';
         $ivrRecName = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : 'None';
 

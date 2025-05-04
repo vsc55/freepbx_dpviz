@@ -22,33 +22,33 @@ class DestinationFromDidDirect extends baseDestinations
 
         if (isset($route['extensions'][$extnum]))
         {
-        	$extension = $route['extensions'][$extnum];
- 			$extname   = $extension['name'];
- 			$extemail  = $extension['email'];
- 			$extemail  = str_replace("|",",\\n",$extemail);
+            $extension = $route['extensions'][$extnum];
+            $extname   = $extension['name'];
+            $extemail  = $extension['email'];
+            $extemail  = str_replace("|",",\\n",$extemail);
             $label     = sprintf(_('Extension: %s %s\\n%s'), $extnum, $extname, $extemail);
 
             if ($fmfmOption)
             {
-				if (isset($extension['fmfm']) && $extension['fmfm']['ddial'] == 'DIRECT')
+                if (isset($extension['fmfm']) && $extension['fmfm']['ddial'] == 'DIRECT')
                 {
-					$fmfmLabel = sprintf(_("FMFM Enabled\\nInitial Ring Time=%s\\nRing Time=%s\\nConfirm Calls=%s"), $this->dpp->secondsToTimes($extension['fmfm']['prering']), $this->dpp->secondsToTimes($extension['fmfm']['grptime']), $extension['fmfm']['grpconf']);
-				}
+                    $fmfmLabel = sprintf(_("FMFM Enabled\\nInitial Ring Time=%s\\nRing Time=%s\\nConfirm Calls=%s"), $this->dpp->secondsToTimes($extension['fmfm']['prering']), $this->dpp->secondsToTimes($extension['fmfm']['grptime']), $extension['fmfm']['grpconf']);
+                }
                 else
                 {
-					$fmfmLabel = _("FMFM Disabled");
-				}
-			}
+                   $fmfmLabel = _("FMFM Disabled");
+                }
+            }
             else
             {
-				$fmfmLabel = '';
-			}
+                $fmfmLabel = '';
+            }
             $labeltooltip = sprintf(_('%s\\n%s'), $label, $fmfmLabel);
 
             $node->attribute('label', $this->dpp->sanitizeLabels($label));
             $node->attribute('tooltip',$this->dpp->sanitizeLabels($labeltooltip));
             $node->attribute('URL', $this->genUrlConfig('extensions', $extnum, null)); //'/admin/config.php?display=extensions&extdisplay='.$extnum
- 			$node->attribute('target', '_blank');
+            $node->attribute('target', '_blank');
 
             if (isset($extension['fmfm']))
             {
@@ -71,7 +71,7 @@ class DestinationFromDidDirect extends baseDestinations
         {
             $node->attribute('label', $extnum);
             $node->attribute('tooltip', $node->getAttribute('label'));
- 		}
+        }
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('shape', 'rect');

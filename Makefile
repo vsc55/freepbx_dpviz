@@ -6,12 +6,12 @@ TARBALL = ~/dpviz.tar.gz
 all: sign pack
 
 sign:
-	sign dpviz
+    sign dpviz
 
 pack: $(TARBALL)
 
 $(TARBALL):
-	(cd .. ; tar cvzf $(TARBALL) --exclude=dpviz/.git --exclude=$(TARBALL) dpviz)
+    (cd .. ; tar cvzf $(TARBALL) --exclude=dpviz/.git --exclude=$(TARBALL) dpviz)
 
 clean:
-	rm -f $(TARBALL)
+    rm -f $(TARBALL)

@@ -15,7 +15,7 @@ class DestinationRecording extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $recID 		= $matches[1];
+        $recID      = $matches[1];
         $recIDOther = $matches[2];
         $playName   = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : _('None');
 

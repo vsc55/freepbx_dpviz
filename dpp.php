@@ -25,12 +25,12 @@ class dpp {
     Const LOG_FILE = "/var/log/asterisk/dpviz.log";
 
     // Const neons = [
-    // 	"#fe0000", "#fdfe02", "#0bff01", "#011efe", "#fe00f6",
-    // 	"#ff5f1f", "#ff007f", "#39ff14", "#ff073a", "#ffae00",
-    // 	"#08f7fe", "#ff44cc", "#ff6ec7", "#dfff00", "#32cd32",
-    // 	"#ccff00", "#ff1493", "#00ffff", "#ff00ff", "#ff4500",
-    // 	"#ff00aa", "#ff4c4c", "#7df9ff", "#adff2f", "#ff6347",
-    // 	"#ff66ff", "#f2003c", "#ffcc00", "#ff69b4", "#0aff02"
+    // "#fe0000", "#fdfe02", "#0bff01", "#011efe", "#fe00f6",
+    // "#ff5f1f", "#ff007f", "#39ff14", "#ff073a", "#ffae00",
+    // "#08f7fe", "#ff44cc", "#ff6ec7", "#dfff00", "#32cd32",
+    // "#ccff00", "#ff1493", "#00ffff", "#ff00ff", "#ff4500",
+    // "#ff00aa", "#ff4c4c", "#7df9ff", "#adff2f", "#ff6347",
+    // "#ff66ff", "#f2003c", "#ffcc00", "#ff69b4", "#0aff02"
     // ];
 
     public function __construct($freepbx, &$dpviz, $load_routes = true)
@@ -145,8 +145,8 @@ class dpp {
 
         // Load all class tables and destinations from the dpp directory
         // The files should be named in the format: table_01_users.php, table_02_users_extra.php, etc.
-        $files_tables       		   = glob(__DIR__ . '/dpp/table_*.php');
-        $class_tables 	    		   = [];
+        $files_tables                  = glob(__DIR__ . '/dpp/table_*.php');
+        $class_tables                  = [];
         $class_tables_without_priority = [];
         sort($files_tables);      // Sort the files to ensure consistent loading order (table_01_users.php, table_02_users_extra.php, etc.)
 
@@ -198,8 +198,8 @@ class dpp {
 
         // Load all class destinations from the dpp directory
         // The files should be named in the format: destination_01_users.php, destination_02_users_extra.php, etc.
-        $files_destinations 				 = glob(__DIR__ . '/dpp/destination_*.php');
-        $class_destinations 				 = [];
+        $files_destinations                  = glob(__DIR__ . '/dpp/destination_*.php');
+        $class_destinations                  = [];
         $class_destinations_without_priority = [];
         sort($files_destinations); // Sort the files to ensure consistent loading order (destination_01_users.php, destination_02_users_extra.php, etc.)
 
@@ -528,21 +528,21 @@ class dpp {
 
             $didData    = $route['incoming'][$route['extension']];
             $didTooltip = sprintf("%s\\n", $didData['extension']);
-            $didTooltip.= !empty($didData['cidnum']) 		? sprintf(_('Caller ID Number= %s\\n'), $didData['cidnum']) : '';
-            $didTooltip.= !empty($didData['description']) 	? sprintf(_('Description= %s\\n'), $didData['description']) : '';
-            $didTooltip.= !empty($didData['alertinfo']) 	? sprintf(_('Alert Info= %s\\n'), $didData['alertinfo']) : '';
-            $didTooltip.= !empty($didData['grppre']) 		? sprintf(_('CID Prefix= %s\\n'), $didData['grppre']) : '';
-            $didTooltip.= !empty($didData['mohclass']) 		? sprintf(_('MOH Class= %s\\n'), $didData['mohclass']) : '';
+            $didTooltip.= !empty($didData['cidnum'])        ? sprintf(_('Caller ID Number= %s\\n'), $didData['cidnum']) : '';
+            $didTooltip.= !empty($didData['description'])   ? sprintf(_('Description= %s\\n'), $didData['description']) : '';
+            $didTooltip.= !empty($didData['alertinfo'])     ? sprintf(_('Alert Info= %s\\n'), $didData['alertinfo']) : '';
+            $didTooltip.= !empty($didData['grppre'])        ? sprintf(_('CID Prefix= %s\\n'), $didData['grppre']) : '';
+            $didTooltip.= !empty($didData['mohclass'])      ? sprintf(_('MOH Class= %s\\n'), $didData['mohclass']) : '';
 
             $node_extension = array(
-                'label'		=> $this->sanitizeLabels($didLabel),
-                'tooltip'	=> $this->sanitizeLabels($didTooltip),
-                'width'		=> 2,
-                'margin'	=> '.13',
-                'shape'		=> 'cds',
-                'style'		=> 'filled',
-                'URL'		=> htmlentities('/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)),
-                'target'  	=>'_blank',
+                'label'     => $this->sanitizeLabels($didLabel),
+                'tooltip'   => $this->sanitizeLabels($didTooltip),
+                'width'     => 2,
+                'margin'    => '.13',
+                'shape'     => 'cds',
+                'style'     => 'filled',
+                'URL'       => htmlentities('/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)),
+                'target'    =>'_blank',
                 'fillcolor' => 'darkseagreen'
             );
             $dpgraph->node($route['extension'], $node_extension);

@@ -17,7 +17,7 @@ class DestinationSetCid extends baseDestinations
     {
         $cidnum   = $matches[1];
         $cidother = $matches[2];
-        $cid 	  = $route['setcid'][$cidnum];
+        $cid      = $route['setcid'][$cidnum];
 
         $cid_name = preg_replace('/\${CALLERID\(name\)}/i', '<name>', $cid['cid_name']);
         $cid_num  = preg_replace('/\${CALLERID\(num\)}/i', '<number>', $cid['cid_num']);

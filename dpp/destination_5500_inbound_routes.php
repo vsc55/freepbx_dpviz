@@ -15,7 +15,7 @@ class DestinationInboundRoutes extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $num 	  = $matches[1];
+        $num      = $matches[1];
         $numother = $matches[2];
 
         $incoming = $route['incoming'][$num];
