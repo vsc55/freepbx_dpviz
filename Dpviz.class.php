@@ -13,7 +13,8 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
     private $freepbx;
     private $db;
 
-    public $dpp = null;
+    public $astman = null;
+    public $dpp    = null;
 
     Const default_setting = [
         'panzoom'	  		 => 1,
@@ -34,7 +35,8 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         // parent::__construct($freepbx);
         $this->freepbx = $freepbx;
         $this->db 	   = $freepbx->Database;
-        $this->dpp 	   = new \FreePBX\modules\Dpviz\dpp($this->freepbx);
+        $this->astman  = $freepbx->astman;
+        $this->dpp     = new \FreePBX\modules\Dpviz\dpp($this->freepbx);
     }
 
     public function install()
@@ -560,4 +562,25 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
             'up_to_date' => $upToDate,
         ];
     }
+
+    public function asterisk_runcmd($cmd, $return_string = false)
+    {
+		if ($this->astman)
+        {
+			$response = $this->astman->send_request('Command', [ 'Command' => $cmd ]);
+			if (!empty($response['data']))
+            {
+				$response = explode("\n", (string) $response['data']);
+				unset($response[0]); //remove the Priviledge Command line
+
+                if ($return_string)
+                {
+                    $response = implode("\n", $response);
+                    $response = htmlspecialchars($response);
+                }
+				return $response;
+			}
+		}
+        return $return_string ? '' : [];
+	}
 }

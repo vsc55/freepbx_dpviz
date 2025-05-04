@@ -33,18 +33,36 @@ class TableUsers extends baseTables
 
         if ($fmfmOption)
         {
-            $D = '/usr/sbin/asterisk -rx "database show AMPUSER" | grep \'followme\' | cut -d \'/\' -f3,5';
-            exec($D, $fmfm);
-            foreach ($fmfm as $line)
-            {
-                // Split into key and value
-                list($left, $value) = explode(':', $line, 2);
-                $left  = trim($left);
-                $value = trim($value);
+            $ampuser = \FreePBX::Dpviz()->asterisk_runcmd('database show AMPUSER', false);
 
-                // Split the left part into extension and subkey
-                list($ext, $subkey) = explode('/', $left, 2);
-                $dproute[$this->key_name][$ext]['fmfm'][$subkey] = $value;
+            foreach ($ampuser as $line)
+            {
+                $line = trim($line);
+                if (strpos($line, '/') !== 0)
+                {
+                    // Skip lines that do not start with a slash '/'
+                    continue;
+                }
+                if (strpos($line, 'followme') === false)
+                {
+                    // only process lines that contain 'followme'
+                    continue;
+                }
+
+                // Example: /AMPUSER/6055/followme/strategy : ringallv2-prim
+                [$key, $value] = explode(':', $line, 2);
+                $parts = explode('/', trim($key));
+
+                if (!isset($parts[2], $parts[4]))
+                {
+                    // Need at least ext and subkey
+                    continue;
+                }
+
+                $ext    = trim($parts[2]); // third field
+                $subkey = trim($parts[4]); // faifth field
+
+                $dproute[$this->key_name][$ext]['fmfm'][$subkey] = trim($value);
             }
         }
 
