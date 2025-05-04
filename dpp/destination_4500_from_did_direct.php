@@ -18,6 +18,9 @@ class DestinationFromDidDirect extends baseDestinations
         $extnum    = $matches[1];
         $extother  = $matches[2];
 
+        //TODO: change metod to getSetting() in Dpviz class
+        $fmfmOption  = \FreePBX::Dpviz()->getSetting('fmfm');
+
         if (isset($route['extensions'][$extnum]))
         {
         	$extension = $route['extensions'][$extnum];
@@ -26,17 +29,53 @@ class DestinationFromDidDirect extends baseDestinations
  			$extemail  = str_replace("|",",\\n",$extemail);
             $label     = sprintf(_('Extension: %s %s\\n%s'), $extnum, $extname, $extemail);
 
+            if ($fmfmOption)
+            {
+                //if ($extension['fmfm']['ddial']=='DIRECT'){
+				if (isset($extension['fmfm']) && $extension['fmfm']['ddial'] == 'DIRECT')
+                {
+					$fmfmLabel = sprintf(_("FMFM Enabled\\nInitial Ring Time=%s\\nRing Time=%s\\nConfirm Calls=%s"), $this->dpp->secondsToTimes($extension['fmfm']['prering']), $this->dpp->secondsToTimes($extension['fmfm']['grptime']), $extension['fmfm']['grpconf']);
+				}
+                else
+                {
+					$fmfmLabel = _("FMFM Disabled");
+				}
+			}
+            else
+            {
+				$fmfmLabel = '';
+			}
+            $labeltooltip = sprintf(_('%s\\n%s'), $label, $fmfmLabel);
+
             $node->attribute('label', $this->dpp->sanitizeLabels($label));
+            $node->attribute('tooltip',$this->dpp->sanitizeLabels($labeltooltip));
             $node->attribute('URL', $this->genUrlConfig('extensions', $extnum, null)); //'/admin/config.php?display=extensions&extdisplay='.$extnum
  			$node->attribute('target', '_blank');
- 		}
+
+            if (isset($extension['fmfm']))
+            {
+                if ($extension['fmfm']['ddial'] == 'DIRECT')
+                {
+                    $grplist = preg_split("/-/", $extension['fmfm']['grplist']);
+                    foreach ($grplist as $g)
+                    {
+                        $follow = sprintf('from-did-direct,%s,1', str_replace('#', '', trim($g)));
+
+                        $route['parent_node']       = $node;
+                        $route['parent_edge_label'] = sprintf(_(' FMFM (%s)'), $this->dpp->secondsToTimes($extension['fmfm']['prering']));
+
+                        $this->dpp->followDestinations($route, $follow, '');
+                    }
+                }
+            }
+        }
         else
         {
- 			$node->attribute('label', $extnum);
+            $node->attribute('label', $extnum);
+            $node->attribute('tooltip', $node->getAttribute('label'));
  		}
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
-        $node->attribute('tooltip', $node->getAttribute('label'));
         $node->attribute('shape', 'rect');
         $node->attribute('fillcolor', self::pastels[15]);
         $node->attribute('style', 'filled');

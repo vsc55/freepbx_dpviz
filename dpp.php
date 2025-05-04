@@ -377,11 +377,33 @@ class dpp {
     {
         $seconds = (int) round($seconds); // Ensure whole number input
 
-        $hours   = (int) ($seconds / 3600);
-        $minutes = (int) (($seconds % 3600) / 60);
-        $seconds = $seconds % 60;
+        $hours            = (int) ($seconds / 3600);
+        $minutes          = (int) (($seconds % 3600) / 60);
+        $remainingSeconds = $seconds % 60;
 
-        return $hours > 0 ? sprintf("%d hrs, %d mins", $hours, $minutes) : ($minutes > 0 ? sprintf("%d mins, %d secs", $minutes, $seconds) : sprintf("%d secs", $seconds));
+        $parts = [];
+        if ($hours > 0)
+        {
+            $parts[] = sprintf(_("%s hrs"), $hours);
+            $parts[] = sprintf(_("%s mins"), $minutes);
+            if ($remainingSeconds !== 0)
+            {
+                $parts[] = sprintf(_("%s secs"), $remainingSeconds);
+            }
+        }
+        elseif ($minutes > 0)
+        {
+            $parts[] = sprintf(_("%s mins"), $minutes);
+            if ($remainingSeconds !== 0)
+            {
+                $parts[] = sprintf(_("%s secs"), $remainingSeconds);
+            }
+        }
+        else
+        {
+            $parts[] = sprintf(_("%s secs"), $remainingSeconds);
+        }
+        return implode(", ", $parts);
     }
 
 

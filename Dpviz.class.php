@@ -22,6 +22,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         'dynmembers'  		 => 0,
         'combine_queue_ring' => 0,
         'ext_optional' 		 => 0,
+        'fmfm'               => 0,
     ];
 
     public function __construct($freepbx = null)
@@ -266,8 +267,19 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                             );
                         break;
 
-                        case 'ext_optional':
+                        case 'fmfm':
                             $data['tab']['settings']["5"] = array(
+                                'type' 	=> 'checkbox',
+                                'label' => _("Show Find Me Follow Me for Extensions"),
+                                'key' 	=> $key,
+                                'val' 	=> $val,
+                                'id' 	=> $key,
+                                'help' 	=> _("Displays Find Me Follow Me data for extensions."),
+                            );
+                        break;
+
+                        case 'ext_optional':
+                            $data['tab']['settings']["6"] = array(
                                 'type' 	=> 'checkbox',
                                 'label' => _("Show Extension Optional Destinations"),
                                 'key' 	=> $key,
