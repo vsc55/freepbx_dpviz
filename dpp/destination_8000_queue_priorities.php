@@ -28,7 +28,7 @@ class DestinationQueuePriorities extends baseDestinations
         $node->attribute('URL', $this->genUrlConfig('queueprio', $queueprioID)); // '/admin/config.php?display=queueprio&view=form&extdisplay='.$queueprioID
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'rect');
-        $node->attribute('fillcolor', self::pastels['16']);
+        $node->attribute('fillcolor', self::pastels[16]);
         $node->attribute('style', 'filled');
 
         if ($queueprio['dest'] != '')

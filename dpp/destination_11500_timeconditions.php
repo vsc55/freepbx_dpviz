@@ -19,8 +19,11 @@ class DestinationTimeconditions extends baseDestinations
         $tcother = $matches[2];
         $tc      = $route['timeconditions'][$tcnum];
 
-        $tcTooltip  = sprintf(_('%s\\nMode= %s\\n'), $tc['displayname'], $tc['mode']);
-        $tcTooltip .= ($tc['timezone'] !== 'default') ? sprintf(_("Timezone= %s"), $tc['timezone']) : '';
+        $tcTooltip  = sprintf(_('%s\\nMode= %s'), $tc['displayname'], $tc['mode']);
+        if (!empty($tc['timezone']))
+        {
+            $tcTooltip .= ($tc['timezone'] !== 'default') ? sprintf(_("\\nTimezone= %s"), $tc['timezone']) : _("Undefined");
+        }
 
         $label = sprintf(_('TC: %s'), $tc['displayname']);
 
@@ -54,7 +57,8 @@ class DestinationTimeconditions extends baseDestinations
                 $cal       = $route['calendar'][$tc['calendar_id']];
                 $tgLabel   = $cal['name'];
                 $tgLink    = '/admin/config.php?display=calendar&action=view&type=calendar&id='.$tc['calendar_id'];
-                $tgTooltip = sprintf(_('Name= %s\\nDescription= %s\\nType= %s\\nTimezone= %s'), $cal['name'], $cal['description'], $cal['type'], $cal['timezone']);
+                $tz        = empty($cal['timezone']) ? _("Undefined") : $cal['timezone'];
+                $tgTooltip = sprintf(_('Name= %s\\nDescription= %s\\nType= %s\\nTimezone= %s'), $cal['name'], $cal['description'], $cal['type'], $tz);
             }
             elseif (!empty($route['calendar'][$tc['calendar_group_id']]))
             {
@@ -74,25 +78,25 @@ class DestinationTimeconditions extends baseDestinations
                 $eves       = !empty($cal['events']) ? count($cal['events']) : _('All');
                 $events     = sprintf(_('Events= %s'), $eves);
                 $expand     = $cal['expand'] ? 'true' : 'false';
-                $tgTooltip  = sprintf(_('Name= %s\\n%s\\n%s\\n%s\\nExpand= %s'), $cal['name'], $calNames, $categories, $events, $expand);
+                $tgTooltip  = sprintf(_("Name= %s\\n%s\\n%s\\n%s\\nExpand= %s"), $cal['name'], $calNames, $categories, $events, $expand);
             }
         }
 
         # Now set the current node to be the parent and recurse on both the true and false branches
         $route['parent_node']              = $node;
-        $route['parent_edge_label']        = sprintf(_(' Match:\\n%s'), $this->dpp->sanitizeLabels($tgLabel));
+        $route['parent_edge_label']        = sprintf(_(" Match:\\n%s"), $this->dpp->sanitizeLabels($tgLabel));
         $route['parent_edge_url']          = htmlentities($tgLink);
         $route['parent_edge_target']       = '_blank';
-        $route['parent_edge_labeltooltip'] = sprintf(_(' Match:\\n%s'), $this->dpp->sanitizeLabels($tgTooltip));
+        $route['parent_edge_labeltooltip'] = sprintf(_(" Match:\\n%s"), $this->dpp->sanitizeLabels($tgTooltip));
 
         $this->dpp->followDestinations($route, $tc['truegoto'], '');
 
 
         $route['parent_node']              = $node;
-        $route['parent_edge_label']        = _(' No Match');
+        $route['parent_edge_label']        = _(" No Match");
         $route['parent_edge_url']          = htmlentities($tgLink);
         $route['parent_edge_target']       = '_blank';
-        $route['parent_edge_labeltooltip'] = sprintf(_(' No Match:\\n%s'), $this->dpp->sanitizeLabels($tgTooltip));
+        $route['parent_edge_labeltooltip'] = sprintf(_(" No Match:\\n%s"), $this->dpp->sanitizeLabels($tgTooltip));
 
         $this->dpp->followDestinations($route, $tc['falsegoto'], '');
     }

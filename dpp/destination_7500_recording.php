@@ -25,7 +25,7 @@ class DestinationRecording extends baseDestinations
         $node->attribute('URL', htmlentities('/admin/config.php?display=recordings&action=edit&id='.$recID));
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'rect');
-        $node->attribute('fillcolor', self::pastels['16']);
+        $node->attribute('fillcolor', self::pastels[16]);
         $node->attribute('style', 'filled');
     }
 }

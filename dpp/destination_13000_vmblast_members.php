@@ -27,7 +27,7 @@ class DestinationVmblastMembers extends baseDestinations
         $node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$member));
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'rect');
-        $node->attribute('fillcolor', self::pastels['16']);
+        $node->attribute('fillcolor', self::pastels[16]);
         $node->attribute('style', 'filled');
     }
 }

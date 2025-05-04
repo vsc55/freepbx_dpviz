@@ -21,7 +21,7 @@ class DestinationSetCid extends baseDestinations
 
         $cid_name = preg_replace('/\${CALLERID\(name\)}/i', '<name>', $cid['cid_name']);
         $cid_num  = preg_replace('/\${CALLERID\(num\)}/i', '<number>', $cid['cid_num']);
-        $label    = sprintf(_('Set CID\\nName= %s\\nNumber= %s\\n'), $cid_name, $cid_num);
+        $label    = sprintf(_("Set CID\\nName= %s\\nNumber= %s"), $cid_name, $cid_num);
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('tooltip', $node->getAttribute('label'));
