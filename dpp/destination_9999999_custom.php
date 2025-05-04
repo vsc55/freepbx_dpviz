@@ -53,7 +53,7 @@ class DestinationCustom extends baseDestinations
         }
         else
         {
-            $this->log(1, sprintf(_("Unknown destination type: %s), $destination));
+            $this->log(1, sprintf(_("Unknown destination type: %s"), $destination));
             $node->attribute('fillcolor', self::pastels[12]);
             $node->attribute('label', $this->dpp->sanitizeLabels($destination));
             $node->attribute('style', 'filled');
