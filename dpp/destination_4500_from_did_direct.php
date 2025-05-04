@@ -43,7 +43,7 @@ class DestinationFromDidDirect extends baseDestinations
             {
                 $fmfmLabel = '';
             }
-            $labeltooltip = sprintf(_('%s\\n%s'), $label, $fmfmLabel);
+            $labeltooltip = sprintf('%s\\n%s', $label, $fmfmLabel);
 
             $node->attribute('label', $this->dpp->sanitizeLabels($label));
             $node->attribute('tooltip',$this->dpp->sanitizeLabels($labeltooltip));
