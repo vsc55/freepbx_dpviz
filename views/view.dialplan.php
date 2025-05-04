@@ -5,6 +5,14 @@
         <div class="col-sm-12">
             <div class="fpbx-container">
 
+                <div id="vizSpinner" class="spinner-overlay align-items-center justify-content-center text-center">
+                    <div class="spinner-border text-primary mb-3" role="status"></div>
+                    <div class="loader-text">
+                        <h4><?= _("Loading...") ?></h4>
+                        <p><?= _("Please wait while the Dial Plan is being loaded.") ?></p>
+                    </div>
+                </div>
+
                 <div class="btn-toolbar bg-light border rounded p-3 shadow-sm mb-4" role="toolbar" id="btn-toolbar">
                     <div class="btn-toolbar w-100" role="toolbar">
                         <div class="btn-group mr-2" role="group">

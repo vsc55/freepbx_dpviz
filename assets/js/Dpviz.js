@@ -358,11 +358,16 @@ $(document).ready(function()
                         fpbxToast(response.message, '', 'success');
                         getSettings();
 
-                        // Reload the visualization after settings are saved
-                        setTimeout(function()
+                        // Onley generate if the svgContainer is not empty (something has already been selected)
+                        if (window.dpviz.svgContainer)
                         {
-                            generateVisualization('');
-                        }, 1000);
+                            // TODO: Not generating correctly if not in the Dial plane tab
+                            // Reload the visualization after settings are saved
+                            // setTimeout(function()
+                            // {
+                            //     generateVisualization('');
+                            // }, 1000);
+                        }
                     }
                     else
                     {
@@ -382,6 +387,24 @@ $(document).ready(function()
     {
         disableToolbarButtons();
 
+        const vizContainerHeader   = $('#vizContainerHeader');
+        const vizContainerBody     = $('#vizContainerBody');
+        const vizSpinner           = $('#vizSpinner');
+        const floatingNavBar       = $('#floating-nav-bar');
+        const vizContainerTitle    = $('#vizContainerTitle');
+        const vizContainerDatetime = $('#vizContainerDatetime');
+        const filenameInput        = $('#filename_input');
+
+        floatingNavBar.removeClass('show'); // hide navbar
+        vizContainerHeader.hide();
+        vizContainerBody.hide();
+        vizSpinner.show();
+
+        vizContainerBody.empty();     //clear contents
+        vizContainerTitle.empty();    //clear title
+        vizContainerDatetime.empty(); //clear datetime
+        filenameInput.val('');        //clear filename input
+
         const ext = window.dpviz.ext || '';
         const cid = window.dpviz.cid || '';
 
@@ -399,16 +422,11 @@ $(document).ready(function()
         {
             if (response && response.status === "success")
             {
-                const vizContainerHeader = $('#vizContainerHeader');
-                const vizContainerBody   = $('#vizContainerBody');
-                const floatingNavBar     = $('#floating-nav-bar');
+                vizContainerTitle.html(response.title);         // Set the title
+                vizContainerDatetime.html(response.datetime);   // Set the datetime
+                filenameInput.val(response.basefilename);       // Set the filename input
 
-                floatingNavBar.removeClass('show');
-                vizContainerBody.empty();
-
-                $('#vizContainerTitle').html(response.title);
-                $('#vizContainerDatetime').html(response.datetime);
-                $('#filename_input').val(response.basefilename);
+                vizContainerHeader.show();
 
                 // Initialize the Viz instance if it doesn't exist
                 if (window.dpviz.viz === null)
@@ -430,6 +448,7 @@ $(document).ready(function()
                         window.dpviz.isFocused = false;
                         window.dpviz.svgContainer = element;
                         vizContainerBody.append(element);
+                        vizSpinner.hide();  //hide spinner
 
                         const $svgElement = $('#graph0');
                         const $svgRoot    = $svgElement.closest('svg');
@@ -505,18 +524,24 @@ $(document).ready(function()
                         fpbxToast(response.message, '', 'success');
                     })
                     .catch(error => {
+                        floatingNavBar.addClass('show'); // show navbar
+
                         fpbxToast('Viz.js render error: ' + error , '', 'error');
                         console.error('Viz.js render error:', error);
                     });
                 }
                 else
                 {
+                    floatingNavBar.addClass('show'); // show navbar
+
                     fpbxToast('No gtext found in response.', '', 'error');
                     console.error('No gtext found in response.');
                 }
             }
             else
             {
+                floatingNavBar.addClass('show'); // show navbar
+
                 const err_msg = response ? response.message || i18nStr('ajax_response_status_err') : i18nStr('ajax_response_empty');
                 fpbxToast(err_msg, '', 'error');
                 // console.warn(err_msg);
@@ -524,6 +549,8 @@ $(document).ready(function()
         })
         .fail(function (xhr, status, error)
         {
+            floatingNavBar.addClass('show'); // show navbar
+
             fpbxToast(i18nStr('ajax_failed'), '', 'error');
             console.error("AJAX network error:", error || status);
         });
@@ -727,7 +754,7 @@ $(document).ready(function()
             window.dpviz.isFocused = false;
 
             txt[0].nodeValue = sprintf(' %s', i18nStr('btn_highlight'));
-            target.removeClass('active btn-info').addClass('btn-default');
+            target.removeClass('active btn-primary').addClass('btn-default');
         }
         else
         {
@@ -736,7 +763,7 @@ $(document).ready(function()
             window.dpviz.isFocused = true;
 
             txt[0].nodeValue = sprintf(' %s', i18nStr('btn_highlight_remove'));
-            target.removeClass('btn-default btn-info').addClass('active');
+            target.removeClass('btn-default btn-primary').addClass('active');
         }
     }
 
