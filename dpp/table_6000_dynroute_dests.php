@@ -23,7 +23,7 @@ class TableDynrouteDests extends baseTables
 
             $dproute[$this->key_name][$id]['routes'][$selid] = $dynroute_dests;
 
-            $this->log(9, "dynroute_dests: dynroute=$id match=$selid");
+            $this->log(9, sprintf("dynroute_dests: dynroute=%s match=%s", $id, $selid));
         }
         return true;
     }

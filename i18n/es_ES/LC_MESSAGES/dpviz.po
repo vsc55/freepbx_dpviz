@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-04 16:00+0200\n"
-"PO-Revision-Date: 2025-05-04 16:14+0200\n"
+"POT-Creation-Date: 2025-05-04 18:15+0200\n"
+"PO-Revision-Date: 2025-05-04 18:23+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -47,13 +47,13 @@ msgstr "Agrupación de nodos de extensión compartidos"
 
 #: Dpviz.class.php:245
 msgid ""
-"\"None\" displays individual extension nodes. \"Queues and Ring Groups "
-"Only\" combines them into one node. \"All\" merges all destinations into a "
-"single extension node."
+"'None' displays individual extension nodes. 'Queues and Ring Groups Only' "
+"combines them into one node. 'All' merges all destinations into a single "
+"extension node."
 msgstr ""
-"\"Ninguno\" muestra los nodos de extensión individuales. \"Sólo colas y "
-"grupos de timbres\" los combina en un solo nodo. \"Todos\" combina todos los "
-"destinos en un único nodo de extensión."
+"'Ninguno' muestra los nodos de extensión individuales. 'Solo Colas y Grupos "
+"de Llamadas' los combina en un solo nodo. 'Todos' combina todos los destinos "
+"en un único nodo de extensión."
 
 #: Dpviz.class.php:249 dpp/destination_1000_announcement.php:24
 #: dpp/destination_4000_dynroute.php:21 dpp/destination_7500_recording.php:20
@@ -234,6 +234,11 @@ msgstr "Omitiendo la importación de KVStore, ¡no se han encontrado datos!"
 msgid "Invalid direction '%s'!"
 msgstr "¡Dirección no válida '%s'!"
 
+#: dpp.php:84 dpp.php:157 dpp.php:210
+#, php-format
+msgid "File '%s' not found!"
+msgstr "¡Archivo '%s' no encontrado!"
+
 #: dpp.php:97
 #, php-format
 msgid "Not extracting class name from '%s'!"
@@ -308,17 +313,54 @@ msgstr "Clase de MOH= %s\\n"
 msgid " Always"
 msgstr " Siempre"
 
+#: dpp.php:577
+#, php-format
+msgid "Inspecting destination %s"
+msgstr "Inspeccionando destino %s"
+
+#: dpp.php:587
+#, php-format
+msgid "Adding node: %s"
+msgstr "Añadiendo nodo: %s"
+
+#: dpp.php:597
+#, php-format
+msgid "Found it: ntxt = %s"
+msgstr "Se encontró: ntxt = %s"
+
 #: dpp.php:601
 #, php-format
 msgid "(new node: %s)"
 msgstr "(nuevo nodo: %s)"
 
+#: dpp.php:606
+#, php-format
+msgid "NOT making an edge from %s -> %s"
+msgstr "NO se dibuja flecha de %s a %s"
+
+#: dpp.php:615
+#, php-format
+msgid "Making an edge from %s -> %s"
+msgstr "Se dibuja flecha de %s a %s"
+
+#: dpp.php:639
+#, php-format
+msgid "The Graph: %s"
+msgstr "El gráfico: %s"
+
+#: dpp.php:670
+msgid "Doing follow dest ..."
+msgstr "Haciendo seguimiento dest ..."
+
+#: dpp.php:672
+msgid "Finished follow dest ..."
+msgstr "Terminado seguir dest ..."
+
 #: dpp/baseDestinations.php:41
 #, php-format
-msgid "No callback function found for followDestinations in \"%s\""
+msgid "No callback function found for followDestinations in '%s'"
 msgstr ""
-"No se ha encontrado ninguna función callback para followDestinations en "
-"\"%s\""
+"No se ha encontrado ninguna función callback para followDestinations en '%s'"
 
 #: dpp/destination_10000_ring_groups_members.php:22
 #: dpp/destination_9000_queue_members.php:23
@@ -356,8 +398,8 @@ msgstr " Continuar"
 
 #: dpp/destination_10500_set_cid.php:24
 #, php-format
-msgid "Set CID\\nName= %s\\nNumber= %s\\n"
-msgstr "Set CID\\nNombre= %s\\nNúmero= %s\\n"
+msgid "Set CID\\nName= %s\\nNumber= %s"
+msgstr "Set CID\\nNombre= %s\\nNúmero= %s"
 
 #: dpp/destination_11000_tts.php:22
 #, php-format
@@ -371,63 +413,68 @@ msgstr "Motor: %s\\nDescripción: %s"
 
 #: dpp/destination_11500_timeconditions.php:22
 #, php-format
-msgid "%s\\nMode= %s\\n"
-msgstr "%s\\nModo= %s\\n"
-
-#: dpp/destination_11500_timeconditions.php:23
-#, php-format
-msgid "Timezone= %s"
-msgstr "Zona Horaria= %s"
+msgid "%s\\nMode= %s"
+msgstr "%s\\nModo= %s"
 
 #: dpp/destination_11500_timeconditions.php:25
+#, php-format
+msgid "\\nTimezone= %s"
+msgstr "\\nZona Horaria= %s"
+
+#: dpp/destination_11500_timeconditions.php:25
+#: dpp/destination_11500_timeconditions.php:60
+msgid "Undefined"
+msgstr "No definido"
+
+#: dpp/destination_11500_timeconditions.php:28
 #, php-format
 msgid "TC: %s"
 msgstr "TC: %s"
 
-#: dpp/destination_11500_timeconditions.php:45
+#: dpp/destination_11500_timeconditions.php:48
 msgid "No times defined"
 msgstr "No hay horarios definidos"
 
-#: dpp/destination_11500_timeconditions.php:57
+#: dpp/destination_11500_timeconditions.php:61
 #, php-format
 msgid "Name= %s\\nDescription= %s\\nType= %s\\nTimezone= %s"
 msgstr "Nombre= %s\\nDescripción= %s\\nTipo= %s\\nZona Horaria= %s"
 
-#: dpp/destination_11500_timeconditions.php:64
+#: dpp/destination_11500_timeconditions.php:68
 msgid "Calendars= "
 msgstr "Calendarios= "
 
-#: dpp/destination_11500_timeconditions.php:72
-#: dpp/destination_11500_timeconditions.php:74
+#: dpp/destination_11500_timeconditions.php:76
+#: dpp/destination_11500_timeconditions.php:78
 msgid "All"
 msgstr "Todos"
 
-#: dpp/destination_11500_timeconditions.php:73
+#: dpp/destination_11500_timeconditions.php:77
 #, php-format
 msgid "Categories= %s"
 msgstr "Categorías= %s"
 
-#: dpp/destination_11500_timeconditions.php:75
+#: dpp/destination_11500_timeconditions.php:79
 #, php-format
 msgid "Events= %s"
 msgstr "Eventos= %s"
 
-#: dpp/destination_11500_timeconditions.php:77
+#: dpp/destination_11500_timeconditions.php:81
 #, php-format
 msgid "Name= %s\\n%s\\n%s\\n%s\\nExpand= %s"
 msgstr "Nombre= %s\\n%s\\n%s\\n%s\\nExpand= %s"
 
-#: dpp/destination_11500_timeconditions.php:83
-#: dpp/destination_11500_timeconditions.php:86
+#: dpp/destination_11500_timeconditions.php:87
+#: dpp/destination_11500_timeconditions.php:90
 #, php-format
 msgid " Match:\\n%s"
 msgstr " Coincidencia:\\n%s"
 
-#: dpp/destination_11500_timeconditions.php:92
+#: dpp/destination_11500_timeconditions.php:96
 msgid " No Match"
 msgstr " No Coincide"
 
-#: dpp/destination_11500_timeconditions.php:95
+#: dpp/destination_11500_timeconditions.php:99
 #, php-format
 msgid " No Match:\\n%s"
 msgstr " No Coincide:\\n%s"
@@ -599,8 +646,8 @@ msgstr " Sin respuesta"
 
 #: dpp/destination_5000_featurecodes.php:27
 #, php-format
-msgid "Feature Code: %s \\<%s\\>"
-msgstr "Código de función: %s \\<%s\\>"
+msgid "Feature Code: %s <%s>"
+msgstr "Código de función: %s <%s>"
 
 #: dpp/destination_6000_ivr.php:51
 #, php-format
@@ -676,8 +723,8 @@ msgstr "Grupo de timbres: %s %s"
 
 #: dpp/destination_9999999_custom.php:36
 #, php-format
-msgid "Cust Dest: %s\\nTarget: %s\\n"
-msgstr "Cust Dest: %s\\nDestino: %s\\n"
+msgid "Cust Dest: %s\\nTarget: %s"
+msgstr "Cust Dest: %s\\nDestino: %s"
 
 #: dpp/destination_9999999_custom.php:56
 #, php-format

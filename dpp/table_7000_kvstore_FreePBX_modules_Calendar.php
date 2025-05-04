@@ -23,12 +23,12 @@ class TableKvstoreFreepbxMmodulesCalendar extends baseTables
                 case 'calendars':
                 case 'groups':
                     $id = $calendar['key'];
-                    $dproute[$this->key_name][$id] = json_decode($calendar['val'],true);
-                    dpplog(9, "calendars=$id");
+                    $dproute[$this->key_name][$id] = json_decode($calendar['val'], true);
+                    $this->log(9, sprintf("calendars=%s", $id));
                     break;
 
                 default:
-                    dpplog(1, "Unknown calendar type: {$calendar['id']}");
+                    $this->log(1, sprintf("Unknown calendar type: {%s}", $calendar['id']));
             }
         }
         return true;

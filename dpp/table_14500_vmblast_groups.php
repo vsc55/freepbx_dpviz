@@ -22,7 +22,7 @@ class TableVmblastGroups extends baseTables
 
             $dproute[$this->key_name][$id]['members'][] = $vmblastsGrp['ext'];
 
-            $this->log(9, "vmblast:  vmblast=$id");
+            $this->log(9, sprintf("vmblast:  vmblast=%s", $id));
         }
         return true;
     }

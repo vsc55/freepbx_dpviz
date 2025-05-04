@@ -81,7 +81,7 @@ class dpp {
     {
         if (!file_exists($file))
         {
-            $this->log(1, sprintf("File '%s' not found!", $file));
+            $this->log(1, sprintf(_("File '%s' not found!"), $file));
             return null;
         }
 
@@ -154,7 +154,7 @@ class dpp {
         {
             if (!file_exists($file))
             {
-                $this->log(1, sprintf("File '%s' not found!", $file));
+                $this->log(1, sprintf(_("File '%s' not found!"), $file));
                 continue;
             }
 
@@ -207,7 +207,7 @@ class dpp {
         {
             if (!file_exists($file))
             {
-                $this->log(1, sprintf("File '%s' not found!", $file));
+                $this->log(1, sprintf(_("File '%s' not found!"), $file));
                 continue;
             }
             // Get the class name from the file name
@@ -495,7 +495,7 @@ class dpp {
         }
 
         $dpgraph = $route['dpgraph'];
-        $this->log(9, "destination='$destination' route[extension]: " . print_r($route['extension'], true));
+        $this->log(9, sprintf("destination=%s route[extension]: %s", $destination, print_r($route['extension'], true)));
 
         # This only happens on the first call.  Every recursive call includes
         # a destination to look at.  For the first one, we get the destination from
@@ -574,7 +574,7 @@ class dpp {
             }
             return;
         }
-        $this->log(9, "Inspecting destination $destination");
+        $this->log(9, sprintf(_("Inspecting destination %s"), $destination));
 
         // We use get() to see if the node exists before creating it.  get() throws
         // an exception if the node does not exist so we have to catch it.
@@ -584,7 +584,7 @@ class dpp {
         }
         catch (\Exception $e)
         {
-            $this->log(7, "Adding node: $destination");
+            $this->log(7, sprintf(_("Adding node: %s"), $destination));
             $node = $dpgraph->beginNode($destination);
             $node->attribute('margin', '.25,.055');
         }
@@ -594,7 +594,7 @@ class dpp {
         // have several paths to reach it.
         $ptxt = $route['parent_node']->getAttribute('label', '');
         $ntxt = $node->getAttribute('label', '');
-        $this->log(9, "Found it: ntxt = $ntxt");
+        $this->log(9, sprintf(_("Found it: ntxt = %s"), $ntxt));
 
         if ($ntxt == '' )
         {
@@ -603,7 +603,7 @@ class dpp {
 
         if ($dpgraph->hasEdge(array($route['parent_node'], $node)))
         {
-            $this->log(9, "NOT making an edge from $ptxt -> $ntxt");
+            $this->log(9, sprintf(_("NOT making an edge from %s -> %s"), $ptxt, $ntxt));
             $edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
             $edge->attribute('label', $this->sanitizeLabels($route['parent_edge_label']));
             $edge->attribute('labeltooltip', $this->sanitizeLabels($ptxt));
@@ -612,7 +612,7 @@ class dpp {
         }
         else
         {
-            $this->log(9, "Making an edge from $ptxt -> $ntxt");
+            $this->log(9, sprintf(_("Making an edge from %s -> %s"), $ptxt, $ntxt));
             $edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
             $edge->attribute('label', $this->sanitizeLabels($route['parent_edge_label']));
             $edge->attribute('labeltooltip', $this->sanitizeLabels($route['parent_edge_label']));
@@ -636,7 +636,7 @@ class dpp {
             }
         }
 
-        $this->log(9, "The Graph: " . print_r($dpgraph, true));
+        $this->log(9, sprintf(_("The Graph: %s"), print_r($dpgraph, true)));
 
         // Now bail if we have already recursed on this destination before.
         if ($node->getAttribute('label', 'NONE') != 'NONE')
@@ -667,9 +667,9 @@ class dpp {
         $this->loadIncomingRoutes(true);
         $this->findRoute($num);
         $this->loadTables(true);
-        $this->log(5, "Doing follow dest ...");
+        $this->log(5, _("Doing follow dest ..."));
         $this->followDestinations($this->dproutes, '', $optional);
-        $this->log(5, "Finished follow dest ...");
+        $this->log(5, _("Finished follow dest ..."));
         return $this->dproutes['dpgraph']->render();
     }
 }

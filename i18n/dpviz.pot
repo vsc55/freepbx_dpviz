@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-04 16:00+0200\n"
+"POT-Creation-Date: 2025-05-04 18:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,9 +56,9 @@ msgstr ""
 
 #: Dpviz.class.php:245
 msgid ""
-"\"None\" displays individual extension nodes. \"Queues and Ring Groups "
-"Only\" combines them into one node. \"All\" merges all destinations into a "
-"single extension node."
+"'None' displays individual extension nodes. 'Queues and Ring Groups Only' "
+"combines them into one node. 'All' merges all destinations into a single "
+"extension node."
 msgstr ""
 
 #: Dpviz.class.php:249 dpp/destination_1000_announcement.php:24
@@ -236,6 +236,11 @@ msgstr ""
 msgid "Invalid direction '%s'!"
 msgstr ""
 
+#: dpp.php:84 dpp.php:157 dpp.php:210
+#, php-format
+msgid "File '%s' not found!"
+msgstr ""
+
 #: dpp.php:97
 #, php-format
 msgid "Not extracting class name from '%s'!"
@@ -310,14 +315,52 @@ msgstr ""
 msgid " Always"
 msgstr ""
 
+#: dpp.php:577
+#, php-format
+msgid "Inspecting destination %s"
+msgstr ""
+
+#: dpp.php:587
+#, php-format
+msgid "Adding node: %s"
+msgstr ""
+
+#: dpp.php:597
+#, php-format
+msgid "Found it: ntxt = %s"
+msgstr ""
+
 #: dpp.php:601
 #, php-format
 msgid "(new node: %s)"
 msgstr ""
 
+#: dpp.php:606
+#, php-format
+msgid "NOT making an edge from %s -> %s"
+msgstr ""
+
+#: dpp.php:615
+#, php-format
+msgid "Making an edge from %s -> %s"
+msgstr ""
+
+#: dpp.php:639
+#, php-format
+msgid "The Graph: %s"
+msgstr ""
+
+#: dpp.php:670
+msgid "Doing follow dest ..."
+msgstr ""
+
+#: dpp.php:672
+msgid "Finished follow dest ..."
+msgstr ""
+
 #: dpp/baseDestinations.php:41
 #, php-format
-msgid "No callback function found for followDestinations in \"%s\""
+msgid "No callback function found for followDestinations in '%s'"
 msgstr ""
 
 #: dpp/destination_10000_ring_groups_members.php:22
@@ -356,7 +399,7 @@ msgstr ""
 
 #: dpp/destination_10500_set_cid.php:24
 #, php-format
-msgid "Set CID\\nName= %s\\nNumber= %s\\n"
+msgid "Set CID\\nName= %s\\nNumber= %s"
 msgstr ""
 
 #: dpp/destination_11000_tts.php:22
@@ -371,63 +414,68 @@ msgstr ""
 
 #: dpp/destination_11500_timeconditions.php:22
 #, php-format
-msgid "%s\\nMode= %s\\n"
-msgstr ""
-
-#: dpp/destination_11500_timeconditions.php:23
-#, php-format
-msgid "Timezone= %s"
+msgid "%s\\nMode= %s"
 msgstr ""
 
 #: dpp/destination_11500_timeconditions.php:25
 #, php-format
+msgid "\\nTimezone= %s"
+msgstr ""
+
+#: dpp/destination_11500_timeconditions.php:25
+#: dpp/destination_11500_timeconditions.php:60
+msgid "Undefined"
+msgstr ""
+
+#: dpp/destination_11500_timeconditions.php:28
+#, php-format
 msgid "TC: %s"
 msgstr ""
 
-#: dpp/destination_11500_timeconditions.php:45
+#: dpp/destination_11500_timeconditions.php:48
 msgid "No times defined"
 msgstr ""
 
-#: dpp/destination_11500_timeconditions.php:57
+#: dpp/destination_11500_timeconditions.php:61
 #, php-format
 msgid "Name= %s\\nDescription= %s\\nType= %s\\nTimezone= %s"
 msgstr ""
 
-#: dpp/destination_11500_timeconditions.php:64
+#: dpp/destination_11500_timeconditions.php:68
 msgid "Calendars= "
 msgstr ""
 
-#: dpp/destination_11500_timeconditions.php:72
-#: dpp/destination_11500_timeconditions.php:74
+#: dpp/destination_11500_timeconditions.php:76
+#: dpp/destination_11500_timeconditions.php:78
 msgid "All"
-msgstr ""
-
-#: dpp/destination_11500_timeconditions.php:73
-#, php-format
-msgid "Categories= %s"
-msgstr ""
-
-#: dpp/destination_11500_timeconditions.php:75
-#, php-format
-msgid "Events= %s"
 msgstr ""
 
 #: dpp/destination_11500_timeconditions.php:77
 #, php-format
+msgid "Categories= %s"
+msgstr ""
+
+#: dpp/destination_11500_timeconditions.php:79
+#, php-format
+msgid "Events= %s"
+msgstr ""
+
+#: dpp/destination_11500_timeconditions.php:81
+#, php-format
 msgid "Name= %s\\n%s\\n%s\\n%s\\nExpand= %s"
 msgstr ""
 
-#: dpp/destination_11500_timeconditions.php:83
-#: dpp/destination_11500_timeconditions.php:86
+#: dpp/destination_11500_timeconditions.php:87
+#: dpp/destination_11500_timeconditions.php:90
 #, php-format
 msgid " Match:\\n%s"
 msgstr ""
 
-#: dpp/destination_11500_timeconditions.php:92
+#: dpp/destination_11500_timeconditions.php:96
 msgid " No Match"
 msgstr ""
 
-#: dpp/destination_11500_timeconditions.php:95
+#: dpp/destination_11500_timeconditions.php:99
 #, php-format
 msgid " No Match:\\n%s"
 msgstr ""
@@ -597,7 +645,7 @@ msgstr ""
 
 #: dpp/destination_5000_featurecodes.php:27
 #, php-format
-msgid "Feature Code: %s \\<%s\\>"
+msgid "Feature Code: %s <%s>"
 msgstr ""
 
 #: dpp/destination_6000_ivr.php:51
@@ -674,7 +722,7 @@ msgstr ""
 
 #: dpp/destination_9999999_custom.php:36
 #, php-format
-msgid "Cust Dest: %s\\nTarget: %s\\n"
+msgid "Cust Dest: %s\\nTarget: %s"
 msgstr ""
 
 #: dpp/destination_9999999_custom.php:56

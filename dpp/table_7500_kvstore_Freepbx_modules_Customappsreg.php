@@ -25,7 +25,7 @@ class TableKvstoreFreepbxModulesCustomappsreg extends baseTables
 
                 $dproute[$this->key_name][$id] = $val;
 
-                $this->log(9, "customapps=$id");
+                $this->log(9, sprintf("customapps=%s", $id));
             }
         }
         return true;
