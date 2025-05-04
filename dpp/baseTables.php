@@ -1,9 +1,12 @@
 <?php
 namespace FreePBX\modules\Dpviz\dpp\table;
 
-abstract class baseTables
+require_once __DIR__ . '/baseDpp.php';
+
+use \FreePBX\modules\Dpviz\dpp\baseDpp;
+
+abstract class baseTables extends baseDpp
 {
-    protected $dpp   = null;
     protected $route = null;
 
     protected $tableName = '';
@@ -21,9 +24,10 @@ abstract class baseTables
      */
     public function __construct(object &$dpp, string $tableName = '', bool $optional = false)
     {
+        parent::__construct($dpp);
+
         $this->optional  = $optional;
         $this->tableName = $tableName;
-        $this->dpp       = &$dpp;
         $this->route     = &$dpp->dproutes;
     }
 
@@ -70,14 +74,6 @@ abstract class baseTables
         return is_array($return) ? $return : [];
     }
 
-    /**
-     * Relay the log function to the dpp class
-     */
-    protected function log($level, $message)
-    {
-        $this->dpp->log($level, $message);
-    }
-
     public function load(): ?bool
     {
         // callback function to load the table
@@ -91,7 +87,7 @@ abstract class baseTables
         if (method_exists($this, 'callback_load'))
         {
             $callback = [$this, 'callback_load'];
-            $args = [&$this->route];
+            $args     = [&$this->route];
             return call_user_func_array($callback, $args);
 
             // return call_user_func([$this, 'callback_load'], $this->route);

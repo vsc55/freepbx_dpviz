@@ -15,11 +15,10 @@ class DestinationFromDidDirect extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $extnum    = $matches[1];
-        $extother  = $matches[2];
-
-        //TODO: change metod to getSetting() in Dpviz class
-        $fmfmOption  = \FreePBX::Dpviz()->getSetting('fmfm');
+        $extnum      = $matches[1];
+        $extother    = $matches[2];
+        $fmfmOption  = $this->getSetting('fmfm');
+        $extOptional = $this->getSetting('ext_optional');
 
         if (isset($route['extensions'][$extnum]))
         {
@@ -31,7 +30,6 @@ class DestinationFromDidDirect extends baseDestinations
 
             if ($fmfmOption)
             {
-                //if ($extension['fmfm']['ddial']=='DIRECT'){
 				if (isset($extension['fmfm']) && $extension['fmfm']['ddial'] == 'DIRECT')
                 {
 					$fmfmLabel = sprintf(_("FMFM Enabled\\nInitial Ring Time=%s\\nRing Time=%s\\nConfirm Calls=%s"), $this->dpp->secondsToTimes($extension['fmfm']['prering']), $this->dpp->secondsToTimes($extension['fmfm']['grptime']), $extension['fmfm']['grpconf']);
@@ -81,8 +79,6 @@ class DestinationFromDidDirect extends baseDestinations
         $node->attribute('style', 'filled');
 
         //Optional Destinations
-        //TODO: change metod to getSetting() in Dpviz class
-        $extOptional = \FreePBX::Dpviz()->getSetting('ext_optional');
         if ($extOptional && (!empty($extension['noanswer_dest']) || !empty($extension['busy_dest']) || !empty($extension['chanunavail_dest'])) )
         {
             if ($extension['noanswer_dest'] === $extension['busy_dest'] && $extension['noanswer_dest'] === $extension['chanunavail_dest'])

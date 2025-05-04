@@ -15,8 +15,9 @@ class DestinationQueues extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $qnum   = $matches[1];
-        $qother = $matches[2];
+        $qnum              = $matches[1];
+        $qother            = $matches[2];
+        $combineQueueRing  = $this->getSetting('combine_queue_ring');
 
         $q = $route['queues'][$qnum];
         if ($q['maxwait'] == 0 || $q['maxwait'] == '' || !is_numeric($q['maxwait']))
@@ -27,9 +28,6 @@ class DestinationQueues extends baseDestinations
         {
             $maxwait = $this->dpp->secondsToTimes($q['maxwait']);
         }
-
-        //TODO: change metod to getSetting() in Dpviz class
-        $combineQueueRing  = \FreePBX::Dpviz()->getSetting('combine_queue_ring');
 
         $label = sprintf(_('Queue %s: %s'), $qnum, $q['descr']);
 

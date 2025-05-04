@@ -8,6 +8,8 @@ namespace FreePBX\modules;
 include __DIR__ . '/vendor/autoload.php';
 include __DIR__ . '/dpp.php';
 
+use \FreePBX\Modules\Dpviz\dpp;
+
 class Dpviz extends \FreePBX_Helpers implements \BMO {
 
     private $freepbx;
@@ -36,7 +38,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $this->freepbx = $freepbx;
         $this->db      = $freepbx->Database;
         $this->astman  = $freepbx->astman;
-        $this->dpp     = new \FreePBX\modules\Dpviz\dpp($this->freepbx);
+        $this->dpp     = new dpp($this->freepbx, $this);
     }
 
     public function install()
@@ -563,7 +565,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         ];
     }
 
-    public function asterisk_runcmd($cmd, $return_string = false)
+    public function asteriskRunCmd($cmd, $return_string = false)
     {
 		if ($this->astman)
         {

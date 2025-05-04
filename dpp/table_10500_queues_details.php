@@ -16,6 +16,8 @@ class TableQueuesDetails extends baseTables
 
     public function callback_load(&$dproute)
     {
+        $dynmembers = $this->getSetting('dynmembers'); // default to 0
+
         foreach($this->getTableData() as $qd)
         {
             $id = $qd[$this->key_id];
@@ -36,37 +38,32 @@ class TableQueuesDetails extends baseTables
             }
         }
 
-        //TODO: $dynmembers= isset($options[0]['dynmembers']) ? $options[0]['dynmembers'] : '0';
-        //TODO: change metod to getSetting() in Dpviz class
-        $dynmembers = \FreePBX::Dpviz()->getSetting('dynmembers');
-
         # Queue members (dynamic) //options
         if ($dynmembers && !empty($dproute[$this->key_name]))
         {
             foreach ($dproute[$this->key_name] as $id => $details)
             {
-                $qp_raw = \FreePBX::Dpviz()->asterisk_runcmd(sprintf('database show QPENALTY %s', $id), false);
-                foreach ($qp_raw as $line)
-                {
-                    $line = trim($line);
-                    if (strpos($line, '/') !== 0) {
-                        continue; // skip lines not starting with '/'
-                    }
-                    if (strpos($line, '/agents/') === false) {
-                        continue; // only keep lines with '/agents/'
-                    }
-
-                    [$key, $value] = explode(':', $line, 2);
-                    $parts         = explode('/', trim($key));
-
-                    if (!isset($parts[4]))
+                $this->processAsteriskLines(
+                    $this->asteriskRunCmd(sprintf('database show QPENALTY %s', $id), false),
+                    function($line) use (&$dproute, $id)
                     {
-                        continue; // ensure fifth field exists
-                    }
-                    $ext = trim($parts[4]); // fifth part (index 4)
+                        [$key, $value] = explode(':', $line, 2);
+                        $parts         = explode('/', trim($key));
 
-                    $dproute[$this->key_name][$id]['members']['dynamic'][] = $ext;
-                }
+                        if (!isset($parts[4]))
+                        {
+                            return; // skip invalid
+                        }
+
+                        $ext = trim($parts[4]); // fifth part (index 4)
+
+                        $dproute[$this->key_name][$id]['members']['dynamic'][] = $ext;
+                    },
+                    function($line)
+                    {
+                        return strpos($line, '/') === 0 && strpos($line, '/agents/') !== false;
+                    }
+                );
             }
         }
         return true;

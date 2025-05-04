@@ -8,6 +8,7 @@ class dpp {
 
     public $freepbx = null;
     public $db      = null;
+    public $dpviz   = null;
 
     private $list_class_tables              = [];
     private $list_calss_tables_destinations = [];
@@ -32,10 +33,11 @@ class dpp {
     // 	"#ff66ff", "#f2003c", "#ffcc00", "#ff69b4", "#0aff02"
     // ];
 
-    public function __construct($freepbx, $load_routes = true)
+    public function __construct($freepbx, &$dpviz, $load_routes = true)
     {
         $this->freepbx = $freepbx;
         $this->db      = $freepbx->Database;
+        $this->dpviz   = &$dpviz;
 
         $this->LoadClass();
 

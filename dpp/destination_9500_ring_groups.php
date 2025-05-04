@@ -15,13 +15,11 @@ class DestinationRingGroups extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $rgnum 	 = $matches[1];
-        $rg      = $route['ringgroups'][$rgnum];
+        $rgnum 	          = $matches[1];
+        $rg               = $route['ringgroups'][$rgnum];
+        $combineQueueRing = $this->getSetting('combine_queue_ring');
 
         $label   = sprintf(_('Ring Group: %s %s'), $rgnum, $rg['description']);
-
-        //TODO: change metod to getSetting() in Dpviz class
-        $combineQueueRing  = \FreePBX::Dpviz()->getSetting('combine_queue_ring');
 
         $node->attribute('label', $this->dpp->sanitizeLabels($label));
         $node->attribute('URL', $this->genUrlConfig('ringgroups', $rgnum)); //'/admin/config.php?display=ringgroups&view=form&extdisplay='.$rgnum

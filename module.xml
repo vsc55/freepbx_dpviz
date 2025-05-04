@@ -2,7 +2,7 @@
     <rawname>dpviz</rawname>
     <repo>unsupported</repo>
     <name>Dial Plan Vizualizer</name>
-    <version>1.0.18</version>
+    <version>1.0.19</version>
     <publisher>AdamV</publisher>
     <license>GPLv3+</license>
     <licenselink>http://www.gnu.org/licenses/gpl-3.0.txt</licenselink>
@@ -25,6 +25,9 @@
     </changelog>
     <info>https://github.com/madgen78/dpviz</info>
     <md5sum>c62830a311338fa38b1aa0e9f9284fc3</md5sum>
+    <depends>
+		<module>voicemail</module>
+	</depends>
     <supported>
         <version>17.0</version>
     </supported>
