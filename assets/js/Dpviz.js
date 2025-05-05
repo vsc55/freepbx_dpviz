@@ -72,7 +72,7 @@ function generateVisualization(ext, cid, jump, pan) {
 	const vizContainer = document.getElementById("vizContainer");
 	const spinner = document.getElementById("vizSpinner");
 	vizContainer.innerHTML = "";  //clear contents
-	spinner.style.display = "block"; //show spinner
+	spinner.style.display = "flex"; //show spinner
   $.ajax({
     url: 'ajax.php?module=dpviz&command=make',
     type: 'POST',
@@ -99,15 +99,45 @@ function generateVisualization(ext, cid, jump, pan) {
 					.then(function(element) {
 						isFocused = false;
             svgContainer = element;
-            document.getElementById("vizContainer").appendChild(element);
+            vizContainer.appendChild(element);
 						spinner.style.display = "none";  //hide spinner
             var svgElement = document.querySelector('#graph0');
             if (svgElement && pan === "1") {
 							panzoom(svgElement, {
 								zoomDoubleClickSpeed: 1, //disables double click to zoom
 							});
-							//panzoom(svgElement);
 						}
+						
+						// Ctrl/Command + click handler for Graphviz nodes
+						element.querySelectorAll('g.node').forEach(node => {
+							node.addEventListener('click', function (e) {
+								const titleElement = node.querySelector('title');
+
+								if (!titleElement) return;
+
+								const titleText = titleElement.textContent || titleElement.innerText || "";
+
+								// Check for "Play Recording:" pattern
+								if (titleText.startsWith("play-system-recording")) {
+									e.preventDefault();
+									const modal = document.getElementById('recordingmodal');
+									const overlay = document.getElementById('overlay');
+									if (modal && overlay && !isFocused) {
+										overlay.style.display = 'block';
+										modal.style.display = 'block';
+										getRecording(titleText);
+									}
+								}
+								
+								// Support Ctrl/Meta key for other actions
+								if (e.ctrlKey || e.metaKey) {
+									e.preventDefault();
+								 generateVisualization(ext, cid, titleText, pan);
+								}
+
+							});
+						});
+
 
             element.querySelectorAll("g.node").forEach(node => {
               node.addEventListener("click", function(e) {
@@ -131,6 +161,8 @@ function generateVisualization(ext, cid, jump, pan) {
                 }
               });
             });
+						
+						
 
           })
           .catch(error => {
@@ -141,10 +173,86 @@ function generateVisualization(ext, cid, jump, pan) {
       }
     },
     error: function(xhr, status, error) {
-			
-      console.error('AJAX Error:', status, error);
-    }
-  });	
+			spinner.style.display = "none";  // Hide spinner
+
+			const errorMsg = `
+					<strong>AJAX Error:</strong><br>
+					Status: ${status}<br>
+					Error: ${error}<br>
+					HTTP Status: ${xhr.status}<br>
+					Response: ${xhr.responseText}
+			`;
+
+			$('#vizContainer').html(errorMsg);
+			console.error('AJAX Error:', status, error);
+		}
+  });
+}
+
+
+function getRecording(titleid) {
+	const parts = titleid.split(",");
+	const id = parts[1];
+
+	const formData = new URLSearchParams();
+	formData.append('id', id);
+
+	fetch('ajax.php?module=dpviz&command=getrecording', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: formData
+	})
+	.then(response => {
+		if (!response.ok) throw new Error("Audio not found, has multiple parts, or unreadable.");
+
+		const displayname = response.headers.get('X-Displayname');
+		const filename = response.headers.get('X-Filename');
+		
+		if (displayname) {
+			document.getElementById('recording-displayname').innerText = `Recording: ${displayname}`;
+		}
+		if (filename) {
+			document.getElementById('recording-filename').innerText = `Filename: ${filename}.wav`;
+		}
+		
+
+		return response.blob();
+	})
+	.then(blob => {
+		const audioUrl = URL.createObjectURL(blob);
+		const audioSource = document.getElementById('audioSource');
+		const audioPlayer = document.getElementById('audioPlayer');
+
+		audioSource.src = audioUrl;
+		audioPlayer.style.display = 'block';
+		audioPlayer.load();
+	})
+	.catch(error => {
+		console.error("Error:", error);
+		document.getElementById('audioPlayer').style.display = 'none';
+		document.getElementById('recording-displayname').innerText = '';
+		document.getElementById('recording-filename').innerText = error.message;
+	});
+}
+
+
+
+function closeModal() {
+	
+	const modal = document.getElementById('recordingmodal');
+	const overlay = document.getElementById('overlay');
+  modal.style.display = 'none';
+	overlay.style.display = 'none';
+
+  // Stop and reset any audio inside the modal
+  const audio = modal.querySelector('audio');
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
+	
 }
 
 

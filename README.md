@@ -50,10 +50,11 @@ fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/head
 - **Zoom** using the mouse wheel.
 
 ### Additional Features
+- **Listen** to recordings assigned to Announcement, Dynamic Route, IVR, and Play Recording modules. (**Note**: Supports .wav files only. Multi-part recordings are not supported at this time.)
 - **Hover** over a path to highlight the path between destinations.
 - **Click** on a destination to open it in a new tab.
 - **Click** on a "Match: (timegroup)" or "NoMatch" to open it in a new tab.
-- To export, click **"Export as .png"**.
+- **Export** the dial plan with standard or custom filename. Choose between high and standard quality. 
 
 ### Dependencies
 - **PHP >= 5.4.0**

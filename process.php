@@ -82,11 +82,8 @@ $dproute['extension'] = empty($dproute['extension']) ? 'ANY' : $dproute['extensi
 	if (empty($dproute)) {
 		//$header = "<div><h2>Error: Could not find inbound route for ".formatPhoneNumbers($ext)." / ".formatPhoneNumbers($cid)."</h2></div>";
 		$header = "<div><h2>Error: Could not find inbound route for ".$ext." / ".$cid."</h2></div>";
-		//$buttons = $gtext = '';
-		//$gtext=json_encode($gtext);
 	}else{
 		$filename = ($ext == '') ? 'ANY' : $ext;
-		//$ext = ($ext == '') ? 'ANY' : $ext;
 		
 		dpp_load_tables($dproute,$options);   # adds data for time conditions, IVRs, etc.
 		if (!empty($jump)){
@@ -113,7 +110,7 @@ $dproute['extension'] = empty($dproute['extension']) ? 'ANY' : $dproute['extensi
 		if ($datetime==1){$header.= "<h6>".date('Y-m-d H:i:s')."</h6>";}
 		
 $buttons = '
-<div class="color-box" style="border-radius: 10px; background-color:#f9f9f9; margin: 10px 10px; padding: 10px 10px;">
+<div style="border-radius: 10px; background-color:#f9f9f9; margin: 10px 10px; padding: 10px 10px;">
   <div class="row">
     <!-- Left Side: Reload & Highlight -->
     <div class="col-sm-8">
@@ -148,6 +145,7 @@ $buttons = '
     </div>
   </div>
 </div>
+
 <input type="hidden" id="processed" value="yes">
 <input type="hidden" id="ext" value="'.$ext.'">
 <input type="hidden" id="cid" value="'.$cid.'">
@@ -155,24 +153,6 @@ $buttons = '
 <input type="hidden" id="panzoom" value="'.$panzoom.'">';
 
 $header.='
-				<script>
-				$(document).ready(function() {
-					document.querySelectorAll(\'g.node\').forEach(node => {
-						node.addEventListener(\'click\', function(e) {
-							if (e.ctrlKey || e.metaKey) {  // Support Ctrl on Windows/Linux, Command on Mac
-								e.preventDefault();
-
-								let titleElement = node.querySelector(\'title\');
-								
-								if (titleElement) {
-									let titleText = titleElement.textContent || titleElement.innerText;
-									generateVisualization(\''.$ext.'\',\''.$cid.'\',titleText,\''.$panzoom.'\');
-								}
-							}
-						});
-					});
-				});
-				</script>
 				<script src="modules/dpviz/assets/js/focus.js"></script>
 				<script>
 					function exportImage(scale, filename) {
@@ -204,6 +184,8 @@ $header.='
 							var filename = input.value.trim() || \'export\';
 							exportImage(scale, filename + \'.png\');
 					}
+					
+					
 				</script>';
 
 	}
@@ -387,7 +369,15 @@ $neons = [
 		$an = $route['announcements'][$annum];
 		$recID=$an['recording_id'];
 		
-		$announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : 'None';
+		if (isset($route['recordings'][$recID])){
+			$recording= $route['recordings'][$recID];
+			$announcement= $recording['displayname'];
+			$recordingId=$recording['id'];
+			
+		}else{
+			$announcement="None";
+		}
+		
 		#feature code exist?
 		if ( isset($route['featurecodes']['*29'.$recID]) ){
 			#custom feature code?
@@ -413,6 +403,12 @@ $neons = [
 			$route['parent_edge_label'] = ' Continue';
 			$route['parent_node'] = $node;
 			dpp_follow_destinations($route, $an['post_dest'],'',$options);
+		}
+		
+		if (isset($route['recordings'][$recID])){
+			$route['parent_edge_label']= ' Recording';
+			$route['parent_node'] = $node;
+			dpp_follow_destinations($route, 'play-system-recording,'.$recordingId.',1','',$options);
 		}
 		# end of announcements
 
@@ -538,8 +534,14 @@ $neons = [
 		$dynrt = $route['dynroute'][$dynnum];
 		
 		$recID=$dynrt['announcement_id'];
+		if (isset($route['recordings'][$recID])){
+			$recording= $route['recordings'][$recID];
+			$announcement= $recording['displayname'];
+			$recordingId=$recording['id'];
+		}else{
+			$announcement="None";
+		}
 		
-		$announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : 'None';
 		$node->attribute('label', "DYN: ".sanitizeLabels($dynrt['name'])."\nAnnouncement: ".sanitizeLabels($announcement));
 		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=dynroute&action=edit&id='.$dynnum));
@@ -558,6 +560,12 @@ $neons = [
 			}
 		}
 		
+		if (isset($route['recordings'][$recID])){
+			$route['parent_node'] = $node;
+			$route['parent_edge_label']= ' Recording';
+			dpp_follow_destinations($route, 'play-system-recording,'.$recordingId.',1','',$options);
+		}
+		
 		//are the invalid and timeout destinations the same?
 		if ($dynrt['invalid_dest']==$dynrt['default_dest']){
 			 $route['parent_edge_label']= ' Invalid Input, Default ('.$dynrt['timeout'].' secs)';
@@ -565,13 +573,13 @@ $neons = [
 			 dpp_follow_destinations($route, $dynrt['invalid_dest'],'',$options);
 		}else{
 			if ($dynrt['invalid_dest'] != '') {
-				$route['parent_edge_label']= ' Invalid Input';
 				$route['parent_node'] = $node;
+				$route['parent_edge_label']= ' Invalid Input';
 				dpp_follow_destinations($route, $dynrt['invalid_dest'],'',$options);
 			}
 			if ($dynrt['default_dest'] != '') {
-				$route['parent_edge_label']= ' Default ('.$dynrt['timeout'].' secs)';
 				$route['parent_node'] = $node;
+				$route['parent_edge_label']= ' Default ('.$dynrt['timeout'].' secs)';
 				dpp_follow_destinations($route, $dynrt['default_dest'],'',$options);
 			}
 		}
@@ -767,8 +775,17 @@ $neons = [
 
     $ivr = $route['ivrs'][$inum];
 		$recID= $ivr['announcement'];
-		$ivrRecName = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : 'None';
 		
+		if (isset($route['recordings'][$recID])){
+			$recording= $route['recordings'][$recID];
+			$ivrRecName= $recording['displayname'];
+			$recordingId=$recording['id'];
+			
+		}else{
+			$ivrRecName="None";
+		}
+		
+	
     #feature code exist?
     if ( isset($route['featurecodes']['*29'.$ivr['announcement']]) ){
       #custom feature code?
@@ -789,7 +806,11 @@ $neons = [
 
     # The destinations we need to follow are the invalid_destination,
     # timeout_destination, and the selection targets
-	
+		if (isset($route['recordings'][$recID])){
+			$route['parent_node'] = $node;
+			$route['parent_edge_label']= ' Recording';
+			dpp_follow_destinations($route, 'play-system-recording,'.$recordingId.',1','',$options);
+		}
 		
 		#now go through the selections
 		if (!empty($ivr['entries'])){
@@ -863,21 +884,31 @@ $neons = [
 		$node->attribute('style', 'filled');
 		#end of MISC Destinations
 
+		
+
 		#
 		# Play Recording
 		#
   } elseif (preg_match("/^play-system-recording,(\d+),(\d+)/", $destination, $matches)) {
 		$recID = $matches[1];
 		$recIDOther = $matches[2];
-		$playName = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : 'None';
-		$node->attribute('label', 'Play Recording: '.sanitizeLabels($playName));
-		$node->attribute('URL', htmlentities('/admin/config.php?display=recordings&action=edit&id='.$recID));
-		$node->attribute('target', '_blank');
+		
+		if (isset($route['recordings'][$recID])){
+			$rec=$route['recordings'][$recID];
+			$playName=$rec['displayname'];
+		}else{
+			$playName='None';
+		}
+
+		$node->attribute('label', 'Recording: '.sanitizeLabels($playName));
+		$node->attribute('tooltip', $node->getAttribute('label'));
+		$node->attribute('URL', '#');
 		$node->attribute('shape', 'rect');
 		$node->attribute('fillcolor', $pastels[16]);
 		$node->attribute('style', 'filled');
 		#end of Play Recording
-
+		
+		#
 		# Queue Priorities
 		#
   }elseif (preg_match("/^app-queueprio,(\d+),(\d+)/", $destination, $matches)) {

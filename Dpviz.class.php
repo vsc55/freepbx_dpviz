@@ -29,6 +29,13 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $sth->execute();
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
+		
+		public function getRecording($id) {
+        $sql = "SELECT * FROM recordings where id=$id";
+        $sth = $this->db->prepare($sql);
+        $sth->execute();
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+    }
     
     public function editDpviz($panzoom, $horizontal, $datetime, $destination, $dynmembers, $combineQueueRing, $extOptional, $fmfm) {
         $sql = "UPDATE dpviz SET
@@ -86,6 +93,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				case 'save_options':
 				case 'check_update':
 				case 'make':
+				case 'getrecording':
 				return true;
 				break;
 			}
@@ -142,6 +150,15 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 										//'vizReload' => $vizReload //debug
 								];
 								break;
+						
+						case 'getrecording':
+								$id = $_POST['id'];
+								$results = $this->getRecording($id);
+								
+								include 'audio.php';
+
+								exit;
+							break;
 						default:
 								return ['status' => 'error', 'message' => 'Unknown command'];
 				}
