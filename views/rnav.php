@@ -1,7 +1,7 @@
 <?php
 $options=options_gets();
-$panzoom= isset($options[0]['panzoom']) ? $options[0]['panzoom'] : '1';
-$destinationColumn= isset($options[0]['destination']) ? $options[0]['destination'] : '0';
+$panzoom= isset($options['panzoom']) ? $options['panzoom'] : '1';
+$destinationColumn= isset($options['destination']) ? $options['destination'] : '0';
 
 ?>
 <div id="toolbar-all">

@@ -71,8 +71,11 @@ $('#dpvizForm').submit(function(event) {
 function generateVisualization(ext, cid, jump, pan) {	
 	const vizContainer = document.getElementById("vizContainer");
 	const spinner = document.getElementById("vizSpinner");
-	vizContainer.innerHTML = "";  //clear contents
-	spinner.style.display = "flex"; //show spinner
+	const modal = document.getElementById('recordingmodal');
+	const overlay = document.getElementById('overlay');
+	
+	vizContainer.innerHTML = "";
+	spinner.style.display = "flex";
   $.ajax({
     url: 'ajax.php?module=dpviz&command=make',
     type: 'POST',
@@ -120,12 +123,17 @@ function generateVisualization(ext, cid, jump, pan) {
 								// Check for "Play Recording:" pattern
 								if (titleText.startsWith("play-system-recording")) {
 									e.preventDefault();
-									const modal = document.getElementById('recordingmodal');
-									const overlay = document.getElementById('overlay');
+									
+									
 									if (modal && overlay && !isFocused) {
 										overlay.style.display = 'block';
-										modal.style.display = 'block';
+										spinner.style.display = "flex";
 										getRecording(titleText);
+										
+										setTimeout(() => {
+											spinner.style.display = "none";
+											modal.style.display = 'block';
+										}, 250);
 									}
 								}
 								
@@ -137,7 +145,6 @@ function generateVisualization(ext, cid, jump, pan) {
 
 							});
 						});
-
 
             element.querySelectorAll("g.node").forEach(node => {
               node.addEventListener("click", function(e) {
@@ -190,12 +197,15 @@ function generateVisualization(ext, cid, jump, pan) {
 }
 
 
-function getRecording(titleid) {
+function getRecording(titleid) {	
 	const parts = titleid.split(",");
 	const id = parts[1];
+	const other = parts[2];
+	const lang = parts[3];
 
 	const formData = new URLSearchParams();
 	formData.append('id', id);
+	formData.append('lang', lang);
 
 	fetch('ajax.php?module=dpviz&command=getrecording', {
 		method: 'POST',
@@ -206,17 +216,17 @@ function getRecording(titleid) {
 	})
 	.then(response => {
 		if (!response.ok) throw new Error("Audio not found, has multiple parts, or unreadable.");
-
+		
 		const displayname = response.headers.get('X-Displayname');
 		const filename = response.headers.get('X-Filename');
-		
 		if (displayname) {
-			document.getElementById('recording-displayname').innerText = `Recording: ${displayname}`;
+			$('#recording-displayname').html(
+				 '<a href="config.php?display=recordings&action=edit&id='+id+'" style="float:right;" target="_blank" class="btn btn-default btn-lg"><i class="fa fa-bullhorn"></i> Recording: '+displayname+' <i class="fa fa-external-link" aria-hidden="true"></i></a> ' 
+			);
 		}
 		if (filename) {
 			document.getElementById('recording-filename').innerText = `Filename: ${filename}.wav`;
 		}
-		
 
 		return response.blob();
 	})
@@ -238,9 +248,7 @@ function getRecording(titleid) {
 }
 
 
-
-function closeModal() {
-	
+function closeModal() {	
 	const modal = document.getElementById('recordingmodal');
 	const overlay = document.getElementById('overlay');
   modal.style.display = 'none';
@@ -252,7 +260,6 @@ function closeModal() {
     audio.pause();
     audio.currentTime = 0;
   }
-	
 }
 
 

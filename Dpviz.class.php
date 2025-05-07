@@ -24,11 +24,11 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
     }
 
     public function getOptions() {
-        $sql = "SELECT * FROM dpviz";
-        $sth = $this->db->prepare($sql);
-        $sth->execute();
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
-    }
+				$sql = "SELECT * FROM dpviz LIMIT 1";
+				$sth = $this->db->prepare($sql);
+				$sth->execute();
+				return $sth->fetch(\PDO::FETCH_ASSOC); // returns a single assoc array
+		}
 		
 		public function getRecording($id) {
         $sql = "SELECT * FROM recordings where id=$id";
@@ -153,6 +153,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 						
 						case 'getrecording':
 								$id = $_POST['id'];
+								$lang= $_POST['lang'];
 								$results = $this->getRecording($id);
 								
 								include 'audio.php';

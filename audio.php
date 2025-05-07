@@ -2,11 +2,14 @@
 if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
 
 $recording= $results[0];
+/*
 if (empty($recording['fcode_lang'])){
 	$lang='en';
 }else{
 	$lang= $recording['fcode_lang'];
 }
+*/
+
 $filename= $recording['filename'];
 $displayname= $recording['displayname'];
 

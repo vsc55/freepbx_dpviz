@@ -64,7 +64,7 @@ let highlightedEdges = new Set(); // Track highlighted edges
 								</audio>
 								<div id="recording-filename"></div>
 								<br>
-								<button class="btn btn-default" style="float:right;" onclick="closeModal()">Close</button>
+								<span id="recording-button"></span><button class="btn btn-default" style="float:right;" onclick="closeModal()">Close</button>
 								
 							</div>
 							

@@ -1,15 +1,6 @@
 <?php if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); } ?>
 <?php
-$options=options_gets();
-$datetime = isset($options[0]['datetime']) ? $options[0]['datetime'] : '1';
-$panzoom = isset($options[0]['panzoom']) ? $options[0]['panzoom'] : '0';
-$horizontal = isset($options[0]['horizontal']) ? $options[0]['horizontal'] : '0';
-$destinationColumn= isset($options[0]['destination']) ? $options[0]['destination'] : '0';
-$dynmembers= isset($options[0]['dynmembers']) ? $options[0]['dynmembers'] : '0';
-$combineQueueRing= isset($options[0]['combineQueueRing']) ? $options[0]['combineQueueRing'] : '0';
-$extOptional= isset($options[0]['extOptional']) ? $options[0]['extOptional'] : '0';
-$fmfm= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
-
+$options = \FreePBX::Dpviz()->getOptions();
 ?>
 <div class="display no-border">
 	<div class="row">
@@ -42,9 +33,9 @@ $fmfm= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="datetime"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="datetime" id="datetimeyes" value="1" <?php echo ($datetime?"CHECKED":"") ?>>
+										<input type="radio" name="datetime" id="datetimeyes" value="1" <?php echo ($options['datetime']?"CHECKED":"") ?>>
 										<label for="datetimeyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="datetime" id="datetimeno" value="0" <?php echo ($datetime?"":"CHECKED") ?>>
+										<input type="radio" name="datetime" id="datetimeno" value="0" <?php echo ($options['datetime']?"":"CHECKED") ?>>
 										<label for="datetimeno"><?php echo _("No");?></label>
 									</div>
 								</div>
@@ -69,9 +60,9 @@ $fmfm= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="panzoom"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="panzoom" id="panzoomyes" value="1" <?php echo ($panzoom?"CHECKED":"") ?>>
+										<input type="radio" name="panzoom" id="panzoomyes" value="1" <?php echo ($options['panzoom']?"CHECKED":"") ?>>
 										<label for="panzoomyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="panzoom" id="panzoomno" value="0" <?php echo ($panzoom?"":"CHECKED") ?>>
+										<input type="radio" name="panzoom" id="panzoomno" value="0" <?php echo ($options['panzoom']?"":"CHECKED") ?>>
 										<label for="panzoomno"><?php echo _("No");?></label>
 									</div>
 								</div>
@@ -96,9 +87,9 @@ $fmfm= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="horizontal"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="horizontal" id="horizontalyes" value="1" <?php echo ($horizontal?"CHECKED":"") ?>>
+										<input type="radio" name="horizontal" id="horizontalyes" value="1" <?php echo ($options['horizontal']?"CHECKED":"") ?>>
 										<label for="horizontalyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="horizontal" id="horizontalno" value="0" <?php echo ($horizontal?"":"CHECKED") ?>>
+										<input type="radio" name="horizontal" id="horizontalno" value="0" <?php echo ($options['horizontal']?"":"CHECKED") ?>>
 										<label for="horizontalno"><?php echo _("No");?></label>
 									</div>
 								</div>
@@ -123,9 +114,9 @@ $fmfm= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="destination"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="destination" id="destinationyes" value="1" <?php echo ($destinationColumn?"CHECKED":"") ?>>
+										<input type="radio" name="destination" id="destinationyes" value="1" <?php echo ($options['destination']?"CHECKED":"") ?>>
 										<label for="destinationyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="destination" id="destinationno" value="0" <?php echo ($destinationColumn?"":"CHECKED") ?>>
+										<input type="radio" name="destination" id="destinationno" value="0" <?php echo ($options['destination']?"":"CHECKED") ?>>
 										<label for="destinationno"><?php echo _("No");?></label>
 									</div>
 								</div>
@@ -150,13 +141,13 @@ $fmfm= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="combineQueueRing"></i>
 									</div>
 									<div class="col-md-9 radioset">
-											<input type="radio" name="combineQueueRing" id="combineQueueRingNone" value="0" <?php echo ($combineQueueRing == 0 ? "CHECKED" : ""); ?>>
+											<input type="radio" name="combineQueueRing" id="combineQueueRingNone" value="0" <?php echo ($options['combineQueueRing'] == 0 ? "CHECKED" : ""); ?>>
 											<label for="combineQueueRingNone"><?php echo _("None"); ?></label>
 
-											<input type="radio" name="combineQueueRing" id="combineQueueRingQueueRing" value="1" <?php echo ($combineQueueRing == 1 ? "CHECKED" : ""); ?>>
+											<input type="radio" name="combineQueueRing" id="combineQueueRingQueueRing" value="1" <?php echo ($options['combineQueueRing'] == 1 ? "CHECKED" : ""); ?>>
 											<label for="combineQueueRingQueueRing"><?php echo _("Queues and Ring Groups Only"); ?></label>
 
-											<input type="radio" name="combineQueueRing" id="combineQueueRingAll" value="2" <?php echo ($combineQueueRing == 2 ? "CHECKED" : ""); ?>>
+											<input type="radio" name="combineQueueRing" id="combineQueueRingAll" value="2" <?php echo ($options['combineQueueRing'] == 2 ? "CHECKED" : ""); ?>>
 											<label for="combineQueueRingAll"><?php echo _("All Destinations"); ?></label>
 									</div>
 								</div>
@@ -181,9 +172,9 @@ $fmfm= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="dynmembers"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="dynmembers" id="dynmembersyes" value="1" <?php echo ($dynmembers?"CHECKED":"") ?>>
+										<input type="radio" name="dynmembers" id="dynmembersyes" value="1" <?php echo ($options['dynmembers']?"CHECKED":"") ?>>
 										<label for="dynmembersyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="dynmembers" id="dynmembersno" value="0" <?php echo ($dynmembers?"":"CHECKED") ?>>
+										<input type="radio" name="dynmembers" id="dynmembersno" value="0" <?php echo ($options['dynmembers']?"":"CHECKED") ?>>
 										<label for="dynmembersno"><?php echo _("No");?></label>
 									</div>
 								</div>
@@ -208,9 +199,9 @@ $fmfm= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="fmfm"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="fmfm" id="fmfmyes" value="1" <?php echo ($fmfm?"CHECKED":"") ?>>
+										<input type="radio" name="fmfm" id="fmfmyes" value="1" <?php echo ($options['fmfm']?"CHECKED":"") ?>>
 										<label for="fmfmyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="fmfm" id="fmfmno" value="0" <?php echo ($fmfm?"":"CHECKED") ?>>
+										<input type="radio" name="fmfm" id="fmfmno" value="0" <?php echo ($options['fmfm']?"":"CHECKED") ?>>
 										<label for="fmfmno"><?php echo _("No");?></label>
 									</div>
 								</div>
@@ -235,9 +226,9 @@ $fmfm= isset($options[0]['fmfm']) ? $options[0]['fmfm'] : '0';
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="extOptional"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="extOptional" id="extOptionalyes" value="1" <?php echo ($extOptional?"CHECKED":"") ?>>
+										<input type="radio" name="extOptional" id="extOptionalyes" value="1" <?php echo ($options['extOptional']?"CHECKED":"") ?>>
 										<label for="extOptionalyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="extOptional" id="extOptionalno" value="0" <?php echo ($extOptional?"":"CHECKED") ?>>
+										<input type="radio" name="extOptional" id="extOptionalno" value="0" <?php echo ($options['extOptional']?"":"CHECKED") ?>>
 										<label for="extOptionalno"><?php echo _("No");?></label>
 									</div>
 								</div>
