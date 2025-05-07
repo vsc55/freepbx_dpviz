@@ -1,8 +1,7 @@
 <?php
-$options=options_gets();
+$options = \FreePBX::Dpviz()->getOptions();
 $panzoom= isset($options['panzoom']) ? $options['panzoom'] : '1';
 $destinationColumn= isset($options['destination']) ? $options['destination'] : '0';
-
 ?>
 <div id="toolbar-all">
 <h1>Inbound Routes</h1>
