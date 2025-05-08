@@ -31,10 +31,10 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 		}
 		
 		public function getRecording($id) {
-        $sql = "SELECT * FROM recordings where id=$id";
+        $sql = "SELECT * FROM recordings where id=$id LIMIT 1";
         $sth = $this->db->prepare($sql);
         $sth->execute();
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+        return $sth->fetch(\PDO::FETCH_ASSOC);
     }
     
     public function editDpviz($panzoom, $horizontal, $datetime, $destination, $dynmembers, $combineQueueRing, $extOptional, $fmfm) {
@@ -94,6 +94,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 				case 'check_update':
 				case 'make':
 				case 'getrecording':
+				case 'getfile':
 				return true;
 				break;
 			}
@@ -146,19 +147,23 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 										'vizButtons' => $buttons,
 										'vizHeader' => $header,
 										'gtext' => json_decode($gtext),
-										
-										//'vizReload' => $vizReload //debug
 								];
 								break;
 						
 						case 'getrecording':
 								$id = $_POST['id'];
-								$lang= $_POST['lang'];
 								$results = $this->getRecording($id);
+							
+								header('Content-Type: application/json');
+								echo json_encode([
+									'displayname' => $results['displayname'],
+									'filename' => $results['filename'],
+								]);
 								
-								include 'audio.php';
-
 								exit;
+							break;
+						case 'getfile':
+								include 'audio.php';
 							break;
 						default:
 								return ['status' => 'error', 'message' => 'Unknown command'];

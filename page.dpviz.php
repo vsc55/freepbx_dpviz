@@ -48,24 +48,18 @@ let highlightedEdges = new Set(); // Track highlighted edges
 				</ul>
 				<div class="tab-content display">
 					<div role="tabpanel" id="dpbox" class="tab-pane active">
+						<div id="vizSpinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; flex-direction: column; align-items: center; gap:10px;">
+							<div class="loader"></div>
+							<h3 class="spinner-text">Loading...</h3>
+						</div>
 						<div id="vizWrapper">
-							<div id="vizSpinner" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; flex-direction: column; align-items: center; gap:10px;">
-								<div class="loader"></div>
-								<h3>Loading...</h3>
-							</div>
+							
 							
 							<div id="overlay" onclick="closeModal()"></div>
 							<div id="recordingmodal">
 								<div id="recording-displayname"></div>
-								<br><br>
-								<audio id="audioPlayer" controls>
-									<source id="audioSource" src="" type="audio/wav">
-									Your browser does not support the audio element.
-								</audio>
-								<div id="recording-filename"></div>
-								<br>
-								<span id="recording-button"></span><button class="btn btn-default" style="float:right;" onclick="closeModal()">Close</button>
-								
+								<div id="audioList"></div>
+								<button class="btn btn-default" style="float:right;" onclick="closeModal()">Close</button>
 							</div>
 							
 							<div id="vizButtons"></div>

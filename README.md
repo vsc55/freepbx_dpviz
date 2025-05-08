@@ -50,7 +50,7 @@ fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/head
 - **Zoom** using the mouse wheel.
 
 ### Additional Features
-- **Listen** to recordings assigned to Announcement, Dynamic Route, IVR, and Play Recording modules. (**Note**: Supports .wav files only. Multi-part recordings are not supported at this time.)
+- **Listen** to recordings assigned to Announcement, Dynamic Route, IVR, and Play Recording modules. (**Note**: Supports multi-part and multi-language recordings. Only .wav files are supported for playback.)
 - **Hover** over a path to highlight the path between destinations.
 - **Click** on a destination to open it in a new tab.
 - **Click** on a "Match: (timegroup)" or "NoMatch" to open it in a new tab.

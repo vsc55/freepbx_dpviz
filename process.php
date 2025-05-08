@@ -587,8 +587,9 @@ $neons = [
 		if (!empty($dynrt['routes'])){
 			ksort($dynrt['routes']);
 			foreach ($dynrt['routes'] as $selid => $ent) {
+				$desc = isset($ent['description']) ? $ent['description'] : '';
 				
-				$route['parent_edge_label']= "  Match: ".sanitizeLabels($ent['selection'])."\n".sanitizeLabels($ent['description']);
+				$route['parent_edge_label']= "  Match: ".sanitizeLabels($ent['selection'])."\n".sanitizeLabels($desc);
 				$route['parent_node'] = $node;
 				dpp_follow_destinations($route, $ent['dest'].','.$lang.'','',$options);
 			}
@@ -597,7 +598,7 @@ $neons = [
 		if (isset($route['recordings'][$recID])){
 			$route['parent_node'] = $node;
 			$route['parent_edge_label']= ' Recording';
-			dpp_follow_destinations($route, 'play-system-recording,'.$recordingId.','.$lang.'','',$options);
+			dpp_follow_destinations($route, 'play-system-recording,'.$recordingId.',1,'.$lang.'','',$options);
 			
 		}
 		
@@ -1323,7 +1324,7 @@ $neons = [
 		if (!empty($route['customapps'])){
 			#custom destinations
 			foreach ($route['customapps'] as $entry) {
-				if ($entry['target'] === $destination) {
+				if ($entry['target'].','.$lang === $destination) {
 					$custDest=$entry;
 					break;
 				}

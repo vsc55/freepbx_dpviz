@@ -1,32 +1,32 @@
 $(document).ready(function() {
-	  //github update check
-    $('#check-update-btn').click(function() {
-        $('#update-result').html('<div style="margin-top: 10px;">Checking...</div>');
+	//github update check
+	$('#check-update-btn').click(function() {
+		$('#update-result').html('<div style="margin-top: 10px;">Checking...</div>');
 
-        $.ajax({
-            url: 'ajax.php?module=dpviz&command=check_update',
-            method: 'POST',
-            dataType: 'json',
-            
-            success: function(response) {
-                if (response.status === 'success') {
-                    if (response.up_to_date) {
-                        $('#update-result').html('<div style="margin-top: 10px;">You are up to date.</div>');
-                    } else {
-                        $('#update-result').html(
-                            '<a href="https://github.com/madgen78/dpviz/releases/latest" target="_blank" class="btn btn-default">' + response.latest + ' available! View on <i class="fa fa-github"></i> GitHub <i class="fa fa-external-link" aria-hidden="true"></i></a> ' +
-                            'Current installed version: ' + response.current + ' '
-                        );
-                    }
-                } else {
-                    $('#update-result').html('Error: ' + response.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                $('#update-result').html('AJAX error: ' + error);
-            }
-        });
-    });
+		$.ajax({
+			url: 'ajax.php?module=dpviz&command=check_update',
+			method: 'POST',
+			dataType: 'json',
+			
+			success: function(response) {
+				if (response.status === 'success') {
+					if (response.up_to_date) {
+						$('#update-result').html('<div style="margin-top: 10px;">You are up to date.</div>');
+					} else {
+						$('#update-result').html(
+							'<a href="https://github.com/madgen78/dpviz/releases/latest" target="_blank" class="btn btn-default">' + response.latest + ' available! View on <i class="fa fa-github"></i> GitHub <i class="fa fa-external-link" aria-hidden="true"></i></a> ' +
+							'Current installed version: ' + response.current + ' '
+						);
+					}
+				} else {
+						$('#update-result').html('Error: ' + response.message);
+				}
+			},
+			error: function(xhr, status, error) {
+					$('#update-result').html('AJAX error: ' + error);
+			}
+		});
+	});
 
 });
 
@@ -133,7 +133,7 @@ function generateVisualization(ext, cid, jump, pan) {
 										setTimeout(() => {
 											spinner.style.display = "none";
 											modal.style.display = 'block';
-										}, 250);
+										}, 750);
 									}
 								}
 								
@@ -205,7 +205,7 @@ function getRecording(titleid) {
 
 	const formData = new URLSearchParams();
 	formData.append('id', id);
-	formData.append('lang', lang);
+	//formData.append('lang', lang);
 
 	fetch('ajax.php?module=dpviz&command=getrecording', {
 		method: 'POST',
@@ -215,51 +215,114 @@ function getRecording(titleid) {
 		body: formData
 	})
 	.then(response => {
-		if (!response.ok) throw new Error("Audio not found, has multiple parts, or unreadable.");
-		
-		const displayname = response.headers.get('X-Displayname');
-		const filename = response.headers.get('X-Filename');
-		if (displayname) {
-			$('#recording-displayname').html(
-				 '<a href="config.php?display=recordings&action=edit&id='+id+'" style="float:right;" target="_blank" class="btn btn-default btn-lg"><i class="fa fa-bullhorn"></i> Recording: '+displayname+' <i class="fa fa-external-link" aria-hidden="true"></i></a> ' 
-			);
-		}
-		if (filename) {
-			document.getElementById('recording-filename').innerText = `Filename: ${filename}.wav`;
-		}
+    if (!response.ok) throw new Error("Failed to load recording info");
+    return response.json();
+  })
+  .then(async data => {
+  console.log("Display name:", data.displayname);
+  console.log("Filename(s):", data.filename);
 
-		return response.blob();
-	})
-	.then(blob => {
+  const filenames = data.filename.split('&');
+  const displayname = data.displayname;
+  const audioList = document.getElementById('audioList');
+  audioList.innerHTML = "";
+
+  $('#recording-displayname').html(
+    '<a href="config.php?display=recordings&action=edit&id=' + id + '" target="_blank" class="btn btn-default btn-lg">' +
+    '<i class="fa fa-bullhorn"></i> Recording: ' + displayname + 
+    ' <i class="fa fa-external-link" aria-hidden="true"></i></a>'
+  );
+
+  for (const filename of filenames) {
+  console.log("Fetching file:", filename);
+
+  try {
+    const response = await fetch('ajax.php?module=dpviz&command=getfile', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: `lang=${encodeURIComponent(lang)}&file=${encodeURIComponent(filename)}`
+    });
+
+    if (!response.ok) {
+      throw new Error(`Could not fetch ${filename}`);
+    }
+
+    const blob = await response.blob();
+		const headerFilename = response.headers.get('X-Filename');
 		const audioUrl = URL.createObjectURL(blob);
-		const audioSource = document.getElementById('audioSource');
-		const audioPlayer = document.getElementById('audioPlayer');
 
-		audioSource.src = audioUrl;
-		audioPlayer.style.display = 'block';
-		audioPlayer.load();
-	})
-	.catch(error => {
-		console.error("Error:", error);
-		document.getElementById('audioPlayer').style.display = 'none';
-		document.getElementById('recording-displayname').innerText = '';
-		document.getElementById('recording-filename').innerText = error.message;
-	});
+		const container = document.createElement('div');
+		container.classList.add('card', 'mb-4', 'custom-card-bg');  // Use Bootstrap card classes
+
+		// Create the card body
+		const cardBody = document.createElement('div');
+		cardBody.classList.add('card-body');
+
+		// Create the card title (Filename)
+		const cardTitle = document.createElement('h5');
+		cardTitle.classList.add('card-title', 'text-left');  // Align title to the left
+		cardTitle.textContent = `Audio: ${headerFilename}.wav`;  // Title for the card
+		cardBody.appendChild(cardTitle);
+
+		
+
+		// Create the audio player
+		const audio = document.createElement('audio');
+		audio.controls = true;
+		audio.src = audioUrl;
+		cardBody.appendChild(audio);
+
+		// Append the card body to the card container
+		container.appendChild(cardBody);
+
+		// Append the card container to the audio list
+		audioList.appendChild(container);
+  } catch (err) {
+    //console.error(err);
+
+    const container = document.createElement('div');
+    container.classList.add('recording-container', 'error');
+
+    const label = document.createElement('div');
+		label.classList.add('alert', 'alert-warning');
+		label.textContent = `File: ${lang}/${filename}.wav could not be found. To generate the file, simply go to the recording, select the "convert to" wav option, and click submit.`;
+
+    container.appendChild(label);
+    audioList.appendChild(container);
+  }
+}
+
+})
+  .catch(err => {
+    console.error("Fetch error:", err);
+  });
 }
 
 
-function closeModal() {	
-	const modal = document.getElementById('recordingmodal');
-	const overlay = document.getElementById('overlay');
-  modal.style.display = 'none';
-	overlay.style.display = 'none';
+document.addEventListener('play', function(e) {
+  const audios = document.querySelectorAll('audio');
+  audios.forEach(audio => {
+    if (audio !== e.target) {
+      audio.pause();
+    }
+  });
+}, true); // useCapture must be true to catch events during capture phase
 
-  // Stop and reset any audio inside the modal
-  const audio = modal.querySelector('audio');
-  if (audio) {
+
+function closeModal() {
+  const modal = document.getElementById('recordingmodal');
+  const overlay = document.getElementById('overlay');
+  modal.style.display = 'none';
+  overlay.style.display = 'none';
+
+  // Stop and reset all audio elements in the document
+  const allAudio = document.querySelectorAll('audio');
+  allAudio.forEach(audio => {
     audio.pause();
     audio.currentTime = 0;
-  }
+  });
 }
 
 
