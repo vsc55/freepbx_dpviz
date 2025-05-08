@@ -34,7 +34,7 @@ require_once 'graphviz/src/Alom/Graphviz/Subgraph.php';
 <?php
 
 //options
-$options=options_gets();
+$options=\FreePBX::Dpviz()->getOptions();
 $options['lang']='en'; //default lang
 
 $datetime = isset($options['datetime']) ? $options['datetime'] : '1';
@@ -48,7 +48,7 @@ function dpp_load_incoming_routes() {
     die_freepbx($results->getMessage()."<br><br>Error selecting from incoming");       
   }
 	
-	$routes = [];
+	$routes = array();
   // Store the routes in a hash indexed by the inbound number
   if (is_array($results)) {
     foreach ($results as $route) {
@@ -94,10 +94,10 @@ $dproute['extension'] = empty($dproute['extension']) ? 'ANY' : $dproute['extensi
 			dpp_follow_destinations($dproute, '', '',$options); #starts with empty destination
 		}
 		$gtext = $dproute['dpgraph']->render();
-		$gtext = str_replace(["\r\n", "\r", "\n"], "\\n", $gtext);
+		$gtext = str_replace(array("\r\n", "\r", "\n"), "\\n", $gtext);
 		$gtext=json_encode($gtext);
 		
-		if (is_numeric($ext) && in_array(strlen($ext), [10, 11, 12])) {
+		if (is_numeric($ext) && in_array(strlen($ext), array(10, 11, 12))) {
 			$number=formatPhoneNumbers($ext);
 		}elseif(empty($ext)){
 			$number='ANY';
@@ -209,23 +209,23 @@ $extOptional= isset($options['extOptional']) ? $options['extOptional'] : '0';
 $fmfmOption= isset($options['fmfm']) ? $options['fmfm'] : '0';
 $langOption= isset($options['lang']) ? $options['lang'] : 'en';
 
-  $pastels = [
+  $pastels = array(
     "#7979FF", "#86BCFF", "#8ADCFF", "#3DE4FC", "#5FFEF7", "#33FDC0",
     "#ed9581", "#81a6a2", "#bae1e7", "#eb94e2", "#f8d580", "#979291",
     "#92b8ef", "#ad8086", "#F7A8A8", "#C5A3FF", "#FFC3A0", "#FFD6E0",
     "#FFB3DE", "#D4A5A5", "#A5D4D4", "#F5C6EC", "#B5EAD7", "#C7CEEA",
     "#E0BBE4", "#FFDFD3", "#FEC8D8", "#D1E8E2", "#E8D1E1", "#EAD5DC",
     "#F9E79F", "#D6EAF8"
-];
+);
 
-$neons = [
+$neons = array(
     "#fe0000", "#fdfe02", "#0bff01", "#011efe", "#fe00f6",
     "#ff5f1f", "#ff007f", "#39ff14", "#ff073a", "#ffae00",
     "#08f7fe", "#ff44cc", "#ff6ec7", "#dfff00", "#32cd32",
     "#ccff00", "#ff1493", "#00ffff", "#ff00ff", "#ff4500",
     "#ff00aa", "#ff4c4c", "#7df9ff", "#adff2f", "#ff6347",
     "#ff66ff", "#f2003c", "#ffcc00", "#ff69b4", "#0aff02"
-];
+);
 	
 	$optional = preg_match('/^[ANY_xX+\d\[\]]+$/', $optional) ? '' : $optional;
   if (! isset ($route['dpgraph'])) {
@@ -430,11 +430,12 @@ $neons = [
 		#
   } elseif (preg_match("/^app-blackhole,(hangup|congestion|busy|zapateller|musiconhold|ring|no-service),(\d+)/", $destination, $matches)) {
 		$blackholetype = str_replace('musiconhold','Music On Hold',$matches[1]);
+		$blackholetype = ucwords(str_replace('-', ' ', $blackholetype));
 		$blackholeother = $matches[2];
 		$previousURL=$route['parent_node']->getAttribute('URL', '');
 
-		$node->attribute('label', 'Terminate Call: '.ucwords($blackholetype,'-'));
-		$node->attribute('tooltip', 'Terminate Call: '.ucwords($blackholetype,'-'));
+		$node->attribute('label', 'Terminate Call: '.$blackholetype);
+		$node->attribute('tooltip', 'Terminate Call: '.$blackholetype);
 		$node->attribute('URL', $previousURL);
     $node->attribute('target', '_blank');
 		$node->attribute('shape', 'invhouse');
@@ -1446,9 +1447,9 @@ function dpp_load_tables(&$dproute,$options) {
 	
 	
 	// Array of table names to check -not required
-	$tables = ['announcement','callrecording','daynight','directory_details','disa','dynroute','dynroute_dests','featurecodes','kvstore_FreePBX_modules_Calendar',
+	$tables = array('announcement','callrecording','daynight','directory_details','disa','dynroute','dynroute_dests','featurecodes','kvstore_FreePBX_modules_Calendar',
 							'kvstore_FreePBX_modules_Customappsreg','languages','meetme','miscdests','queueprio','queues_config','queues_details',
-							'ringgroups','setcid','timeconditions','timegroups_groups','timegroups_details','tts','vmblast','vmblast_groups'];
+							'ringgroups','setcid','timeconditions','timegroups_groups','timegroups_details','tts','vmblast','vmblast_groups');
 	
 	foreach ($tables as $table) {
     // Check if the table exists
@@ -1485,7 +1486,7 @@ function dpp_load_tables(&$dproute,$options) {
 		}elseif ($table == 'daynight') {
 				foreach($results as $daynight) {
 					$id = $daynight['ext'];
-					$dproute['daynight'][$id][] = $daynight;
+					$dproute['daynight'][$id]= array($daynight);
 					dpplog(9, "daynight=$id");
 				}
 		}elseif ($table == 'directory_details') {
@@ -1581,7 +1582,7 @@ function dpp_load_tables(&$dproute,$options) {
 						if (preg_match("/Local\/(\d+).*?,(\d+)/", $member, $matches)) {
 							$enum = $matches[1];
 							$pen= $matches[2];
-							$dproute['queues'][$id]['members']['static'][]=$enum;
+							$dproute['queues'][$id]['members']['static']=array($enum);
 						}
 					}else{
 						$dproute['queues'][$id]['data'][$qd['keyword']]=$qd['data'];
@@ -1599,7 +1600,7 @@ function dpp_load_tables(&$dproute,$options) {
 							list($ext, $pen) = explode(':', $enum);
 							$ext=trim($ext);
 							$pen=trim($pen);
-							$dproute['queues'][$id]['members']['dynamic'][]=$ext;
+							$dproute['queues'][$id]['members']['dynamic']=array($ext);
 						}
 					}
 				}
@@ -1654,7 +1655,7 @@ function dpp_load_tables(&$dproute,$options) {
 					foreach($results as $vmblastsGrp) {
 					$id = $vmblastsGrp['grpnum'];
 					dpplog(9, "vmblast:  vmblast=$id");
-					$dproute['vmblasts'][$id]['members'][] = $vmblastsGrp['ext'];
+					$dproute['vmblasts'][$id]['members']= array($vmblastsGrp['ext']);
 				}
 		}
 	}
@@ -1734,21 +1735,3 @@ function formatPhoneNumbers($phoneNumber) {
     // Return original if it doesn't fit expected pattern
     return $phoneNumber;
 }
-
-
-function options_gets() {
-	$row = \FreePBX::Dpviz()->getOptions();
-	$i = 0;
-	if(!empty($row) && is_array($row)) {
-		foreach ($row as $item) {
-			$row[$i] = $item;
-			$i++;
-		}
-		return $row;
-	} else {
-		return [];
-	}
-}
-?>
-
-
