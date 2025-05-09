@@ -1486,7 +1486,10 @@ function dpp_load_tables(&$dproute,$options) {
 		}elseif ($table == 'daynight') {
 				foreach($results as $daynight) {
 					$id = $daynight['ext'];
-					$dproute['daynight'][$id]= array($daynight);
+					if (!isset($dproute['daynight'][$id])) {
+							$dproute['daynight'][$id] = array();
+					}
+					$dproute['daynight'][$id][] = $daynight;
 					dpplog(9, "daynight=$id");
 				}
 		}elseif ($table == 'directory_details') {
@@ -1582,7 +1585,7 @@ function dpp_load_tables(&$dproute,$options) {
 						if (preg_match("/Local\/(\d+).*?,(\d+)/", $member, $matches)) {
 							$enum = $matches[1];
 							$pen= $matches[2];
-							$dproute['queues'][$id]['members']['static']=array($enum);
+							$dproute['queues'][$id]['members']['static'][]=$enum;
 						}
 					}else{
 						$dproute['queues'][$id]['data'][$qd['keyword']]=$qd['data'];
@@ -1600,7 +1603,7 @@ function dpp_load_tables(&$dproute,$options) {
 							list($ext, $pen) = explode(':', $enum);
 							$ext=trim($ext);
 							$pen=trim($pen);
-							$dproute['queues'][$id]['members']['dynamic']=array($ext);
+							$dproute['queues'][$id]['members']['dynamic'][]=$ext;
 						}
 					}
 				}
@@ -1655,7 +1658,7 @@ function dpp_load_tables(&$dproute,$options) {
 					foreach($results as $vmblastsGrp) {
 					$id = $vmblastsGrp['grpnum'];
 					dpplog(9, "vmblast:  vmblast=$id");
-					$dproute['vmblasts'][$id]['members']= array($vmblastsGrp['ext']);
+					$dproute['vmblasts'][$id]['members'][]=$vmblastsGrp['ext'];
 				}
 		}
 	}
