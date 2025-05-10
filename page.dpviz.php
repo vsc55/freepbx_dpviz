@@ -17,8 +17,6 @@ let svgContainer = null;
 let selectedNodeId = null;
 let originalLinks = new Map();
 let highlightedEdges = new Set(); // Track highlighted edges
-
-
 </script>
 <meta charset="UTF-8">
 <div class="container-fluid">

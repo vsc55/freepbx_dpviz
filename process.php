@@ -15,8 +15,6 @@ $cid  = isset($input['cid']) ? $input['cid'] : '';
 $jump = isset($input['jump']) ? $input['jump'] : '';
 
 $iroute = (empty($ext) && empty($cid)) ? 'ANY' : $ext . $cid;
-//$vizReload=$ext.','.$cid;
-
 
 // load graphviz library
 require_once 'graphviz/src/Alom/Graphviz/InstructionInterface.php';
@@ -29,13 +27,16 @@ require_once 'graphviz/src/Alom/Graphviz/Graph.php';
 require_once 'graphviz/src/Alom/Graphviz/Digraph.php';
 require_once 'graphviz/src/Alom/Graphviz/AttributeSet.php';
 require_once 'graphviz/src/Alom/Graphviz/Subgraph.php';
-?>
-
-<?php
 
 //options
 $options=\FreePBX::Dpviz()->getOptions();
-$options['lang']='en'; //default lang
+try{
+	$soundlang = FreePBX::create()->Soundlang;
+	$options['lang'] = $soundlang->getLanguage();
+}catch(\Exception $e){
+	freepbx_log(FPBX_LOG_ERROR,"Soundlang is missing, please install it."); 
+	$options['lang'] = "en";
+}
 
 $datetime = isset($options['datetime']) ? $options['datetime'] : '1';
 $panzoom = isset($options['panzoom']) ? $options['panzoom'] : '1';
@@ -187,9 +188,7 @@ $header.='
 							exportImage(scale, filename + \'.png\');
 					}
 					
-					
 				</script>';
-
 	}
 
 #
@@ -496,6 +495,7 @@ $neons = array(
 		$callrecOther = $matches[2];
 		$callRec = $route['callrecording'][$callrecID];
 		$callMode= ucfirst($callRec['callrecording_mode']);
+		$callMode = str_replace("Dontcare", "Don't Care", $callMode);
 		
 		$node->attribute('label', "Call Recording: ".sanitizeLabels($callRec['description'])."\nMode: ".$callMode);
 		$node->attribute('URL', htmlentities('/admin/config.php?display=callrecording&view=form&extdisplay='.$callrecID));
@@ -603,7 +603,7 @@ $neons = array(
 			
 		}
 		
-		//are the invalid and timeout destinations the same?
+		//are the invalid and default destinations the same?
 		if ($dynrt['invalid_dest']==$dynrt['default_dest']){
 			 $route['parent_edge_label']= ' Invalid Input, Default ('.$dynrt['timeout'].' secs)';
 			 $route['parent_node'] = $node;

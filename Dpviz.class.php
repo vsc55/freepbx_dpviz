@@ -25,13 +25,6 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         return $sth->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function getRecording($id) {
-        $sql = "SELECT * FROM recordings WHERE id=" . intval($id) . " LIMIT 1";
-        $sth = $this->db->prepare($sql);
-        $sth->execute();
-        return $sth->fetch(\PDO::FETCH_ASSOC);
-    }
-
     public function editDpviz($panzoom, $horizontal, $datetime, $destination, $dynmembers, $combineQueueRing, $extOptional, $fmfm) {
         $sql = "UPDATE dpviz SET
             `panzoom` = :panzoom,
@@ -139,9 +132,13 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
             case 'getrecording':
                 $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
-                $results = $this->getRecording($id);
+								$fpbxResults= \FreePBX::Recordings()->getRecordingById($id);
+								$lang=$_POST['lang'];
+								include 'audio.php';
+								
                 header('Content-Type: application/json');
                 echo json_encode(array(
+										//'displayname' => $audiolist,
                     'displayname' => $results['displayname'],
                     'filename' => $results['filename']
                 ));
