@@ -60,7 +60,7 @@ let highlightedEdges = new Set(); // Track highlighted edges
 								<button class="btn btn-default" style="float:right;" onclick="closeModal()">Close</button>
 							</div>
 							
-							<div id="vizButtons"></div>
+							<div id="vizButtons" style="position: sticky; top:50px;"></div>
 							<div id="vizContainer" class="display full-border" style="min-height: 65vh;"><p><strong>Inbound Route Not Selected</strong><br>Use the menu on the right to choose an inbound route.</p></div>
 						</div>
 					</div>

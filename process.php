@@ -428,7 +428,10 @@ $neons = array(
 		# Blackhole
 		#
   } elseif (preg_match("/^app-blackhole,(hangup|congestion|busy|zapateller|musiconhold|ring|no-service),(\d+)/", $destination, $matches)) {
-		$blackholetype = str_replace('musiconhold','Music On Hold',$matches[1]);
+		$blackholetype = $matches[1];
+		$blackholetype = str_replace('musiconhold','Music On Hold',$blackholetype);
+		$blackholetype = str_replace('ring','Play Ringtones',$blackholetype);
+		$blackholetype = str_replace('no-service','Play No Service Message',$blackholetype);
 		$blackholetype = ucwords(str_replace('-', ' ', $blackholetype));
 		$blackholeother = $matches[2];
 		$previousURL=$route['parent_node']->getAttribute('URL', '');
@@ -604,7 +607,7 @@ $neons = array(
 		}
 		
 		//are the invalid and default destinations the same?
-		if ($dynrt['invalid_dest']==$dynrt['default_dest']){
+		if ($dynrt['invalid_dest'] != '' && $dynrt['invalid_dest']==$dynrt['default_dest']){
 			 $route['parent_edge_label']= ' Invalid Input, Default ('.$dynrt['timeout'].' secs)';
 			 $route['parent_node'] = $node;
 			 dpp_follow_destinations($route, $dynrt['invalid_dest'].','.$lang.'','',$options);
@@ -635,15 +638,19 @@ $neons = array(
 			$extemail= $extension['email'];
 			$extemail= str_replace("|",",\n",$extemail);
 			
-			if ($extension['fmfm']['ddial']=='DIRECT'){
-				$fmfmLabel="FMFM Enabled\nInitial Ring Time=".secondsToTimes($extension['fmfm']['prering'])."\nRing Time=".secondsToTimes($extension['fmfm']['grptime'])."\nConfirm Calls=".$extension['fmfm']['grpconf'];
+			if (isset($extension['fmfm'])){
+				if ($extension['fmfm']['ddial']=='DIRECT'){
+					$fmfmLabel="\nFMFM Enabled\nInitial Ring Time=".secondsToTimes($extension['fmfm']['prering'])."\nRing Time=".secondsToTimes($extension['fmfm']['grptime'])."\nConfirm Calls=".$extension['fmfm']['grpconf'];
+				}else{
+					$fmfmLabel="\nFMFM Disabled";
+				}
 			}else{
-				$fmfmLabel="FMFM Disabled";
+				$fmfmLabel='';
 			}
 			
 			
 			$node->attribute('label', 'Extension: '.$extnum.' '.sanitizeLabels($extname)."\n".sanitizeLabels($extemail));
-			$node->attribute('tooltip', $node->getAttribute('label')."\n".$fmfmLabel);
+			$node->attribute('tooltip', $node->getAttribute('label').$fmfmLabel);
 			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$extnum));
 			$node->attribute('target', '_blank');
 			
@@ -1636,7 +1643,7 @@ function dpp_load_tables(&$dproute,$options) {
 						if (!isset($dproute['timegroups'][$id]['time'])){$dproute['timegroups'][$id]['time']="";}
 						$exploded=explode("|",$tgd['time']); 
 						if ($exploded[0]!=="*"){$time=$exploded[0];}else{$time="";}
-						if ($exploded[1]!=="*"){$dow=ucwords($exploded[1],"-").", ";}else{$dow="";}
+						if ($exploded[1]!== "*"){$dow_parts = explode("-", $exploded[1]);foreach ($dow_parts as &$part) {$part = ucfirst($part);}$dow = implode("-", $dow_parts) . ", ";} else {$dow = "";}
 						if ($exploded[2]!=="*"){$date=$exploded[2]." ";}else{$date="";}
 						if ($exploded[3]!=="*"){$month=ucfirst($exploded[3])." ";}else{$month="";}
 
