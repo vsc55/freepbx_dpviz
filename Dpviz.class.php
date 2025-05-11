@@ -321,16 +321,6 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         return $data_return;
     }
 
-    // public function getRightNav($request, $params = array())
-    // {
-    //     $data = array(
-    //         'request'  => $request,
-    //         'url_ajax' => 'ajax.php?module=core&amp;command=getJSON&amp;jdata=allDID'
-    //     );
-    //     $data = array_merge($data, $params);
-    //     return load_view(__DIR__.'/views/rnav.php', $data);
-    // }
-
     public function ajaxRequest($req, &$setting)
     {
         // ** Allow remote consultation with Postman, debugging, etc. **
