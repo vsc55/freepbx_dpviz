@@ -15,26 +15,26 @@ class DestinationTimeconditions extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $tcnum   = $matches[1];
-        $tcother = $matches[2];
-        $tc      = $route['timeconditions'][$tcnum];
+        $tcnum     = $matches[1];
+        $tcother   = $matches[2];
+        $tc        = $route['timeconditions'][$tcnum];
+        $label     = sprintf(_("TC: %s"), $tc['displayname']);
+        $tcTooltip = sprintf(_("%s\\nMode= %s"), $tc['displayname'], $tc['mode']);
 
-        $tcTooltip  = sprintf(_("%s\\nMode= %s"), $tc['displayname'], $tc['mode']);
         if (!empty($tc['timezone']))
         {
             $tcTooltip .= ($tc['timezone'] !== 'default') ? sprintf(_("\\nTimezone= %s"), $tc['timezone']) : _("Undefined");
         }
 
-        $label     = $this->sanitizeLabels(sprintf(_("TC: %s"), $tc['displayname']));
-        $tcTooltip = $this->sanitizeLabels($tcTooltip);
-
-        $node->attribute('label', $label);
-        $node->attribute('tooltip', $tcTooltip);
-        $node->attribute('URL', htmlentities('/admin/config.php?display=timeconditions&view=form&itemid='.$tcnum));
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'invhouse');
-        $node->attribute('fillcolor', 'dodgerblue');
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'tooltip'   => $tcTooltip,
+            'URL'       => htmlentities('/admin/config.php?display=timeconditions&view=form&itemid='.$tcnum),
+            'target'    => '_blank',
+            'shape'     => 'invhouse',
+            'fillcolor' => 'dodgerblue',
+            'style'     => 'filled',
+        ]);
 
         $tgLabel   = '';
         $tgLink    = '';
@@ -84,22 +84,17 @@ class DestinationTimeconditions extends baseDestinations
         }
 
         # Now set the current node to be the parent and recurse on both the true and false branches
-        // $route['parent_node']              = $node;
-        // $route['parent_edge_label']        = $this->dpp->sanitizeLabels(sprintf(_(" Match:\\n%s"), $tgLabel));
         $route['parent_edge_url']          = htmlentities($tgLink);
         $route['parent_edge_target']       = '_blank';
         $route['parent_edge_labeltooltip'] = $this->dpp->sanitizeLabels(sprintf(_(" Match:\\n%s"), $tgTooltip));
+        $this->findNextDestination($route, $node, $tc['truegoto'],
+            sprintf(_(" Match:\\n%s"), $tgLabel)
+        );
 
-        // $this->dpp->followDestinations($route, sprintf("%s,%s", $tc['truegoto'], $lang), '');
-        $this->findNextDestination($route, $node, $tc['truegoto'], sprintf(_(" Match:\\n%s"), $tgLabel));
 
-        // $route['parent_node']              = $node;
-        // $route['parent_edge_label']        = _(" No Match");
         $route['parent_edge_url']          = htmlentities($tgLink);
         $route['parent_edge_target']       = '_blank';
         $route['parent_edge_labeltooltip'] = $this->sanitizeLabels(sprintf(_(" No Match:\\n%s"), $tgTooltip));
-
-        // $this->dpp->followDestinations($route, sprintf("%s,%s", $tc['falsegoto'], $lang), '');
         $this->findNextDestination($route, $node, $tc['falsegoto'], _(" No Match"));
     }
 }

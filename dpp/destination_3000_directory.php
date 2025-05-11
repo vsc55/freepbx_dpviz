@@ -19,23 +19,20 @@ class DestinationDirectory extends baseDestinations
         $directoryother = $matches[2];
         $directory      = $route['directory'][$directorynum];
 
-        $label          = $this->sanitizeLabels(sprintf(_("Directory: %s"), $directory['dirname']));
+        $label          = sprintf(_("Directory: %s"), $directory['dirname']);
 
-        $node->attribute('label', $label);
-        $node->attribute('URL', $this->genUrlConfig('directory', $directorynum)); //'/admin/config.php?display=directory&view=form&id='.$directorynum
-        $node->attribute('target', '_blank');
-        $node->attribute('fillcolor', self::pastels[9]);
-        $node->attribute('shape', 'folder');
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'URL'       => $this->genUrlConfig('directory', $directorynum), //'/admin/config.php?display=directory&view=form&id='.$directorynum
+            'target'    => '_blank',
+            'fillcolor' => self::pastels[9],
+            'shape'     => 'folder',
+            'style'     => 'filled'
+        ]);
 
         if ($directory['invalid_destination'] != '')
         {
             $this->findNextDestination($route, $node, $directory['invalid_destination'], _(" Invalid Input"));
-
-            // $route['parent_node']       = $node;
-            // $route['parent_edge_label'] = _(" Invalid Input");
-
-            // $this->dpp->followDestinations($route, $this->applyLanguage($directory['invalid_destination']), '');
         }
     }
 }

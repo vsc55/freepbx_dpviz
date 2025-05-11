@@ -20,24 +20,21 @@ class DestinationCustoDestinations extends baseDestinations
         $custId     = $matches[1];
 		$custDest   = $route['customapps'][$custId];
 		$custReturn = ($custDest['destret'] == 1) ? _("Yes") : _("No");
-		$label      = $this->sanitizeLabels(sprintf(_("Cust Dest: %s\\nTarget:%s\\nReturn: %s\\n"), $custDest['description'], $custDest['target'], $custReturn));
+		$label      = sprintf(_("Cust Dest: %s\\nTarget:%s\\nReturn: %s\\n"), $custDest['description'], $custDest['target'], $custReturn);
 
-		$node->attribute('label', $label);
-		$node->attribute('tooltip', $label);
-		$node->attribute('URL', htmlentities('/admin/config.php?display=customdests&view=form&destid='.$custId));
-		$node->attribute('target', '_blank');
-		$node->attribute('shape', 'component');
-		$node->attribute('fillcolor', self::pastels[27]);
-		$node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'tooltip'   => $label,
+            'URL'       => htmlentities('/admin/config.php?display=customdests&view=form&destid='.$custId),
+            'target'    => '_blank',
+            'shape'     => 'component',
+            'fillcolor' => self::pastels[27],
+            'style'     => 'filled',
+        ]);
 
 		if ($custDest['destret'])
         {
             $this->findNextDestination($route, $node, $custDest['dest'], _(' Return'));
-
-            // $route['parent_node']       = $node;
-			// $route['parent_edge_label'] = _(' Return');
-
-            // $this->dpp->followDestinations($route, sprintf("%s,%s", $custDest['dest'], $lang), '');
 		}
     }
 }

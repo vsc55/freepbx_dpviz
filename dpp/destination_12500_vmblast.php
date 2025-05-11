@@ -19,25 +19,25 @@ class DestinationVmblast extends baseDestinations
         $vmblastother = $matches[2];
         $vmblast      = $route['vmblasts'][$vmblastnum];
 
-        $label = $this->sanitizeLabels(sprintf(_("VM Blast: %s %s"), $vmblastnum , $vmblast['description']));
+        $label = sprintf(_("VM Blast: %s %s"), $vmblastnum , $vmblast['description']);
 
-        $node->attribute('label', $label);
-        $node->attribute('URL', $this->genUrlConfig('vmblast', $vmblastnum)); // '/admin/config.php?display=vmblast&view=form&extdisplay='.$vmblastnum
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'folder');
-        $node->attribute('fillcolor', 'gainsboro');
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'URL'       => $this->genUrlConfig('vmblast', $vmblastnum), //'/admin/config.php?display=vmblast&view=form&extdisplay='.$vmblastnum
+            'target'    => '_blank',
+            'shape'     => 'folder',
+            'fillcolor' => 'gainsboro',
+            'style'     => 'filled',
+        ]);
 
         if (!empty($vmblast['members']))
         {
             foreach ($vmblast['members'] as $member)
             {
-                $this->findNextDestination($route, $node, sprintf('vmblast-mem,%s', $member), '');
-
-                // $route['parent_node']       = $node;
-                // $route['parent_edge_label'] = '';
-
-                // $this->dpp->followDestinations($route, sprintf('vmblast-mem,%s', $member), '');
+                $this->findNextDestination($route, $node,
+                    sprintf('vmblast-mem,%s', $member),
+                    ''
+                );
             }
         }
     }

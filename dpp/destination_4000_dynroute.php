@@ -18,6 +18,7 @@ class DestinationDynroute extends baseDestinations
         $dynnum       = $matches[1];
         $dynrt        = $route['dynroute'][$dynnum];
         $recID        = $dynrt['announcement_id'];
+        $announcement = _("None");
 
         if (isset($route['recordings'][$recID]))
         {
@@ -25,34 +26,27 @@ class DestinationDynroute extends baseDestinations
 			$announcement = $recording['displayname'];
 			$recordingId  = $recording['id'];
 		}
-        else
-        {
-			$announcement = _("None");
-		}
 
-        $label = $this->sanitizeLabels(sprintf(_("DYN: %s\\nAnnouncement: %s"), $dynrt['name'], $announcement));
+        $label = sprintf(_("DYN: %s\\nAnnouncement: %s"), $dynrt['name'], $announcement);
 
-        $node->attribute('label', $label);
-        $node->attribute('tooltip', $label);
-        $node->attribute('URL', htmlentities('/admin/config.php?display=dynroute&action=edit&id='.$dynnum));
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'component');
-        $node->attribute('fillcolor', self::pastels[12]);
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'tooltip'   => $label,
+            'URL'       => htmlentities('/admin/config.php?display=dynroute&action=edit&id='.$dynnum),
+            'target'    => '_blank',
+            'shape'     => 'component',
+            'fillcolor' => self::pastels[12],
+            'style'     => 'filled'
+        ]);
 
         if (!empty($dynrt['routes']))
         {
             ksort($dynrt['routes']);
             foreach ($dynrt['routes'] as $selid => $ent)
             {
-                $desc = isset($ent['description']) ? $ent['description'] : '';
-
-                $this->findNextDestination($route, $node, $ent['dest'], sprintf(_("  Match: %s\\n%s"), $ent['selection'], $desc));
-
-                // $route['parent_node']       = $node;
-                // $route['parent_edge_label'] = $this->dpp->sanitizeLabels(sprintf(_("  Match: %s\\n%s"), $ent['selection'], $desc));
-
-                // $this->dpp->followDestinations($route, $ent['dest'], '');
+                $this->findNextDestination($route, $node, $ent['dest'],
+                    sprintf(_("  Match: %s\\n%s"), $ent['selection'], isset($ent['description']) ? $ent['description'] : '')
+                );
             }
         }
 
@@ -60,38 +54,26 @@ class DestinationDynroute extends baseDestinations
         {
             $dest = sprintf("play-system-recording,%s,1", $recordingId);
             $this->findNextDestination($route, $node, $dest, _(" Recording"));
-			// $route['parent_node']       = $node;
-			// $route['parent_edge_label'] = _(" Recording");
-
-            // $this->dpp->followDestinations($route, $this->applyLanguage(sprintf("play-system-recording,%s,1", $recordingId)), '');
 		}
 
         //are the invalid and timeout destinations the same?
         if ($dynrt['invalid_dest'] != '' && $dynrt['invalid_dest'] == $dynrt['default_dest'])
         {
-            $this->findNextDestination($route, $node, $dynrt['invalid_dest'], sprintf(_(" Invalid Input, Default (%s secs)"), $dynrt['timeout']));
-            // $route['parent_node']       = $node;
-            // $route['parent_edge_label'] = sprintf(_(" Invalid Input, Default (%s secs)"), $dynrt['timeout']);
-
-            // $this->dpp->followDestinations($route, $this->applyLanguage($dynrt['invalid_dest']), '');
+            $this->findNextDestination($route, $node, $dynrt['invalid_dest'],
+                sprintf(_(" Invalid Input, Default (%s secs)"), $dynrt['timeout'])
+            );
         }
         else
         {
             if ($dynrt['invalid_dest'] != '')
             {
                 $this->findNextDestination($route, $node, $dynrt['invalid_dest'], _(" Invalid Input"));
-                // $route['parent_node']       = $node;
-                // $route['parent_edge_label'] = _(" Invalid Input");
-
-                // $this->dpp->followDestinations($route, $this->applyLanguage($dynrt['invalid_dest']), '');
             }
             if ($dynrt['default_dest'] != '')
             {
-                $this->findNextDestination($route, $node, $dynrt['default_dest'], sprintf(_(" Default (%s secs)"), $dynrt['timeout']));
-                // $route['parent_node']       = $node;
-                // $route['parent_edge_label'] = sprintf(_(" Default (%s secs)"), $dynrt['timeout']);
-
-                // $this->dpp->followDestinations($route, $this->applyLanguage($dynrt['default_dest']), '');
+                $this->findNextDestination($route, $node, $dynrt['default_dest'],
+                    sprintf(_(" Default (%s secs)"), $dynrt['timeout'])
+                );
             }
         }
     }

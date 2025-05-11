@@ -19,25 +19,22 @@ class DestinationTts extends baseDestinations
         $ttsother   = $matches[2];
         $tts        = $route['tts'][$ttsnum];
 
-        $ttsLabel   = $this->sanitizeLabels(sprintf(_("TTS: %s"), $tts['name']));
-        $ttsTooltip = $this->sanitizeLabels(sprintf(_("Engine: %s\\nDesc: %s"), $tts['engine'], $tts['text']));
+        $ttsLabel   = sprintf(_("TTS: %s"), $tts['name']);
+        $ttsTooltip = sprintf(_("Engine: %s\\nDesc: %s"), $tts['engine'], $tts['text']);
 
-        $node->attribute('label', $ttsLabel);
-        $node->attribute('tooltip', $ttsTooltip);
-        $node->attribute('URL', htmlentities('/admin/config.php?display=tts&view=form&id='.$ttsnum));
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'note');
-        $node->attribute('fillcolor', self::pastels[6]);
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $ttsLabel,
+            'tooltip'   => $ttsTooltip,
+            'URL'       => htmlentities('/admin/config.php?display=tts&view=form&id='.$ttsnum),
+            'target'    => '_blank',
+            'shape'     => 'note',
+            'fillcolor' => self::pastels[6],
+            'style'     => 'filled',
+        ]);
 
         if ($tts['goto'] != '')
         {
             $this->findNextDestination($route, $node, $tts['goto'], _(" Continue"));
-
-            // $route['parent_node']       = $node;
-            // $route['parent_edge_label'] = _(" Continue");
-
-            // $this->dpp->followDestinations($route, sprintf("%s,%s", $tts['goto'], $lang), '');
         }
     }
 }

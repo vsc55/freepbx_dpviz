@@ -21,7 +21,7 @@ class DestinationCustom extends baseDestinations
             $custDest = null;
             foreach ($route['customapps'] as $entry)
             {
-                if (sprintf("%s,%s", $entry['target'], $lang) === $destination)
+                if (sprintf("%s,%s", $entry['target'], $this->lang) === $destination)
                 {
                     $custDest = $entry;
                     break;
@@ -34,34 +34,31 @@ class DestinationCustom extends baseDestinations
         {
 			$custId     = $custDest['destid'];
 			$custReturn = ($custDest['destret'] == 1) ? _("Yes") : _("No");
-            $label      = $this->sanitizeLabels(sprintf(_("Cust Dest: %s\\nTarget: %s\\nReturn: %s\\n"), $entry['description'], $entry['target'], $custReturn));
+            $label      = sprintf(_("Cust Dest: %s\\nTarget: %s\\nReturn: %s\\n"), $entry['description'], $entry['target'], $custReturn);
 
-            $node->attribute('label', $label);
-            $node->attribute('tooltip', $label);
-
-            $node->attribute('URL', htmlentities('/admin/config.php?display=customdests&view=form&destid='.$custId));
-            $node->attribute('target', '_blank');
-            $node->attribute('shape', 'component');
-            $node->attribute('fillcolor', self::pastels[27]);
-            $node->attribute('style', 'filled');
+            $this->updateNodeAttribute($node, [
+                'label'     => $label,
+                'tooltip'   => $label,
+                'URL'       => htmlentities('/admin/config.php?display=customdests&view=form&destid='.$custId),
+                'target'    => '_blank',
+                'shape'     => 'component',
+                'fillcolor' => self::pastels[27],
+                'style'     => 'filled',
+            ]);
 
             if ($custDest['destret'])
             {
                 $this->findNextDestination($route, $node, $custDest['dest'], _(' Return'));
-
-                // $route['parent_node']       = $node;
-				// $route['parent_edge_label'] = _(' Return');
-
-                // $this->dpp->followDestinations($route, sprintf("%s,%s", $custDest['dest'], $lang), '');
 			}
         }
         else
         {
             $this->log(1, sprintf(_("Unknown destination type: %s"), $destination));
-
-            $node->attribute('fillcolor', self::pastels[12]);
-            $node->attribute('label', $this->dpp->sanitizeLabels($destination));
-            $node->attribute('style', 'filled');
+            $this->updateNodeAttribute($node, [
+                'label'     => $destination,
+                'fillcolor' => self::pastels[12],
+                'style'    => 'filled',
+            ]);
         }
     }
 }

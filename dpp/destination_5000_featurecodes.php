@@ -17,21 +17,23 @@ class DestinationFeaturecodes extends baseDestinations
     {
         $featurenum   = $matches[1];
         $featureother = $matches[2];
-        $feature      = $route['featurecodes'][$featurenum];
+        $feature      = $route['featurecodes'][$featurenum] ?? [];
 
         if ($feature['customcode'] != '')
         {
             $featurenum = $feature['customcode'];
         }
 
-        $lable = $this->sanitizeLabels(sprintf(_("Feature Code: %s <%s>"), $feature['description'], $featurenum));
+        $lable = sprintf(_("Feature Code: %s <%s>"), $feature['description'], $featurenum);
 
-        $node->attribute('label', $lable);
-        $node->attribute('tooltip', $lable);
-        $node->attribute('URL', htmlentities('/admin/config.php?display=featurecodeadmin'));
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'folder');
-        $node->attribute('fillcolor', 'gainsboro');
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $lable,
+            'tooltip'   => $lable,
+            'URL'       => htmlentities('/admin/config.php?display=featurecodeadmin'),
+            'target'    => '_blank',
+            'shape'     => 'folder',
+            'fillcolor' => 'gainsboro',
+            'style'     => 'filled',
+        ]);
     }
 }

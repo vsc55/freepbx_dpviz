@@ -17,22 +17,23 @@ class DestinationBlackhole extends baseDestinations
     {
         # The destination is in the form of app-blackhole-<type>,<num>
 
-        $blackholetype = $matches[1];
-		$blackholetype = str_replace('musiconhold', _("Music On Hold"), $blackholetype);
-		$blackholetype = str_replace('ring', _("Play Ringtones"), $blackholetype);
-		$blackholetype = str_replace('no-service', _("Play No Service Message"), $blackholetype);
-		$blackholetype = ucwords(str_replace('-', ' ', $blackholetype));
+        $blackholetype  = $matches[1];
+		$blackholetype  = str_replace('musiconhold', _("Music On Hold"), $blackholetype);
+		$blackholetype  = str_replace('ring', _("Play Ringtones"), $blackholetype);
+		$blackholetype  = str_replace('no-service', _("Play No Service Message"), $blackholetype);
+		$blackholetype  = ucwords(str_replace('-', ' ', $blackholetype));
         $blackholeother = $matches[2];
 
-        $labal          = $this->sanitizeLabels(sprintf(_("Terminate Call: %s"), $blackholetype));
-        $previousURL    = $route['parent_node']->getAttribute('URL', '');
+        $labal          = sprintf(_("Terminate Call: %s"), $blackholetype);
 
-        $node->attribute('label', $labal);
-        $node->attribute('tooltip', $labal);
-        $node->attribute('URL', $previousURL);
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'invhouse');
-        $node->attribute('fillcolor', 'orangered');
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $labal,
+            'tooltip'   => $labal,
+            'URL'       => $route['parent_node']->getAttribute('URL', ''),
+            'target'    => '_blank',
+            'shape'     => 'invhouse',
+            'fillcolor' => 'orangered',
+            'style'     => 'filled'
+        ]);
     }
 }

@@ -20,14 +20,16 @@ class DestinationTrunk extends baseDestinations
         $trunk_tech     = $route['trunk'][$trunk_id]['tech'];
         $trunk_name     = $route['trunk'][$trunk_id]['name'];
 
-        $label = $this->sanitizeLabels(sprintf(_("Trunk (%s): %s"), $trunk_tech, $trunk_name));
+        $label = sprintf(_("Trunk (%s): %s"), $trunk_tech, $trunk_name);
 
-        $node->attribute('label', $label);
-        $node->attribute('tooltip', $label);
-        $node->attribute('URL', htmlentities(sprintf('/admin/config.php?display=trunks&tech=%s&extdisplay=OUT_%s', $trunk_tech, $trunk_id)));
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'note');
-        $node->attribute('fillcolor', 'oldlace');
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'tooltip'   => $label,
+            'URL'       => htmlentities(sprintf('/admin/config.php?display=trunks&tech=%s&extdisplay=OUT_%s', $trunk_tech, $trunk_id)),
+            'target'    => '_blank',
+            'shape'     => 'note',
+            'fillcolor' => 'oldlace',
+            'style'     => 'filled',
+        ]);
     }
 }

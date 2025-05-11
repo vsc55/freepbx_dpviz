@@ -20,25 +20,21 @@ class DestinationQueuePriorities extends baseDestinations
         $queueprioIDOther = $matches[2];
         $queueprio        = $route['queueprio'][$queueprioID];
 
+        $label            = sprintf(_("Queue Priorities: %s\\nPriority: %s"), $queueprio['description'], $queueprio['queue_priority']);
 
-        $label= $this->sanitizeLabels(sprintf(_("Queue Priorities: %s\\nPriority: %s"), $queueprio['description'], $queueprio['queue_priority']));
-
-        $node->attribute('label', $label);
-        $node->attribute('tooltip', $label);
-        $node->attribute('URL', $this->genUrlConfig('queueprio', $queueprioID)); // '/admin/config.php?display=queueprio&view=form&extdisplay='.$queueprioID
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'rect');
-        $node->attribute('fillcolor', self::pastels[16]);
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'tooltip'   => $label,
+            'URL'       => $this->genUrlConfig('queueprio', $queueprioID), //'/admin/config.php?display=queueprio&view=form&extdisplay='.$queueprioID
+            'target'    => '_blank',
+            'shape'     => 'rect',
+            'fillcolor' => self::pastels[16],
+            'style'     => 'filled',
+        ]);
 
         if ($queueprio['dest'] != '')
         {
             $this->findNextDestination($route, $node, $queueprio['dest'], _(" Continue"));
-
-            // $route['parent_node']       = $node;
-            // $route['parent_edge_label'] = _(" Continue");
-
-            // $this->dpp->follow_destinations($route, sprintf("%s,%s", $queueprio['dest'], $lang), '');
         }
     }
 }

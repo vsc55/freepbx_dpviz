@@ -40,13 +40,15 @@ class DestinationFromDidDirect extends baseDestinations
                 }
             }
 
-            $label        = $this->sanitizeLabels(sprintf(_("Extension: %s %s\\n%s"), $extnum, $extname, $extemail));
-            $labeltooltip = $this->sanitizeLabels(sprintf('%s%s', $label, $fmfmLabel));
+            $label        = sprintf(_("Extension: %s %s\\n%s"), $extnum, $extname, $extemail);
+            $labeltooltip = sprintf('%s%s', $label, $fmfmLabel);
 
-            $node->attribute('label', $label);
-            $node->attribute('tooltip', $labeltooltip);
-            $node->attribute('URL', $this->genUrlConfig('extensions', $extnum, null)); //'/admin/config.php?display=extensions&extdisplay='.$extnum
-            $node->attribute('target', '_blank');
+            $this->updateNodeAttribute($node, [
+                'label'     => $label,
+                'tooltip'   => $labeltooltip,
+                'URL'       => $this->genUrlConfig('extensions', $extnum, null), //'/admin/config.php?display=extensions&extdisplay='.$extnum
+                'target'    => '_blank',
+            ]);
 
             if (isset($extension['fmfm']) && $fmfmOption)
             {
@@ -55,22 +57,18 @@ class DestinationFromDidDirect extends baseDestinations
                     $grplist = preg_split("/-/", $extension['fmfm']['grplist']);
                     foreach ($grplist as $g)
                     {
-                        $follow = sprintf('from-did-direct,%s,1', str_replace('#', '', trim($g)));
-                        $this->findNextDestination($route, $node, $follow, sprintf(_(" FMFM (%s)"), $this->dpp->secondsToTimes($extension['fmfm']['prering'])));
-
-                        // $route['parent_node']       = $node;
-                        // $route['parent_edge_label'] = sprintf(_(" FMFM (%s)"), $this->dpp->secondsToTimes($extension['fmfm']['prering']));
-
-                        // $this->dpp->followDestinations($route, $this->applyLanguage($follow), '');
+                        $this->findNextDestination($route, $node,
+                            sprintf('from-did-direct,%s,1', str_replace('#', '', trim($g))),
+                            sprintf(_(" FMFM (%s)"), $this->dpp->secondsToTimes($extension['fmfm']['prering']))
+                        );
                     }
 
                     if (isset($extension['fmfm']['postdest']) && $extension['fmfm']['postdest']!='ext-local,'.$extnum.',dest')
                     {
-                        $this->findNextDestination($route, $node, $extension['fmfm']['postdest'], _(" FMFM No Answer"));
-                        // $route['parent_node']       = $node;
-                        // $route['parent_edge_label'] = _(" FMFM No Answer");
-
-                        // $this->dpp->followDestinations($route, $this->applyLanguage($extension['fmfm']['postdest']), '');
+                        $this->findNextDestination($route, $node,
+                            $extension['fmfm']['postdest'],
+                            _(" FMFM No Answer")
+                        );
                     }
                 }
             }
@@ -78,14 +76,17 @@ class DestinationFromDidDirect extends baseDestinations
         else
         {
             //phone numbers or remote extensions
-            $node->attribute('label', $extnum);
-            $node->attribute('tooltip', $node->getAttribute('label'));
+            $this->updateNodeAttribute($node, [
+                'label'   => $extnum,
+                'tooltip' => $extnum,
+            ]);
         }
 
-        $node->attribute('label', $this->dpp->sanitizeLabels($label));
-        $node->attribute('shape', 'rect');
-        $node->attribute('fillcolor', self::pastels[15]);
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'shape'     => 'rect',
+            'fillcolor' => self::pastels[15],
+            'style'     => 'filled',
+        ]);
 
         //Optional Destinations
         if ($extOptional && (!empty($extension['noanswer_dest']) || !empty($extension['busy_dest']) || !empty($extension['chanunavail_dest'])) )
@@ -94,10 +95,6 @@ class DestinationFromDidDirect extends baseDestinations
             {
                 // All three are equal
                 $this->findNextDestination($route, $node, $extension['noanswer_dest'], _(" No Answer, Busy, Not Reachable"));
-                // $route['parent_node']       = $node;
-                // $route['parent_edge_label'] = _(" No Answer, Busy, Not Reachable");
-
-                // $this->dpp->followDestinations($route, $this->applyLanguage($extension['noanswer_dest']), '');
             }
             elseif ($extension['noanswer_dest'] === $extension['busy_dest'] && $extension['chanunavail_dest'] !== $extension['noanswer_dest'])
             {
@@ -105,20 +102,12 @@ class DestinationFromDidDirect extends baseDestinations
                 {
                     // No Answer and Busy are the same, but Not Reachable is different
                     $this->findNextDestination($route, $node, $extension['noanswer_dest'], _(" No Answer & Busy"));
-                    // $route['parent_node']       = $node;
-                    // $route['parent_edge_label'] = _(" No Answer & Busy");
-
-                    // $this->dpp->followDestinations($route, $this->applyLanguage($extension['noanswer_dest']), '');
                 }
 
                 //Not Reachable
                 if (!empty($extension['chanunavail_dest']))
                 {
                     $this->findNextDestination($route, $node, $extension['chanunavail_dest'], _(" Not Reachable"));
-                    // $route['parent_node']       = $node;
-                    // $route['parent_edge_label'] = _(" Not Reachable");
-
-                    // $this->dpp->followDestinations($route, $this->applyLanguage($extension['chanunavail_dest']), '');
                 }
             }
             elseif ($extension['noanswer_dest'] === $extension['chanunavail_dest'] && $extension['busy_dest'] !== $extension['noanswer_dest'])
@@ -127,20 +116,12 @@ class DestinationFromDidDirect extends baseDestinations
                 {
                     // No Answer and Not Reachable are the same
                     $this->findNextDestination($route, $node, $extension['noanswer_dest'], _(" No Answer & Not Reachable"));
-                    // $route['parent_node']       = $node;
-                    // $route['parent_edge_label'] = _(" No Answer & Not Reachable");
-
-                    // $this->dpp->followDestinations($route, $this->applyLanguage($extension['noanswer_dest']), '');
                 }
 
                 //Busy
                 if (!empty($extension['busy_dest']))
                 {
                     $this->findNextDestination($route, $node, $extension['busy_dest'], _(" Busy"));
-                    // $route['parent_node']       = $node;
-                    // $route['parent_edge_label'] = _(" Busy");
-
-                    // $this->dpp->followDestinations($route, $this->applyLanguage($extension['busy_dest']), '');
                 }
             }
             elseif ($extension['busy_dest'] === $extension['chanunavail_dest'] && $extension['noanswer_dest'] !== $extension['busy_dest'])
@@ -149,20 +130,12 @@ class DestinationFromDidDirect extends baseDestinations
                 {
                     // Busy and Not Reachable are the same
                     $this->findNextDestination($route, $node, $extension['busy_dest'], _(" Busy & Not Reachable"));
-                    // $route['parent_node']       = $node;
-                    // $route['parent_edge_label'] = _(" Busy & Not Reachable");
-
-                    // $this->dpp->followDestinations($route, $this->applyLanguage($extension['busy_dest']), '');
                 }
 
                 //No Answer
                 if (!empty($extension['noanswer_dest']))
                 {
                     $this->findNextDestination($route, $node, $extension['noanswer_dest'], _(" No Answer"));
-                    // $route['parent_node']       = $node;
-                    // $route['parent_edge_label'] = _(" No Answer");
-
-                    // $this->dpp->followDestinations($route, $this->applyLanguage($extension['noanswer_dest']), '');
                 }
             }
             else
@@ -171,27 +144,14 @@ class DestinationFromDidDirect extends baseDestinations
                 if (!empty($extension['noanswer_dest']))
                 {
                     $this->findNextDestination($route, $node, $extension['noanswer_dest'], _(" No Answer"));
-                    // $route['parent_node']       = $node;
-                    // $route['parent_edge_label'] = _(" No Answer");
-
-                    // $this->dpp->followDestinations($route, $this->applyLanguage($extension['noanswer_dest']), '');
                 }
                 if (!empty($extension['busy_dest']))
                 {
                     $this->findNextDestination($route, $node, $extension['busy_dest'], _(" Busy"));
-                    // $route['parent_node']       = $node;
-                    // $route['parent_edge_label'] = _(" Busy");
-
-                    // $this->dpp->followDestinations($route, $this->applyLanguage($extension['busy_dest']), '');
                 }
                 if (!empty($extension['chanunavail_dest']))
                 {
                     $this->findNextDestination($route, $node, $extension['chanunavail_dest'], _(" Not Reachable"));
-
-                    // $route['parent_node']       = $node;
-                    // $route['parent_edge_label'] = _(" Not Reachable");
-
-                    // $this->dpp->followDestinations($route, $this->applyLanguage($extension['chanunavail_dest']), '');
                 }
             }
         }

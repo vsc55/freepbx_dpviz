@@ -56,15 +56,17 @@ class DestinationAnnouncement extends baseDestinations
             $rec_active = _("no");
         }
 
-        $label = $this->sanitizeLabels(sprintf(_("Announcements: %s\\nRecording: %s\\nRecord (%s): %s"), $an['description'], $announcement, $rec_active, $rec_status));
+        $label = sprintf(_("Announcements: %s\\nRecording: %s\\nRecord (%s): %s"), $an['description'], $announcement, $rec_active, $rec_status);
 
-        $node->attribute('label', $label);
-        $node->attribute('tooltip', $label);
-        $node->attribute('URL', $this->genUrlConfig('announcement', $annum)); //'/admin/config.php?display=announcement&view=form&extdisplay='.$annum
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'note');
-        $node->attribute('fillcolor', 'oldlace');
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'tooltip'   => $label,
+            'URL'       => $this->genUrlConfig('announcement', $annum), //'/admin/config.php?display=announcement&view=form&extdisplay='.$annum
+            'target'    => '_blank',
+            'shape'     => 'note',
+            'fillcolor' => 'oldlace',
+            'style'     => 'filled'
+        ]);
 
         # The destinations we need to follow are the no-answer destination
         # (postdest) and the members of the group.
@@ -72,19 +74,19 @@ class DestinationAnnouncement extends baseDestinations
         if ($an['post_dest'] != '')
         {
             $this->findNextDestination($route, $node, $an['post_dest'], _(" Continue"));
-            // $route['parent_node']       = $node;
-            // $route['parent_edge_label'] = _(" Continue");
-
-            // $this->dpp->followDestinations($route, $an['post_dest'], '');
         }
 
         if (isset($route['recordings'][$recID]))
         {
-            $route['parent_node']       = $node;
-			$route['parent_edge_label'] = _(" Recording");
-
-            // sprintf('play-system-recording,%s,1,%s', $recordingId, $anlang)
-			$this->dpp->followDestinations($route, $this->applyLanguage(sprintf('play-system-recording,%s,1', $recordingId), $anlang), '');
+            // The parameter $appyLang is set to false because the destination is already in the correct format
+            $this->findNextDestination($route, $node,
+                $this->applyLanguage(
+                    sprintf('play-system-recording,%s,1', $recordingId),
+                    $anlang
+                ),
+                _(" Recording"),
+                false
+            );
 		}
     }
 }

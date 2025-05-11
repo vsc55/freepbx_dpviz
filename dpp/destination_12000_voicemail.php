@@ -29,14 +29,16 @@ class DestinationVoicemail extends baseDestinations
         $vmemail  = $route['extensions'][$vmnum]['email'];
         $vmemail  = str_replace("|",",\\n",$vmemail);
 
-        $label = $this->sanitizeLabels(sprintf(_("Voicemail: %s %s %s\\n%s"), $vmnum, $vmname, $vm_array[$vmtype], $vmemail));
+        $label    = sprintf(_("Voicemail: %s %s %s\\n%s"), $vmnum, $vmname, $vm_array[$vmtype], $vmemail);
 
-        $node->attribute('label', $label);
-        $node->attribute('tooltip', $label);
-        $node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$vmnum));
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'folder');
-        $node->attribute('fillcolor', self::pastels[11]);
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'tooltip'   => $label,
+            'URL'       => htmlentities('/admin/config.php?display=voicemail&view=form&id='.$vmnum),
+            'target'    => '_blank',
+            'shape'     => 'folder',
+            'fillcolor' => self::pastels[11],
+            'style'     => 'filled',
+        ]);
     }
 }

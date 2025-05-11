@@ -19,12 +19,14 @@ class DestinationDisa extends baseDestinations
         $disaother = $matches[2];
         $disa      = $route['disa'][$disanum];
 
-        $label     = $this->sanitizeLabels(sprintf(_("DISA: %s"), $disa['displayname']));
+        $label     = sprintf(_("DISA: %s"), $disa['displayname']);
 
-        $node->attribute('label', $label);
-        $node->attribute('URL', htmlentities('/admin/config.php?display=disa&view=form&itemid='.$disanum));
-        $node->attribute('target', '_blank');
-        $node->attribute('fillcolor', self::pastels[10]);
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'URL'       => htmlentities('/admin/config.php?display=disa&view=form&itemid='.$disanum),
+            'target'    => '_blank',
+            'fillcolor' => self::pastels[10],
+            'style'     => 'filled'
+        ]);
     }
 }

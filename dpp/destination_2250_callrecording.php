@@ -25,20 +25,17 @@ class DestinationCallrecording extends baseDestinations
 		$callMode     = ucfirst($callRec['callrecording_mode']);
 		$callMode     = str_replace("Dontcare", _("Don't Care"), $callMode);
 
-        $label = $this->sanitizeLabels(sprintf(_("Call Recording: %s\\nMode: %s"), $callRec['description'], $callMode));
+        $label        = sprintf(_("Call Recording: %s\\nMode: %s"), $callRec['description'], $callMode);
 
-		$node->attribute('label', $label);
-        $node->attribute('URL', $this->genUrlConfig('callrecording', $callrecID)); //admin/config.php?display=callrecording&view=form&extdisplay='.$callrecID
-		$node->attribute('target', '_blank');
-		$node->attribute('fillcolor', 'burlywood');
-		$node->attribute('shape', 'rect');
-		$node->attribute('style', 'filled');
-
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'URL'       => $this->genUrlConfig('callrecording', $callrecID), //admin/config.php?display=callrecording&view=form&extdisplay='.$callrecID
+            'target'    => '_blank',
+            'fillcolor' => 'burlywood',
+            'shape'     => 'rect',
+            'style'     => 'filled'
+        ]);
 
         $this->findNextDestination($route, $node, $callRec['dest'], _(" Continue"));
-        // $route['parent_node']       = $node;
-		// $route['parent_edge_label'] = _(" Continue");
-
-        // $this->dpp->followDestinations($route, $this->applyLanguage($callRec['dest']), '');
     }
 }

@@ -17,26 +17,21 @@ class DestinationInboundRoutes extends baseDestinations
     {
         $num      = $matches[1];
         $numother = $matches[2];
-
         $incoming = $route['incoming'][$num];
 
-        $label   = $this->sanitizeLabels(sprintf("%s\\n%s", ($num == '') ? _("ANY") : $this->dpp->formatPhoneNumbers($num), $incoming['description']));
-        $didLink = sprintf('%s/', $num);
+        $label    = sprintf("%s\\n%s", ($num == '') ? _("ANY") : $this->dpp->formatPhoneNumbers($num), $incoming['description']);
+        $didLink  = sprintf('%s/', $num);
 
-        $node->attribute('label', $label);
-        $node->attribute('tooltip', $label);
-        $node->attribute('URL', $this->genUrlConfig('did', urlencode($didLink))); //'/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)
-        $node->attribute('target', '_blank');
-        $node->attribute('shape', 'cds');
-        $node->attribute('fillcolor', 'darkseagreen');
-        $node->attribute('style', 'filled');
-
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'tooltip'   => $label,
+            'URL'       => $this->genUrlConfig('did', urlencode($didLink)), //'/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)
+            'target'    => '_blank',
+            'shape'     => 'cds',
+            'fillcolor' => 'darkseagreen',
+            'style'     => 'filled',
+        ]);
 
         $this->findNextDestination($route, $node, $incoming['destination'], _(" Continue"));
-
-        // $route['parent_node']       = $node;
-        // $route['parent_edge_label'] = _(" Continue");
-
-        // $this->dpp->followDestinations($route, $this->applyLanguage($incoming['destination']), '');
     }
 }

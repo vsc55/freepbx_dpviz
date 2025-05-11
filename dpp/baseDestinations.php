@@ -34,7 +34,7 @@ abstract class baseDestinations extends baseDpp
         return $this->dpp->sanitizeLabels($text);
     }
 
-    public function setLanguage($lang, $node = null)
+    public function setLanguage($lang, &$node = null)
     {
         if (is_null($lang))
         {
@@ -42,7 +42,7 @@ abstract class baseDestinations extends baseDpp
         }
         if (is_object($node) && method_exists($node, 'attribute'))
         {
-            $node->attribute('comment', $lang);
+            $this->updateNodeAttribute($node, ['comment' => $lang]);
         }
         $this->lang = $lang;
     }
@@ -129,6 +129,27 @@ abstract class baseDestinations extends baseDpp
             $destination = $this->applyLanguage($destination);
         }
         $this->dpp->followDestinations($route, $destination, '');
+        return true;
+    }
+
+    protected function updateNodeAttribute(&$node, $params = [])
+    {
+        if (empty($node) || !is_object($node) || !method_exists($node, 'attribute') || !is_array($params))
+        {
+            return false;
+        }
+        foreach ($params as $key => $value)
+        {
+            if (in_array($key, ['label', 'tooltip']))
+            {
+                if ($value == '__SKIP_NO_CHANGE__')
+                {
+                    continue;
+                }
+                $value = $this->sanitizeLabels($value);
+            }
+            $node->attribute($key, $value);
+        }
         return true;
     }
 }

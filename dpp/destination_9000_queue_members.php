@@ -26,25 +26,14 @@ class DestinationQueueMembers extends baseDestinations
         {
             $label = $qextension;
         }
-        $label = $this->sanitizeLabels($label);
 
-        $node->attribute('label', $label);
-        $node->attribute('tooltip', $label);
-
-        if (!is_numeric($label))
-        {
-            $node->attribute('URL', $this->genUrlConfig('extensions', $qextension, null)); // '/admin/config.php?display=extensions&extdisplay='.$qextension
-            $node->attribute('target', '_blank');
-        }
-
-        if ($route['parent_edge_data_status'] == 'static')
-        {
-            $node->attribute('fillcolor', self::pastels[20]);
-        }
-        else
-        {
-            $node->attribute('fillcolor', self::pastels[8]);
-        }
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'label'     => $label,
+            'tooltip'   => $label,
+            'URL'       => is_numeric($label) ? '__SKIP_NO_CHANGE__' : $this->genUrlConfig('extensions', $qextension, null), //'/admin/config.php?display=extensions&extdisplay='.$qextension
+            'target'    => is_numeric($label) ? '__SKIP_NO_CHANGE__' : '_blank',
+            'fillcolor' => $route['parent_edge_data_status'] == 'static' ? self::pastels[20] : self::pastels[8],
+            'style'     => 'filled',
+        ]);
     }
 }

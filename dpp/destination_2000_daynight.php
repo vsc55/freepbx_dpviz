@@ -68,37 +68,33 @@ class DestinationDaynight extends baseDestinations
 
         foreach ($daynight as $d)
         {
-            // $dest_lang = $this->applyLanguage($d['dest']);
             switch ($d['dmode'])
             {
                 case 'day':
-                    $this->findNextDestination($route, $node, $d['dest'], sprintf(_(" Day Mode %s"), $dactive));
-
-                    // $route['parent_node']       = $node;
-                    // $route['parent_edge_label'] = sprintf(_(" Day Mode %s"), $dactive);
-
-                    // $this->dpp->followDestinations($route, $dest_lang, '');
+                    $this->findNextDestination($route, $node, $d['dest'],
+                        sprintf(_(" Day Mode %s"), $dactive)
+                    );
                     break;
 
                 case 'night':
-                    $this->findNextDestination($route, $node, $d['dest'], sprintf(_(" Night Mode %s"), $nactive));
-
-                    // $route['parent_node']       = $node;
-                    // $route['parent_edge_label'] = sprintf(_(" Night Mode %s"), $nactive);
-
-                    // $this->dpp->followDestinations($route, $dest_lang, '');
+                    $this->findNextDestination($route, $node, $d['dest'],
+                        sprintf(_(" Night Mode %s"), $nactive)
+                    );
                     break;
 
                 case 'fc_description':
-                    $node->attribute('label', $this->sanitizeLabels(sprintf(_("Call Flow: %s%s"), $d['dest'], $code)));
+                    $this->updateNodeAttribute($node, [
+                        'label' => sprintf(_("Call Flow: %s%s"), $d['dest'], $code),
+                    ]);
                     break;
             }
         }
 
-        $daynight = $route['daynight'][$daynightnum];
-        $node->attribute('URL', htmlentities('/admin/config.php?display=daynight&view=form&itemid='.$daynightnum.'&extdisplay='.$daynightnum));
-        $node->attribute('target', '_blank');
-        $node->attribute('fillcolor', self::pastels[14]);
-        $node->attribute('style', 'filled');
+        $this->updateNodeAttribute($node, [
+            'URL'       => htmlentities('/admin/config.php?display=daynight&view=form&itemid='.$daynightnum.'&extdisplay='.$daynightnum),
+            'target'    => '_blank',
+            'fillcolor' => self::pastels[14],
+            'style'     => 'filled',
+        ]);
     }
 }
