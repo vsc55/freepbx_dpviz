@@ -10,18 +10,31 @@ class DestinationAnnouncement extends baseDestinations
     public function __construct(object &$dpp)
     {
         parent::__construct($dpp);
-        $this->regex = "/^app-announcement-(\d+),s,(\d+)/";
+        $this->regex = "/^app-announcement-(\d+),s,(\d+),(.+)/";
     }
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of app-announcement-<num>,s,<num>,<lang>
+
         $annum   = $matches[1];
         $another = $matches[2];
+        $anlang  = $matches[3];
 
         $an    = $route['announcements'][$annum];
         $recID = $an['recording_id'];
 
-        $announcement = isset($route['recordings'][$recID]) ? $route['recordings'][$recID]['displayname'] : _("None");
+        if (isset($route['recordings'][$recID]))
+        {
+			$recording    = $route['recordings'][$recID];
+			$announcement = $recording['displayname'];
+			$recordingId  = $recording['id'];
+		}
+        else
+        {
+			$announcement = _("None");
+		}
+
         #feature code exist?
         if ( isset($route['featurecodes']['*29'.$recID]) )
         {
@@ -43,10 +56,10 @@ class DestinationAnnouncement extends baseDestinations
             $rec_active = _("no");
         }
 
-        $label = sprintf(_("Announcements: %s\\nRecording: %s\\nRecord (%s): %s"), $an['description'], $announcement, $rec_active, $rec_status);
+        $label = $this->sanitizeLabels(sprintf(_("Announcements: %s\\nRecording: %s\\nRecord (%s): %s"), $an['description'], $announcement, $rec_active, $rec_status));
 
-        $node->attribute('label', $this->dpp->sanitizeLabels($label));
-        $node->attribute('tooltip', $node->getAttribute('label'));
+        $node->attribute('label', $label);
+        $node->attribute('tooltip', $label);
         $node->attribute('URL', $this->genUrlConfig('announcement', $annum)); //'/admin/config.php?display=announcement&view=form&extdisplay='.$annum
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'note');
@@ -58,10 +71,20 @@ class DestinationAnnouncement extends baseDestinations
 
         if ($an['post_dest'] != '')
         {
-            $route['parent_node']       = $node;
-            $route['parent_edge_label'] = _(" Continue");
+            $this->findNextDestination($route, $node, $an['post_dest'], _(" Continue"));
+            // $route['parent_node']       = $node;
+            // $route['parent_edge_label'] = _(" Continue");
 
-            $this->dpp->followDestinations($route, $an['post_dest'], '');
+            // $this->dpp->followDestinations($route, $an['post_dest'], '');
         }
+
+        if (isset($route['recordings'][$recID]))
+        {
+            $route['parent_node']       = $node;
+			$route['parent_edge_label'] = _(" Recording");
+
+            // sprintf('play-system-recording,%s,1,%s', $recordingId, $anlang)
+			$this->dpp->followDestinations($route, $this->applyLanguage(sprintf('play-system-recording,%s,1', $recordingId), $anlang), '');
+		}
     }
 }

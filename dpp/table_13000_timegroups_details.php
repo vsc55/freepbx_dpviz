@@ -34,7 +34,14 @@ class TableTimegroupsDetails extends baseTables
 
             $exploded = explode("|", $tgd['time']);
             $time     = ($exploded[0] !== "*") ? $exploded[0] : "";
-            $dow      = ($exploded[1] !== "*") ? sprintf("%s, ", ucwords($exploded[1], "-")) : "";
+            if ($exploded[1]!== "*")
+            {
+                $dow_parts = explode("-", $exploded[1]);
+                foreach ($dow_parts as &$part) {$part = ucfirst($part);}
+                $dow = implode("-", $dow_parts) . ", ";
+            } else {
+                $dow = "";
+            }
             $date     = ($exploded[2] !== "*") ? sprintf("%s ", $exploded[2]) : "";
             $month    = ($exploded[3] !== "*") ? sprintf("%s ", ucfirst($exploded[3])) : "";
 

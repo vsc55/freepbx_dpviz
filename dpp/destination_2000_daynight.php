@@ -15,6 +15,8 @@ class DestinationDaynight extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of app-daynight-<num>,s,<num>,<lang>
+
         $daynightnum   = $matches[1];
         $daynightother = $matches[2];
         $daynight      = $route['daynight'][$daynightnum];
@@ -66,24 +68,29 @@ class DestinationDaynight extends baseDestinations
 
         foreach ($daynight as $d)
         {
+            // $dest_lang = $this->applyLanguage($d['dest']);
             switch ($d['dmode'])
             {
                 case 'day':
-                    $route['parent_node']       = $node;
-                    $route['parent_edge_label'] = sprintf(_(" Day Mode %s"), $dactive);
+                    $this->findNextDestination($route, $node, $d['dest'], sprintf(_(" Day Mode %s"), $dactive));
 
-                    $this->dpp->followDestinations($route, $d['dest'], '');
+                    // $route['parent_node']       = $node;
+                    // $route['parent_edge_label'] = sprintf(_(" Day Mode %s"), $dactive);
+
+                    // $this->dpp->followDestinations($route, $dest_lang, '');
                     break;
 
                 case 'night':
-                    $route['parent_node']       = $node;
-                    $route['parent_edge_label'] = sprintf(_(" Night Mode %s"), $nactive);
+                    $this->findNextDestination($route, $node, $d['dest'], sprintf(_(" Night Mode %s"), $nactive));
 
-                    $this->dpp->followDestinations($route, $d['dest'],'');
+                    // $route['parent_node']       = $node;
+                    // $route['parent_edge_label'] = sprintf(_(" Night Mode %s"), $nactive);
+
+                    // $this->dpp->followDestinations($route, $dest_lang, '');
                     break;
 
                 case 'fc_description':
-                    $node->attribute('label', $this->dpp->sanitizeLabels(sprintf(_("Call Flow: %s%s"), $d['dest'], $code)));
+                    $node->attribute('label', $this->sanitizeLabels(sprintf(_("Call Flow: %s%s"), $d['dest'], $code)));
                     break;
             }
         }

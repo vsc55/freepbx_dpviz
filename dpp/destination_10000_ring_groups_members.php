@@ -25,9 +25,10 @@ class DestinationRingGroupsMembers extends baseDestinations
         {
             $label = $rgext;
         }
+        $label = $this->sanitizeLabels($label);
 
-        $node->attribute('label', $this->dpp->sanitizeLabels($label));
-        $node->attribute('tooltip', $node->getAttribute('label'));
+        $node->attribute('label', $label);
+        $node->attribute('tooltip', $label);
         if (!is_numeric($label))
         {
             $node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$rgext));

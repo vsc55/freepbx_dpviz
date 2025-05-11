@@ -8,6 +8,7 @@ use \FreePBX\modules\Dpviz\dpp\baseDpp;
 abstract class baseDestinations extends baseDpp
 {
     protected $regex = null;
+    protected $lang   = null;
 
     public function isSetDestination() : bool
     {
@@ -27,8 +28,72 @@ abstract class baseDestinations extends baseDpp
         return $this->regex;
     }
 
+    // This function hooks into the DPP class
+    public function sanitizeLabels($text)
+    {
+        return $this->dpp->sanitizeLabels($text);
+    }
+
+    public function setLanguage($lang, $node = null)
+    {
+        if (is_null($lang))
+        {
+            $lang = '';
+        }
+        if (is_object($node) && method_exists($node, 'attribute'))
+        {
+            $node->attribute('comment', $lang);
+        }
+        $this->lang = $lang;
+    }
+
+    public function getLanguage($node, $lang = '')
+    {
+        if (is_null($lang))
+        {
+            $lang = '';
+        }
+        if (empty($node) || !is_object($node) || !method_exists($node, 'getAttribute'))
+        {
+            $this->lang = $lang;
+        }
+        else
+        {
+            $this->lang = $node->getAttribute('comment', $lang);
+        }
+        return $this->lang;
+    }
+
+    public function applyLanguage($value, $lang = null, $node = null)
+    {
+        if (empty($value))
+        {
+            return $value;
+        }
+        if (is_null($node) && is_null($lang))
+        {
+            return $value;
+        }
+        if (!is_null($node))
+        {
+            $lang = $node->getAttribute('comment', $lang);
+        }
+        else if (is_null($lang))
+        {
+            $lang = $this->lang;
+        }
+
+        if (empty($lang))
+        {
+            return $value;
+        }
+        return sprintf("%s,%s", $value, $lang);
+    }
+
     public function followDestinations(&$route, &$node, $destination, $matches)
     {
+        $lang = $this->getLanguage($node);
+
         if (method_exists($this, 'callback_followDestinations'))
         {
             // return call_user_func([$this, 'callback_followDestinations'], $route, $node, $destination, $matches);
@@ -41,5 +106,29 @@ abstract class baseDestinations extends baseDpp
             $this->log('error', sprintf(_("No callback function found for followDestinations in '%s'"), get_class($this)));
             return false;
         }
+    }
+
+    function callback_followDestinations(&$route, &$node, $destination, $matches)
+    {
+        // This function should be overridden in the child class
+        return false;
+    }
+
+    protected function findNextDestination(&$route, &$node, $destination, $label = '', $appyLang = true)
+    {
+        if (empty($route) || empty($node))
+        {
+            return false;
+        }
+
+        $route['parent_node']       = $node;
+        $route['parent_edge_label'] = $this->sanitizeLabels($label);
+
+        if ($appyLang)
+        {
+            $destination = $this->applyLanguage($destination);
+        }
+        $this->dpp->followDestinations($route, $destination, '');
+        return true;
     }
 }

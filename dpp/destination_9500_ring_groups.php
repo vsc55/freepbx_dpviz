@@ -19,9 +19,9 @@ class DestinationRingGroups extends baseDestinations
         $rg               = $route['ringgroups'][$rgnum];
         $combineQueueRing = $this->getSetting('combine_queue_ring');
 
-        $label   = sprintf(_("Ring Group: %s %s"), $rgnum, $rg['description']);
+        $label   = $this->sanitizeLabels(sprintf(_("Ring Group: %s %s"), $rgnum, $rg['description']));
 
-        $node->attribute('label', $this->dpp->sanitizeLabels($label));
+        $node->attribute('label', $label);
         $node->attribute('URL', $this->genUrlConfig('ringgroups', $rgnum)); //'/admin/config.php?display=ringgroups&view=form&extdisplay='.$rgnum
         $node->attribute('target', '_blank');
         $node->attribute('fillcolor', self::pastels[12]);
@@ -32,8 +32,8 @@ class DestinationRingGroups extends baseDestinations
 
         foreach ($grplist as $member)
         {
-            $route['parent_node']       = $node;
-            $route['parent_edge_label'] = '';
+            // $route['parent_node']       = $node;
+            // $route['parent_edge_label'] = '';
 
             switch ($combineQueueRing)
             {
@@ -48,18 +48,22 @@ class DestinationRingGroups extends baseDestinations
                 default:
                     $go = sprintf("rg%s", $member);
             }
-            $this->dpp->followDestinations($route, $go, '');
-            //$this->dpp->followDestinations($route, sprintf( $combineQueueRing ? "qmember%s" : "rg%s", $member), '');
+            // $this->dpp->followDestinations($route, $go, '');
+            // //$this->dpp->followDestinations($route, sprintf( $combineQueueRing ? "qmember%s" : "rg%s", $member), '');
+
+            $this->findNextDestination($route, $node, $go, '');
         }
 
         # The destinations we need to follow are the no-answer destination
         # (postdest) and the members of the group.
         if ($rg['postdest'] != '')
         {
-            $route['parent_node']       = $node;
-            $route['parent_edge_label'] = sprintf(_(" No Answer (%s)"), $this->dpp->secondsToTimes($rg['grptime']));
+            $this->findNextDestination($route, $node, $rg['postdest'], sprintf(_(" No Answer (%s)"), $this->dpp->secondsToTimes($rg['grptime'])));
 
-            $this->dpp->followDestinations($route, $rg['postdest'], '');
+            // $route['parent_node']       = $node;
+            // $route['parent_edge_label'] = sprintf(_(" No Answer (%s)"), $this->dpp->secondsToTimes($rg['grptime']));
+
+            // $this->dpp->followDestinations($route, $rg['postdest'], '');
         }
     }
 }

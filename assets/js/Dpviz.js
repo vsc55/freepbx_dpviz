@@ -375,12 +375,12 @@ $(document).ready(function()
         const vizContainerHeader   = $('#vizContainerHeader');
         const vizContainerBody     = $('#vizContainerBody');
         const vizSpinner           = $('#vizSpinner');
-        const floatingNavBar       = $('#floating-nav-bar');
         const vizContainerTitle    = $('#vizContainerTitle');
         const vizContainerDatetime = $('#vizContainerDatetime');
         const filenameInput        = $('#filename_input');
+        const modal                = $('#recordingmodal');
+	    const overlay              = $('#overlay');
 
-        floatingNavBar.removeClass('show'); // hide navbar
         vizContainerHeader.hide();
         vizContainerBody.hide();
         vizSpinner.show();
@@ -471,19 +471,37 @@ $(document).ready(function()
                             // });
                         }
 
+                        // Ctrl/Command + click handler for Graphviz nodes
                         $(element).find('g.node').on('click', function (e)
                         {
-                            const $node = $(this);
+                            const $node        = $(this);
+                            const titleElement = $node.find('title');
+
+                            if (!titleElement) return;
+
+                            const titleText = titleElement.text() || titleElement.html();
+
+                            // Check for "Play Recording:" pattern
+                            if (titleText.startsWith("play-system-recording"))
+                            {
+                                e.preventDefault();
+                                if (modal && overlay && !isFocused)
+                                {
+                                    overlay.style.display = 'block';
+                                    spinner.style.display = "flex";
+                                    getRecording(titleText);
+
+                                    setTimeout(() => {
+                                        spinner.style.display = "none";
+                                        modal.style.display   = 'block';
+                                    }, 750);
+                                }
+                            }
 
                             if (e.ctrlKey || e.metaKey) {  // Ctrl on Windows/Linux, Command on Mac
                                 e.preventDefault();
-
-                                const titleElement = $node.find('title');
-                                if (titleElement.length) {
-                                    const titleText = titleElement.text() || titleElement.html();
-                                    generateVisualization(titleText);
-                                }
-                                return false;
+                                generateVisualization(titleText);
+                                // return false;
                             }
 
                             if (window.dpviz.isFocused) {
@@ -509,7 +527,6 @@ $(document).ready(function()
                         fpbxToast(response.message, '', 'success');
                     })
                     .catch(error => {
-                        floatingNavBar.addClass('show'); // show navbar
 
                         fpbxToast('Viz.js render error: ' + error , '', 'error');
                         console.error('Viz.js render error:', error);
@@ -517,16 +534,12 @@ $(document).ready(function()
                 }
                 else
                 {
-                    floatingNavBar.addClass('show'); // show navbar
-
                     fpbxToast('No gtext found in response.', '', 'error');
                     console.error('No gtext found in response.');
                 }
             }
             else
             {
-                floatingNavBar.addClass('show'); // show navbar
-
                 const err_msg = response ? response.message || i18nStr('ajax_response_status_err') : i18nStr('ajax_response_empty');
                 fpbxToast(err_msg, '', 'error');
                 // console.warn(err_msg);
@@ -534,8 +547,6 @@ $(document).ready(function()
         })
         .fail(function (xhr, status, error)
         {
-            floatingNavBar.addClass('show'); // show navbar
-
             fpbxToast(i18nStr('ajax_failed'), '', 'error');
             console.error("AJAX network error:", error || status);
         });
@@ -1036,4 +1047,178 @@ $(document).ready(function()
 
 
     loadSelectOptions(false);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function getRecording(titleid) {
+        const parts = titleid.split(",");
+        const id = parts[1];
+        const other = parts[2];
+        const lang = parts[3];
+
+        const formData = new URLSearchParams();
+        formData.append('id', id);
+        formData.append('lang', lang);
+
+        fetch('ajax.php?module=dpviz&command=getrecording', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formData
+        })
+        .then(response => {
+        if (!response.ok) throw new Error("Failed to load recording info");
+        return response.json();
+    })
+    .then(async data => {
+            console.log("Display name:", data.displayname);
+            console.log("Filename(s):", data.filename);
+
+
+
+
+
+
+
+            const displayname = data.displayname;
+            const audioList = document.getElementById('audioList');
+            audioList.innerHTML = "";
+
+            $('#recording-displayname').html(
+                '<a href="config.php?display=recordings&action=edit&id=' + id + '" target="_blank" class="btn btn-default btn-lg">' +
+                '<i class="fa fa-bullhorn"></i> Recording: ' + displayname +
+                ' <i class="fa fa-external-link" aria-hidden="true"></i></a>'
+            );
+
+            if (!data.filename || data.filename.trim() === '') {
+                throw new Error(`No files found for language: <strong>${lang}</strong>`);
+            }
+
+            const filenames = data.filename.split('&').filter(f => f.trim() !== '');
+            if (filenames.length === 0) {
+                throw new Error("Filename array is empty after parsing.");
+            }
+
+            for (const filename of filenames) {
+                console.log("Fetching file:", filename);
+
+                try {
+                    const response = await fetch('ajax.php?module=dpviz&command=getfile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `file=${encodeURIComponent(filename)}`
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Could not fetch ${filename}`);
+                    }
+
+                    const blob = await response.blob();
+                    const headerFilename = response.headers.get('X-Filename');
+                    const audioUrl = URL.createObjectURL(blob);
+
+                    const container = document.createElement('div');
+                    container.classList.add('card', 'mb-4', 'custom-card-bg');
+
+                    const cardBody = document.createElement('div');
+                    cardBody.classList.add('card-body');
+
+                    const cardTitle = document.createElement('h5');
+                    cardTitle.classList.add('card-title', 'text-left');
+                    cardTitle.textContent = `Audio: ${headerFilename}.wav`;
+                    cardBody.appendChild(cardTitle);
+
+                    const audio = document.createElement('audio');
+                    audio.controls = true;
+                    audio.src = audioUrl;
+                    cardBody.appendChild(audio);
+
+                    container.appendChild(cardBody);
+                    audioList.appendChild(container);
+                } catch (err) {
+                    const container = document.createElement('div');
+                    container.classList.add('recording-container', 'error');
+
+                    const label = document.createElement('div');
+                    label.classList.add('alert', 'alert-warning');
+                    label.innerHTML = `File: <strong>${filename}.wav</strong> could not be found. To generate the file, simply go to the recording, select the "convert to" wav option, and click submit.`;
+
+                    container.appendChild(label);
+                    audioList.appendChild(container);
+                }
+            }
+        })
+        .catch(err => {
+            console.error("Fetch error:", err);
+
+            const audioList = document.getElementById('audioList');
+
+            const container = document.createElement('div');
+            container.classList.add('recording-container', 'error');
+
+            const label = document.createElement('div');
+            label.classList.add('alert', 'alert-danger'); // use alert-danger for more critical errors
+            label.innerHTML = `<strong>Error:</strong> ${err.message}`;
+
+            container.appendChild(label);
+            audioList.appendChild(container);
+        });
+    }
+
+
+    document.addEventListener('play', function(e) {
+        const audios = document.querySelectorAll('audio');
+        audios.forEach(audio => {
+            if (audio !== e.target) {
+                audio.pause();
+            }
+        });
+    }, true);
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const modal = document.getElementById('recordingmodal');
+            if (modal && modal.style.display !== 'none') {
+                closeModal();
+            }
+        }
+    });
+
+
+    function closeModal() {
+        const modal = document.getElementById('recordingmodal');
+        const overlay = document.getElementById('overlay');
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+
+        // Stop and reset all audio elements in the document
+        const allAudio = document.querySelectorAll('audio');
+        allAudio.forEach(audio => {
+            audio.pause();
+            audio.currentTime = 0;
+        });
+    }
+
+
 });

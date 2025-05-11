@@ -20,10 +20,10 @@ class DestinationVmblastMembers extends baseDestinations
         $vmblastemail = $route['extensions'][$member]['email'];
         $vmblastemail = str_replace("|",",\\n",$vmblastemail);
 
-        $label = sprintf(_("Ext %s %s\\n%s"), $member , $vmblastname, $vmblastemail);
+        $label = $this->sanitizeLabels(sprintf(_("Ext %s %s\\n%s"), $member , $vmblastname, $vmblastemail));
 
-        $node->attribute('label', $this->dpp->sanitizeLabels($label));
-        $node->attribute('tooltip', $node->getAttribute('label'));
+        $node->attribute('label', $label);
+        $node->attribute('tooltip', $label);
         $node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$member));
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'rect');

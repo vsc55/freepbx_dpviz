@@ -15,10 +15,16 @@ class DestinationBlackhole extends baseDestinations
 
     public function callback_followDestinations(&$route, &$node, $destination, $matches)
     {
-        $blackholetype  = str_replace('musiconhold', _("Music On Hold"), $matches[1]);
+        # The destination is in the form of app-blackhole-<type>,<num>
+
+        $blackholetype = $matches[1];
+		$blackholetype = str_replace('musiconhold', _("Music On Hold"), $blackholetype);
+		$blackholetype = str_replace('ring', _("Play Ringtones"), $blackholetype);
+		$blackholetype = str_replace('no-service', _("Play No Service Message"), $blackholetype);
+		$blackholetype = ucwords(str_replace('-', ' ', $blackholetype));
         $blackholeother = $matches[2];
 
-        $labal          = sprintf(_("Terminate Call: %s"), ucwords($blackholetype,'-'));
+        $labal          = $this->sanitizeLabels(sprintf(_("Terminate Call: %s"), $blackholetype));
         $previousURL    = $route['parent_node']->getAttribute('URL', '');
 
         $node->attribute('label', $labal);

@@ -18,7 +18,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
     public $astman = null;
     public $dpp    = null;
 
-    Const default_setting = [
+    const default_setting = [
         'panzoom'            => 1,
         'horizontal'         => 0,
         'datetime'           => 1,
@@ -27,6 +27,10 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         'ext_optional'       => 0,
         'fmfm'               => 0,
     ];
+
+    const recording_lang_default   = 'en';
+    const recording_format_default = 'wav';
+    const recording_format_allow   = ['wav'];
 
     public function __construct($freepbx = null)
     {
@@ -47,9 +51,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $this->setSettingAll($this->getSettingAll());
     }
 
-    public function uninstall() {
-        // Required by BMO, but can remain empty
-    }
+    public function uninstall() { }
 
     /**
      * Get all configuration values.
@@ -64,6 +66,18 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
         // Direction: LR (left-to-right) o TB (top-to-bottom)
         $settings['direction'] = ($settings['horizontal']) == 1 ? 'LR' : 'TB';
+
+        try
+        {
+            $soundlang = \FreePBX::create()->Soundlang;
+            $settings['lang'] = $soundlang->getLanguage();
+        }
+        catch(\Exception $e)
+        {
+            freepbx_log(FPBX_LOG_ERROR, "Soundlang is missing, please install it.");
+            $settings['lang'] = self::recording_lang_default;
+        }
+
         return $settings;
     }
 
@@ -135,6 +149,11 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $this->delById('setting');
         $this->setSettingAll($this->getSettingAll());
         return true;
+    }
+
+    public function getDefualtLanguage(): string
+    {
+        return self::recording_lang_default;
     }
 
     public function doConfigPageInit($page)
@@ -325,9 +344,9 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
     {
         // ** Allow remote consultation with Postman, debugging, etc. **
         // ********************************************
-        // $setting['authenticate'] = false;
-        // $setting['allowremote'] = true;
-        // return true;
+        $setting['authenticate'] = false;
+        $setting['allowremote'] = true;
+        return true;
         // ********************************************
         switch ($req)
         {
@@ -338,6 +357,8 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
             case 'get_destinations':
             case 'get_settings':
             case 'check_update':
+            case 'getrecording':
+            case 'getfile':
                 return true;
                 break;
         }
@@ -431,6 +452,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     $this->dpp->log(5, sprintf("Dial Plan Graph for %s %s:\n%s", $extdisplay, $cid, $gtext));
 
                     //$gtext = str_replace(["\n"], ["\\n"], $gtext);
+                    $gtext = str_replace(array("\r\n", "\r", "\n"), "\\n", $gtext);
 
                     $data_return = [
                         'status'       => 'success',
@@ -518,6 +540,110 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     }
                 }
                 break;
+
+            case 'getrecording':
+
+                $id     = intval($request['id'] ?? 0);
+                $format = $request['format'] ?? self::recording_format_default;
+
+                // $fpbxResults = \FreePBX::Recordings()->getRecordingById($id);
+                try
+                {
+                    $recordings  = \FreePBX::create()->Recordings;
+                    $fpbxResults = $recordings->getRecordingById($id);
+                }
+                catch(\Exception $e)
+                {
+                    freepbx_log(FPBX_LOG_ERROR, "Recordings is missing, please install it.");
+                    $fpbxResults = [];
+                }
+
+                $filename    = $fpbxResults['filename'] ?? '';
+                $fcode_lang  = $fpbxResults['fcode_lang'] ?? 'en'; // get the default language from the recording config, is not set, use 'en'
+                $lang        = $request['lang'] ?? $fcode_lang;    // if not set, use the default language from the recording config
+
+                $playbacklist = is_array($fpbxResults['playbacklist'] ?? null) ? $fpbxResults['playbacklist'] : [];
+
+                $audiolist = [];
+                $codecs    = [];
+                foreach ($playbacklist as $f)
+                {
+                    $codec = [
+                        'filename'      => $f,
+                        'filename_lang' => $fpbxResults['soundlist'][$f]['filenames'][$lang] ?? '',
+                        'filename_def'   => $fpbxResults['soundlist'][$f]['filenames'][self::recording_lang_default] ?? '',
+                        'lang'          => $lang,
+                        'hasFormat'     => in_array($format, $fpbxResults['soundlist'][$f]['codecs'][$lang] ?? []), // check if the format is available for the recording
+                        'hasFormat_def'  => in_array($format, $fpbxResults['soundlist'][$f]['codecs'][self::recording_lang_default] ?? []), // check if the format is available for the recording
+                    ];
+                    $codecs[$f]  = $codec;
+                    $audiolist[] = $codec['hasFormat'] ? $codec['filename_lang'] : $codec['filename_def'];
+                }
+                $audiolist_str = implode('&', $audiolist);
+
+                $data_return = [
+                    'displayname' => $fpbxResults['displayname'] ?? _('Unknown'),
+                    'lang'        => $lang,
+                    'format'      => $format,
+                    'filename'    => $audiolist_str,
+                    'codecs'      => $codecs,
+                    'recording'   => $fpbxResults, // full info from the recording, in case you want to use it in the front end
+                ];
+                break;
+
+            case 'getfile':
+                $base_filename = $request['file'] ?? '';
+                $format_file   = $request['format'] ?? self::recording_format_default;
+
+                $base_filename = str_replace(['../', '..\\'], '', $base_filename); // remove any ../ or ..\
+
+
+                // error_log($base_filename);
+                if (empty($base_filename))
+                {
+                    http_response_code(400);
+                    echo _("File name is empty.");
+                    exit;
+                }
+
+                if (!in_array($format_file, self::recording_format_allow))
+                {
+                    http_response_code(400);
+                    echo sprintf(_("File format '%s' not supported, onley allow '%s'."), $format_file, implode(',', self::recording_format_allow));
+                    exit;
+                }
+
+                $path_filename = realpath(sprintf("/var/lib/asterisk/sounds/%s.%s", $base_filename, $format_file));
+                if (empty($path_filename))
+                {
+                    http_response_code(400);
+                    echo sprintf(_("File '%s' not found."), $base_filename);
+                    exit;
+                }
+
+                if (! file_exists($path_filename) || !is_readable($path_filename))
+                {
+                    http_response_code(404);
+                    echo _("File not found or not readable.");
+                    exit;
+                }
+
+                switch ($format_file)
+                {
+                    case 'wav':
+                        $mime_type = 'audio/wav';
+                    break;
+
+                    default:
+                        $mime_type = 'application/octet-stream';
+                    break;
+                }
+
+    			header(sprintf('Content-Type: %s', $mime_type));
+	    		header(sprintf('Content-Length: %s', filesize($path_filename)));
+			    header(sprintf('X-Filename: %s.%s', $base_filename, $format_file));
+			    readfile($path_filename);
+			    exit;
 
             default:
                 $data_return = ['status' => 'error', 'message' => _("❌ Unknown command")];

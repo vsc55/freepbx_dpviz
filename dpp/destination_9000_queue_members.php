@@ -26,10 +26,10 @@ class DestinationQueueMembers extends baseDestinations
         {
             $label = $qextension;
         }
-        $label = $this->dpp->sanitizeLabels($label);
+        $label = $this->sanitizeLabels($label);
 
         $node->attribute('label', $label);
-        $node->attribute('tooltip', $node->getAttribute('label'));
+        $node->attribute('tooltip', $label);
 
         if (!is_numeric($label))
         {

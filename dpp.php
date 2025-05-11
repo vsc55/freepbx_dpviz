@@ -483,6 +483,8 @@ class dpp {
     {
         $optional = preg_match('/^[ANY_xX+\d\[\]]+$/', $optional) ? '' : $optional;
 
+        $langOption = $this->dpviz->getSetting('lang', $this->dpviz->getDefualtLanguage());
+
         if (! isset ($route['dpgraph']))
         {
             $route['dpgraph'] = new \Alom\Graphviz\Digraph('"'.$route['extension'].'"');
@@ -543,7 +545,8 @@ class dpp {
                 'style'     => 'filled',
                 'URL'       => htmlentities('/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)),
                 'target'    =>'_blank',
-                'fillcolor' => 'darkseagreen'
+                'fillcolor' => 'darkseagreen',
+		        'comment'   => $langOption,
             );
             $dpgraph->node($route['extension'], $node_extension);
 
@@ -570,7 +573,7 @@ class dpp {
             elseif ($route['destination'] != '')
             {
                 $route['parent_edge_label'] = _(" Always");
-                $this->followDestinations($route, $route['destination'], '');
+                $this->followDestinations($route, sprintf("%s,%s", $route['destination'], $langOption), '');
             }
             return;
         }
@@ -608,14 +611,17 @@ class dpp {
             $edge->attribute('label', $this->sanitizeLabels($route['parent_edge_label']));
             $edge->attribute('labeltooltip', $this->sanitizeLabels($ptxt));
             $edge->attribute('edgetooltip', $this->sanitizeLabels($ptxt));
-
         }
         else
         {
             $this->log(9, sprintf(_("Making an edge from %s -> %s"), $ptxt, $ntxt));
             $edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
             $edge->attribute('label', $this->sanitizeLabels($route['parent_edge_label']));
-            $edge->attribute('labeltooltip', $this->sanitizeLabels($route['parent_edge_label']));
+            $edge->attribute('labeltooltip', $this->sanitizeLabels($ptxt));
+		    $edge->attribute('edgetooltip', $this->sanitizeLabels($ptxt));
+
+            $lang = $route['parent_node']->getAttribute('comment', ''); //get current lang from parent
+            $node->attribute('comment', $lang);                         //set current lang on this new parent node
 
             if (preg_match("/^( Match| No Match)/", $route['parent_edge_label']))
             {

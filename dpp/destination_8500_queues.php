@@ -29,9 +29,9 @@ class DestinationQueues extends baseDestinations
             $maxwait = $this->dpp->secondsToTimes($q['maxwait']);
         }
 
-        $label = sprintf(_("Queue %s: %s"), $qnum, $q['descr']);
+        $label = $this->sanitizeLabels(sprintf(_("Queue %s: %s"), $qnum, $q['descr']));
 
-        $node->attribute('label', $this->dpp->sanitizeLabels($label));
+        $node->attribute('label', $label);
         $node->attribute('URL', $this->genUrlConfig('queues', $qnum)); //'/admin/config.php?display=queues&view=form&extdisplay='.$qnum
         $node->attribute('target', '_blank');
         $node->attribute('shape', 'hexagon');
@@ -44,8 +44,8 @@ class DestinationQueues extends baseDestinations
             {
                 foreach ($type as $member)
                 {
-                    $route['parent_node']             = $node;
-                    $route['parent_edge_label']       = ($types == 'static') ? _(" Static") : _(" Dynamic");
+                    // $route['parent_node']             = $node;
+                    // $route['parent_edge_label']       = ($types == 'static') ? _(" Static") : _(" Dynamic");
                     $route['parent_edge_data_status'] = $types;
                     switch ($combineQueueRing)
                     {
@@ -56,8 +56,11 @@ class DestinationQueues extends baseDestinations
                         default:
                             $go = sprintf('qmember%s', $member);
                     }
-                    $this->dpp->followDestinations($route, $go,'');
-                    // $this->dpp->followDestinations($route, sprintf('qmember%s', $member),'');
+
+                    // $this->dpp->followDestinations($route, $go,'');
+                    // // $this->dpp->followDestinations($route, sprintf('qmember%s', $member),'');
+
+                    $this->findNextDestination($route, $node, $go, ($types == 'static') ? _(" Static") : _(" Dynamic"));
                 }
             }
         }
@@ -66,18 +69,22 @@ class DestinationQueues extends baseDestinations
         # and the no-answer destination.
         if ($q['dest'] != '')
         {
-            $route['parent_node']       = $node;
-            $route['parent_edge_label'] = sprintf(_(" No Answer (%s)"), $maxwait);
+            $this->findNextDestination($route, $node, $q['dest'], sprintf(_(" No Answer (%s)"), $maxwait));
 
-            $this->dpp->followDestinations($route, $q['dest'],'');
+            // $route['parent_node']       = $node;
+            // $route['parent_edge_label'] = sprintf(_(" No Answer (%s)"), $maxwait);
+
+            // $this->dpp->followDestinations($route, sprintf("%s,%s", $q['dest'], $lang),'');
         }
 
         if (is_numeric($q['ivr_id']))
         {
-            $route['parent_node']       = $node;
-            $route['parent_edge_label'] = sprintf(_(" IVR Break Out (every %s)"), $this->dpp->secondsToTimes($q['data']['min-announce-frequency']));
+            $this->findNextDestination($route, $node, sprintf('ivr-%s,s,1', $q['ivr_id']), sprintf(_(" IVR Break Out (every %s)"), $this->dpp->secondsToTimes($q['data']['min-announce-frequency'])));
 
-            $this->dpp->followDestinations($route, sprintf('ivr-%s,s,1', $q['ivr_id']),'');
+            // $route['parent_node']       = $node;
+            // $route['parent_edge_label'] = sprintf(_(" IVR Break Out (every %s)"), $this->dpp->secondsToTimes($q['data']['min-announce-frequency']));
+
+            // $this->dpp->followDestinations($route, sprintf('ivr-%s,s,1,%s', $q['ivr_id'], $lang),'');
         }
     }
 }
