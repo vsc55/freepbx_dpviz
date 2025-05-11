@@ -3,7 +3,7 @@ namespace FreePBX\modules\Dpviz\dpp\table;
 
 require_once __DIR__ . '/baseTables.php';
 
-class TableKvstoreFreepbxMmodulesCalendar extends baseTables
+class TableKvstoreFreepbxModulesCalendar extends baseTables
 {
     public const PRIORITY = 7000;
 

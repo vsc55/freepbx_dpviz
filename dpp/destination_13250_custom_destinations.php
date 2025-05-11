@@ -3,7 +3,7 @@ namespace FreePBX\modules\Dpviz\dpp\destination;
 
 require_once __DIR__ . '/baseDestinations.php';
 
-class DestinationCustoDestinations extends baseDestinations
+class DestinationCustomDestinations extends baseDestinations
 {
     #Custom Destinations (with return)
 

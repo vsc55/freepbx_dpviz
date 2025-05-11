@@ -122,6 +122,7 @@ abstract class baseDestinations extends baseDpp
         {
             $destination = $this->applyLanguage($destination);
         }
+
         $this->dpp->followDestinations($route, $destination, '');
         return true;
     }
