@@ -125,22 +125,6 @@ $(document).ready(function()
     // Read settings
     getSettings();
 
-    //load side bar if svgContainer is empty
-    if (!window.dpviz.svgContainer)
-    {
-        // Wait for the element to exist before modifying it
-        let checkExist = setInterval(function ()
-        {
-            const activeHref = $('.nav-tabs li.active a').attr('href');
-            if (activeHref)
-            {
-                handleTabChange(activeHref);
-                clearInterval(checkExist);
-            }
-        }, 500); // Check every 500m
-    }
-
-
     /**
      * Retrieves the backend settings for the dpviz module and updates window.dpviz.
      *
