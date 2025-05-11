@@ -15,6 +15,9 @@ abstract class baseTables extends baseDpp
     protected $key_id   = "id";
     protected $key_name = "";
 
+    const PRIORITY = 0;
+
+
     /**
      * Constructor
      *

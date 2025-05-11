@@ -19,10 +19,11 @@ class DestinationIvr extends baseDestinations
         $iflag  = $matches[2];
         $iother = $matches[3];
 
-        $ivr        = $route['ivrs'][$inum];
-        $recID      = $ivr['announcement'] ?? '';
-        $ivrName    = $ivr['name'] ?? '';
-        $ivrRecName = _("None");
+        $ivr                   = $route['ivrs'][$inum];
+        $recID                 = $ivr['announcement'] ?? '';
+        $ivrName               = $ivr['name'] ?? '';
+        $ivrDestination        = $ivr['invalid_destination'] ?? '';
+        $ivrDestinationTimeout = $ivr['timeout_destination'] ?? '';
 
         if (isset($route['recordings'][$recID]))
         {
@@ -30,9 +31,10 @@ class DestinationIvr extends baseDestinations
 			$ivrRecName  = $recording['displayname'];
 			$recordingId = $recording['id'];
 		}
-
-        $ivrDestination        = $ivr['invalid_destination'] ?? '';
-        $ivrDestinationTimeout = $ivr['timeout_destination'] ?? '';
+        else
+        {
+            $ivrRecName = _("None");
+        }
 
         #feature code exist?
         if ( isset($route['featurecodes']['*29'.$recID]) )
@@ -47,7 +49,7 @@ class DestinationIvr extends baseDestinations
                 $featurenum = $route['featurecodes']['*29'.$recID]['defaultcode'];
             }
             #is it enabled?
-            $rec_active = ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ? _("yes"): _("no");
+            $rec_active = ($route['recordings'][$recID]['fcode'] == '1') && ($route['featurecodes']['*29'.$recID]['enabled'] == '1') ? _("yes"): _("no");
             $rec_status = $featurenum;
         }
         else

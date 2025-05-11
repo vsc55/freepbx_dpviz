@@ -108,12 +108,6 @@ abstract class baseDestinations extends baseDpp
         }
     }
 
-    function callback_followDestinations(&$route, &$node, $destination, $matches)
-    {
-        // This function should be overridden in the child class
-        return false;
-    }
-
     protected function findNextDestination(&$route, &$node, $destination, $label = '', $appyLang = true)
     {
         if (empty($route) || empty($node))
