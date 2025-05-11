@@ -321,15 +321,15 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         return $data_return;
     }
 
-    public function getRightNav($request, $params = array())
-    {
-        $data = array(
-            'request'  => $request,
-            'url_ajax' => 'ajax.php?module=core&amp;command=getJSON&amp;jdata=allDID'
-        );
-        $data = array_merge($data, $params);
-        return load_view(__DIR__.'/views/rnav.php', $data);
-    }
+    // public function getRightNav($request, $params = array())
+    // {
+    //     $data = array(
+    //         'request'  => $request,
+    //         'url_ajax' => 'ajax.php?module=core&amp;command=getJSON&amp;jdata=allDID'
+    //     );
+    //     $data = array_merge($data, $params);
+    //     return load_view(__DIR__.'/views/rnav.php', $data);
+    // }
 
     public function ajaxRequest($req, &$setting)
     {
@@ -366,24 +366,29 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     'status' => 'success',
                     'message' => '',
                     'i18n' => [
-                        'yes'                      => _("Yes"),
-                        'no'                       => _("No"),
-                        'loading'                  => _("Loading..."),
-                        'ANY'                      => _("ANY"),
-                        'ajax_failed'              => _("⚠ Could not connect to the server"),
-                        'ajax_response_status_err' => _("⚠ Something went wrong"),
-                        'ajax_response_empty'      => _("⚠ Received empty or invalid response"),
-                        'reset_settings_confirm'   => _("Are you sure you want to reset all settings to default?"),
-                        'submit_settings_confirm'  => _("Are you sure you want to save the settings?"),
-                        'settings_get_error'       => _("⚠ An unexpected error occurred: %s"),
-                        'export_filename_missing'  => _("Error: Filename is Empty!"),
-                        'export_error_image'       => _("❌ Error exporting image:"),
-                        'export_blocked_popup'     => _("⚠ The browser blocked the popup."),
-                        'btn_highlight'            => _("Highlight Paths"),
-                        'btn_highlight_remove'     => _("Remove Highlights"),
-                        'destination_empty'        => _("No Destination"),
-                        'destination_err_loading'  => _("⚠ Error loading destination"),
-                        'destination_err_unknown'  => _("⚠ Unknown error while loading destinations"),
+                        'yes'                         => _("Yes"),
+                        'no'                          => _("No"),
+                        'loading'                     => _("⏳ Loading..."),
+                        'ANY'                         => _("ANY"),
+                        'ajax_failed'                 => _("⚠ Could not connect to the server"),
+                        'ajax_response_status_err'    => _("⚠ Something went wrong"),
+                        'ajax_response_empty'         => _("⚠ Received empty or invalid response"),
+                        'reset_settings_confirm'      => _("Are you sure you want to reset all settings to default?"),
+                        'submit_settings_confirm'     => _("Are you sure you want to save the settings?"),
+                        'settings_get_error'          => _("⚠ An unexpected error occurred: %s"),
+                        'export_filename_missing'     => _("Error: Filename is Empty!"),
+                        'export_error_image'          => _("❌ Error exporting image:"),
+                        'export_blocked_popup'        => _("⚠ The browser blocked the popup."),
+                        'btn_highlight'               => _("Highlight Paths"),
+                        'btn_highlight_remove'        => _("Remove Highlights"),
+                        'destination_empty'           => _("No Destination"),
+                        'destination_err_loading'     => _("⚠ Error loading destination pretty name"),
+                        'destination_err_unknown'     => _("⚠ Unknown error while loading destinations"),
+                        'inbound_routes_loading_dest' => _("⏳ Loading destination pretty name..."),
+                        'inbound_routes_empty'        => _("⚠ No Inbound Routes found"),
+                        'inbound_routes_select'       => _("Select an Inbound Route"),
+                        'inbound_routes_refresh'      => _("✔ Refresh Inbound Routes Successfully"),
+                        'inbound_routes_loading'      => _("⏳ Loading Inbound Routes..."),
                     ]
                 ];
                 break;

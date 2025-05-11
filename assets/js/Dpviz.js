@@ -20,7 +20,7 @@ function loadScripts(urls, callback)
     const promises = urls.map(url => new Promise((resolve, reject) => {
         loadScript(url, resolve);
     }));
-    Promise.all(promises).then(callback).catch(err => console.error(_('❌ Script loading error:'), err));
+    Promise.all(promises).then(callback).catch(err => console.error(_("❌ Script loading error:"), err));
 }
 
 function enableToolbarButtons()
@@ -30,7 +30,8 @@ function enableToolbarButtons()
 
 function disableToolbarButtons()
 {
-    $('.btn-toolbar').find('button, input, select, textarea, spinner').prop('disabled', true);
+    // $('.btn-toolbar').find('button, input, select, textarea, spinner').prop('disabled', true);
+    $('.btn-toolbar').find('button, input, select, textarea, spinner').not('#list_inbound_routes_reload, #list_inbound_routes *').prop('disabled', true);
 }
 
 function safeDecode(value, defaultValue = '')
@@ -92,7 +93,7 @@ $(document).ready(function()
     loadScripts([
         'modules/dpviz/assets/js/viz.min.js',
         'modules/dpviz/assets/js/full.render.js',
-        // 'modules/dpviz/assets/js/panzoom.min.js',
+        'modules/dpviz/assets/js/panzoom.min.js',
         'modules/dpviz/assets/js/svg-pan-zoom.min.js',
         'modules/dpviz/assets/js/html2canvas.min.js',
     ]);
@@ -455,35 +456,35 @@ $(document).ready(function()
 
                         if ($svgElement.length && window.dpviz.settings.panzoom === "1")
                         {
-                            // panzoom($svgElement[0], {
-                            //     zoomDoubleClickSpeed: 1, // disables double click to zoom
-                            // });
-                            svgPanZoom($svgRoot[0], {
-                                zoomEnabled: true,           // enables zooming
-                                controlIconsEnabled: true,   // active control icons
-                                fit: true,                   // fit the SVG to the viewport
-                                center: true,                // center the SVG in the viewport
-                                panEnabled: true,            // enables panning
-                                mouseWheelZoomEnabled: true, // enables mouse wheel zoom
-                                minZoom: 0.5,                // minimum zoom level
-                                maxZoom: 10,                 // maximum zoom level
-                                zoomScaleSensitivity: 0.2,   // controls how fast the wheel zooms (higher = faster)
-                                dblClickZoomEnabled: false,  // disables double click to zoom
-                                // beforeZoom: function(oldZoom, newZoom) {
-                                //     console.log('Antes del zoom:', oldZoom, '→', newZoom);
-                                //     return true; // si devuelves false, cancela el zoom
-                                // },
-                                // onZoom: function(zoom) {
-                                //     console.log('Después del zoom:', zoom);
-                                // },
-                                // beforePan: function(oldPan, newPan) {
-                                //     console.log('Antes del pan:', oldPan, '→', newPan);
-                                //     return true;
-                                // },
-                                // onPan: function(pan) {
-                                //     console.log('Después del pan:', pan);
-                                // }
+                            panzoom($svgElement[0], {
+                                zoomDoubleClickSpeed: 1, // disables double click to zoom
                             });
+                            // svgPanZoom($svgRoot[0], {
+                            //     zoomEnabled: true,           // enables zooming
+                            //     controlIconsEnabled: true,   // active control icons
+                            //     fit: true,                   // fit the SVG to the viewport
+                            //     center: true,                // center the SVG in the viewport
+                            //     panEnabled: true,            // enables panning
+                            //     mouseWheelZoomEnabled: true, // enables mouse wheel zoom
+                            //     minZoom: 0.5,                // minimum zoom level
+                            //     maxZoom: 10,                 // maximum zoom level
+                            //     zoomScaleSensitivity: 0.2,   // controls how fast the wheel zooms (higher = faster)
+                            //     dblClickZoomEnabled: false,  // disables double click to zoom
+                            //     // beforeZoom: function(oldZoom, newZoom) {
+                            //     //     console.log('Antes del zoom:', oldZoom, '→', newZoom);
+                            //     //     return true; // si devuelves false, cancela el zoom
+                            //     // },
+                            //     // onZoom: function(zoom) {
+                            //     //     console.log('Después del zoom:', zoom);
+                            //     // },
+                            //     // beforePan: function(oldPan, newPan) {
+                            //     //     console.log('Antes del pan:', oldPan, '→', newPan);
+                            //     //     return true;
+                            //     // },
+                            //     // onPan: function(pan) {
+                            //     //     console.log('Después del pan:', pan);
+                            //     // }
+                            // });
                         }
 
                         $(element).find('g.node').on('click', function (e)
@@ -1014,4 +1015,195 @@ $(document).ready(function()
         }
     }
 
+
+
+
+    function appendPlaceholderOption(select, textKey)
+    {
+        select.append($('<option>', {
+            value: '',
+            text: i18nStr(textKey),
+            disabled: true,
+            selected: true
+        }));
+    }
+
+    function createInboundOption(item, loading = true)
+    {
+        const description = item.description || '';
+        const extension   = safeDecode(item.extension) || i18nStr("ANY");
+        const cidnum      = safeDecode(item.cidnum);
+        const name        = (cidnum !== "") ? sprintf("%s / %s", extension, cidnum) : extension;
+        let subtext       = sprintf(_("From %s To %s"), description, item.destination);
+
+        if (loading)
+        {
+            subtext = sprintf(_("From %s || %s"), description, i18nStr('inbound_routes_loading_dest'));
+        }
+        return $('<option>', {
+            value: item.destination,
+            text: name,
+            'data-subtext': subtext,
+            'data-cidnum': item.cidnum || '',
+            'data-extension': item.extension || '',
+            'data-description': description,
+            'data-destination': item.destination
+        });
+    }
+
+    function getPrettyNameDestination(e, value)
+    {
+        const description        = e.data('description');
+        const defaultDestination = e.data('destination');
+        let displayDestination   = sprintf(_("From %s To %s"), description, defaultDestination);
+
+        if (!window.dpviz.rnav.destinationsReady)
+        {
+            if (value === '__dpviz_error__')
+            {
+                displayDestination = sprintf("%s || %s", displayDestination, i18nStr('destination_err_loading'));
+            }
+            else
+            {
+                displayDestination = sprintf(_("From %s || %s"), description, i18nStr('inbound_routes_loading_dest'));
+            }
+        }
+        else
+        {
+            const dest = window.dpviz.rnav.destinations?.[value];
+            if (dest && dest !== defaultDestination)
+            {
+                const prefix = dest.category || dest.name || '';
+                displayDestination = sprintf(_("From %s To %s: %s"), description, prefix, dest.description);
+            }
+        }
+        e.attr('data-subtext', displayDestination);
+        e.closest('select').selectpicker('refresh');
+    }
+
+    function retryUpdateDestinationCell(e, value, attempt = 0)
+    {
+        // Maximum number of attempts and delay, e.g., 10 attempts with 500ms delay = 5 seconds (5/0.5 = 10)
+        const MAX_ATTEMPTS = 80;  // 40 seconds timeout
+        const DELAY_MS     = 500; // 500ms delay
+
+        if (window.dpviz.rnav.destinationsReady)
+        {
+            getPrettyNameDestination(e, value);
+        }
+        else if (attempt < MAX_ATTEMPTS)
+        {
+            setTimeout(() => { retryUpdateDestinationCell(e, value, attempt + 1); }, DELAY_MS);
+        }
+        else
+        {
+            getPrettyNameDestination(e, '__dpviz_error__');
+        }
+    }
+
+    function loadSelectOptionsGetDestinations()
+    {
+        if (window.dpviz.rnav.destinationsLoaded) return;
+
+        window.dpviz.rnav.destinationsLoaded = true;
+        window.dpviz.rnav.destinationsReady  = false;
+        window.dpviz.rnav.destinations       = {};
+
+        const post_data = {
+            'module' : 'dpviz',
+            'command': 'get_destinations'
+        };
+        $.post(window.FreePBX.ajaxurl, post_data, 'json')
+        .done(function(response)
+        {
+            if (response.status === "success" && response.destinations)
+            {
+                window.dpviz.rnav.destinations      = response.destinations;
+                window.dpviz.rnav.destinationsReady = true;
+            }
+            else
+            {
+                fpbxToast(response.message || i18nStr('destination_err_unknown'), '', 'error');
+            }
+        })
+        .fail(function ()
+        {
+            fpbxToast(i18nStr('ajax_failed'), '', 'error');
+        });
+    }
+
+    function loadSelectOptions(show_message = true)
+    {
+        loadSelectOptionsGetDestinations();
+
+        const select = $('#list_inbound_routes');
+        const reload = $('#list_inbound_routes_reload');
+
+        reload.prop('disabled', true);
+        select.empty();
+        appendPlaceholderOption(select, "inbound_routes_loading");
+
+        const post_data = {
+            module: 'core',
+            command: 'getJSON',
+            jdata: 'allDID'
+        };
+        return $.post(this.ajaxurl, post_data, 'json')
+        .done(response => {
+            select.empty();
+
+            if (response.length === 0)
+            {
+                appendPlaceholderOption(select, "inbound_routes_empty");
+            }
+            else
+            {
+                appendPlaceholderOption(select, "inbound_routes_select");
+                response.forEach(item => {
+                    const option = createInboundOption(item, true);
+                    retryUpdateDestinationCell(option, item.destination);
+                    select.append(option);
+                });
+            }
+        })
+        .fail((xhr, status, error) => {
+            fpbxToast("⚠ Could not connect to the server", '', 'error');
+            console.error("❌ Network error:", error || status);
+        })
+        .always(() => {
+            select.selectpicker('refresh'); // Refresh the selectpicker to show the new options
+            reload.prop('disabled', false);
+
+            if (show_message)
+            {
+                fpbxToast(i18nStr('inbound_routes_refresh'), '', 'success');
+            }
+        });
+    }
+
+
+
+
+    $('#list_inbound_routes').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue)
+    {
+        const selOption = $(this).find('option').eq(clickedIndex); // obtiene el objeto <option> completo
+        if (!selOption.length) return;
+
+        // const selValue = $(this).val();
+        // const selText = $(this).find('option:selected').text();
+
+        const extension = selOption.data('extension');
+        const cidnum    = selOption.data('cidnum');
+
+        window.dpviz.ext = safeDecode(extension);
+        window.dpviz.cid = safeDecode(cidnum);
+        generateVisualization('');
+    });
+
+    $('#list_inbound_routes_reload').on('click', function() {
+        loadSelectOptions(true);
+    });
+
+
+    loadSelectOptions(false);
 });

@@ -25,9 +25,23 @@
                                 <i class="fa fa-magic"></i> <?= _("Highlight Paths") ?>
                             </button>
                         </div>
-                        <div class="input-group mr-2 ml-auto" role="group">
+
+                        <div class="input-group mr-2 flex-grow-1" role="group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text px-5">
+                                <span class="input-group-text px-4"><?= _("Inbound Routes") ?></span>
+                            </div>
+                            <select class="selectpicker form-control" id="list_inbound_routes" data-live-search="true" data-header="<?= _("Inbound Routes") ?>" data-none-selected-text="<?= _("Select an Inbound Route") ?>" data-size="5" data-show-subtext="true">
+                            </select>
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" type="button" id="list_inbound_routes_reload">
+                                    <i class="fa fa-refresh"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="input-group mr-2" role="group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text px-4">
                                     <i class="fa fa-file mr-2"></i> <?= _("Export as") ?>
                                 </span>
                             </div>

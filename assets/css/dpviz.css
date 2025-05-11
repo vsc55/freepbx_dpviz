@@ -96,3 +96,12 @@ svg {
     transform: translate(-50%, -50%);
     z-index: 9999;
 }
+
+.input-group .bootstrap-select {
+    flex: 1 1 auto;     /* allows the bootstrap-select to grow and shrink */
+}
+
+.input-group .bootstrap-select .btn {
+    height: 100%;       /* makes the button fill the input group */
+    border-radius: 0;   /* removes the border radius */
+}
