@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '9060ae0ad473b5510787ccadd23967ecf4deba7c',
+        'reference' => '99efe761ae1e542225b1d2a007b64cac432ce954',
         'name' => '__root__',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '9060ae0ad473b5510787ccadd23967ecf4deba7c',
+            'reference' => '99efe761ae1e542225b1d2a007b64cac432ce954',
             'dev_requirement' => false,
         ),
         'alom/graphviz' => array(
@@ -36,6 +36,15 @@
             'aliases' => array(),
             'reference' => 'e190d4466fe2b103a55467dfa83fc2fecfcaf2db',
             'dev_requirement' => false,
+        ),
+        'squizlabs/php_codesniffer' => array(
+            'pretty_version' => '3.13.0',
+            'version' => '3.13.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../squizlabs/php_codesniffer',
+            'aliases' => array(),
+            'reference' => '65ff2489553b83b4597e89c3b8b721487011d186',
+            'dev_requirement' => true,
         ),
     ),
 );
