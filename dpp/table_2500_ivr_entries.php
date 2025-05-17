@@ -20,7 +20,7 @@ class TableIvrEntries extends BaseTables
         ];
     }
 
-    public function callbackLoad(&$dproute)
+    public function callbackLoad()
     {
         foreach ($this->getTableData() as $ent) {
             if (!$this->checkItemLoad($ent)) {
@@ -38,12 +38,6 @@ class TableIvrEntries extends BaseTables
             $this->route[$this->key_name][$id]['entries'][$selid] = $ent;
 
             $this->logRoute($id, $isNew, '{action}  >>  {table} entry  >  ivr [{id}]    selid [{selid}]', ['{selid}' => $selid], 9);
-
-
-            // $id    = $ent[$this->key_id];
-            // $selid = $ent['selection'];
-            // $dproute[$this->key_name][$id]['entries'][$selid] = $ent;
-            // $this->log(9, sprintf("entry:  ivr=%s   selid=%s", $id, $selid));
         }
         return true;
     }

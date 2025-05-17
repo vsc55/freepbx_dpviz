@@ -15,7 +15,7 @@ class TableAnnouncement extends BaseTables
         $this->key_name    = "announcements";
     }
 
-    public function callbackLoad(&$dproute)
+    public function callbackLoad()
     {
         foreach ($this->getTableData() as $an) {
             if (!$this->checkItemLoad($an)) {
@@ -30,14 +30,6 @@ class TableAnnouncement extends BaseTables
             $item = $an;
             $item['dest'] = $an['post_dest'];
             $this->setRoute($id, $item, false, true, '{action}  >>  {table} dest  >  an [{id}]    dest [{dest}]', ['{dest}' => $item['dest']], 9);
-
-
-            // $id = $an[$this->key_id];
-            // $dest = $an['post_dest'];
-            // $dproute[$this->key_name][$id] = $an;
-            // $dproute[$this->key_name][$id]['dest'] = $dest;
-
-            // $this->log(9, sprintf("announcement dest:  an=%s   dest=%s", $id, $dest));
         }
         return true;
     }

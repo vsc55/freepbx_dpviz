@@ -15,7 +15,7 @@ class TableKvstoreFreepbxModulesCalendar extends BaseTables
         $this->key_name = "calendar";
     }
 
-    public function callbackLoad(&$dproute)
+    public function callbackLoad()
     {
         foreach ($this->getTableData() as $calendar) {
             if (!$this->checkItemLoad($calendar)) {
@@ -24,10 +24,6 @@ class TableKvstoreFreepbxModulesCalendar extends BaseTables
             switch ($calendar['id']) {
                 case 'calendars':
                 case 'groups':
-                    // $id = $calendar['key'];
-                    // $dproute[$this->key_name][$id] = json_decode($calendar['val'], true);
-                    // $this->log(9, sprintf("calendars=%s", $id));
-
                     $id = $calendar[$this->key_id];
                     if ($this->skipIfEmptyAny([$id => $this->key_id])) {
                         continue;

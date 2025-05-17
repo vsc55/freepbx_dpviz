@@ -16,7 +16,7 @@ class TableIncoming extends BaseTables
         $this->key_name = "incoming";
     }
 
-    public function callbackLoad(&$dproute)
+    public function callbackLoad()
     {
         foreach ($this->getTableData() as $incoming) {
             if (!$this->checkItemLoad($incoming)) {
@@ -25,9 +25,6 @@ class TableIncoming extends BaseTables
             $id = $this->getId($incoming);
             $id = empty($id) ? 'ANY' : $id;
             $this->setRoute($id, $incoming);
-
-            // $id = empty($incoming[$this->key_id]) ? 'ANY' : $incoming[$this->key_id];
-            // $dproute[$this->key_name][$id] = $incoming;
         }
         return true;
     }

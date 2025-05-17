@@ -16,7 +16,7 @@ class TableQueuesConfig extends BaseTables
         $this->key_name = "queues";
     }
 
-    public function callbackLoad(&$dproute)
+    public function callbackLoad()
     {
         foreach ($this->getTableData() as $result) {
             if (!$this->checkItemLoad($result)) {
@@ -30,15 +30,6 @@ class TableQueuesConfig extends BaseTables
             $item['members']['static']  = array();
             $item['members']['dynamic'] = array();
             $this->setRoute($id, $item);
-
-
-
-
-            // $id = $result[$this->key_id];
-
-            // $dproute[$this->key_name][$id] = $result;
-            // $dproute[$this->key_name][$id]['members']['static']  = array();
-            // $dproute[$this->key_name][$id]['members']['dynamic'] = array();
         }
         return true;
     }

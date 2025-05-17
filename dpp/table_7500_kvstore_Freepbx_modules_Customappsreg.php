@@ -15,7 +15,7 @@ class TableKvstoreFreepbxModulesCustomappsreg extends BaseTables
         $this->key_name = "customapps";
     }
 
-    public function callbackLoad(&$dproute)
+    public function callbackLoad()
     {
         foreach ($this->getTableData() as $customappsreg) {
             if (!$this->checkItemLoad($customappsreg)) {
@@ -28,11 +28,6 @@ class TableKvstoreFreepbxModulesCustomappsreg extends BaseTables
                 }
                 $item = json_decode($customappsreg['val'], true);
                 $this->setRoute($id, $item);
-
-                // $id  = $customappsreg[$this->key_id];
-                // $val = json_decode($customappsreg['val'], true);
-                // $dproute[$this->key_name][$id] = $val;
-                // $this->log(9, sprintf("customapps=%s", $id));
             }
         }
         return true;

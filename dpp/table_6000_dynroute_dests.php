@@ -19,7 +19,7 @@ class TableDynrouteDests extends BaseTables
         ];
     }
 
-    public function callbackLoad(&$dproute)
+    public function callbackLoad()
     {
         foreach ($this->getTableData() as $dynroute_dests) {
             if (!$this->checkItemLoad($dynroute_dests)) {
@@ -33,10 +33,6 @@ class TableDynrouteDests extends BaseTables
 
             $this->route[$this->key_name][$id]['routes'][$selid] = $dynroute_dests;
             $this->logRoute($id, false, '{action}  >>  {table} route  >  id [{id}]    selid [{selid}]', ['{selid}' => $selid], 9);
-
-
-            // $dproute[$this->key_name][$id]['routes'][$selid] = $dynroute_dests;
-            // $this->log(9, sprintf("dynroute_dests: dynroute=%s match=%s", $id, $selid));
         }
         return true;
     }

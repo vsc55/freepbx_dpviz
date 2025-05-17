@@ -90,7 +90,7 @@ abstract class BaseTables extends BaseDpp
             $this->log(9, sprintf("Call function '%s' in '%s' table", $this->callBack, $this->getTableName()));
 
             $callback = [$this, $this->callBack];
-            $args     = [&$this->route];
+            $args     = [];
 
             return call_user_func_array($callback, $args);
         }

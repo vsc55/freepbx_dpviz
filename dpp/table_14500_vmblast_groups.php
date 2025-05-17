@@ -19,7 +19,7 @@ class TableVmblastGroups extends BaseTables
         ];
     }
 
-    public function callbackLoad(&$dproute)
+    public function callbackLoad()
     {
         foreach ($this->getTableData() as $vmblastsGrp) {
             if (!$this->checkItemLoad($vmblastsGrp)) {
@@ -33,9 +33,6 @@ class TableVmblastGroups extends BaseTables
 
             $this->route[$this->key_name][$id]['members'][] = $vmblastsGrp['ext'];
             $this->logRoute($id, false);
-
-            // $dproute[$this->key_name][$id]['members'][] = $vmblastsGrp['ext'];
-            // $this->log(9, sprintf("vmblast:  vmblast=%s", $id));
         }
         return true;
     }

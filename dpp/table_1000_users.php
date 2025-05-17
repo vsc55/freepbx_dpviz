@@ -16,7 +16,7 @@ class TableUsers extends BaseTables
         $this->key_name = "extensions";
     }
 
-    public function callbackLoad(&$dproute)
+    public function callbackLoad()
     {
         $fmfmOption = $this->getSetting('fmfm');
 
@@ -32,13 +32,10 @@ class TableUsers extends BaseTables
             $item = $user;
             $item['email'] = $this->getVoicemailEmail($id);
             $this->setRoute($id, $item, false, true, '{action}  >>  {table} user  >  id [{id}]    email [{email}]', ['{email}' => $item['email']], 9);
-
-            // $dproute[$this->key_name][$id] = $item;
         }
 
         $this->processAsteriskLines(
             $this->asteriskRunCmd('database show AMPUSER', false),
-            // function ($line) use (&$dproute) {
             function ($line) {
                 [$key, $value] = explode(':', $line, 2);
                 $parts         = explode('/', trim($key));
@@ -50,7 +47,6 @@ class TableUsers extends BaseTables
                 $ext    = trim($parts[2]);
                 $subkey = trim($parts[4]);
 
-                // $dproute[$this->key_name][$ext]['fmfm'][$subkey] = trim($value);
                 $isNew = !isset($this->route[$this->key_name][$ext]);
                 $this->route[$this->key_name][$ext]['fmfm'][$subkey] = trim($value);
                 $this->logRoute(

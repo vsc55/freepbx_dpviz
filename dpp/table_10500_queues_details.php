@@ -19,7 +19,7 @@ class TableQueuesDetails extends BaseTables
         ];
     }
 
-    public function callbackLoad(&$dproute)
+    public function callbackLoad()
     {
         $dynmembers = $this->getSetting('dynmembers'); // default to 0
 
@@ -51,20 +51,16 @@ class TableQueuesDetails extends BaseTables
                     );
                 }
             } else {
-                // $dproute[$this->key_name][$id]['data'][$qd['keyword']] = $qd['data'];
                 $this->route[$this->key_name][$id]['data'][$qd['keyword']] = $qd['data'];
                 $this->logRoute($id, false, '{action}  >>  {table} members static  >  id [{id}]    keyword [{keyword}]', ['{keyword}' => $qd['keyword']], 9);
             }
         }
 
         # Queue members (dynamic) //options
-        // if ($dynmembers && !empty($dproute[$this->key_name])) {
         if ($dynmembers && !empty($this->route[$this->key_name])) {
-            // foreach ($dproute[$this->key_name] as $id => $details) {
             foreach ($this->route[$this->key_name] as $id => $details) {
                 $this->processAsteriskLines(
                     $this->asteriskRunCmd(sprintf('database show QPENALTY %s', $id), false),
-                    // function ($line) use (&$dproute, $id) {
                     function ($line) use ($id) {
                         [$key, $value] = explode(':', $line, 2);
                         $parts         = explode('/', trim($key));
@@ -74,8 +70,6 @@ class TableQueuesDetails extends BaseTables
                         }
 
                         $ext = trim($parts[4]); // fifth part (index 4)
-
-                        // $dproute[$this->key_name][$id]['members']['dynamic'][] = $ext;
                         $this->route[$this->key_name][$id]['members']['dynamic'][] = $ext;
                         $this->logRoute($id, false, '{action}  >>  {table} members dynamic  >  id [{id}]    ext [{ext}]', ['{ext}' => $ext], 9);
                     },
