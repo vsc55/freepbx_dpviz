@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationSetCid extends baseDestinations
+class DestinationSetCid extends BaseDestinations
 {
     public const PRIORITY = 10500;
 
@@ -13,8 +14,10 @@ class DestinationSetCid extends baseDestinations
         $this->regex = "/^app-setcid,(\d+),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of app-setcid,<number>,<number>
+
         $cidnum   = $matches[1];
         $cidother = $matches[2];
         $cid      = $route['setcid'][$cidnum];
@@ -26,15 +29,14 @@ class DestinationSetCid extends baseDestinations
         $this->updateNodeAttribute($node, [
             'label'     => $label,
             'tooltip'   => $label,
-            'URL'       => htmlentities('/admin/config.php?display=setcid&view=form&id='.$cidnum),
+            'URL'       => htmlentities('/admin/config.php?display=setcid&view=form&id=' . $cidnum),
             'target'    => '_blank',
             'shape'     => 'note',
-            'fillcolor' => self::pastels[6],
+            'fillcolor' => self::PASTELS[6],
             'style'     => 'filled',
         ]);
 
-        if ($cid['dest'] != '')
-        {
+        if ($cid['dest'] != '') {
             $this->findNextDestination($route, $node, $cid['dest'], _(" Continue"));
         }
     }

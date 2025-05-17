@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationIvr extends baseDestinations
+class DestinationIvr extends BaseDestinations
 {
     public const PRIORITY = 6000;
 
@@ -13,8 +14,10 @@ class DestinationIvr extends baseDestinations
         $this->regex = "/^ivr-(\d+),([a-z]+),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of ivr-<number>,<string>,<number>
+
         $inum   = $matches[1];
         $iflag  = $matches[2];
         $iother = $matches[3];
@@ -25,35 +28,26 @@ class DestinationIvr extends baseDestinations
         $ivrDestination        = $ivr['invalid_destination'] ?? '';
         $ivrDestinationTimeout = $ivr['timeout_destination'] ?? '';
 
-        if (isset($route['recordings'][$recID]))
-        {
-			$recording   = $route['recordings'][$recID];
-			$ivrRecName  = $recording['displayname'];
-			$recordingId = $recording['id'];
-		}
-        else
-        {
+        if (isset($route['recordings'][$recID])) {
+            $recording   = $route['recordings'][$recID];
+            $ivrRecName  = $recording['displayname'];
+            $recordingId = $recording['id'];
+        } else {
             $ivrRecName = _("None");
         }
 
         #feature code exist?
-        if ( isset($route['featurecodes']['*29'.$recID]) )
-        {
+        if (isset($route['featurecodes']['*29' . $recID])) {
             #custom feature code?
-            if ($route['featurecodes']['*29'.$recID]['customcode']!='')
-            {
-                $featurenum = $route['featurecodes']['*29'.$recID]['customcode'];
-            }
-            else
-            {
-                $featurenum = $route['featurecodes']['*29'.$recID]['defaultcode'];
+            if ($route['featurecodes']['*29' . $recID]['customcode'] != '') {
+                $featurenum = $route['featurecodes']['*29' . $recID]['customcode'];
+            } else {
+                $featurenum = $route['featurecodes']['*29' . $recID]['defaultcode'];
             }
             #is it enabled?
-            $rec_active = ($route['recordings'][$recID]['fcode'] == '1') && ($route['featurecodes']['*29'.$recID]['enabled'] == '1') ? _("yes"): _("no");
+            $rec_active = ($route['recordings'][$recID]['fcode'] == '1') && ($route['featurecodes']['*29' . $recID]['enabled'] == '1') ? _("yes") : _("no");
             $rec_status = $featurenum;
-        }
-        else
-        {
+        } else {
             $rec_status = _("disabled");
             $rec_active = _("no");
         }
@@ -63,7 +57,7 @@ class DestinationIvr extends baseDestinations
         $this->updateNodeAttribute($node, [
             'label'     => $label,
             'tooltip'   => $label,
-            'URL'       => htmlentities('/admin/config.php?display=ivr&action=edit&id='.$inum),
+            'URL'       => htmlentities('/admin/config.php?display=ivr&action=edit&id=' . $inum),
             'target'    => '_blank',
             'shape'     => 'component',
             'fillcolor' => 'gold',
@@ -72,45 +66,47 @@ class DestinationIvr extends baseDestinations
 
         # The destinations we need to follow are the invalid_destination,
         # timeout_destination, and the selection targets
-        if (isset($route['recordings'][$recID]))
-        {
-            $this->findNextDestination($route, $node,
+        if (isset($route['recordings'][$recID])) {
+            $this->findNextDestination(
+                $route,
+                $node,
                 sprintf('play-system-recording,%s,1', $recordingId),
                 _(" Recording")
             );
-		}
+        }
 
         #now go through the selections
-        if (!empty($ivr['entries']))
-        {
+        if (!empty($ivr['entries'])) {
             ksort($ivr['entries']);
-            foreach ($ivr['entries'] as $selid => $ent)
-            {
-                $this->findNextDestination($route, $node, $ent['dest'],
+            foreach ($ivr['entries'] as $selid => $ent) {
+                $this->findNextDestination(
+                    $route,
+                    $node,
+                    $ent['dest'],
                     sprintf(_(" Selection %s"), $ent['selection'])
                 );
             }
         }
 
         #are the invalid and timeout destinations the same?
-        if ($ivrDestination == $ivrDestinationTimeout)
-        {
-            if (!empty($ivrDestination))
-            {
-                $this->findNextDestination($route, $node, $ivrDestination,
+        if ($ivrDestination == $ivrDestinationTimeout) {
+            if (!empty($ivrDestination)) {
+                $this->findNextDestination(
+                    $route,
+                    $node,
+                    $ivrDestination,
                     sprintf(_(" Invalid Input, Timeout (%s secs)"), $ivr['timeout_time'])
                 );
             }
-        }
-        else
-        {
-            if ($ivrDestination != '')
-            {
+        } else {
+            if ($ivrDestination != '') {
                 $this->findNextDestination($route, $node, $ivrDestination, _(" Invalid Input"));
             }
-            if ($ivrDestinationTimeout != '')
-            {
-                $this->findNextDestination($route, $node, $ivrDestinationTimeout,
+            if ($ivrDestinationTimeout != '') {
+                $this->findNextDestination(
+                    $route,
+                    $node,
+                    $ivrDestinationTimeout,
                     sprintf(_(" Timeout (%s secs)"), $ivr['timeout_time'])
                 );
             }

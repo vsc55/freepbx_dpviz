@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationVoicemail extends baseDestinations
+class DestinationVoicemail extends BaseDestinations
 {
     public const PRIORITY = 12000;
 
@@ -13,8 +14,10 @@ class DestinationVoicemail extends baseDestinations
         $this->regex = "/^ext-local,vm([b,i,s,u])(\d+),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of ext-local,vm<b|i|s|u><number>,<number>
+
         $vmtype  = $matches[1];
         $vmnum   = $matches[2];
         $vmother = $matches[3];
@@ -27,17 +30,17 @@ class DestinationVoicemail extends baseDestinations
         );
         $vmname   = $route['extensions'][$vmnum]['name'];
         $vmemail  = $route['extensions'][$vmnum]['email'];
-        $vmemail  = str_replace("|",",\\n",$vmemail);
+        $vmemail  = str_replace("|", ",\\n", $vmemail);
 
         $label    = sprintf(_("Voicemail: %s %s %s\\n%s"), $vmnum, $vmname, $vm_array[$vmtype], $vmemail);
 
         $this->updateNodeAttribute($node, [
             'label'     => $label,
             'tooltip'   => $label,
-            'URL'       => htmlentities('/admin/config.php?display=voicemail&view=form&id='.$vmnum),
+            'URL'       => htmlentities('/admin/config.php?display=voicemail&view=form&id=' . $vmnum),
             'target'    => '_blank',
             'shape'     => 'folder',
-            'fillcolor' => self::pastels[11],
+            'fillcolor' => self::PASTELS[11],
             'style'     => 'filled',
         ]);
     }

@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationTimeconditions extends baseDestinations
+class DestinationTimeconditions extends BaseDestinations
 {
     public const PRIORITY = 11500;
 
@@ -13,23 +14,24 @@ class DestinationTimeconditions extends baseDestinations
         $this->regex = "/^timeconditions,(\d+),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of timeconditions,<number>,<number>
+
         $tcnum     = $matches[1];
         $tcother   = $matches[2];
         $tc        = $route['timeconditions'][$tcnum];
         $label     = sprintf(_("TC: %s"), $tc['displayname']);
         $tcTooltip = sprintf(_("%s\\nMode= %s"), $tc['displayname'], $tc['mode']);
 
-        if (!empty($tc['timezone']))
-        {
+        if (!empty($tc['timezone'])) {
             $tcTooltip .= ($tc['timezone'] !== 'default') ? sprintf(_("\\nTimezone= %s"), $tc['timezone']) : _("Undefined");
         }
 
         $this->updateNodeAttribute($node, [
             'label'     => $label,
             'tooltip'   => $tcTooltip,
-            'URL'       => htmlentities('/admin/config.php?display=timeconditions&view=form&itemid='.$tcnum),
+            'URL'       => htmlentities('/admin/config.php?display=timeconditions&view=form&itemid=' . $tcnum),
             'target'    => '_blank',
             'shape'     => 'invhouse',
             'fillcolor' => 'dodgerblue',
@@ -41,8 +43,7 @@ class DestinationTimeconditions extends baseDestinations
         $tgTooltip = '';
 
         //TC modes
-        if ($tc['mode'] === 'time-group')
-        {
+        if ($tc['mode'] === 'time-group') {
             $tg        = $route['timegroups'][$tc['time']];
             $tgnum     = $tg['id'];
             $tgname    = $tg['description'];
@@ -50,27 +51,20 @@ class DestinationTimeconditions extends baseDestinations
             $tgLabel   = sprintf("%s\\n%s", $tgname, $tgtime);
             $tgLink    = $this->genUrlConfig('timegroups', $tgnum); // '/admin/config.php?display=timegroups&view=form&extdisplay='.$tgnum;
             $tgTooltip = $tgLabel;
-        }
-        elseif ($tc['mode'] === 'calendar-group')
-        {
-            if (!empty($route['calendar'][$tc['calendar_id']]))
-            {
+        } elseif ($tc['mode'] === 'calendar-group') {
+            if (!empty($route['calendar'][$tc['calendar_id']])) {
                 $cal       = $route['calendar'][$tc['calendar_id']];
                 $tgLabel   = $cal['name'];
-                $tgLink    = '/admin/config.php?display=calendar&action=view&type=calendar&id='.$tc['calendar_id'];
+                $tgLink    = '/admin/config.php?display=calendar&action=view&type=calendar&id=' . $tc['calendar_id'];
                 $tz        = empty($cal['timezone']) ? _("Undefined") : $cal['timezone'];
                 $tgTooltip = sprintf(_("Name= %s\\nDescription= %s\\nType= %s\\nTimezone= %s"), $cal['name'], $cal['description'], $cal['type'], $tz);
-            }
-            elseif (!empty($route['calendar'][$tc['calendar_group_id']]))
-            {
+            } elseif (!empty($route['calendar'][$tc['calendar_group_id']])) {
                 $cal      = $route['calendar'][$tc['calendar_group_id']];
                 $tgLabel  = $cal['name'];
-                $tgLink   = '/admin/config.php?display=calendargroups&action=edit&id='.$tc['calendar_group_id'];
+                $tgLink   = '/admin/config.php?display=calendargroups&action=edit&id=' . $tc['calendar_group_id'];
                 $calNames = _("Calendars= ");
-                if (!empty($cal['calendars']))
-                {
-                    foreach ($cal['calendars'] as $c)
-                    {
+                if (!empty($cal['calendars'])) {
+                    foreach ($cal['calendars'] as $c) {
                         $calNames .= sprintf("%s\\n", $route['calendar'][$c]['name']);
                     }
                 }
@@ -87,7 +81,10 @@ class DestinationTimeconditions extends baseDestinations
         $route['parent_edge_url']          = htmlentities($tgLink);
         $route['parent_edge_target']       = '_blank';
         $route['parent_edge_labeltooltip'] = $this->dpp->sanitizeLabels(sprintf(_(" Match:\\n%s"), $tgTooltip));
-        $this->findNextDestination($route, $node, $tc['truegoto'],
+        $this->findNextDestination(
+            $route,
+            $node,
+            $tc['truegoto'],
             sprintf(_(" Match:\\n%s"), $tgLabel)
         );
 

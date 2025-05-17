@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationTts extends baseDestinations
+class DestinationTts extends BaseDestinations
 {
     public const PRIORITY = 11000;
 
@@ -13,8 +14,10 @@ class DestinationTts extends baseDestinations
         $this->regex = "/^ext-tts,(\d+),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of ext-tts,<number>,<number>
+
         $ttsnum     = $matches[1];
         $ttsother   = $matches[2];
         $tts        = $route['tts'][$ttsnum];
@@ -25,15 +28,14 @@ class DestinationTts extends baseDestinations
         $this->updateNodeAttribute($node, [
             'label'     => $ttsLabel,
             'tooltip'   => $ttsTooltip,
-            'URL'       => htmlentities('/admin/config.php?display=tts&view=form&id='.$ttsnum),
+            'URL'       => htmlentities('/admin/config.php?display=tts&view=form&id=' . $ttsnum),
             'target'    => '_blank',
             'shape'     => 'note',
-            'fillcolor' => self::pastels[6],
+            'fillcolor' => self::PASTELS[6],
             'style'     => 'filled',
         ]);
 
-        if ($tts['goto'] != '')
-        {
+        if ($tts['goto'] != '') {
             $this->findNextDestination($route, $node, $tts['goto'], _(" Continue"));
         }
     }

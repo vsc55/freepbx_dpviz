@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz;
 
 use FreePBX\modules\Backup as Base;
 
-class Backup Extends Base\BackupBase
+class Backup extends Base\BackupBase
 {
     public function runBackup($id, $transaction)
     {

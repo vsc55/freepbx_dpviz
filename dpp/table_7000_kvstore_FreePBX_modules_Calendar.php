@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\table;
 
-require_once __DIR__ . '/baseTables.php';
+require_once __DIR__ . '/BaseTables.php';
 
-class TableKvstoreFreepbxModulesCalendar extends baseTables
+class TableKvstoreFreepbxModulesCalendar extends BaseTables
 {
     public const PRIORITY = 7000;
 
@@ -14,21 +15,30 @@ class TableKvstoreFreepbxModulesCalendar extends baseTables
         $this->key_name = "calendar";
     }
 
-    public function callback_load(&$dproute)
+    public function callbackLoad(&$dproute)
     {
-        foreach($this->getTableData() as $calendar)
-        {
-            switch ($calendar['id'])
-            {
+        foreach ($this->getTableData() as $calendar) {
+            if (!$this->checkItemLoad($calendar)) {
+                continue;
+            }
+            switch ($calendar['id']) {
                 case 'calendars':
                 case 'groups':
-                    $id = $calendar['key'];
-                    $dproute[$this->key_name][$id] = json_decode($calendar['val'], true);
-                    $this->log(9, sprintf("calendars=%s", $id));
+                    // $id = $calendar['key'];
+                    // $dproute[$this->key_name][$id] = json_decode($calendar['val'], true);
+                    // $this->log(9, sprintf("calendars=%s", $id));
+
+                    $id = $calendar[$this->key_id];
+                    if ($this->skipIfEmptyAny([$id => $this->key_id])) {
+                        continue;
+                    }
+                    $item = json_decode($calendar['val'], true);
+                    $this->setRoute($id, $item);
                     break;
 
                 default:
                     $this->log(1, sprintf("Unknown calendar type: {%s}", $calendar['id']));
+                    break;
             }
         }
         return true;

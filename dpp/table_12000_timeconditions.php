@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\table;
 
-require_once __DIR__ . '/baseTables.php';
+require_once __DIR__ . '/BaseTables.php';
 
-class TableTimeconditions extends baseTables
+class TableTimeconditions extends BaseTables
 {
     # Time Conditions
     public const PRIORITY = 12000;

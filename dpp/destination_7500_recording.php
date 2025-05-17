@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationRecording extends baseDestinations
+class DestinationRecording extends BaseDestinations
 {
     public const PRIORITY = 7500;
 
@@ -13,18 +14,19 @@ class DestinationRecording extends baseDestinations
         $this->regex = "/^play-system-recording,(\d+),(\d+),(.+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of play-system-recording,<number>,<number>,<language>
+
         $recID    = $matches[1];
         $recOther = $matches[2];
-		$recLang  = $matches[3];
+        $recLang  = $matches[3];
         $playName = _('None');
 
-		if (isset($route['recordings'][$recID]))
-        {
-			$rec      = $route['recordings'][$recID];
-			$playName = $rec['displayname'];
-		}
+        if (isset($route['recordings'][$recID])) {
+            $rec      = $route['recordings'][$recID];
+            $playName = $rec['displayname'];
+        }
 
         $label = sprintf(_("Recording (%s): %s"), $this->lang, $playName);
 
@@ -35,7 +37,7 @@ class DestinationRecording extends baseDestinations
             //'URL'       => htmlentities('/admin/config.php?display=recordings&action=edit&id='.$recID),
             //'target'    => '_blank',
             'shape'     => 'rect',
-            'fillcolor' => self::pastels[16],
+            'fillcolor' => self::PASTELS[16],
             'style'     => 'filled',
         ]);
     }

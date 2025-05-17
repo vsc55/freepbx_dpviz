@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationDynroute extends baseDestinations
+class DestinationDynroute extends BaseDestinations
 {
     public const PRIORITY = 4000;
 
@@ -13,65 +14,67 @@ class DestinationDynroute extends baseDestinations
         $this->regex = "/^dynroute-(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of dynroute,<number>
+
         $dynnum       = $matches[1];
         $dynrt        = $route['dynroute'][$dynnum];
         $recID        = $dynrt['announcement_id'];
         $announcement = _("None");
 
-        if (isset($route['recordings'][$recID]))
-        {
-			$recording    = $route['recordings'][$recID];
-			$announcement = $recording['displayname'];
-			$recordingId  = $recording['id'];
-		}
+        if (isset($route['recordings'][$recID])) {
+            $recording    = $route['recordings'][$recID];
+            $announcement = $recording['displayname'];
+            $recordingId  = $recording['id'];
+        }
 
         $label = sprintf(_("DYN: %s\\nAnnouncement: %s"), $dynrt['name'], $announcement);
 
         $this->updateNodeAttribute($node, [
             'label'     => $label,
             'tooltip'   => $label,
-            'URL'       => htmlentities('/admin/config.php?display=dynroute&action=edit&id='.$dynnum),
+            'URL'       => htmlentities('/admin/config.php?display=dynroute&action=edit&id=' . $dynnum),
             'target'    => '_blank',
             'shape'     => 'component',
-            'fillcolor' => self::pastels[12],
+            'fillcolor' => self::PASTELS[12],
             'style'     => 'filled'
         ]);
 
-        if (!empty($dynrt['routes']))
-        {
+        if (!empty($dynrt['routes'])) {
             ksort($dynrt['routes']);
-            foreach ($dynrt['routes'] as $selid => $ent)
-            {
-                $this->findNextDestination($route, $node, $ent['dest'],
+            foreach ($dynrt['routes'] as $selid => $ent) {
+                $this->findNextDestination(
+                    $route,
+                    $node,
+                    $ent['dest'],
                     sprintf(_("  Match: %s\\n%s"), $ent['selection'], isset($ent['description']) ? $ent['description'] : '')
                 );
             }
         }
 
-        if (isset($route['recordings'][$recID]))
-        {
+        if (isset($route['recordings'][$recID])) {
             $dest = sprintf("play-system-recording,%s,1", $recordingId);
             $this->findNextDestination($route, $node, $dest, _(" Recording"));
-		}
+        }
 
         //are the invalid and timeout destinations the same?
-        if ($dynrt['invalid_dest'] != '' && $dynrt['invalid_dest'] == $dynrt['default_dest'])
-        {
-            $this->findNextDestination($route, $node, $dynrt['invalid_dest'],
+        if ($dynrt['invalid_dest'] != '' && $dynrt['invalid_dest'] == $dynrt['default_dest']) {
+            $this->findNextDestination(
+                $route,
+                $node,
+                $dynrt['invalid_dest'],
                 sprintf(_(" Invalid Input, Default (%s secs)"), $dynrt['timeout'])
             );
-        }
-        else
-        {
-            if ($dynrt['invalid_dest'] != '')
-            {
+        } else {
+            if ($dynrt['invalid_dest'] != '') {
                 $this->findNextDestination($route, $node, $dynrt['invalid_dest'], _(" Invalid Input"));
             }
-            if ($dynrt['default_dest'] != '')
-            {
-                $this->findNextDestination($route, $node, $dynrt['default_dest'],
+            if ($dynrt['default_dest'] != '') {
+                $this->findNextDestination(
+                    $route,
+                    $node,
+                    $dynrt['default_dest'],
                     sprintf(_(" Default (%s secs)"), $dynrt['timeout'])
                 );
             }

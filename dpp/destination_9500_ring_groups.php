@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationRingGroups extends baseDestinations
+class DestinationRingGroups extends BaseDestinations
 {
     public const PRIORITY = 9500;
 
@@ -13,8 +14,10 @@ class DestinationRingGroups extends baseDestinations
         $this->regex = "/^ext-group,(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of ext-group,<number>
+
         $rgnum            = $matches[1];
         $rg               = $route['ringgroups'][$rgnum];
         $combineQueueRing = $this->getSetting('combine_queue_ring');
@@ -25,17 +28,15 @@ class DestinationRingGroups extends baseDestinations
             'label'     => $label,
             'URL'       => $this->genUrlConfig('ringgroups', $rgnum), //'/admin/config.php?display=ringgroups&view=form&extdisplay='.$rgnum
             'target'    => '_blank',
-            'fillcolor' => self::pastels[12],
+            'fillcolor' => self::PASTELS[12],
             'style'     => 'filled',
         ]);
 
         $grplist = str_replace('#', '', $rg['grplist']);
         $grplist = preg_split("/-/", $grplist);
 
-        foreach ($grplist as $member)
-        {
-            switch ($combineQueueRing)
-            {
+        foreach ($grplist as $member) {
+            switch ($combineQueueRing) {
                 case "1":
                     $go = sprintf("qmember%s", $member);
                     break;
@@ -52,9 +53,11 @@ class DestinationRingGroups extends baseDestinations
 
         # The destinations we need to follow are the no-answer destination
         # (postdest) and the members of the group.
-        if ($rg['postdest'] != '')
-        {
-            $this->findNextDestination($route, $node, $rg['postdest'],
+        if ($rg['postdest'] != '') {
+            $this->findNextDestination(
+                $route,
+                $node,
+                $rg['postdest'],
                 sprintf(_(" No Answer (%s)"), $this->dpp->secondsToTimes($rg['grptime']))
             );
         }

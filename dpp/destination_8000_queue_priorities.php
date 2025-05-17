@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationQueuePriorities extends baseDestinations
+class DestinationQueuePriorities extends BaseDestinations
 {
     # Queue Priorities
     public const PRIORITY = 8000;
@@ -14,8 +15,10 @@ class DestinationQueuePriorities extends baseDestinations
         $this->regex = "/^app-queueprio,(\d+),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of app-queueprio,<number>,<number>
+
         $queueprioID      = $matches[1];
         $queueprioIDOther = $matches[2];
         $queueprio        = $route['queueprio'][$queueprioID];
@@ -28,12 +31,11 @@ class DestinationQueuePriorities extends baseDestinations
             'URL'       => $this->genUrlConfig('queueprio', $queueprioID), //'/admin/config.php?display=queueprio&view=form&extdisplay='.$queueprioID
             'target'    => '_blank',
             'shape'     => 'rect',
-            'fillcolor' => self::pastels[16],
+            'fillcolor' => self::PASTELS[16],
             'style'     => 'filled',
         ]);
 
-        if ($queueprio['dest'] != '')
-        {
+        if ($queueprio['dest'] != '') {
             $this->findNextDestination($route, $node, $queueprio['dest'], _(" Continue"));
         }
     }

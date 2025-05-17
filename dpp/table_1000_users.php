@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\table;
 
-require_once __DIR__ . '/baseTables.php';
+require_once __DIR__ . '/BaseTables.php';
 
-class TableUsers extends baseTables
+class TableUsers extends BaseTables
 {
     # Users
     public const PRIORITY = 1000;
@@ -15,22 +16,30 @@ class TableUsers extends baseTables
         $this->key_name = "extensions";
     }
 
-    public function callback_load(&$dproute)
+    public function callbackLoad(&$dproute)
     {
         $fmfmOption = $this->getSetting('fmfm');
 
-        foreach($this->getTableData() as $user)
-        {
+        foreach ($this->getTableData() as $user) {
+            if (!$this->checkItemLoad($user)) {
+                continue;
+            }
             $id = $user[$this->key_id];
+            if ($this->skipIfEmptyAny([$id => $this->key_id])) {
+                continue;
+            }
 
-            $dproute[$this->key_name][$id] = $user;
-            $dproute[$this->key_name][$id]['email'] = $this->getVoicemailEmail($id);
+            $item = $user;
+            $item['email'] = $this->getVoicemailEmail($id);
+            $this->setRoute($id, $item, false, true, '{action}  >>  {table} user  >  id [{id}]    email [{email}]', ['{email}' => $item['email']], 9);
+
+            // $dproute[$this->key_name][$id] = $item;
         }
 
         $this->processAsteriskLines(
             $this->asteriskRunCmd('database show AMPUSER', false),
-            function($line) use (&$dproute)
-            {
+            // function ($line) use (&$dproute) {
+            function ($line) {
                 [$key, $value] = explode(':', $line, 2);
                 $parts         = explode('/', trim($key));
 
@@ -41,10 +50,21 @@ class TableUsers extends baseTables
                 $ext    = trim($parts[2]);
                 $subkey = trim($parts[4]);
 
-                $dproute[$this->key_name][$ext]['fmfm'][$subkey] = trim($value);
+                // $dproute[$this->key_name][$ext]['fmfm'][$subkey] = trim($value);
+                $isNew = !isset($this->route[$this->key_name][$ext]);
+                $this->route[$this->key_name][$ext]['fmfm'][$subkey] = trim($value);
+                $this->logRoute(
+                    $ext,
+                    $isNew,
+                    '{action}  >>  {table} fmfm  >  id [{id}]    fmfm [{subkey}] = [{value}]',
+                    [
+                        '{subkey}' => $subkey,
+                        '{value}' => trim($value)
+                    ],
+                    9
+                );
             },
-            function($line)
-            {
+            function ($line) {
                 return strpos($line, '/') === 0 && strpos($line, '/followme/') !== false;
             }
         );
@@ -54,12 +74,13 @@ class TableUsers extends baseTables
 
     private function getVoicemailEmail($id)
     {
-        $unassigned = _("unassigned");
-        if (! is_numeric($id))
-        {
+        $unassigned = "";
+        if (! is_numeric($id)) {
             return $unassigned;
         }
-        $mailbox = \FreePBX::Voicemail()->getMailbox($id);
+
+        $voicemail = \FreePBX::create()->Voicemail;
+        $mailbox   = $voicemail->getMailbox($id);
         return $mailbox['email'] ?: $unassigned;
     }
 }

@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\table;
 
-require_once __DIR__ . '/baseTables.php';
+require_once __DIR__ . '/BaseTables.php';
 
-class TableLanguages extends baseTables
+class TableLanguages extends BaseTables
 {
     public const PRIORITY = 8000;
 

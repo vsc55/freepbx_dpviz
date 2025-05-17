@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationVmblast extends baseDestinations
+class DestinationVmblast extends BaseDestinations
 {
     public const PRIORITY = 12500;
 
@@ -13,13 +14,15 @@ class DestinationVmblast extends baseDestinations
         $this->regex = "/^vmblast\-grp,(\d+),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of vmblast-grp,<number>,<number>
+
         $vmblastnum   = $matches[1];
         $vmblastother = $matches[2];
         $vmblast      = $route['vmblasts'][$vmblastnum];
 
-        $label = sprintf(_("VM Blast: %s %s"), $vmblastnum , $vmblast['description']);
+        $label = sprintf(_("VM Blast: %s %s"), $vmblastnum, $vmblast['description']);
 
         $this->updateNodeAttribute($node, [
             'label'     => $label,
@@ -30,11 +33,11 @@ class DestinationVmblast extends baseDestinations
             'style'     => 'filled',
         ]);
 
-        if (!empty($vmblast['members']))
-        {
-            foreach ($vmblast['members'] as $member)
-            {
-                $this->findNextDestination($route, $node,
+        if (!empty($vmblast['members'])) {
+            foreach ($vmblast['members'] as $member) {
+                $this->findNextDestination(
+                    $route,
+                    $node,
                     sprintf('vmblast-mem,%s', $member),
                     ''
                 );

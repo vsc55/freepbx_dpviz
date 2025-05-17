@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\table;
 
-require_once __DIR__ . '/baseTables.php';
+require_once __DIR__ . '/BaseTables.php';
 
-class TableRinggroups extends baseTables
+class TableRinggroups extends BaseTables
 {
     public const PRIORITY = 11000;
 

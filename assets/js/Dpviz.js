@@ -484,8 +484,9 @@ $(document).ready(function()
                             // Check for "Play Recording:" pattern
                             if (titleText.startsWith("play-system-recording"))
                             {
+                                alert("Play system recording: " + titleText);
                                 e.preventDefault();
-                                if (modal && overlay && !isFocused)
+                                if (modal && overlay && !window.dpviz.isFocused)
                                 {
                                     overlay.style.display = 'block';
                                     spinner.style.display = "flex";

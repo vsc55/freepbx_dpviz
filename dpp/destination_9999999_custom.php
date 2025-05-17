@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationCustom extends baseDestinations
+class DestinationCustom extends BaseDestinations
 {
     public const PRIORITY = 9999999;
 
@@ -13,16 +14,13 @@ class DestinationCustom extends baseDestinations
         $this->regex = "/.*/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
-        if (!empty($route['customapps']))
-        {
+        if (!empty($route['customapps'])) {
             #custom destinations
             $custDest = null;
-            foreach ($route['customapps'] as $entry)
-            {
-                if (sprintf("%s,%s", $entry['target'], $this->lang) === $destination)
-                {
+            foreach ($route['customapps'] as $entry) {
+                if (sprintf("%s,%s", $entry['target'], $this->lang) === $destination) {
                     $custDest = $entry;
                     break;
                 }
@@ -30,29 +28,25 @@ class DestinationCustom extends baseDestinations
         }
         #end of Custom Destinations
 
-        if (!empty($custDest))
-        {
-			$custId     = $custDest['destid'];
-			$custReturn = ($custDest['destret'] == 1) ? _("Yes") : _("No");
+        if (!empty($custDest)) {
+            $custId     = $custDest['destid'];
+            $custReturn = ($custDest['destret'] == 1) ? _("Yes") : _("No");
             $label      = sprintf(_("Cust Dest: %s\\nTarget: %s\\nReturn: %s\\n"), $entry['description'], $entry['target'], $custReturn);
 
             $this->updateNodeAttribute($node, [
                 'label'     => $label,
                 'tooltip'   => $label,
-                'URL'       => htmlentities('/admin/config.php?display=customdests&view=form&destid='.$custId),
+                'URL'       => htmlentities('/admin/config.php?display=customdests&view=form&destid=' . $custId),
                 'target'    => '_blank',
                 'shape'     => 'component',
-                'fillcolor' => self::pastels[27],
+                'fillcolor' => self::PASTELS[27],
                 'style'     => 'filled',
             ]);
 
-            if ($custDest['destret'])
-            {
+            if ($custDest['destret']) {
                 $this->findNextDestination($route, $node, $custDest['dest'], _(' Return'));
-			}
-        }
-        else
-        {
+            }
+        } else {
             $this->log(1, sprintf(_("Unknown destination type: %s"), $destination));
 
             // Call debug_backtrace to get the backtrace
@@ -60,8 +54,7 @@ class DestinationCustom extends baseDestinations
             $seen = [];
             $maxFileLen = 0;
 
-            foreach ($backtrace as $trace)
-            {
+            foreach ($backtrace as $trace) {
                 $file = $trace['file'] ?? '[internal]';
                 $line = $trace['line'] ?? 0;
                 $len = strlen("$file:$line");
@@ -70,8 +63,7 @@ class DestinationCustom extends baseDestinations
                 }
             }
 
-            foreach ($backtrace as $i => $trace)
-            {
+            foreach ($backtrace as $i => $trace) {
                 $file = $trace['file'] ?? '[internal]';
                 $line = $trace['line'] ?? 0;
                 $function = $trace['function'] ?? '[unknown]';
@@ -88,8 +80,7 @@ class DestinationCustom extends baseDestinations
                 $this->log(1, sprintf("[#%02d] %s  →  %s()", $i, $fileInfo, $function));
             }
 
-            foreach ($seen as $key => $count)
-            {
+            foreach ($seen as $key => $count) {
                 if ($count > 1) {
                     $this->log(1, sprintf("↪ Repeated %d times: %s", $count, $key));
                 }
@@ -97,7 +88,7 @@ class DestinationCustom extends baseDestinations
 
             $this->updateNodeAttribute($node, [
                 'label'     => sprintf(_("Custom: %s"), $destination),
-                'fillcolor' => self::pastels[12],
+                'fillcolor' => self::PASTELS[12],
                 'style'    => 'filled',
             ]);
         }

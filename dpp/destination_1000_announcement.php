@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationAnnouncement extends baseDestinations
+class DestinationAnnouncement extends BaseDestinations
 {
     public const PRIORITY = 1000;
 
@@ -13,7 +14,7 @@ class DestinationAnnouncement extends baseDestinations
         $this->regex = "/^app-announcement-(\d+),s,(\d+),(.+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
         # The destination is in the form of app-announcement-<num>,s,<num>,<lang>
 
@@ -24,34 +25,25 @@ class DestinationAnnouncement extends baseDestinations
         $an    = $route['announcements'][$annum];
         $recID = $an['recording_id'];
 
-        if (isset($route['recordings'][$recID]))
-        {
-			$recording    = $route['recordings'][$recID];
-			$announcement = $recording['displayname'];
-			$recordingId  = $recording['id'];
-		}
-        else
-        {
-			$announcement = _("None");
-		}
+        if (isset($route['recordings'][$recID])) {
+            $recording    = $route['recordings'][$recID];
+            $announcement = $recording['displayname'];
+            $recordingId  = $recording['id'];
+        } else {
+            $announcement = _("None");
+        }
 
         #feature code exist?
-        if ( isset($route['featurecodes']['*29'.$recID]) )
-        {
+        if (isset($route['featurecodes']['*29' . $recID])) {
             #custom feature code?
-            if ($route['featurecodes']['*29'.$an['recording_id']]['customcode'] != '')
-            {
-                $featurenum = $route['featurecodes']['*29'.$an['recording_id']]['customcode'];
+            if ($route['featurecodes']['*29' . $an['recording_id']]['customcode'] != '') {
+                $featurenum = $route['featurecodes']['*29' . $an['recording_id']]['customcode'];
+            } else {
+                $featurenum = $route['featurecodes']['*29' . $an['recording_id']]['defaultcode'];
             }
-            else
-            {
-                $featurenum = $route['featurecodes']['*29'.$an['recording_id']]['defaultcode'];
-            }
-            $rec_active = ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ? _("yes"): _("no");
+            $rec_active = ($route['recordings'][$recID]['fcode'] == '1') && ($route['featurecodes']['*29' . $recID]['enabled'] == '1') ? _("yes") : _("no");
             $rec_status = $featurenum;
-        }
-        else
-        {
+        } else {
             $rec_status = _("disabled");
             $rec_active = _("no");
         }
@@ -71,15 +63,15 @@ class DestinationAnnouncement extends baseDestinations
         # The destinations we need to follow are the no-answer destination
         # (postdest) and the members of the group.
 
-        if ($an['post_dest'] != '')
-        {
+        if ($an['post_dest'] != '') {
             $this->findNextDestination($route, $node, $an['post_dest'], _(" Continue"));
         }
 
-        if (isset($route['recordings'][$recID]))
-        {
+        if (isset($route['recordings'][$recID])) {
             // The parameter $appyLang is set to false because the destination is already in the correct format
-            $this->findNextDestination($route, $node,
+            $this->findNextDestination(
+                $route,
+                $node,
                 $this->applyLanguage(
                     sprintf('play-system-recording,%s,1', $recordingId),
                     $anlang
@@ -87,6 +79,6 @@ class DestinationAnnouncement extends baseDestinations
                 _(" Recording"),
                 false
             );
-		}
+        }
     }
 }

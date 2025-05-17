@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationInboundRoutes extends baseDestinations
+class DestinationInboundRoutes extends BaseDestinations
 {
     public const PRIORITY = 5500;
 
@@ -13,8 +14,10 @@ class DestinationInboundRoutes extends baseDestinations
         $this->regex = "/^from-trunk,([^,]*),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of from-trunk,<number>,<number>
+
         $num      = $matches[1];
         $numother = $matches[2];
         $incoming = $route['incoming'][$num];

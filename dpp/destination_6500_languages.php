@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationLanguages extends baseDestinations
+class DestinationLanguages extends BaseDestinations
 {
     public const PRIORITY = 6500;
 
@@ -13,8 +14,10 @@ class DestinationLanguages extends baseDestinations
         $this->regex = "/^app-languages,(\d+),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of app-languages,<number>,<number>
+
         $langnum   = $matches[1];
         $langother = $matches[2];
 
@@ -26,15 +29,16 @@ class DestinationLanguages extends baseDestinations
             'URL'       => $this->genUrlConfig('languages', $langnum), //'/admin/config.php?display=languages&view=form&extdisplay='.$langnum
             'target'    => '_blank',
             'shape'     => 'note',
-            'fillcolor' => self::pastels[6],
+            'fillcolor' => self::PASTELS[6],
             'style'     => 'filled',
             'coomment'  => $langArray['lang_code'], //update $lang
         ]);
         $this->setLanguage($langArray['lang_code']);
 
-        if ($langArray['dest'] != '')
-        {
-            $this->findNextDestination($route, $node,
+        if ($langArray['dest'] != '') {
+            $this->findNextDestination(
+                $route,
+                $node,
                 $this->applyLanguage($langArray['dest'], $langArray['lang_code']),
                 _(" Continue"),
                 false

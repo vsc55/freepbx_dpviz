@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationCallrecording extends baseDestinations
+class DestinationCallrecording extends BaseDestinations
 {
     # Call Recording
 
@@ -15,15 +16,15 @@ class DestinationCallrecording extends baseDestinations
         $this->regex = "/^ext-callrecording,(\d+),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
-        # The destination is in the form of ext-callrecording-<id>,<other>
+        # The destination is in the form of ext-callrecording,<number>,<number>
 
         $callrecID    = $matches[1];
-		$callrecOther = $matches[2];
-		$callRec      = $route['callrecording'][$callrecID];
-		$callMode     = ucfirst($callRec['callrecording_mode']);
-		$callMode     = str_replace("Dontcare", _("Don't Care"), $callMode);
+        $callrecOther = $matches[2];
+        $callRec      = $route['callrecording'][$callrecID];
+        $callMode     = ucfirst($callRec['callrecording_mode']);
+        $callMode     = str_replace("Dontcare", _("Don't Care"), $callMode);
 
         $label        = sprintf(_("Call Recording: %s\\nMode: %s"), $callRec['description'], $callMode);
 

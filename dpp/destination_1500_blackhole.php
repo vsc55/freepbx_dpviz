@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationBlackhole extends baseDestinations
+class DestinationBlackhole extends BaseDestinations
 {
     public const PRIORITY = 1500;
 
@@ -13,15 +14,15 @@ class DestinationBlackhole extends baseDestinations
         $this->regex = "/^app-blackhole,(hangup|congestion|busy|zapateller|musiconhold|ring|no-service),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
-        # The destination is in the form of app-blackhole-<type>,<num>
+        # The destination is in the form of app-blackhole,<hangup|congestion|busy|zapateller|musiconhold|ring|no-service>,<number>
 
         $blackholetype  = $matches[1];
-		$blackholetype  = str_replace('musiconhold', _("Music On Hold"), $blackholetype);
-		$blackholetype  = str_replace('ring', _("Play Ringtones"), $blackholetype);
-		$blackholetype  = str_replace('no-service', _("Play No Service Message"), $blackholetype);
-		$blackholetype  = ucwords(str_replace('-', ' ', $blackholetype));
+        $blackholetype  = str_replace('musiconhold', _("Music On Hold"), $blackholetype);
+        $blackholetype  = str_replace('ring', _("Play Ringtones"), $blackholetype);
+        $blackholetype  = str_replace('no-service', _("Play No Service Message"), $blackholetype);
+        $blackholetype  = ucwords(str_replace('-', ' ', $blackholetype));
         $blackholeother = $matches[2];
 
         $labal          = sprintf(_("Terminate Call: %s"), $blackholetype);

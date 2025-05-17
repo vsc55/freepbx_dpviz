@@ -1,11 +1,9 @@
 <?php
 
-Namespace FreePBX\Modules\Dpviz;
+namespace FreePBX\Modules\Dpviz;
 
-include __DIR__ . '/vendor/autoload.php';
-
-class dpp {
-
+class Dpp
+{
     public $freepbx = null;
     public $db      = null;
     public $dpviz   = null;
@@ -19,10 +17,10 @@ class dpp {
     protected $direction = 'LR'; // LR = Left to Right, TB = Top to Bottom
 
     // Log Level: 0 = total quiet, 9 = much verbose
-    Const DPP_LOG_LEVEL = 3;
+    public const DPP_LOG_LEVEL = 9;
 
     // Log file path
-    Const LOG_FILE = "/var/log/asterisk/dpviz.log";
+    public const LOG_FILE = "/var/log/asterisk/dpviz.log";
 
     // Const neons = [
     // "#fe0000", "#fdfe02", "#0bff01", "#011efe", "#fe00f6",
@@ -35,14 +33,15 @@ class dpp {
 
     public function __construct($freepbx, &$dpviz, $load_routes = true)
     {
+        include_once __DIR__ . '/vendor/autoload.php';
+
         $this->freepbx = $freepbx;
         $this->db      = $freepbx->Database;
         $this->dpviz   = &$dpviz;
 
         $this->LoadClass();
 
-        if ($load_routes)
-        {
+        if ($load_routes) {
             $this->loadIncomingRoutes();
         }
     }
@@ -54,12 +53,9 @@ class dpp {
 
     public function setDirection($direction)
     {
-        if ($direction == 'TB' || $direction == 'LR')
-        {
+        if ($direction == 'TB' || $direction == 'LR') {
             $this->direction = $direction;
-        }
-        else
-        {
+        } else {
             $this->log(1, sprintf(_("Invalid direction '%s'!"), $direction));
             return false;
         }
@@ -79,8 +75,7 @@ class dpp {
 
     private function parseClassName(string $file, string $classPrefix = ''): ?string
     {
-        if (!file_exists($file))
-        {
+        if (!file_exists($file)) {
             $this->log(1, sprintf(_("File '%s' not found!"), $file));
             return null;
         }
@@ -88,12 +83,15 @@ class dpp {
         // Get the class name from the file name
         // Example: table_01_users.php → clase TableUsers
         // Example: table_02_users_extra.php → class TableUsersExtra
-        $basename_file = basename($file, '.php'); // Get the file name without the extension, for example: table_01_users
+
+        // Get the file name without the extension, for example: table_01_users
+        $basename_file = basename($file, '.php');
+
         // $regex = sprintf('/%s_\d+_(.+)/', strtolower($classPrefix));
         $regex = sprintf('/%s_(?:\d+_)?(.+)/', strtolower($classPrefix));
+
         // if (!preg_match('/table_\d+_(.+)/', strtolower($basename_file), $matches))
-        if (!preg_match($regex, strtolower($basename_file), $matches))
-        {
+        if (!preg_match($regex, strtolower($basename_file), $matches)) {
             $this->log(1, sprintf(_("Not extracting class name from '%s'!"), $basename_file));
             return null;
         }
@@ -148,12 +146,13 @@ class dpp {
         $files_tables                  = glob(__DIR__ . '/dpp/table_*.php');
         $class_tables                  = [];
         $class_tables_without_priority = [];
-        sort($files_tables);      // Sort the files to ensure consistent loading order (table_01_users.php, table_02_users_extra.php, etc.)
 
-        foreach ($files_tables as $file)
-        {
-            if (!file_exists($file))
-            {
+        // Sort the files to ensure consistent loading order
+        // (table_01_users.php, table_02_users_extra.php, etc.)
+        sort($files_tables);
+
+        foreach ($files_tables as $file) {
+            if (!file_exists($file)) {
                 $this->log(1, sprintf(_("File '%s' not found!"), $file));
                 continue;
             }
@@ -161,35 +160,28 @@ class dpp {
             // Get the class name from the file name
             $className = $this->parseClassName($file, 'Table');
             // Namespace + class name
-            $fullClassName = sprintf('\\%s\\dpp\\table\\%s', __NAMESPACE__ , $className); // Example: \FreePBX\modules\Dpviz\dpp\table\TableUsers
+            // Example: \FreePBX\modules\Dpviz\dpp\table\TableUsers
+            $fullClassName = sprintf('\\%s\\dpp\\table\\%s', __NAMESPACE__, $className);
 
             require_once $file; // Load the file
-            if (class_exists($fullClassName))
-            {
-                if (defined("$fullClassName::PRIORITY"))
-                {
+            if (class_exists($fullClassName)) {
+                if (defined("$fullClassName::PRIORITY")) {
                     $class_tables[$fullClassName] = $fullClassName::PRIORITY;
-                }
-                else
-                {
+                } else {
                     $class_tables_without_priority[] = $fullClassName;
                 }
-            }
-            else
-            {
+            } else {
                 $this->log(1, sprintf(_("Class '%s' not found in '%s'!"), $fullClassName, $file));
                 continue;
             }
         }
         asort($class_tables);
-        foreach (array_keys($class_tables) as $fullClassName)
-        {
+        foreach (array_keys($class_tables) as $fullClassName) {
             // Create an instance of the class and add it to the list
             $this->list_class_tables[] = new $fullClassName($this);
             $this->log(5, sprintf(_("Class '%s' Create OK!"), $fullClassName));
         }
-        foreach ($class_tables_without_priority as $fullClassName)
-        {
+        foreach ($class_tables_without_priority as $fullClassName) {
             // Create an instance of the class and add it to the list
             $this->list_class_tables[] = new $fullClassName($this);
             $this->log(5, sprintf(_("Class '%s' Create OK, but without priority!"), $fullClassName));
@@ -201,12 +193,13 @@ class dpp {
         $files_destinations                  = glob(__DIR__ . '/dpp/destination_*.php');
         $class_destinations                  = [];
         $class_destinations_without_priority = [];
-        sort($files_destinations); // Sort the files to ensure consistent loading order (destination_01_users.php, destination_02_users_extra.php, etc.)
 
-        foreach ($files_destinations as $file)
-        {
-            if (!file_exists($file))
-            {
+        // Sort the files to ensure consistent loading order
+        // (destination_01_users.php, destination_02_users_extra.php, etc.)
+        sort($files_destinations);
+
+        foreach ($files_destinations as $file) {
+            if (!file_exists($file)) {
                 $this->log(1, sprintf(_("File '%s' not found!"), $file));
                 continue;
             }
@@ -214,35 +207,28 @@ class dpp {
             $className = $this->parseClassName($file, 'Destination');
 
             // Namespace + class name
-            $fullClassName = sprintf('\\%s\\dpp\\destination\\%s', __NAMESPACE__ , $className); // Example: \FreePBX\modules\Dpviz\dpp\destination\DestinationUsers
+            // Example: \FreePBX\modules\Dpviz\dpp\destination\DestinationUsers
+            $fullClassName = sprintf('\\%s\\dpp\\destination\\%s', __NAMESPACE__, $className);
 
             require_once $file; // Load the file
-            if (class_exists($fullClassName))
-            {
-                if (defined("$fullClassName::PRIORITY"))
-                {
+            if (class_exists($fullClassName)) {
+                if (defined("$fullClassName::PRIORITY")) {
                     $class_destinations[$fullClassName] = $fullClassName::PRIORITY;
-                }
-                else
-                {
+                } else {
                     $class_destinations_without_priority[] = $fullClassName;
                 }
-            }
-            else
-            {
+            } else {
                 $this->log(1, sprintf(_("Class '%s' not found in '%s'!"), $fullClassName, $file));
                 continue;
             }
         }
         asort($class_destinations);
-        foreach (array_keys($class_destinations) as $fullClassName)
-        {
+        foreach (array_keys($class_destinations) as $fullClassName) {
             // Create an instance of the class and add it to the list
             $this->list_calss_tables_destinations[] = new $fullClassName($this);
             $this->log(5, sprintf(_("Class '%s' Create OK!"), $fullClassName));
         }
-        foreach ($class_destinations_without_priority as $fullClassName)
-        {
+        foreach ($class_destinations_without_priority as $fullClassName) {
             // Create an instance of the class and add it to the list
             $this->list_calss_tables_destinations[] = new $fullClassName($this);
             $this->log(5, sprintf(_("Class '%s' Create OK, but without priority!"), $fullClassName));
@@ -256,8 +242,7 @@ class dpp {
      */
     private function getClassTables(bool $force_load = false): array
     {
-        if ($force_load || empty($this->list_class_tables))
-        {
+        if ($force_load || empty($this->list_class_tables)) {
             $this->loadClass(); // Load the class tables if not already loaded
         }
         return $this->list_class_tables;
@@ -269,8 +254,7 @@ class dpp {
      */
     private function getClassDestinations(bool $force_load = false): array
     {
-        if ($force_load || empty($this->list_calss_tables_destinations))
-        {
+        if ($force_load || empty($this->list_calss_tables_destinations)) {
             $this->loadClass(); // Load the class tables if not already loaded
         }
         return $this->list_calss_tables_destinations;
@@ -283,8 +267,7 @@ class dpp {
      */
     public function fetchAll(string $sql, array $params = []): array
     {
-        if (empty($sql))
-        {
+        if (empty($sql)) {
             return [];
         }
         $sth = $this->db->prepare($sql);
@@ -309,8 +292,7 @@ class dpp {
 
         $logFile = self::LOG_FILE;
         $fd = fopen($logFile, "a");
-        if (!$fd)
-        {
+        if (!$fd) {
             error_log(sprintf(_("Couldn't open log file: %s"), $logFile));
             return;
         }
@@ -324,7 +306,7 @@ class dpp {
      * @param string $phoneNumber The phone number to format.
      * @return string The formatted phone number.
      */
-    public function formatPhoneNumbers(string $phoneNumber) : string
+    public function formatPhoneNumbers(string $phoneNumber): string
     {
         $hasPlusOne = strpos($phoneNumber, '+1') === 0;
 
@@ -332,13 +314,11 @@ class dpp {
         $digits = preg_replace('/\D/', '', $phoneNumber);
 
         // If +1 was present, remove the leading '1' from digits so we format the last 10
-        if ($hasPlusOne && strlen($digits) === 11 && $digits[0] === '1')
-        {
+        if ($hasPlusOne && strlen($digits) === 11 && $digits[0] === '1') {
             $digits = substr($digits, 1);
         }
 
-        if (strlen($digits) === 10)
-        {
+        if (strlen($digits) === 10) {
             $areaCode  = substr($digits, 0, 3);
             $nextThree = substr($digits, 3, 3);
             $lastFour  = substr($digits, 6, 4);
@@ -355,7 +335,7 @@ class dpp {
      * @param string $text The text to sanitize.
      * @return string The sanitized text.
      */
-    public function sanitizeLabels(?string $text) : string
+    public function sanitizeLabels(?string $text): string
     {
         if ($text === null) {
             $text = '';
@@ -384,25 +364,18 @@ class dpp {
         $remainingSeconds = $seconds % 60;
 
         $parts = [];
-        if ($hours > 0)
-        {
+        if ($hours > 0) {
             $parts[] = sprintf(_("%s hrs"), $hours);
             $parts[] = sprintf(_("%s mins"), $minutes);
-            if ($remainingSeconds !== 0)
-            {
+            if ($remainingSeconds !== 0) {
                 $parts[] = sprintf(_("%s secs"), $remainingSeconds);
             }
-        }
-        elseif ($minutes > 0)
-        {
+        } elseif ($minutes > 0) {
             $parts[] = sprintf(_("%s mins"), $minutes);
-            if ($remainingSeconds !== 0)
-            {
+            if ($remainingSeconds !== 0) {
                 $parts[] = sprintf(_("%s secs"), $remainingSeconds);
             }
-        }
-        else
-        {
+        } else {
             $parts[] = sprintf(_("%s secs"), $remainingSeconds);
         }
         return implode(", ", $parts);
@@ -418,10 +391,8 @@ class dpp {
         $results = $this->fetchAll($sql);
 
         $this->inroutes = [];
-        if (is_array($results) && !empty($results))
-        {
-            foreach ($results as $route)
-            {
+        if (is_array($results) && !empty($results)) {
+            foreach ($results as $route) {
                 $key = sprintf("%s%s", $route['extension'], $route['cidnum']);
                 $key = (empty($key)) ? 'ANY' : $key;
                 $this->inroutes[$key] = $route;
@@ -441,8 +412,7 @@ class dpp {
         $num     = preg_replace($pattern, '', $num);
 
         // "extension" is the key for the routes hash
-        foreach ($this->inroutes as $ext => $route)
-        {
+        foreach ($this->inroutes as $ext => $route) {
             if ($ext == $num) {
                 $match = $this->inroutes[$num];
             }
@@ -464,11 +434,46 @@ class dpp {
      */
     public function loadTables($force_load = false)
     {
-        foreach ($this->getClassTables($force_load) as $table_class)
-        {
+        $tables       = $this->getClassTables($force_load);
+        $remaining    = $tables;
+        $maxRetries   = 20;
+        $loadedTables = [];
 
-            // call the load method of the class
-            $table_class->load();
+        while (!empty($remaining) && $maxRetries-- > 0) {
+            $retry = false;
+
+            foreach ($remaining as $key => $table) {
+                $shortNameClass = (new \ReflectionClass($table))->getShortName();
+
+                if ($table->needDependencies()) {
+                    if (! $table->checkDeppendency($loadedTables)) {
+                        $deps    = $table->getDependencies();
+                        $depsStr = is_array($deps) ? implode(', ', $deps) : _('undefined');
+                        $this->log(5, sprintf(_("Skipping table class: %s, waiting for dependencies '%s'"), $shortNameClass, $depsStr));
+                        continue;
+                    }
+                }
+
+                $this->log(9, sprintf(_("Loading table class: %s"), $shortNameClass));
+                $table->load();
+                $loadedTables[] = $shortNameClass;
+
+                unset($remaining[$key]);
+                $retry = true;
+            }
+
+            if (!$retry) {
+                break;  // stop, we avoided a loop
+            }
+            $this->log(5, sprintf(_("Retrying loading tables, remaining '%d' tables and '%d' retries"), count($remaining), $maxRetries));
+        }
+
+        if (empty($remaining)) {
+            $this->log(9, _("✔ All tables loaded successfully!"));
+        } else {
+            foreach ($remaining as $table) {
+                $this->log(1, sprintf(_("⚠ Could not load table class: %s"), get_class($table)));
+            }
         }
     }
 
@@ -485,9 +490,8 @@ class dpp {
 
         $langOption = $this->dpviz->getSetting('lang', $this->dpviz->getDefualtLanguage());
 
-        if (! isset ($route['dpgraph']))
-        {
-            $route['dpgraph'] = new \Alom\Graphviz\Digraph('"'.$route['extension'].'"');
+        if (! isset($route['dpgraph'])) {
+            $route['dpgraph'] = new \Alom\Graphviz\Digraph('"' . $route['extension'] . '"');
             $route['dpgraph']->attr(
                 'graph',
                 array(
@@ -503,38 +507,31 @@ class dpp {
         # a destination to look at.  For the first one, we get the destination from
         # the route object.
 
-        if ($destination == '')
-        {
-            if (empty($route['extension']) || $route['extension'] == "ANY")
-            {
+        if ($destination == '') {
+            if (empty($route['extension']) || $route['extension'] == "ANY") {
                 $didLabel           = _("ANY");
                 $route['extension'] = "ANY";
-            }
-            elseif (is_numeric($route['extension']) && (in_array(strlen($route['extension']), [10, 11, 12])))
-            {
+            } elseif (is_numeric($route['extension']) && (in_array(strlen($route['extension']), [10, 11, 12]))) {
                 $didLabel = $this->formatPhoneNumbers($route['extension']);
-            }
-            else
-            {
+            } else {
                 $didLabel = $route['extension'];
             }
 
             $didLink = ($route['extension'] === "ANY") ? '/' : sprintf("%s/", $route['extension']);
-            if (!empty($route['cidnum']))
-            {
+            if (!empty($route['cidnum'])) {
                 $didLabel = sprintf("%s / %s", $didLabel, $this->formatPhoneNumbers($route['cidnum']));
                 $didLink  .= $route['cidnum'];
             }
 
-            $didLabel = sprintf("%s\\n%s", $didLabel, $route['description']);
+            $didLabel   = sprintf("%s\\n%s", $didLabel, $route['description']);
 
             $didData    = $route['incoming'][$route['extension']];
             $didTooltip = sprintf("%s\\n", $didData['extension']);
-            $didTooltip.= !empty($didData['cidnum'])        ? sprintf(_("Caller ID Number= %s\\n"), $didData['cidnum']) : '';
-            $didTooltip.= !empty($didData['description'])   ? sprintf(_("Description= %s\\n"), $didData['description']) : '';
-            $didTooltip.= !empty($didData['alertinfo'])     ? sprintf(_("Alert Info= %s\\n"), $didData['alertinfo']) : '';
-            $didTooltip.= !empty($didData['grppre'])        ? sprintf(_("CID Prefix= %s\\n"), $didData['grppre']) : '';
-            $didTooltip.= !empty($didData['mohclass'])      ? sprintf(_("MOH Class= %s\\n"), $didData['mohclass']) : '';
+            $didTooltip .= !empty($didData['cidnum'])        ? sprintf(_("Caller ID Number= %s\\n"), $didData['cidnum']) : '';
+            $didTooltip .= !empty($didData['description'])   ? sprintf(_("Description= %s\\n"), $didData['description']) : '';
+            $didTooltip .= !empty($didData['alertinfo'])     ? sprintf(_("Alert Info= %s\\n"), $didData['alertinfo']) : '';
+            $didTooltip .= !empty($didData['grppre'])        ? sprintf(_("CID Prefix= %s\\n"), $didData['grppre']) : '';
+            $didTooltip .= !empty($didData['mohclass'])      ? sprintf(_("MOH Class= %s\\n"), $didData['mohclass']) : '';
 
             $node_extension = array(
                 'label'     => $this->sanitizeLabels($didLabel),
@@ -543,10 +540,10 @@ class dpp {
                 'margin'    => '.13',
                 'shape'     => 'cds',
                 'style'     => 'filled',
-                'URL'       => htmlentities('/admin/config.php?display=did&view=form&extdisplay='.urlencode($didLink)),
-                'target'    =>'_blank',
+                'URL'       => htmlentities('/admin/config.php?display=did&view=form&extdisplay=' . urlencode($didLink)),
+                'target'    => '_blank',
                 'fillcolor' => 'darkseagreen',
-		        'comment'   => $langOption,
+                'comment'   => $langOption,
             );
             $dpgraph->node($route['extension'], $node_extension);
 
@@ -565,13 +562,10 @@ class dpp {
             #$dpgraph->set_attribute('root' => $route->{extension});
 
             // If an inbound route has no destination, we want to bail, otherwise recurse.
-            if ($optional != '')
-            {
+            if ($optional != '') {
                 $route['parent_edge_label'] = ' ';
                 $this->followDestinations($route, $optional, '');
-            }
-            elseif ($route['destination'] != '')
-            {
+            } elseif ($route['destination'] != '') {
                 $route['parent_edge_label'] = _(" Always");
                 $this->followDestinations($route, sprintf("%s,%s", $route['destination'], $langOption), '');
             }
@@ -581,12 +575,9 @@ class dpp {
 
         // We use get() to see if the node exists before creating it.  get() throws
         // an exception if the node does not exist so we have to catch it.
-        try
-        {
+        try {
             $node = $dpgraph->get($destination);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->log(7, sprintf(_("Adding node: %s"), $destination));
             $node = $dpgraph->beginNode($destination);
             $node->attribute('margin', '.25,.055');
@@ -599,45 +590,38 @@ class dpp {
         $ntxt = $node->getAttribute('label', '');
         $this->log(9, sprintf(_("Found it: ntxt = %s"), $ntxt));
 
-        if ($ntxt == '' )
-        {
+        if ($ntxt == '') {
             $ntxt = sprintf(_("(new node: %s)"), $destination);
         }
 
-        if ($dpgraph->hasEdge(array($route['parent_node'], $node)))
-        {
+        if ($dpgraph->hasEdge(array($route['parent_node'], $node))) {
             $this->log(9, sprintf(_("NOT making an edge from %s -> %s"), $ptxt, $ntxt));
-            $edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
+            $edge = $dpgraph->beginEdge(array($route['parent_node'], $node));
             $edge->attribute('label', $this->sanitizeLabels($route['parent_edge_label']));
             $edge->attribute('labeltooltip', $this->sanitizeLabels($ptxt));
             $edge->attribute('edgetooltip', $this->sanitizeLabels($ptxt));
-        }
-        else
-        {
+        } else {
             $this->log(9, sprintf(_("Making an edge from %s -> %s"), $ptxt, $ntxt));
-            $edge= $dpgraph->beginEdge(array($route['parent_node'], $node));
+            $edge = $dpgraph->beginEdge(array($route['parent_node'], $node));
             $edge->attribute('label', $this->sanitizeLabels($route['parent_edge_label']));
             $edge->attribute('labeltooltip', $this->sanitizeLabels($ptxt));
-		    $edge->attribute('edgetooltip', $this->sanitizeLabels($ptxt));
+            $edge->attribute('edgetooltip', $this->sanitizeLabels($ptxt));
 
             $lang = $route['parent_node']->getAttribute('comment', ''); //get current lang from parent
             $node->attribute('comment', $lang);                         //set current lang on this new parent node
 
-            if (preg_match("/^( Match| No Match)/", $route['parent_edge_label']))
-            {
+            if (preg_match("/^( Match| No Match)/", $route['parent_edge_label'])) {
                 $edge->attribute('URL', $route['parent_edge_url']);
                 $edge->attribute('target', $route['parent_edge_target']);
                 $edge->attribute('labeltooltip', $this->sanitizeLabels($route['parent_edge_labeltooltip']));
                 $edge->attribute('edgetooltip', $this->sanitizeLabels($route['parent_edge_labeltooltip']));
             }
-            if (preg_match("/^( IVR)./", $route['parent_edge_label']))
-            {
+            if (preg_match("/^( IVR)./", $route['parent_edge_label'])) {
                 $edge->attribute('style', 'dashed');
             }
 
             //start from node
-            if (preg_match("/^ +$/", $route['parent_edge_label']))
-            {
+            if (preg_match("/^ +$/", $route['parent_edge_label'])) {
                 $edge->attribute('style', 'dotted');
             }
         }
@@ -645,15 +629,12 @@ class dpp {
         $this->log(9, sprintf(_("The Graph: %s"), print_r($dpgraph, true)));
 
         // Now bail if we have already recursed on this destination before.
-        if ($node->getAttribute('label', 'NONE') != 'NONE')
-        {
+        if ($node->getAttribute('label', 'NONE') != 'NONE') {
             return;
         }
 
-        foreach ($this->getClassDestinations() as &$item)
-        {
-            if (preg_match($item->getDestinationRegEx(), $destination, $matches))
-            {
+        foreach ($this->getClassDestinations() as &$item) {
+            if (preg_match($item->getDestinationRegEx(), $destination, $matches)) {
                 $item->followDestinations($route, $node, $destination, $matches);
                 break;
             }

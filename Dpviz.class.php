@@ -1,24 +1,24 @@
 <?php
+
 // License for all code of this FreePBX module can be found in the license file inside the module directory
 // Copyright 2015 Sangoma Technologies.
 // vim: set ai ts=4 sw=4 ft=php:
 
 namespace FreePBX\modules;
 
-include __DIR__ . '/vendor/autoload.php';
-include __DIR__ . '/dpp.php';
+include_once __DIR__ . '/Dpp.php';
 
-use \FreePBX\Modules\Dpviz\dpp;
+use FreePBX\Modules\Dpviz\Dpp;
 
-class Dpviz extends \FreePBX_Helpers implements \BMO {
-
+class Dpviz extends \FreePBX_Helpers implements \BMO
+{
     private $freepbx;
     private $db;
 
     public $astman = null;
     public $dpp    = null;
 
-    const default_setting = [
+    public const DEFAULT_SETTING = [
         'panzoom'            => 1,
         'horizontal'         => 0,
         'datetime'           => 1,
@@ -27,13 +27,14 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         'ext_optional'       => 0,
         'fmfm'               => 0,
     ];
-
-    const recording_lang_default   = 'en';
-    const recording_format_default = 'wav';
-    const recording_format_allow   = ['wav'];
+    public const RECORDING_LANG_DEFAULT   = 'en';
+    public const RECORDING_FORMAT_DEFAULT = 'wav';
+    public const RECORDING_FORMAT_ALLOW   = ['wav'];
 
     public function __construct($freepbx = null)
     {
+        include_once __DIR__ . '/vendor/autoload.php';
+
         if ($freepbx == null) {
             throw new \Exception("Not given a FreePBX Object");
         }
@@ -42,7 +43,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $this->freepbx = $freepbx;
         $this->db      = $freepbx->Database;
         $this->astman  = $freepbx->astman;
-        $this->dpp     = new dpp($this->freepbx, $this);
+        $this->dpp     = new Dpp($this->freepbx, $this);
     }
 
     public function install()
@@ -51,7 +52,42 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $this->setSettingAll($this->getSettingAll());
     }
 
-    public function uninstall() { }
+    public function uninstall()
+    {
+    }
+
+
+    /**
+     * Hook to be called when the module is loaded.
+     * This is where you can set up any necessary dependencies or configurations.
+     */
+    protected function hookGetRecording($id): array
+    {
+        // $data_return = \FreePBX::Recordings()->getRecordingById($id);
+        $data_return = [];
+        try {
+            $recordings  = \FreePBX::create()->Recordings;
+            $data_return = $recordings->getRecordingById($id);
+        } catch (\Exception $e) {
+            freepbx_log(FPBX_LOG_ERROR, "Recordings is missing, please install it.");
+        }
+        return $data_return;
+    }
+
+    /**
+     * Hook to be called when the module is loaded.
+     * This is where you can set up any necessary dependencies or configurations.
+     */
+    protected function hookGetSoundlang(): string
+    {
+        try {
+            $soundlang = \FreePBX::create()->Soundlang;
+            return $soundlang->getLanguage();
+        } catch (\Exception $e) {
+            freepbx_log(FPBX_LOG_ERROR, "Soundlang is missing, please install it.");
+            return self::RECORDING_LANG_DEFAULT;
+        }
+    }
 
     /**
      * Get all configuration values.
@@ -61,22 +97,12 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
     {
         $settings = $this->getAll("setting");
 
-        // Filter only valid keys defined in default_setting
-        $settings = array_merge(self::default_setting, $settings);
+        // Filter only valid keys defined in DEFAULT_SETTING
+        $settings = array_merge(self::DEFAULT_SETTING, $settings);
 
         // Direction: LR (left-to-right) o TB (top-to-bottom)
         $settings['direction'] = ($settings['horizontal']) == 1 ? 'LR' : 'TB';
-
-        try
-        {
-            $soundlang = \FreePBX::create()->Soundlang;
-            $settings['lang'] = $soundlang->getLanguage();
-        }
-        catch(\Exception $e)
-        {
-            freepbx_log(FPBX_LOG_ERROR, "Soundlang is missing, please install it.");
-            $settings['lang'] = self::recording_lang_default;
-        }
+        $Setting['lang']       = $this->hookGetSoundlang();
 
         return $settings;
     }
@@ -89,18 +115,15 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
      */
     public function setSettingAll(array $settings): bool
     {
-        if (empty($settings))
-        {
+        if (empty($settings)) {
             return false;
         }
 
-        // Filter only valid keys defined in default_setting
-        $validSettings = array_intersect_key($settings, self::default_setting);
-        foreach ($validSettings as $key => $val)
-        {
-            if (is_null($val))
-            {
-                $val = self::default_setting[$key];
+        // Filter only valid keys defined in DEFAULT_SETTING
+        $validSettings = array_intersect_key($settings, self::DEFAULT_SETTING);
+        foreach ($validSettings as $key => $val) {
+            if (is_null($val)) {
+                $val = self::DEFAULT_SETTING[$key];
             }
             parent::setConfig($key, $val, "setting");
         }
@@ -120,7 +143,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
             return $default ?? null;
         }
         $settings = $this->getSettingAll();
-        return $settings[$key] ?? $default ?? (self::default_setting[$key] ?? null);
+        return $settings[$key] ?? $default ?? (self::DEFAULT_SETTING[$key] ?? null);
     }
 
     /**
@@ -131,8 +154,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
      */
     public function setSetting(string $key, ?string $val): bool
     {
-        if ($key == '')
-        {
+        if ($key == '') {
             return false;
         }
         parent::setConfig($key, $val, "setting");
@@ -153,7 +175,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
     public function getDefualtLanguage(): string
     {
-        return self::recording_lang_default;
+        return self::RECORDING_LANG_DEFAULT;
     }
 
     public function doConfigPageInit($page)
@@ -162,19 +184,14 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $request = freepbxGetSanitizedRequest();
         $action  = $request['action'] ?? '';
 
-        switch ($action)
-        {
+        switch ($action) {
             case 'edit':
                 //TODO: Implement via AJAX
-                if (isset($request['reset']))
-                {
+                if (isset($request['reset'])) {
                     $this->resetSetting();
-                }
-                else
-                {
-                    $new_setting = array_intersect_key($request, self::default_setting);
-                    if (!empty($new_setting))
-                    {
+                } else {
+                    $new_setting = array_intersect_key($request, self::DEFAULT_SETTING);
+                    if (!empty($new_setting)) {
                         $this->setSettingAll($new_setting);
                     }
                 }
@@ -202,25 +219,22 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         );
 
         $data = array_merge($data, $params);
-        switch ($page)
-        {
+        switch ($page) {
             case 'main':
                 $data['action'] = $request['action'] ?? '';
 
-                $data_return = load_view(__DIR__."/views/page.main.php", $data);
+                $data_return = load_view(__DIR__ . "/views/page.main.php", $data);
                 break;
 
             case 'NavAndUsage':
-                $data_return = load_view(__DIR__."/views/view.nav_and_usage.php", $data);
+                $data_return = load_view(__DIR__ . "/views/view.nav_and_usage.php", $data);
                 break;
 
             case 'options':
                 // definition the parameters for the dynamic generation of the options list of the settings tab
                 $data['tab']['settings'] = array();
-                foreach ($settings as $key => $val)
-                {
-                    switch($key)
-                    {
+                foreach ($settings as $key => $val) {
+                    switch ($key) {
                         case 'datetime':
                             $data['tab']['settings']["0"] = array(
                                 'type'  => 'checkbox',
@@ -230,7 +244,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                                 'id'    => $key,
                                 'help'  => _("Displays the date and time on the graph."),
                             );
-                        break;
+                            break;
 
                         case 'panzoom':
                             $data['tab']['settings']["1"] = array(
@@ -241,7 +255,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                                 'id'    => $key,
                                 'help'  => _("Allows you to use pan and zoom functions. Click and hold to pan, and use the mouse wheel to zoom."),
                             );
-                        break;
+                            break;
 
                         case 'horizontal':
                             $data['tab']['settings']["2"] = array(
@@ -252,7 +266,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                                 'id'    => $key,
                                 'help'  => _("Displays the dial plan in a horizontal layout."),
                             );
-                        break;
+                            break;
 
                         case 'combine_queue_ring':
                             $data['tab']['settings']["3"] = array(
@@ -277,7 +291,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                                     ],
                                 ),
                             );
-                        break;
+                            break;
 
                         case 'dynmembers':
                             $data['tab']['settings']["4"] = array(
@@ -288,7 +302,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                                 'id'    => $key,
                                 'help'  => _("Displays the list of dynamic agents currently assigned to the queues."),
                             );
-                        break;
+                            break;
 
                         case 'fmfm':
                             $data['tab']['settings']["5"] = array(
@@ -299,7 +313,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                                 'id'    => $key,
                                 'help'  => _("Displays Find Me Follow Me data for extensions."),
                             );
-                        break;
+                            break;
 
                         case 'ext_optional':
                             $data['tab']['settings']["6"] = array(
@@ -310,7 +324,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                                 'id'    => $key,
                                 'help'  => _("Displays and follows the optional destinations (No Answer, Busy, Not Reachable) set for the extension in the Advanced tab."),
                             );
-                        break;
+                            break;
                     }
 
                     // We sort the array so that the html is generated in the correct order
@@ -319,7 +333,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
                 $data['clickedNodeTitle'] = $request['clickedNodeTitle'] ?? '';
 
-                $data_return = load_view(__DIR__."/views/view.options.php", $data);
+                $data_return = load_view(__DIR__ . "/views/view.options.php", $data);
                 break;
 
             case 'dialplan':
@@ -329,7 +343,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 $data['basefilename']     = ($data['iroute'] == '') ? 'ANY' : $data['iroute'];
                 $data['filename']         = sprintf("%s.png", $data['basefilename']);
 
-                $data_return = load_view(__DIR__."/views/view.dialplan.php", $data);
+                $data_return = load_view(__DIR__ . "/views/view.dialplan.php", $data);
 
                 break;
 
@@ -348,8 +362,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $setting['allowremote'] = true;
         return true;
         // ********************************************
-        switch ($req)
-        {
+        switch ($req) {
             case 'get_i18n':
             case 'make':
             case 'reset_setting_default':
@@ -370,8 +383,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $request = freepbxGetSanitizedRequest();
         $command = $request['command'] ?? '';
         $data_return = false;
-        switch ($command)
-        {
+        switch ($command) {
             case 'get_i18n':
                 $data_return = [
                     'status' => 'success',
@@ -405,15 +417,13 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 break;
 
             case 'make':
-
                 $extdisplay   = $request['ext'] ?? '';
                 $cid          = $request['cid'] ?? '';
                 $iroute       = sprintf("%s%s", $extdisplay, $cid);
                 $iroute       = (empty($iroute)) ? 'ANY' : $iroute;
                 $isExistRoute = $this->dpp->isExistRoute($iroute);
 
-                if (! $isExistRoute)
-                {
+                if (! $isExistRoute) {
                     $data_return = [
                         'status'       => 'error',
                         'message'      => sprintf(_("❌ Error: Could not find inbound route for %s / %s"), $extdisplay, $cid),
@@ -422,9 +432,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                         'cid'          => $cid,
                         'isExistRoute' => $isExistRoute,
                     ];
-                }
-                else
-                {
+                } else {
                     $settings         = $this->getSettingAll();
                     $clickedNodeTitle = $request['clickedNodeTitle'] ?? '';
                     $jump             = $request['jump'] ?? '';
@@ -433,16 +441,11 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     $basefilename     = ($iroute == '') ? 'ANY' : $iroute;
                     $filename         = sprintf("%s.png", $basefilename);
 
-                    if (is_numeric($extdisplay) && (in_array(strlen($extdisplay), [10, 11, 12])))
-                    {
+                    if (is_numeric($extdisplay) && (in_array(strlen($extdisplay), [10, 11, 12]))) {
                         $number = $this->dpp->formatPhoneNumbers($extdisplay);
-                    }
-                    else if (empty($extdisplay))
-                    {
+                    } elseif (empty($extdisplay)) {
                         $number = 'ANY';
-                    }
-                    else
-                    {
+                    } else {
                         $number = $extdisplay;
                     }
 
@@ -454,6 +457,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                     //$gtext = str_replace(["\n"], ["\\n"], $gtext);
                     $gtext = str_replace(array("\r\n", "\r", "\n"), "\\n", $gtext);
 
+                    $title_cid = !empty($cid) ?  sprintf(' / %s', $this->dpp->formatPhoneNumbers($cid)) : '';
                     $data_return = [
                         'status'       => 'success',
                         'message'      => _("✔ Graph generated successfully"),
@@ -465,7 +469,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                         'isExistRoute' => $isExistRoute,
                         'iroute'       => $iroute,
                         'gtext'        => $gtext,
-                        'title'        => sprintf(_("Dial Plan For Inbound Route %s%s: %s"), $number, ((!empty($cid)) ?  sprintf(' / %s', $this->dpp->formatPhoneNumbers($cid)) : ''),  $this->dpp->dproutes['description']),
+                        'title'        => sprintf(_("Dial Plan For Inbound Route %s%s: %s"), $number, $title_cid, $this->dpp->dproutes['description']),
                         'datetime'     => $settings['datetime'] == '1' ? date('Y-m-d H:i:s') : '',
                     ];
                 }
@@ -482,15 +486,12 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
             case 'save_settings':
                 $new_setting = $request['data'] ?? [];
-                if ($this->setSettingAll($new_setting))
-                {
+                if ($this->setSettingAll($new_setting)) {
                     $data_return = [
                         'status' => 'success',
                         'message' => _("✔ Settings saved successfully")
                     ];
-                }
-                else
-                {
+                } else {
                     $data_return = [
                         'status' => 'error',
                         'message' => _("❌ Failed to save settings")
@@ -518,63 +519,43 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
             case 'check_update':
                 // Call the function to check for updates
                 $result = $this->checkForGitHubUpdate();
-                if (isset($result['error']))
-                {
+                if (isset($result['error'])) {
                     $data_return = ['status' => 'error', 'message' => $result['error']];
-                }
-                else
-                {
+                } else {
                     $data_return = [
                         'status'     => 'success',
                         'current'    => $result['current'],
                         'latest'     => $result['latest'],
                         'up_to_date' => $result['up_to_date'],
                     ];
-                    if ($result['up_to_date'])
-                    {
+                    if ($result['up_to_date']) {
                         $data_return['message'] = sprintf(_("✔ You are using the latest version: %s"), $result['current']);
-                    }
-                    else
-                    {
+                    } else {
                         $data_return['message'] = sprintf(_("⚠ A new version is available: %s, current version: %s"), $result['latest'], $result['current']);
                     }
                 }
                 break;
 
             case 'getrecording':
+                $id          = intval($request['id'] ?? 0);
+                $format      = $request['format'] ?? self::RECORDING_FORMAT_DEFAULT;
+                $recording   = $this->hookGetRecording($id);
+                $filename    = $recording['filename'] ?? '';
+                $fcode_lang  = $recording['fcode_lang'] ?? self::RECORDING_LANG_DEFAULT;
+                $lang        = $request['lang'] ?? $fcode_lang;
 
-                $id     = intval($request['id'] ?? 0);
-                $format = $request['format'] ?? self::recording_format_default;
-
-                // $fpbxResults = \FreePBX::Recordings()->getRecordingById($id);
-                try
-                {
-                    $recordings  = \FreePBX::create()->Recordings;
-                    $fpbxResults = $recordings->getRecordingById($id);
-                }
-                catch(\Exception $e)
-                {
-                    freepbx_log(FPBX_LOG_ERROR, "Recordings is missing, please install it.");
-                    $fpbxResults = [];
-                }
-
-                $filename    = $fpbxResults['filename'] ?? '';
-                $fcode_lang  = $fpbxResults['fcode_lang'] ?? 'en'; // get the default language from the recording config, is not set, use 'en'
-                $lang        = $request['lang'] ?? $fcode_lang;    // if not set, use the default language from the recording config
-
-                $playbacklist = is_array($fpbxResults['playbacklist'] ?? null) ? $fpbxResults['playbacklist'] : [];
+                $playbacklist = is_array($recording['playbacklist'] ?? null) ? $recording['playbacklist'] : [];
 
                 $audiolist = [];
                 $codecs    = [];
-                foreach ($playbacklist as $f)
-                {
+                foreach ($playbacklist as $f) {
                     $codec = [
                         'filename'      => $f,
-                        'filename_lang' => $fpbxResults['soundlist'][$f]['filenames'][$lang] ?? '',
-                        'filename_def'   => $fpbxResults['soundlist'][$f]['filenames'][self::recording_lang_default] ?? '',
+                        'filename_lang' => $recording['soundlist'][$f]['filenames'][$lang] ?? '',
+                        'filename_def'  => $recording['soundlist'][$f]['filenames'][self::RECORDING_LANG_DEFAULT] ?? '',
                         'lang'          => $lang,
-                        'hasFormat'     => in_array($format, $fpbxResults['soundlist'][$f]['codecs'][$lang] ?? []), // check if the format is available for the recording
-                        'hasFormat_def'  => in_array($format, $fpbxResults['soundlist'][$f]['codecs'][self::recording_lang_default] ?? []), // check if the format is available for the recording
+                        'hasFormat'     => in_array($format, $recording['soundlist'][$f]['codecs'][$lang] ?? []),
+                        'hasFormat_def' => in_array($format, $recording['soundlist'][$f]['codecs'][self::RECORDING_LANG_DEFAULT] ?? []),
                     ];
                     $codecs[$f]  = $codec;
                     $audiolist[] = $codec['hasFormat'] ? $codec['filename_lang'] : $codec['filename_def'];
@@ -582,68 +563,63 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 $audiolist_str = implode('&', $audiolist);
 
                 $data_return = [
-                    'displayname' => $fpbxResults['displayname'] ?? _('Unknown'),
+                    'displayname' => $recording['displayname'] ?? _('Unknown'),
                     'lang'        => $lang,
                     'format'      => $format,
                     'filename'    => $audiolist_str,
                     'codecs'      => $codecs,
-                    'recording'   => $fpbxResults, // full info from the recording, in case you want to use it in the front end
+                    'recording'   => $recording,  // full info, used in frontend
                 ];
                 break;
 
             case 'getfile':
                 $base_filename = $request['file'] ?? '';
-                $format_file   = $request['format'] ?? self::recording_format_default;
+                $format_file   = $request['format'] ?? self::RECORDING_FORMAT_DEFAULT;
 
                 $base_filename = str_replace(['../', '..\\'], '', $base_filename); // remove any ../ or ..\
 
 
                 // error_log($base_filename);
-                if (empty($base_filename))
-                {
+                if (empty($base_filename)) {
                     http_response_code(400);
                     echo _("File name is empty.");
                     exit;
                 }
 
-                if (!in_array($format_file, self::recording_format_allow))
-                {
+                if (!in_array($format_file, self::RECORDING_FORMAT_ALLOW)) {
                     http_response_code(400);
-                    echo sprintf(_("File format '%s' not supported, onley allow '%s'."), $format_file, implode(',', self::recording_format_allow));
+                    echo sprintf(_("File format '%s' not supported, onley allow '%s'."), $format_file, implode(',', self::RECORDING_FORMAT_ALLOW));
                     exit;
                 }
 
                 $path_filename = realpath(sprintf("/var/lib/asterisk/sounds/%s.%s", $base_filename, $format_file));
-                if (empty($path_filename))
-                {
+                if (empty($path_filename)) {
                     http_response_code(400);
                     echo sprintf(_("File '%s' not found."), $base_filename);
                     exit;
                 }
 
-                if (! file_exists($path_filename) || !is_readable($path_filename))
-                {
+                if (! file_exists($path_filename) || !is_readable($path_filename)) {
                     http_response_code(404);
                     echo _("File not found or not readable.");
                     exit;
                 }
 
-                switch ($format_file)
-                {
+                switch ($format_file) {
                     case 'wav':
                         $mime_type = 'audio/wav';
-                    break;
+                        break;
 
                     default:
                         $mime_type = 'application/octet-stream';
-                    break;
+                        break;
                 }
 
-    			header(sprintf('Content-Type: %s', $mime_type));
-	    		header(sprintf('Content-Length: %s', filesize($path_filename)));
-			    header(sprintf('X-Filename: %s.%s', $base_filename, $format_file));
-			    readfile($path_filename);
-			    exit;
+                header(sprintf('Content-Type: %s', $mime_type));
+                header(sprintf('Content-Length: %s', filesize($path_filename)));
+                header(sprintf('X-Filename: %s.%s', $base_filename, $format_file));
+                readfile($path_filename);
+                exit;
 
             default:
                 $data_return = ['status' => 'error', 'message' => _("❌ Unknown command")];
@@ -665,14 +641,12 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
         $context = stream_context_create($opts);
         $json    = file_get_contents($url, false, $context);
-        if ($json === false)
-        {
+        if ($json === false) {
             return ['error' => _("Failed to fetch release info.")];
         }
 
         $data = json_decode($json, true);
-        if (!isset($data['tag_name']))
-        {
+        if (!isset($data['tag_name'])) {
             return ['error' => _("Invalid response from GitHub.")];
         }
 
@@ -688,16 +662,13 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
     public function asteriskRunCmd($cmd, $return_string = false)
     {
-        if ($this->astman)
-        {
+        if ($this->astman) {
             $response = $this->astman->send_request('Command', [ 'Command' => $cmd ]);
-            if (!empty($response['data']))
-            {
+            if (!empty($response['data'])) {
                 $response = explode("\n", (string) $response['data']);
                 unset($response[0]); //remove the Priviledge Command line
 
-                if ($return_string)
-                {
+                if ($return_string) {
                     $response = implode("\n", $response);
                     $response = htmlspecialchars($response);
                 }

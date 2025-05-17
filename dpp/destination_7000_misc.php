@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationMisc extends baseDestinations
+class DestinationMisc extends BaseDestinations
 {
     public const PRIORITY = 7000;
 
@@ -13,8 +14,10 @@ class DestinationMisc extends baseDestinations
         $this->regex = "/^ext-miscdests,(\d+),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of ext-miscdests,<number>,<number>
+
         $miscdestnum   = $matches[1];
         $miscdestother = $matches[2];
         $miscdest      = $route['miscdest'][$miscdestnum];

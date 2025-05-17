@@ -11,5 +11,8 @@
                 "Fix BaseInstruction methods": "patches/baseinstruction.patch"
             }
         }
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.13"
     }
 }

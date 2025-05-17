@@ -1,9 +1,10 @@
 <?php
+
 namespace FreePBX\modules\Dpviz\dpp\destination;
 
-require_once __DIR__ . '/baseDestinations.php';
+require_once __DIR__ . '/BaseDestinations.php';
 
-class DestinationQueues extends baseDestinations
+class DestinationQueues extends BaseDestinations
 {
     public const PRIORITY = 8500;
 
@@ -13,19 +14,18 @@ class DestinationQueues extends baseDestinations
         $this->regex = "/^ext-queues,(\d+),(\d+)/";
     }
 
-    public function callback_followDestinations(&$route, &$node, $destination, $matches)
+    public function callbackFollowDestinations(&$route, &$node, $destination, $matches)
     {
+        # The destination is in the form of ext-queues,<number>,<number>
+
         $qnum              = $matches[1];
         $qother            = $matches[2];
         $combineQueueRing  = $this->getSetting('combine_queue_ring');
 
         $q = $route['queues'][$qnum];
-        if ($q['maxwait'] == 0 || $q['maxwait'] == '' || !is_numeric($q['maxwait']))
-        {
+        if ($q['maxwait'] == 0 || $q['maxwait'] == '' || !is_numeric($q['maxwait'])) {
             $maxwait = _("Unlimited");
-        }
-        else
-        {
+        } else {
             $maxwait = $this->dpp->secondsToTimes($q['maxwait']);
         }
 
@@ -40,14 +40,10 @@ class DestinationQueues extends baseDestinations
             'style'     => 'filled',
         ]);
 
-        if (!empty($q['members']))
-        {
-            foreach ($q['members'] as $types => $type)
-            {
-                foreach ($type as $member)
-                {
-                    switch ($combineQueueRing)
-                    {
+        if (!empty($q['members'])) {
+            foreach ($q['members'] as $types => $type) {
+                foreach ($type as $member) {
+                    switch ($combineQueueRing) {
                         case "2":
                             $go = sprintf("from-did-direct,%s,1", $member);
                             break;
@@ -64,14 +60,14 @@ class DestinationQueues extends baseDestinations
 
         # The destinations we need to follow are the queue members (extensions)
         # and the no-answer destination.
-        if ($q['dest'] != '')
-        {
+        if ($q['dest'] != '') {
             $this->findNextDestination($route, $node, $q['dest'], sprintf(_(" No Answer (%s)"), $maxwait));
         }
 
-        if (is_numeric($q['ivr_id']))
-        {
-            $this->findNextDestination($route, $node,
+        if (is_numeric($q['ivr_id'])) {
+            $this->findNextDestination(
+                $route,
+                $node,
                 sprintf('ivr-%s,s,1', $q['ivr_id']),
                 sprintf(_(" IVR Break Out (every %s)"), $this->dpp->secondsToTimes($q['data']['min-announce-frequency']))
             );
