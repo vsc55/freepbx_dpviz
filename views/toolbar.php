@@ -286,48 +286,82 @@ $(document).ready(function() {
 		width: '100%',
 		maximumSelectionLength: 20,
 		dropdownCssClass: "custom-dropdown",
+		dropdownParent: $("body"),
+		
+	});
+	
+	
+	let lastSearchTerm = '';
+
+	$('#dialPlan').select2({
+		placeholder: "Choose Dial Plan",
+		dropdownAutoWidth: true,
+		width: '100%',
+		maximumSelectionLength: 20,
+		dropdownCssClass: "custom-dropdown",
 		dropdownParent: $("body")
 	});
+
+	// Store search term right before selection
+	$('#dialPlan').on('select2:selecting', function () {
+		const searchInput = $('.select2-search__field');
+		if (searchInput.length) {
+			lastSearchTerm = searchInput.val();
+		}
+	});
+
+	// Restore the search term when dropdown opens again
+	$('#dialPlan').on('select2:open', function () {
+		setTimeout(() => {
+			const searchInput = $('.select2-search__field');
+			if (searchInput.length && lastSearchTerm) {
+				searchInput.val(lastSearchTerm).trigger('input');
+			}
+		}, 0);
+	});
+
+	// Your existing select logic
+	$('#dialPlan').on('select2:select', function (e) {
+		const selectedId = e.params.data.id;
+		const selectedText = e.params.data.text;
+
+		let cleaned = selectedText.replace(/\s\[.*?\]/, '').replace(/(\w+)s\b/, '$1').trim();
+		cleaned = cleaned.replace(/\s+/g, ' ').trim();
+
+		const optionElement = $('#dialPlan option[value="' + selectedId + '"]');
+		const optgroup = optionElement.parent('optgroup');
+		const optgroupLabel = optgroup.length ? optgroup.attr('label') : null;
+
+		const dialplanLabel = document.getElementById('dialplanLabel');
+		const reloadButton = document.getElementById('reloadButton');
+		const focusButton = document.getElementById('focus');
+		const filenameInput = document.getElementById('filenameInput');
+		const downloadButton = document.getElementById('downloadButton');
+
+		if (optgroupLabel) {
+			const label = optgroupLabel.replace(/\s\[.*?\]/, '').replace(/(\w+)s\b/, '$1').trim();
+			dialplanLabel.textContent = label;
+			filenameInput.value = sanitizeFilename(label + '_' + cleaned);
+			sessionStorage.setItem("selectedName", label + ': ' + selectedText);
+		} else {
+			dialplanLabel.textContent = '';
+			filenameInput.value = sanitizeFilename(selectedText);
+		}
+
+		reloadButton.disabled = false;
+		focusButton.disabled = false;
+		filenameInput.disabled = false;
+		downloadButton.disabled = false;
+
+		resetFocusMode();
+		generateVisualization(selectedId, '', `<?php echo $panzoom; ?>`);
+	});
+
 });
 
-$('#dialPlan').on('select2:select', function (e) {
-	const selectedId = e.params.data.id;
-	const selectedText = e.params.data.text;
-	
-	let cleaned = selectedText.replace(/\s\[.*?\]/, '').replace(/(\w+)s\b/, '$1').trim();
-	cleaned = cleaned.replace(/\s+/g, ' ').trim();
-	
-	const optionElement = $('#dialPlan option[value="' + selectedId + '"]');
-  const optgroup = optionElement.parent('optgroup');
-  const optgroupLabel = optgroup.length ? optgroup.attr('label') : null;
-	
-	const dialplanLabel = document.getElementById('dialplanLabel');
-	const reloadButton = document.getElementById('reloadButton');
-	const focusButton = document.getElementById('focus');
-	//const append = document.getElementById('append');
-	const filenameInput = document.getElementById('filenameInput');
-	const downloadButton = document.getElementById('downloadButton');
-	
-	if(optgroupLabel){
-		const label = optgroupLabel.replace(/\s\[.*?\]/, '').replace(/(\w+)s\b/, '$1').trim();
-		dialplanLabel.textContent = label;
-		filenameInput.value = sanitizeFilename(label + '_' + cleaned);
-		sessionStorage.setItem("selectedName", label+': '+selectedText);
-	} else {
-		dialplanLabel.textContent = '';
-		filenameInput.value = sanitizeFilename(selectedText);
-	}
 
-	reloadButton.disabled = false;
-	focusButton.disabled = false;
-	//append.disabled = false;
-	filenameInput.disabled = false;
-	downloadButton.disabled = false;
-	
-	resetFocusMode();
-	generateVisualization(selectedId,'',`<?php echo $panzoom; ?>`);
-	//console.log('Option clicked:', selectedId, selectedText, optgroupLabel);
-});
+
+
 
 function sanitizeFilename(filename) {
     return filename
