@@ -797,14 +797,19 @@ $langOption= isset($options['lang']) ? $options['lang'] : 'en';
 		if (empty($num)){$num='ANY';}
 		if ($numcid==''){$numcidd=' / ANY';}else{$numcidd=" / ".$numcid;}
 		
-		$incoming = $route['incoming'][$num];
+		$incoming = $route['incoming'][$num.$numcid];
 		
-		$didLabel = ($num == "") ? "ANY" : formatPhoneNumbers($num);
+		$didLabel = ($num == "ANY") ? "ANY" : formatPhoneNumbers($num);
 		$didLabel.= $numcidd."\n".$incoming['description'];
-		$didLink=$num.'/';
+		if ($num=='ANY'){
+			$didLink='/';
+		}else{
+			$didLink=$num.'/'.$numcid;
+		}
 		
 		
-		$didTooltip=$num."\n";
+		
+		$didTooltip=$num." / ".$numcid."\n";
 		$didTooltip.= !empty($incoming['cidnum']) ? "Caller ID Number= " . $incoming['cidnum']."\n" : "";
 		$didTooltip.= !empty($incoming['description']) ? "Description= " . $incoming['description']."\n" : "";
 		$didTooltip.= !empty($incoming['alertinfo']) ? "Alert Info= " . $incoming['alertinfo']."\n" : "";
@@ -1515,7 +1520,7 @@ function dpp_load_tables(&$dproute,$options) {
   }
   foreach($results as $incoming) {
 		$id = empty($incoming['extension']) ? 'ANY' : $incoming['extension'];
-    $dproute['incoming'][$id] = $incoming;
+    $dproute['incoming'][$id.$incoming['cidnum']] = $incoming;
   }	
 	
   # IVRs
