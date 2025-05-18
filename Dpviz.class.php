@@ -25,12 +25,11 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         return $sth->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function editDpviz($panzoom, $horizontal, $datetime, $destination, $dynmembers, $combineQueueRing, $extOptional, $fmfm) {
+    public function editDpviz($panzoom, $horizontal, $datetime,$dynmembers, $combineQueueRing, $extOptional, $fmfm) {
         $sql = "UPDATE dpviz SET
             `panzoom` = :panzoom,
             `horizontal` = :horizontal,
             `datetime` = :datetime,
-            `destination` = :destination,
             `dynmembers` = :dynmembers,
             `combineQueueRing` = :combineQueueRing,
             `extOptional` = :extOptional,
@@ -41,7 +40,6 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
             ':panzoom' => $panzoom,
             ':horizontal' => $horizontal,
             ':datetime' => $datetime,
-            ':destination' => $destination,
             ':dynmembers' => $dynmembers,
             ':combineQueueRing' => $combineQueueRing,
             ':extOptional' => $extOptional,
@@ -58,7 +56,6 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $panzoom = isset($request['panzoom']) ? $request['panzoom'] : '';
         $horizontal = isset($request['horizontal']) ? $request['horizontal'] : '';
         $datetime = isset($request['datetime']) ? $request['datetime'] : '';
-        $destination = isset($request['destination']) ? $request['destination'] : '';
         $dynmembers = isset($request['dynmembers']) ? $request['dynmembers'] : '';
         $combineQueueRing = isset($request['combineQueueRing']) ? $request['combineQueueRing'] : '';
         $extOptional = isset($request['extOptional']) ? $request['extOptional'] : '';
@@ -66,16 +63,12 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
 
         switch ($action) {
             case 'edit':
-                $this->editDpviz($panzoom, $horizontal, $datetime, $destination, $dynmembers, $combineQueueRing, $extOptional, $fmfm);
+                $this->editDpviz($panzoom, $horizontal, $datetime, $dynmembers, $combineQueueRing, $extOptional, $fmfm);
                 load_view(dirname(__FILE__) . "/views/rnav.php");
                 break;
             default:
                 break;
         }
-    }
-
-    public function getRightNav($request) {
-        return load_view(dirname(__FILE__) . "/views/rnav.php");
     }
 
     public function ajaxRequest($req, &$setting) {
@@ -97,13 +90,12 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 $panzoom = isset($_POST['panzoom']) ? $_POST['panzoom'] : '';
                 $horizontal = isset($_POST['horizontal']) ? $_POST['horizontal'] : '';
                 $datetime = isset($_POST['datetime']) ? $_POST['datetime'] : '';
-                $destination = isset($_POST['destination']) ? $_POST['destination'] : '';
                 $dynmembers = isset($_POST['dynmembers']) ? $_POST['dynmembers'] : '';
                 $combineQueueRing = isset($_POST['combineQueueRing']) ? $_POST['combineQueueRing'] : '';
                 $extOptional = isset($_POST['extOptional']) ? $_POST['extOptional'] : '';
                 $fmfm = isset($_POST['fmfm']) ? $_POST['fmfm'] : '';
 
-                $success = $this->editDpviz($panzoom, $horizontal, $datetime, $destination, $dynmembers, $combineQueueRing, $extOptional, $fmfm);
+                $success = $this->editDpviz($panzoom, $horizontal, $datetime, $dynmembers, $combineQueueRing, $extOptional, $fmfm);
                 echo json_encode(array('success' => $success));
                 exit;
 
@@ -124,7 +116,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
             case 'make':
                 include 'process.php';
                 echo json_encode(array(
-                    'vizButtons' => $buttons,
+                    //'vizButtons' => $buttons,
                     'vizHeader' => $header,
                     'gtext' => json_decode($gtext)
                 ));
@@ -134,18 +126,17 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 								$fpbxResults= \FreePBX::Recordings()->getRecordingById($id);
 								$lang=$_POST['lang'];
-								include 'audio.php';
+								include 'views/audio.php';
 								
                 header('Content-Type: application/json');
                 echo json_encode(array(
-										//'displayname' => $audiolist,
                     'displayname' => $results['displayname'],
                     'filename' => $results['filename']
                 ));
                 exit;
 
             case 'getfile':
-                include 'audio.php';
+                include 'views/audio.php';
                 exit;
 
             default:

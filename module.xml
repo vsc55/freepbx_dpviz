@@ -2,7 +2,7 @@
   <rawname>dpviz</rawname>
   <repo>unsupported</repo>
   <name>Dial Plan Vizualizer</name>
-  <version>1.0.19</version>
+  <version>1.0.20</version>
   <publisher>AdamV</publisher>
   <license>GPLv3+</license>
   <licenselink>http://www.gnu.org/licenses/gpl-3.0.txt</licenselink>
@@ -17,7 +17,6 @@
 			<field name="datetime" type="boolean" default="1"/>
 			<field name="horizontal" type="boolean" default="0"/>
 			<field name="panzoom" type="boolean" default="1"/>
-			<field name="destination" type="boolean" default="1"/>
 			<field name="dynmembers" type="boolean" default="1"/>
 			<field name="combineQueueRing" type="boolean" default="0"/>
 			<field name="extOptional" type="boolean" default="0"/>
@@ -25,6 +24,7 @@
 		</table>
   </database>
 	<changelog>
+		*1.0.20* Added dropdown + categories.
 		*1.0.19* Added Recording modal and custom filename support.
 		*1.0.18* AJAX update (page does not reload) for dial plan + settings. Tabbed view.
 		*1.0.17* Added calendar matching for time conditions. Added Queue Priorities.

@@ -38,7 +38,6 @@ $('#dpvizForm').submit(function(event) {
 	var formData = $form.serialize();
 	var processed = document.getElementById('processed')?.value || '';
 	var ext = document.getElementById('ext')?.value || '';
-	var cid = document.getElementById('cid')?.value || '';
 	var jump = document.getElementById('jump')?.value || '';
 	var pan = $form.find('input[name="panzoom"]:checked').val();
 
@@ -54,7 +53,7 @@ $('#dpvizForm').submit(function(event) {
 			
 			setTimeout(function() {
 				if (processed === 'yes') {
-					generateVisualization(ext,cid,jump,pan);
+					generateVisualization(ext,jump,pan);
 				}
 				saveButton.innerHTML = originalContent;
 				$('.nav-tabs li[data-name="dpbox"] a').tab('show'); // Switch tab
@@ -68,47 +67,72 @@ $('#dpvizForm').submit(function(event) {
 	});
 });
 
-function generateVisualization(ext, cid, jump, pan) {	
+
+$('#reloadButton').click(function() {
+	var ext = document.getElementById('ext')?.value || '';
+	var jump = document.getElementById('jump')?.value || '';
+	var pan = document.getElementById('panzoom')?.value || '';
+	resetFocusMode();
+	generateVisualization(ext,jump,pan);
+});
+
+
+function generateVisualization(ext, jump, pan) {	
 	const vizContainer = document.getElementById("vizContainer");
 	const spinner = document.getElementById("vizSpinner");
 	const modal = document.getElementById('recordingmodal');
 	const overlay = document.getElementById('overlay');
+	const vizHeader = document.getElementById('vizHeader');
+	const vizGraph = document.getElementById('vizGraph');
+	const toggleButton = document.getElementById("append");
 	
-	vizContainer.innerHTML = "";
+	
+	
 	spinner.style.display = "flex";
   $.ajax({
     url: 'ajax.php?module=dpviz&command=make',
     type: 'POST',
     data: JSON.stringify({
 			ext: ext,
-			cid: cid,
 			jump: jump
 		}),
 		
     dataType: 'json',
     success: function(response) {
 			
-      document.getElementById("floating-nav-bar").classList.remove("show");
-      $('#vizButtons').html(response.vizButtons);
-      $('#vizContainer').html(response.vizHeader);
-			
+			/*
+			if (!toggleButton.classList.contains("active")) {
+				vizGraph.innerHTML = ""; // clear the container if button is NOT active
+			}
+			*/
+	
+      $('#vizHeader').html(response.vizHeader);
+			vizGraph.innerHTML = "";
       if (response.gtext) {
 				//console.log(response.gtext);
 				let dot = response.gtext
-					.replace(/\\n/g, '\n')
-					.replace(/\\l/g, '\l');
+					//.replace(/\"/g, '\"')
+					//.replace(/\\n/g, '\n')
+				.replace(/\\l/g, '\l')
+					;
 
 				viz.renderSVGElement(dot)
 					.then(function(element) {
 						isFocused = false;
             svgContainer = element;
-            vizContainer.appendChild(element);
+						
+            vizGraph.appendChild(element);
 						spinner.style.display = "none";  //hide spinner
-            var svgElement = document.querySelector('#graph0');
-            if (svgElement && pan === "1") {
-							panzoom(svgElement, {
-								zoomDoubleClickSpeed: 1, //disables double click to zoom
-							});
+
+            if (pan === "1") {
+							const innerGroup = element.querySelector('g'); // first <g> inside <svg>
+							if (innerGroup) {
+								panzoom(innerGroup, {
+									zoomDoubleClickSpeed: 1,
+								});
+							} else {
+								console.warn("Could not find inner <g> element for panzoom.");
+							}
 						}
 						
 						// Ctrl/Command + click handler for Graphviz nodes
@@ -140,7 +164,7 @@ function generateVisualization(ext, cid, jump, pan) {
 								// Support Ctrl/Meta key for other actions
 								if (e.ctrlKey || e.metaKey) {
 									e.preventDefault();
-								 generateVisualization(ext, cid, titleText, pan);
+								 generateVisualization(ext, titleText, pan);
 								}
 
 							});
@@ -168,9 +192,6 @@ function generateVisualization(ext, cid, jump, pan) {
                 }
               });
             });
-						
-						
-
           })
           .catch(error => {
             console.error('Viz.js render error:', error);
@@ -221,12 +242,6 @@ function getRecording(titleid) {
   .then(async data => {
 		console.log("Display name:", data.displayname);
 		console.log("Filename(s):", data.filename);
-
-		
-
-		
-
-		
 
 		const displayname = data.displayname;
 		const audioList = document.getElementById('audioList');

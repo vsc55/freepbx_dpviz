@@ -9,6 +9,9 @@ if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
 <script src="modules/dpviz/assets/js/full.render.js"></script>
 <script src="modules/dpviz/assets/js/html2canvas.min.js"></script>
 <script src="modules/dpviz/assets/js/panzoom.min.js"></script>
+<script src="modules/dpviz/assets/js/focus.js"></script>
+<script src="modules/dpviz/assets/js/select2.min.js"></script>
+<link href="modules/dpviz/assets/css/select2.min.css" rel="stylesheet" />
 <script type="text/javascript">
 //load graphviz
 var viz = new Viz();
@@ -46,12 +49,14 @@ let highlightedEdges = new Set(); // Track highlighted edges
 				</ul>
 				<div class="tab-content display">
 					<div role="tabpanel" id="dpbox" class="tab-pane active">
+						<div id="vizButtons" style="position: sticky; top:50px;">
+							<?php require('views/toolbar.php');?>
+						</div>
 						<div id="vizSpinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; flex-direction: column; align-items: center; gap:10px;">
 							<div class="loader"></div>
 							<h3 class="spinner-text">Loading...</h3>
 						</div>
 						<div id="vizWrapper">
-							
 							
 							<div id="overlay" onclick="closeModal()"></div>
 							<div id="recordingmodal">
@@ -60,8 +65,11 @@ let highlightedEdges = new Set(); // Track highlighted edges
 								<button class="btn btn-default" style="float:right;" onclick="closeModal()">Close</button>
 							</div>
 							
-							<div id="vizButtons" style="position: sticky; top:50px;"></div>
-							<div id="vizContainer" class="display full-border" style="min-height: 65vh;"><p><strong>Inbound Route Not Selected</strong><br>Use the menu on the right to choose an inbound route.</p></div>
+							
+							<div id="vizContainer" class="display full-border" style="min-height: 65vh;">
+								<div id="vizHeader"><p><strong>Dial Plan Not Selected</strong><br>Use the dropdown to select a dial plan.</p></div>
+								<div id="vizGraph"></div>
+							</div>
 						</div>
 					</div>
 					<div role="tabpanel" id="navigation" class="tab-pane">

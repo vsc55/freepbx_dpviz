@@ -96,18 +96,22 @@ function resetEdges() {
 	});
 }
 
+function resetFocusMode(){
+	resetEdges();
+	restoreLinks();
+	isFocused = false;
+	document.getElementById("focus").innerHTML  = '<i class="fa fa-magic"></i> Highlight Paths';
+	document.getElementById("focus").classList.add("btn-default");
+	document.getElementById("focus").classList.remove("btn-primary");
+	document.getElementById("focus").classList.remove("active");	
+}
+
 function toggleFocusMode() {
 	if (!svgContainer) return;
 
 	if (isFocused) {
     // Exit focus mode
-    resetEdges();
-    restoreLinks();
-    isFocused = false;
-    document.getElementById("focus").innerHTML  = '<i class="fa fa-magic"></i> Highlight Paths';
-    document.getElementById("focus").classList.add("btn-default");
-		document.getElementById("focus").classList.remove("btn-primary");
-		document.getElementById("focus").classList.remove("active");
+    resetFocusMode();
 } else {
     // Enter focus mode
     disableLinks();
