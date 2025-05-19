@@ -130,9 +130,10 @@ echo '</pre>';
 */
 
 //build dropdowns
+$dropOptions="";
 //Inbound Routes
 if (isset($inroutes) && count($inroutes) > 0){
-	$dropOptions='<optgroup label="Inbound Routes [destination]">';
+	$dropOptions.='<optgroup label="Inbound Routes [destination]">';
 	foreach ($inroutes as $in=>$extt){
 		$e=$extt['extension'];
 		if (empty($e)){$e='ANY';}

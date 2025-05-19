@@ -12,32 +12,27 @@ It is particularly useful for:
 - **Streamlining PBX management** – Reduce the time spent manually tracking call flows in complex systems.
 
 ## Installation
-### Upgrading from a Previous Version
-If upgrading, uninstall the current version before proceeding.
 
-#### Uninstall via Command Line:
-```sh
-fwconsole ma uninstall dpviz
-```
-
-#### Install via Command Line:
+#### Install or Upgrade via Command Line:
 ```sh
 fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/heads/main.zip
 ```
 
-### Install via FreePBX Admin Panel
+### Install or Upgrade via FreePBX Admin Panel
 1. **Log into FreePBX**, then navigate to **Admin > Module Admin**.
 2. Click **Upload Modules**.
+3. **Download (From Web)** Enter ```https://github.com/madgen78/dpviz/archive/refs/heads/main.zip``` then click **Download (From Web)**.
+- OR
 3. **Download the module** from the following link: [Download dpviz](https://github.com/madgen78/dpviz/archive/refs/heads/main.zip).
-4. Set the upload type to **"Upload (From Hard Disk)"**.
-5. Click **Choose File**, select the downloaded module, then click **Upload (From Hard Disk)**.
-6. After the upload completes, click **Local Module Administration**.
-7. Scroll down to **Dial Plan Vizualizer** under the **Reports** section and click on it to expand.
-8. Click **Install** and then click **Process** (at the bottom of page) to complete the installation.
+    - Set the type to **"Upload (From Hard Disk)"**.
+    - Click **Choose File**, select the downloaded module, then click **Upload (From Hard Disk)**.
+4. After the download or upload completes, click **Local Module Administration**.
+5. Scroll down to **Dial Plan Vizualizer** under the **Reports** section and click on it to expand.
+6. Click **Install** or **Upgrade to -version- and Enable** and then click **Process** (at the bottom of page) to complete the installation.
 
 ## Usage
 1. **Log in to your PBX** and navigate to **Reports > Dial Plan Vizualizer**.
-2. **Select or search for an inbound route** using the side menu.
+2. **Select or search for an Inbound Route, Time Condition, Call Flow, IVR, Queue, Ring Group, Dynamic Route, Announcement, Language, or Misc Application** using the dropdown menu.
 3. **Labels** are placed on the right (vertical) or above (horizontal) the paths drawn.
 
 ### Highlighting Call Paths
@@ -45,18 +40,19 @@ fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/head
 - To clear highlights, click **Remove Highlights**.
 
 ### Navigation
-- **Redraw from a Node:** Press Ctrl (Cmd on macOS) and left-click a node to make it the new starting point in the diagram. To revert, Ctrl/Cmd + left-click the parent node.
+- **Redraw from a Node:** Press Ctrl (Cmd on macOS) and left-click a node to make it the new starting point in the diagram. To revert, Ctrl/Cmd + left-click the "Back" node.
 - **Pan** by holding down the left mouse button and dragging.
 - **Zoom** using the mouse wheel.
 
 ### Additional Features
-- **Listen** to recordings assigned to Announcement, Dynamic Route, IVR, and Play Recording modules. (**Note**: Supports multi-part and multi-language recordings. Only .wav files are supported for playback.)
+- **Listen** to recordings assigned to Announcement, Dynamic Route, IVR, and Play Recording modules. (**Note**: Supports multi-part and multi-language recordings. Only .wav files are supported.)
 - **Hover** over a path to highlight the path between destinations.
 - **Click** on a destination to open it in a new tab.
 - **Click** on a "Match: (timegroup)" or "NoMatch" to open it in a new tab.
 - **Export** the dial plan with standard or custom filename. Choose between high and standard quality. 
 
 ### Dependencies
+- **FreePBX >= 14.0
 - **PHP >= 5.4.0**
 
 ## License
