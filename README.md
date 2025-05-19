@@ -52,7 +52,7 @@ fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/head
 - **Export** the dial plan with standard or custom filename. Choose between high and standard quality. 
 
 ### Dependencies
-- **FreePBX >= 14.0
+- **FreePBX >= 14.0**
 - **PHP >= 5.4.0**
 
 ## License
