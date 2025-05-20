@@ -795,7 +795,7 @@ $langOption= isset($options['lang']) ? $options['lang'] : 'en';
 		$numcid = $matches[2];
 		$numLang= $matches[4];
 		if (empty($num)){$num='ANY';}
-		if ($numcid==''){$numcidd=' / ANY';}else{$numcidd=" / ".$numcid;}
+		if ($numcid==''){$numcidd=" / ANY";}else{$numcidd=" / ".$numcid;}
 		
 		$incoming = $route['incoming'][$num.$numcid];
 		
@@ -809,7 +809,7 @@ $langOption= isset($options['lang']) ? $options['lang'] : 'en';
 		
 		
 		
-		$didTooltip=$num." / ".$numcid."\n";
+		$didTooltip=$num.$numcidd."\n";
 		$didTooltip.= !empty($incoming['cidnum']) ? "Caller ID Number= " . $incoming['cidnum']."\n" : "";
 		$didTooltip.= !empty($incoming['description']) ? "Description= " . $incoming['description']."\n" : "";
 		$didTooltip.= !empty($incoming['alertinfo']) ? "Alert Info= " . $incoming['alertinfo']."\n" : "";
@@ -1361,13 +1361,15 @@ $langOption= isset($options['lang']) ? $options['lang'] : 'en';
 		#
 		# VM Blast
 		#
-  } elseif (preg_match("/^vmblast\-grp,(\d+),(\d+)/", $destination, $matches)) {
+  } elseif (preg_match("/^vmblast\-grp,(\d+),(\d+),(.+)/", $destination, $matches)) {
 		$module="VM Blast";
 		$vmblastnum = $matches[1];
 		$vmblastother = $matches[2];
+		$vmblastLang= $matches[3];
 		
 		if (isset($route['vmblasts'][$vmblastnum])){
 			$vmblast = $route['vmblasts'][$vmblastnum];
+			$audioID = $vmblast['audio_label'];
 			$label=$vmblastnum.' '.sanitizeLabels($vmblast['description']);
 			$tooltip='';
 			makeNode($module,$vmblastnum,$label,$tooltip,$node);
@@ -1379,6 +1381,13 @@ $langOption= isset($options['lang']) ? $options['lang'] : 'en';
 					dpp_follow_destinations($route, 'vmblast-mem,'.$member,'',$options);
 				}
 			}
+			if (isset($route['recordings'][$audioID])){
+				$route['parent_node'] = $node;
+				$route['parent_edge_label']= ' Recording';
+				dpp_follow_destinations($route, 'play-system-recording,'.$audioID.',1,'.$vmblastLang,'',$options);
+				
+			}
+			
 		}else{
 			notFound($module,$destination,$node);
 		}
@@ -1411,7 +1420,7 @@ $langOption= isset($options['lang']) ? $options['lang'] : 'en';
 		if (isset($route['customapps'][$custId])){
 			$custDest=$route['customapps'][$custId];
 			$custReturn = ($custDest['destret'] == 1) ? "Yes" : "No";
-			$label=$custDest['description']."\lTarget: ".$custDest['target']."\lReturn: ".$custReturn."\l";
+			$label="\n".$custDest['description']."\nTarget: ".$custDest['target']."\lReturn: ".$custReturn."\l";
 			$tooltip="";
 			makeNode($module,$custId,$label,$tooltip,$node);
 			
@@ -1453,8 +1462,8 @@ $langOption= isset($options['lang']) ? $options['lang'] : 'en';
 				$custId=$custDest['destid'];
 				$custReturn = ($custDest['destret'] == 1) ? "Yes" : "No";
 				
-				$label=sanitizeLabels($custDest['description'])."\lTarget: ".$custDest['target']."\lReturn: ".$custReturn."\l";
-				$tooltip="";
+				$label=sanitizeLabels($custDest['description'])."\nTarget: ".$custDest['target']."\lReturn: ".$custReturn."\l";
+				$tooltip=sanitizeLabels($custDest['description'])."\nTarget: ".$custDest['target']."\nReturn: ".$custReturn."\n";
 				makeNode($module,$custId,$label,$tooltip,$node);
 				
 				if ($custDest['destret']){
@@ -1994,7 +2003,7 @@ function makeNode($module,$id,$label,$tooltip,$node){
 					break;
 					
 			case 'VM Blast':
-					$url=strtolower($module).'&view=form&extdisplay='.$id;
+					$url=str_replace(' ', '', strtolower($module)).'&view=form&extdisplay='.$id;
 					$shape='folder';
 					$color='gainsboro';
 					break;
@@ -2055,9 +2064,6 @@ function findRecording($route,$id){
 	}
 	return $name;
 }
-
-
-
 
 
 
