@@ -2,10 +2,11 @@
   <rawname>dpviz</rawname>
   <repo>unsupported</repo>
   <name>Dial Plan Vizualizer</name>
-  <version>1.0.20</version>
+  <version>1.0.21</version>
   <publisher>AdamV</publisher>
   <license>GPLv3+</license>
   <licenselink>http://www.gnu.org/licenses/gpl-3.0.txt</licenselink>
+	<updateurl>https://madgen78.github.io/dpviz/module.json</updateurl>
   <category>Reports</category>
   <description>Graphical display of the dial plan for Inbound Routes</description>
   <menuitems>
@@ -21,9 +22,11 @@
 			<field name="combineQueueRing" type="boolean" default="0"/>
 			<field name="extOptional" type="boolean" default="0"/>
 			<field name="fmfm" type="boolean" default="0"/>
+			<field name="minimal" type="boolean" default="0"/>
 		</table>
   </database>
 	<changelog>
+		*1.0.21* Added Shift + click. Minimal Option. More module support.
 		*1.0.20* Added dropdown + categories.
 		*1.0.19* Added Recording modal and custom filename support.
 		*1.0.18* AJAX update (page does not reload) for dial plan + settings. Tabbed view.
@@ -38,8 +41,11 @@
 		*1.0.8* First fully working release
 		*1.0.0* First release, testing module creation 
 	</changelog>
+	<depends>
+		<phpversion>5.4.0</phpversion>
+		<module>recordings</module>
+	</depends>
   <info>https://github.com/madgen78/dpviz</info>
-  <md5sum>c62830a311338fa38b1aa0e9f9284fc3</md5sum>
   <supported>
     <version>17.0</version>
   </supported>

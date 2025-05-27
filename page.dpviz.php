@@ -75,7 +75,8 @@ let highlightedEdges = new Set(); // Track highlighted edges
 					<div role="tabpanel" id="navigation" class="tab-pane">
 						<p>
 							<ul class="list-unstyled">
-								<li><strong>Redraw from a Node:</strong> Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and left-click a node to make it the new starting point in the diagram. To revert, <strong>Ctrl/Cmd + left-click</strong> the parent node.</li>
+								<li><strong>Exclude Node(s):</strong> Press <strong>Shift</strong> and <strong>left-click</strong> a node to exclude it and downstream paths. To show path again, click "<strong>Click to continue...</strong>" node. Supports multiple exclusions. Click "<strong>Reset</strong>" node to show original dial plan.</li>
+								<li><strong>Redraw from a Node:</strong> Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and <strong>left-click</strong> a node to make it the new starting point in the diagram. To revert, <strong>Ctrl/Cmd + left-click</strong> the parent node.</li>
 								<li><strong>Highlight Paths:</strong> Click <strong>Highlight Paths</strong>, then select a node or edge (links are inactive). Click <strong>Remove Highlights</strong> to clear.</li>
 								<li><strong>Hover:</strong> Hover over a path to highlight between destinations.</li>
 								<li><strong>Open Destinations:</strong> Click a destination to open it in a new tab.</li>

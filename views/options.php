@@ -215,6 +215,33 @@ $options = \FreePBX::Dpviz()->getOptions();
 					</div>
 				</div>
 				<!--END extOptional-->
+				<!--Minimal-->
+				<div class="element-container">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3">
+										<label class="control-label" for="minimal"><?php echo _("Show Minimal View") ?></label>
+										<i class="fa fa-question-circle fpbx-help-icon" data-for="minimal"></i>
+									</div>
+									<div class="col-md-9 radioset">
+										<input type="radio" name="minimal" id="minimalyes" value="1" <?php echo ($options['minimal']?"CHECKED":"") ?>>
+										<label for="minimalyes"><?php echo _("Yes");?></label>
+										<input type="radio" name="minimal" id="minimalno" value="0" <?php echo ($options['minimal']?"":"CHECKED") ?>>
+										<label for="minimalno"><?php echo _("No");?></label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<span id="minimal-help" class="help-block fpbx-help-block"><?php echo _("Shows (default) or hides the following types of nodes: Extensions, Queue Members, Ring Group Members, Recordings, Voicemail, and Voicemail Blasting Members.")?></span>
+						</div>
+					</div>
+				</div>
+				<!--END minimal-->
 
 				<div class="row">
 					<div class="col-md-12 text-right">

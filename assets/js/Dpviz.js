@@ -40,6 +40,13 @@ $('#dpvizForm').submit(function(event) {
 	var ext = document.getElementById('ext')?.value || '';
 	var jump = document.getElementById('jump')?.value || '';
 	var pan = $form.find('input[name="panzoom"]:checked').val();
+	var skip = [];
+	try {
+		const raw = document.getElementById('skip')?.value?.trim() || '[]';
+		skip = JSON.parse(raw);
+	} catch (e) {
+		console.error("Invalid skip array", e);
+	}
 
 	$.ajax({
 		type: 'POST',
@@ -53,7 +60,7 @@ $('#dpvizForm').submit(function(event) {
 			
 			setTimeout(function() {
 				if (processed === 'yes') {
-					generateVisualization(ext,jump,pan);
+					generateVisualization(ext,jump,skip,pan);
 				}
 				saveButton.innerHTML = originalContent;
 				$('.nav-tabs li[data-name="dpbox"] a').tab('show'); // Switch tab
@@ -72,12 +79,21 @@ $('#reloadButton').click(function() {
 	var ext = document.getElementById('ext')?.value || '';
 	var jump = document.getElementById('jump')?.value || '';
 	var pan = document.getElementById('panzoom')?.value || '';
+	
+	var skip = [];
+	try {
+		const raw = document.getElementById('skip')?.value?.trim() || '[]';
+		skip = JSON.parse(raw);
+	} catch (e) {
+		console.error("Invalid skip array", e);
+	}
+	
 	resetFocusMode();
-	generateVisualization(ext,jump,pan);
+	generateVisualization(ext,jump,skip,pan);
 });
 
 
-function generateVisualization(ext, jump, pan) {	
+function generateVisualization(ext, jump, skips, pan) {	
 	const vizContainer = document.getElementById("vizContainer");
 	const spinner = document.getElementById("vizSpinner");
 	const modal = document.getElementById('recordingmodal');
@@ -85,7 +101,8 @@ function generateVisualization(ext, jump, pan) {
 	const vizHeader = document.getElementById('vizHeader');
 	const vizGraph = document.getElementById('vizGraph');
 	const toggleButton = document.getElementById("append");
-	
+	skips = skips || [];
+	//console.log("Skips:", skips.join(", "));
 	
 	
 	spinner.style.display = "flex";
@@ -94,7 +111,8 @@ function generateVisualization(ext, jump, pan) {
     type: 'POST',
     data: JSON.stringify({
 			ext: ext,
-			jump: jump
+			jump: jump,
+			skip: skips
 		}),
 		
     dataType: 'json',
@@ -135,7 +153,7 @@ function generateVisualization(ext, jump, pan) {
 							}
 						}
 						
-						// Ctrl/Command + click handler for Graphviz nodes
+						// Ctrl/Command + shift + click handler for Graphviz nodes
 						element.querySelectorAll('g.node').forEach(node => {
 							node.addEventListener('click', function (e) {
 								const titleElement = node.querySelector('title');
@@ -149,7 +167,7 @@ function generateVisualization(ext, jump, pan) {
 									e.preventDefault();
 									
 									
-									if (modal && overlay && !isFocused) {
+									if (modal && overlay && !isFocused && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
 										overlay.style.display = 'block';
 										spinner.style.display = "flex";
 										getRecording(titleText);
@@ -161,13 +179,62 @@ function generateVisualization(ext, jump, pan) {
 									}
 								}
 								
-								// Support Ctrl/Meta key for other actions
+								if (titleText.startsWith("reset")) {
+									e.preventDefault();
+									resetFocusMode();
+									generateVisualization(ext,'','',pan);
+								}
+								
+								if (titleText.startsWith("undoLast")) {
+										e.preventDefault();
+										resetFocusMode();
+
+										const toRemove = titleText.replace("undoLast", "").trim();
+
+										const index = skips.indexOf(toRemove);
+										if (index !== -1) {
+												skips.splice(index, 1);
+										}
+
+										generateVisualization(ext,jump,skips, pan);
+								}
+								
+								// Ctrl/Meta -jump
 								if (e.ctrlKey || e.metaKey) {
 									e.preventDefault();
-								 generateVisualization(ext, titleText, pan);
+									resetFocusMode();
+									generateVisualization(ext,titleText,skips,pan);
+								}
+								
+								// Shift Key -skip(s)
+								if (e.shiftKey) {
+									e.preventDefault();
+									const allowedKeywords = ["announcement","callback","callrecording","daynight","directory","dynroute","ext-group","ext-tts","from-trunk",
+										"ivr","languages","miscapp","queueprio","queues","setcid","timeconditions"];
+
+									const match = allowedKeywords.find(keyword =>
+											titleText.toLowerCase().includes(keyword.toLowerCase())
+									);
+
+									if (!match) {
+											return;
+									}
+
+									if (!skips.includes(titleText)) {
+											skips.push(titleText);
+											resetFocusMode();
+											generateVisualization(ext,jump,skips,pan);
+									}
 								}
 
 							});
+							const text = node.querySelector('text');
+							if (text && text.textContent.trim() === '+') {
+								const link = node.querySelector('a');
+								if (link) {
+									link.style.textDecoration = 'none';
+								}
+							}
 						});
 
             element.querySelectorAll("g.node").forEach(node => {

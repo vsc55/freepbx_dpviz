@@ -40,6 +40,7 @@ fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/head
 - To clear highlights, click **Remove Highlights**.
 
 ### Navigation
+- **Ignore / hide from a Node:** Press Shift and left-click a node to make it the last node drawn. Helpful for focusing on important routes. (eg. Time condition flows into another time condition.) Multiple "shift + clicks" are supported.
 - **Redraw from a Node:** Press Ctrl (Cmd on macOS) and left-click a node to make it the new starting point in the diagram. To revert, Ctrl/Cmd + left-click the "Back" node.
 - **Pan** by holding down the left mouse button and dragging.
 - **Zoom** using the mouse wheel.

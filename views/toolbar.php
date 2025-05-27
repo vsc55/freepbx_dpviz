@@ -2,6 +2,7 @@
 if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
 $destinations=\FreePBX::Modules()->getDestinations();
 $options=\FreePBX::Dpviz()->getOptions();
+
 try{
 	$soundlang = FreePBX::create()->Soundlang;
 	$options['lang'] = $soundlang->getLanguage();
@@ -269,6 +270,7 @@ if (isset($otherroutes['miscapps']) && count($otherroutes['miscapps']) > 0){
           <i class="fa fa-download"></i> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
+					<li><a class="dropdown-item" href="#" onclick="handleExport(8)"><i class="fa fa-certificate"></i> Super .png</a></li>
           <li><a class="dropdown-item" href="#" onclick="handleExport(4)"><i class="fa fa-star"></i> High .png</a></li>
           <li><a class="dropdown-item" href="#" onclick="handleExport(2)"><i class="fa fa-circle"></i> Standard .png</a></li>
           <li><a class="dropdown-item" href="#" onclick="handleSVGExport()"><i class="fa fa-code"></i> SVG .svg</a></li>
@@ -286,7 +288,7 @@ $(document).ready(function() {
 		dropdownAutoWidth: true,
 		width: '100%',
 		maximumSelectionLength: 20,
-		dropdownCssClass: "custom-dropdown",
+		//dropdownCssClass: "custom-dropdown",
 		dropdownParent: $("body"),
 		
 	});
@@ -355,7 +357,7 @@ $(document).ready(function() {
 		downloadButton.disabled = false;
 
 		resetFocusMode();
-		generateVisualization(selectedId, '', `<?php echo $panzoom; ?>`);
+		generateVisualization(selectedId, '', '',`<?php echo $panzoom; ?>`);
 	});
 
 });
