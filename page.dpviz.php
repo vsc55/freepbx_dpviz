@@ -60,9 +60,12 @@ let highlightedEdges = new Set(); // Track highlighted edges
 							
 							<div id="overlay" onclick="closeModal()"></div>
 							<div id="recordingmodal">
+								<div id="recordingmodal-header">
+									<span id="recordingmodal-title">🔊 System Recording</span>
+									<button id="modal-close-btn" onclick="closeModal()">✖</button>
+								</div>
 								<div id="recording-displayname"></div>
 								<div id="audioList"></div>
-								<button class="btn btn-default" style="float:right;" onclick="closeModal()">Close</button>
 							</div>
 							
 							

@@ -2,11 +2,11 @@
   <rawname>dpviz</rawname>
   <repo>unsupported</repo>
   <name>Dial Plan Vizualizer</name>
-  <version>1.0.21</version>
+  <version>1.0.22</version>
   <publisher>AdamV</publisher>
   <license>GPLv3+</license>
   <licenselink>http://www.gnu.org/licenses/gpl-3.0.txt</licenselink>
-	<updateurl>https://madgen78.github.io/dpviz/module.json</updateurl>
+	<updateurl>https://modules.volchko.xyz/dpviz/module.json</updateurl>
   <category>Reports</category>
   <description>Graphical display of the dial plan for Inbound Routes</description>
   <menuitems>
@@ -26,6 +26,7 @@
 		</table>
   </database>
 	<changelog>
+		*1.0.22* Added Registration statuses. Modules: Blacklist, Queue Callback, Queue Plus, Virtual Queues.
 		*1.0.21* Added Shift + click. Minimal Option. More module support.
 		*1.0.20* Added dropdown + categories.
 		*1.0.19* Added Recording modal and custom filename support.

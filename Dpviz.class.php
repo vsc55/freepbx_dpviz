@@ -148,17 +148,17 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 exit;
         }
     }
-
-    public function checkForGitHubUpdate() {
+		
+		public function checkForGitHubUpdate() {
         $modinfo = \FreePBX::Modules()->getInfo('dpviz');
         $ver = isset($modinfo['dpviz']['version']) ? $modinfo['dpviz']['version'] : '0.0.0';
 
-        $url = "https://api.github.com/repos/madgen78/dpviz/releases/latest";
+        $url = "https://modules.volchko.xyz/dpviz/module.json";
 
         $opts = array(
             "http" => array(
                 "method" => "GET",
-                "header" => "User-Agent: dpviz\r\n"
+                "header" => "User-Agent: ".\FreePBX::Config()->get("DASHBOARD_FREEPBX_BRAND").' '.get_framework_version()."\r\n"
             )
         );
         $context = stream_context_create($opts);
@@ -169,11 +169,11 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         }
 
         $data = json_decode($json, true);
-        if (!isset($data['tag_name'])) {
-            return array('error' => 'Invalid response from GitHub.');
+        if (!isset($data['version'])) {
+            return array('error' => 'Invalid response from server.');
         }
 
-        $latestVersion = ltrim($data['tag_name'], 'v');
+        $latestVersion = ltrim($data['version'], 'v');
         $upToDate = version_compare($ver, $latestVersion, '>=');
 
         return array(
@@ -182,5 +182,4 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
             'up_to_date' => $upToDate
         );
     }
-
 }

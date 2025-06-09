@@ -3,6 +3,7 @@ if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
 $destinations=\FreePBX::Modules()->getDestinations();
 $options=\FreePBX::Dpviz()->getOptions();
 
+
 try{
 	$soundlang = FreePBX::create()->Soundlang;
 	$options['lang'] = $soundlang->getLanguage();
@@ -31,7 +32,7 @@ function dpp_load_incoming_routes() {
 			if (empty($num) && empty($cid)){$exten='ANY';}else{$exten=$num.$cid;}
       $routes[$exten] = $route;
 			$routeDest= $destinations[$route['destination']];
-			if ($routeDest['name']=='Core' && isset($routeDest['category'])){$name=$routeDest['category'];}else{$name=$routeDest['name'];}
+			$name = isset($routeDest['category']) ? $routeDest['category'] : $routeDest['name'];
 			$routes[$exten]['goDestination']=$name.': '.$routeDest['description'];
     }
   }
@@ -44,7 +45,7 @@ function dpp_load_tables() {
 	global $db;
 	$dproute=array();
 
-	$tables = array('announcement','daynight','dynroute','languages','ivr_details','kvstore_FreePBX_modules_Customappsreg','miscapps','queues_config','ringgroups','timeconditions');
+	$tables = array('announcement','daynight','dynroute','languages','ivr_details','kvstore_FreePBX_modules_Customappsreg','miscapps','queues_config','ringgroups','timeconditions','virtual_queue_config');
 	
 	foreach ($tables as $table) {
     // Check if the table exists
@@ -117,6 +118,11 @@ function dpp_load_tables() {
 					$id = $tc['timeconditions_id'];
 					$dproute['timeconditions'][$id] = $tc;
 				}
+		}elseif ($table == 'virtual_queue_config') {
+        foreach($results as $vqueues) {
+					$id = $vqueues['id'];
+					$dproute['vqueues'][$id] = $vqueues;
+				}
 		}
 		
 	}
@@ -174,6 +180,15 @@ if (isset($otherroutes['ivrs']) && count($otherroutes['ivrs']) > 0){
 	foreach ($otherroutes['ivrs'] as $i=>$ii){
 		//if ($ext=='ivr-'.$ii['id'].',s,1,'.$options['lang']){$selected='selected'; $toolbarLabel='IVR'; $dialPlanHeader=$ii['name'];}else{$selected='';}
 		$dropOptions.='<option value="ivr-'.$ii['id'].',s,1,'.$options['lang'].'">'.$ii['name'].'</option>';
+	}
+	$dropOptions.='</optgroup>';
+}
+
+//Virtual Queues
+if (isset($otherroutes['vqueues']) && count($otherroutes['vqueues']) > 0){
+	$dropOptions.='<optgroup label="Virtual Queues">';
+	foreach ($otherroutes['vqueues'] as $i=>$ii){
+		$dropOptions.='<option value="ext-vqueues,'.$ii['id'].',1,'.$options['lang'].'" >'.$ii['name'].'</option>';
 	}
 	$dropOptions.='</optgroup>';
 }

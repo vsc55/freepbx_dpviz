@@ -247,6 +247,7 @@ if ($minimal){
     '/^qmember/i',
 		'/^rgmember/i',
 		'/^ext-local/i',
+		'/^ext-vqueues/i'
 	];
 	
 	foreach ($patterns as $pattern) {
@@ -378,14 +379,26 @@ if ($minimal){
 				$edge->attribute('labeltooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
 				$edge->attribute('edgetooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
 			}
-			if (preg_match("/^( Allowlist| Disallowed by Allowlist)/", $route['parent_edge_label'])) {
+			if (preg_match("/^( Allowlist| Disallowed by Blacklist)/", $route['parent_edge_label'])) {
 				$edge->attribute('URL', $route['parent_edge_url']);
 				$edge->attribute('target', $route['parent_edge_target']);
 				$edge->attribute('labeltooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
 				$edge->attribute('edgetooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
 			}
-			if (preg_match("/^( IVR)./", $route['parent_edge_label'])){
+			if (preg_match("/^( Disallowed by Allowlist)/", $route['parent_edge_label'])) {
+				$edge->attribute('URL', $route['parent_edge_url']);
+				$edge->attribute('target', $route['parent_edge_target']);
+				$edge->attribute('labeltooltip',sanitizeLabels($route['parent_edge_labeltooltip_disallow']));
+				$edge->attribute('edgetooltip',sanitizeLabels($route['parent_edge_labeltooltip_disallow']));
+			}																																						
+			if (preg_match("/^( IVR Break| Queue Callback)./", $route['parent_edge_label'])){
 				$edge->attribute('style', 'dashed');
+			}
+			if (preg_match("/^( Callback | Destination after)./", $route['parent_edge_label'])){
+				$edge->attribute('style', 'dotted');
+			}
+			if (preg_match("/^( Recording)/", $route['parent_edge_label'])){
+				$edge->attribute('dir', 'back');
 			}
 			
 			//start from node
@@ -393,6 +406,7 @@ if ($minimal){
 				$edge->attribute('style', 'dotted');
 			}
 			
+			//exclude paths
 			if (in_array($destination,$options['skip'])){
 				$stop=true;
 			}
@@ -431,17 +445,7 @@ if ($minimal){
 				$announcement="None";
 			}
 		
-			#feature code exist?
-			if ( isset($route['featurecodes']['*29'.$recID]) ){
-				#custom feature code?
-				if ($route['featurecodes']['*29'.$an['recording_id']]['customcode']!=''){$featurenum=$route['featurecodes']['*29'.$an['recording_id']]['customcode'];}else{$featurenum=$route['featurecodes']['*29'.$an['recording_id']]['defaultcode'];}
-				#is it enabled?
-				if ( ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ){$rec="Record(yes): ".$featurenum;}else{$rec="Record(no): ".$featurenum;}
-			}else{
-				$rec="Record(no): disabled";
-			}
-			
-			$label=sanitizeLabels($an['description'])."\nRecording: ".sanitizeLabels($announcement)."\n".$rec;
+			$label=sanitizeLabels($an['description'])."\nRecording: ".sanitizeLabels($announcement);
 			$tooltip='';
 			makeNode($module,$annum,$label,$tooltip,$node);
 			if ($stop){
@@ -508,7 +512,7 @@ if ($minimal){
 				#custom feature code?
 				if ($route['featurecodes']['*28'.$daynightnum]['customcode']!=''){$featurenum=$route['featurecodes']['*28'.$daynightnum]['customcode'];}else{$featurenum=$route['featurecodes']['*28'.$daynightnum]['defaultcode'];}
 				#is it enabled?
-				if ($route['featurecodes']['*28'.$daynightnum]['enabled']=='1'){$code="\nToggle (enabled): ".$featurenum;}else{$code="\nToggle (disabled): ".$featurenum;}
+				if ($route['featurecodes']['*28'.$daynightnum]['enabled']=='1'){$code=$featurenum;}else{$code=$featurenum." (disabled)";}
 			}else{
 				$code='';
 			}
@@ -529,7 +533,7 @@ if ($minimal){
 						$route['parent_node'] = $node;
 						dpp_follow_destinations($route, $d['dest'].','.$daynightLang,'',$options);
 				}elseif ($d['dmode']=="fc_description"){
-						$label=sanitizeLabels($d['dest']) .$code;
+						$label=sanitizeLabels($d['dest']) ."\nFeature Code: ".$code;
 				}
 			}
 			$tooltip='';
@@ -549,7 +553,7 @@ if ($minimal){
 		#end of Call Flow Control (daynight)
 
 		#
-		# Call Recording
+		# Callback
 		#
   } elseif (preg_match("/^callback,(\d+),(\d+),(.+)/", $destination, $matches)) {
 		$module="Callback";
@@ -573,7 +577,7 @@ if ($minimal){
 				return;
 			}
 			
-			$route['parent_edge_label']= " Continue";
+			$route['parent_edge_label']= " Destination after Callback";
 			$route['parent_node'] = $node;
 			dpp_follow_destinations($route, $callback['destination'].','.$callbackLang,'',$options);
 		}else{
@@ -755,30 +759,62 @@ if ($minimal){
 		#
 		# Extension (from-did-direct)
 		#
-  } elseif (preg_match("/^from-did-direct,(\d+),(\d+),(.+)/", $destination, $matches)) {
+  } elseif (preg_match("/^from-did-direct,([#\d]+),(\d+),(.+)/", $destination, $matches)) {
 	
 		$extnum = $matches[1];
 		$extLang= $matches[3];
 		
 		if (isset($route['extensions'][$extnum])){
+			
 			$extension = $route['extensions'][$extnum];
 			$extname= $extension['name'];
-			$extemail= $extension['email'];
-			$extemail= str_replace("|",",\n",$extemail);
+			
+			if ($extension['tech']=='pjsip' || $extension['tech']=='sip' || $extension['tech']=='iax2'){
+				
+				$node->attribute('penwidth', '2');
+				if (!isset($route['extensions'][$extnum]['reg_status'])){
+					$status=isExtensionRegistered($extnum,$extension['tech']);
+					$route['extensions'][$extnum]['reg_status']=$status;
+				}
+				$registered=$route['extensions'][$extnum]['reg_status'];
+				if ($registered){$online='Yes';}else{$online='No';}
+				
+				$node->attribute('color', $registered ? 'green' : 'red');
+				
+				$regStatus="\n\nRegistration: ".$online;
+				$regStatus.="\nTech: ".strtoupper($extension['tech']);
+			}else{
+				$regStatus="\n\nTech: ".ucfirst($extension['tech']);
+			}
+			
+			if (isset($extension['mailbox'])){
+				$extemail= $extension['mailbox']['email'];
+				$extemail= str_replace(",",",\n",$extemail);
+				
+				$mailboxLabel="\n\nVoicemail: Enabled";
+				$mailboxLabel.="\nEmail: ".$extemail;
+				foreach ($extension['mailbox']['options'] as $m=>$mm){
+					$mailboxLabel.="\n".ucfirst($m).": ".ucfirst($mm);
+				}
+				
+			}else{
+				$extemail='';
+				$mailboxLabel="\n\nVoicemail: Disabled";
+			}
 			
 			if (isset($extension['fmfm'])){
 				if ($extension['fmfm']['ddial']=='DIRECT'){
-					$fmfmLabel="\n\nFMFM Enabled\nInitial Ring Time: ".secondsToTimes($extension['fmfm']['prering'])."\nRing Time: ".secondsToTimes($extension['fmfm']['grptime'])."\nFollow-Me List: ".$extension['fmfm']['grplist']."\nConfirm Calls: ".$extension['fmfm']['grpconf'];
+					$confirm = ($extension['fmfm']['needsconf'] == 'CHECKED') ? "Yes" : "No";
+					$fmfmLabel="\n\nFMFM: Enabled\nInitial Ring Time: ".secondsToTimes($extension['fmfm']['pre_ring'])."\nRing Time: ".secondsToTimes($extension['fmfm']['grptime'])."\nFollow-Me List: ".$extension['fmfm']['grplist']."\nConfirm Calls: ".$confirm;
 				}else{
-					$fmfmLabel="\n\nFMFM Disabled";
+					$fmfmLabel="\n\nFMFM: Disabled";
 				}
 			}else{
 				$fmfmLabel='';
 			}
-			
-			
+
 			$node->attribute('label', 'Extension: '.$extnum.' '.sanitizeLabels($extname)."\n".sanitizeLabels($extemail));
-			$node->attribute('tooltip', $node->getAttribute('label').$fmfmLabel);
+			$node->attribute('tooltip', "Extension: ".$extnum."\nName: ".sanitizeLabels($extname).$regStatus.$mailboxLabel.$fmfmLabel);
 			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$extnum));
 			$node->attribute('target', '_blank');
 			
@@ -787,10 +823,10 @@ if ($minimal){
 						$grplist = preg_split("/-/", $extension['fmfm']['grplist']);
 						foreach ($grplist as $g){
 							$g=trim($g);
-							$g=str_replace('#', '', $g);
+							//$g=str_replace('#', '', $g);
 							$follow='from-did-direct,'.$g.',1,'.$extLang;
 							
-							$route['parent_edge_label'] = ' FMFM ('.secondsToTimes($extension['fmfm']['prering']).')';
+							$route['parent_edge_label'] = ' FMFM ('.secondsToTimes($extension['fmfm']['pre_ring']).')';
 							$route['parent_node'] = $node;
 							dpp_follow_destinations($route, $follow,'',$options);
 						}
@@ -914,17 +950,21 @@ if ($minimal){
 		#
 		# Inbound Routes
 		#
-  } elseif (preg_match("/^from-trunk,([^,]*)\-([^,]*),(\d+),(.+)/", $destination, $matches)) {
+  } elseif (preg_match("/^from-trunk,((?:[^\[,]+(?:\[[^\]]+\])?))\-([^,]*),(\d+),(.+)/", $destination, $matches)) {
 		
 		$num = $matches[1];
 		$numcid = $matches[2];
 		$numLang= $matches[4];
 		
 		$allowCheck = 0;
-		$checkModule=\FreePBX::Modules()->checkStatus("allowlist");
-		if ($checkModule){
-			$allowCheck = \FreePBX::Allowlist()->didIsSet($num, $numcid);
+		$checkAModule=\FreePBX::Modules()->checkStatus("allowlist");
+		if ($checkAModule){
+			if ($num=='ANY'){$allowNum='';}else{$allowNum=$num;}
+			$allowCheck = \FreePBX::Allowlist()->didIsSet($allowNum, $numcid);
+			$allowList = \FreePBX::Allowlist()->getAllowlist();
 		}
+
+		$blackCheck=\FreePBX::Modules()->checkStatus("blacklist");
 		
 		if (empty($num)){$num='ANY';}
 		if ($numcid==''){$numcidd=" / ANY";}else{$numcidd=" / ".$numcid;}
@@ -966,16 +1006,73 @@ if ($minimal){
 				return;
 			}
 		
-		if ($allowCheck){
+		if ($blackCheck){
+			$blackList = \FreePBX::Blacklist()->getBlacklist();
+			$total=count($blackList);
+			if ($total > 1){
+				$blackDest = \FreePBX::Blacklist()->destinationGet();
+				$blockUnknown = \FreePBX::Blacklist()->blockunknownGet();
+				$block = $blockUnknown ? "Yes" : "No";
+				$tooltip="\nBlock Unknown/Blocked Caller ID: ".$block;
+				$tooltip.="\n\nNumber: Description\n";
+				
+				$i=0;
+				
+				foreach ($blackList as $b){
+					if ($b['number']=='dest'){continue;}
+					if ($b['description']==1){$b['description']='';}
+					$tooltip.=$b['number'].": ".sanitizeLabels($b['description'])."\n";
+					
+					if ($i >= 25 && $i < $total - 1){
+						$tooltip.="...";
+						break;
+					}
+					$i++;
+				}
+				
+				$edgeLabel=" Blacklist";
+				
+				$route['parent_edge_label'] =  " Disallowed by Blacklist";
+				$route['parent_edge_url'] = htmlentities('/admin/config.php?display=blacklist');
+				$route['parent_edge_target'] = '_blank';
+				$route['parent_edge_labeltooltip']=" Click to edit Blacklist\n".$tooltip;
+				$route['parent_node'] = $node;
+				if ($blackDest){
+					dpp_follow_destinations($route, $blackDest.','.$numLang,'',$options);
+				}else{
+					dpp_follow_destinations($route, 'blacklistnotset','',$options);
+				}
+			}																															
+		}
+		
+		if ($allowCheck && !empty($allowList)){
 			$allowDest = \FreePBX::Allowlist()->destinationGet();
+
+			$tooltip="\nNumber: Description\n";
+			$i=0;
+			$total=count($allowList);
+			foreach ($allowList as $a){
+				if ($a['description']==1){$a['description']='';}
+				$tooltip.=$a['number'].": ".sanitizeLabels($a['description'])."\n";
+				
+				if ($i >= 25 && $i < $total - 1){
+					$tooltip.="...";
+					break;
+				}
+				$i++;
+			}
+				
+				
 			$edgeLabel=" Allowlist";
 			
 			$route['parent_edge_label'] =  " Disallowed by Allowlist";
 			$route['parent_edge_url'] = htmlentities('/admin/config.php?display=allowlist');
 			$route['parent_edge_target'] = '_blank';
-			$route['parent_edge_labeltooltip']=" Click to edit Allowlist";
+			$route['parent_edge_labeltooltip_disallow']=" Click to edit Allowlist\n";
+			$route['parent_edge_labeltooltip']=" Click to edit Allowlist\n".$tooltip;
 			$route['parent_node'] = $node;
 			dpp_follow_destinations($route, $allowDest.','.$numLang,'',$options);
+		
 		}else{
 			$edgeLabel=" Always";
 		}
@@ -1008,18 +1105,7 @@ if ($minimal){
 				$ivrRecName="None";
 			}
 			
-		
-			#feature code exist?
-			if ( isset($route['featurecodes']['*29'.$ivr['announcement']]) ){
-				#custom feature code?
-				if ($route['featurecodes']['*29'.$ivr['announcement']]['customcode']!=''){$featurenum=$route['featurecodes']['*29'.$ivr['announcement']]['customcode'];}else{$featurenum=$route['featurecodes']['*29'.$ivr['announcement']]['defaultcode'];}
-				#is it enabled?
-				if ( ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ){$rec='(yes): '.$featurenum;}else{$rec='(no): '.$featurenum;}
-			}else{
-				$rec='(no): disabled';
-			}
-			
-			$label=sanitizeLabels($ivr['name'])."\nAnnouncement: ".sanitizeLabels($ivrRecName)."\nRecord ".$rec."\n";
+			$label=sanitizeLabels($ivr['name'])."\nAnnouncement: ".sanitizeLabels($ivrRecName);
 			if ($ivr['directdial']=='ext-local'){
 				$ddial="Enabled";
 			}elseif (is_numeric($ivr['directdial'])){
@@ -1183,7 +1269,7 @@ if ($minimal){
 		if (isset($route['paging'][$pagenum])){
 			$paging=$route['paging'][$pagenum];
 			$audioID=$paging['announcement'];
-			if (!is_numeric($audioID)){$announcement="Announcment: ".$audioID."\n";}else{$announcement='';}
+			if (!is_numeric($audioID)){$announcement="Announcement: ".$audioID."\n";}else{$announcement='';}
 			$busyArray=array('Skip','Force','Whisper');
 			$duplexArray=array('No','Yes');
 			$label=$paging['page_group']." ".sanitizeLabels($paging['description']);
@@ -1246,7 +1332,17 @@ if ($minimal){
 			$playName='None';
 		}
 		
-		$node->attribute('label', 'Recording ('.$recLang.'): '.sanitizeLabels($playName));
+		#feature code exist?
+		if ( isset($route['featurecodes']['*29'.$recID]) ){
+			#custom feature code?
+			if ($route['featurecodes']['*29'.$recID]['customcode']!=''){$featurenum=$route['featurecodes']['*29'.$recID]['customcode'];}else{$featurenum=$route['featurecodes']['*29'.$recID]['defaultcode'];}
+			#is it enabled?
+			if ( ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ){$recEnabled=$featurenum;}else{$recEnabled=$featurenum.' (disabled)';}
+		}else{
+			$recEnabled='Disabled';
+		}
+		
+		$node->attribute('label', "Recording (".$recLang."): ".sanitizeLabels($playName)."\nFeature Code: ".$recEnabled );
 		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', '#');
 		$node->attribute('shape', 'rect');
@@ -1312,16 +1408,29 @@ if ($minimal){
 			$mohclass=array('MoH Only','Ring Only','Agent Ringing');
 			$noyes=array('No','Yes');
 			$maxcallers = ($q['data']['maxlen'] == 0) ? 'Unlimited' : $q['data']['maxlen'];
+			
+			if ($q['data']['announce-frequency']==0){
+				$position="Caller Position\nDisabled\n\n";
+			}else{
+				$position="Caller Position\nFrequency: ".secondsToTimes($q['data']['announce-frequency'])."\nMinimum Announcement Interval: ".secondsToTimes($q['data']['min-announce-frequency'])."\nAnnounce Position: ".ucfirst($q['data']['announce-position'])."\nAnnounce Hold Time: ".ucfirst($q['data']['announce-holdtime'])."\n\n";
+			}
+
+			if ($q['data']['periodic-announce-frequency']==0){$repeat='Disabled';$edgeRepeat='';}else{$repeat=secondsToTimes($q['data']['periodic-announce-frequency']);$edgeRepeat=" (every ".$repeat.")";}
 			if ($q['ivr_id']!='none'){
 				$breakoutname = isset($route['ivrs'][$q['ivr_id']]['name']) ? $route['ivrs'][$q['ivr_id']]['name'] : "none";
-				$periodic="Periodic Announcements\nIVR Break Out Menu: ".$breakoutname."\nRepeat Frequency: ".secondsToTimes($q['data']['periodic-announce-frequency']);
+				$periodic="Periodic Announcements\nIVR Break Out Menu: ".$breakoutname."\nRepeat Frequency: ".$repeat;
+			}elseif (isset($q['callback_id']) && $q['callback_id']!='none'){
+				$breakoutname = isset($route['queuecallback'][$q['callback_id']]) ? $route['queuecallback'][$q['callback_id']]['name'] : "none";
+				$periodic="Periodic Announcements\nQueue Callback: ".$breakoutname."\nRepeat Frequency: ".$repeat;
 			}else{
 				$periodic="Periodic Announcements\nDisabled";
 			}
+			
+			
 			$tooltip="General Settings\nCID Prefix: ".$q['grppre']."\nStrategy: ".$q['data']['strategy']."\nAgent Restrictions: ".$restrict[$q['use_queue_context']]."\nAutofill: ".ucfirst($q['data']['autofill'])."\nSkip Busy Agents: ".$skipbusy[$q['cwignore']]."\nMusic On Hold Class: ".$music." (".$mohclass[$q['ringing']].")\nCall Recording: ".$q['data']['recording']."\nMark calls answered elsewhere: ".$noyes[$q['data']['answered_elsewhere']].
 			"\n\nTiming & Agent Options\nMax Wait Time: ".$maxwait."\nAgent Timeout: ".secondsToTimes($q['data']['timeout'])."\nAgent Retry: ".secondsToTimes($q['data']['retry'])."\nWrap-Up-Time: ".secondsToTimes($q['data']['wrapuptime']).
 			"\n\nCapacity Options\nMax Callers: ".$maxcallers."\nJoin Empty: ".ucfirst($q['data']['joinempty'])."\nLeave Empty: ".ucfirst($q['data']['leavewhenempty']).
-			"\n\nCaller Position\nFrequency: ".secondsToTimes($q['data']['announce-frequency'])."\nMinimum Announcement Interval: ".secondsToTimes($q['data']['min-announce-frequency'])."\nAnnounce Position: ".ucfirst($q['data']['announce-position'])."\nAnnounce Hold Time: ".ucfirst($q['data']['announce-holdtime'])."\n\n".$periodic;
+			"\n\n".$position.$periodic;
 			makeNode($module,$qnum,$label,$tooltip,$node);
 			if ($stop){
 				$undoNode= stopNode($dpgraph,$destination);
@@ -1349,6 +1458,47 @@ if ($minimal){
 				}
 			}
 			
+			#Queue Plus Options
+			if (!empty($q['vqplus'])){
+				
+				$vq=$q['vqplus'];
+				if (!empty($vq['cdest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = "Caller Post Hangup";
+					dpp_follow_destinations($route, $vq['cdest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['adest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = "Agent Post Hangup";
+					dpp_follow_destinations($route, $vq['adest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['full_dest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = "Queue Fail Over on FULL";
+					dpp_follow_destinations($route, $vq['full_dest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['joinempty_dest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = "Queue Fail Over on JOINEMPTY";
+					dpp_follow_destinations($route, $vq['joinempty_dest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['leaveempty_dest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = "Queue Fail Over on LEAVEEMPTY";
+					dpp_follow_destinations($route, $vq['leaveempty_dest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['joinunavail_dest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = "Queue Fail Over on JOINUNAVAIL";
+					dpp_follow_destinations($route, $vq['joinunavail_dest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['leaveunavail_dest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = "Queue Fail Over on LEAVEUNAVAIL";
+					dpp_follow_destinations($route, $vq['leaveunavail_dest'].','.$qlang,'',$options);
+				}
+			}
+			
 			# The destinations we need to follow are the queue members (extensions)
 			# and the no-answer destination.
 			if ($q['dest'] != '') {
@@ -1358,9 +1508,25 @@ if ($minimal){
 			}
 			
 			if (is_numeric($q['ivr_id'])){
-				$route['parent_edge_label'] = ' IVR Break Out (every '.secondsToTimes($q['data']['min-announce-frequency']).')';
-				$route['parent_node'] = $node;
-				dpp_follow_destinations($route, 'ivr-'.$q['ivr_id'].',s,1,'.$qlang,'',$options);
+				if (isset($route['ivrs'][$q['ivr_id']])){
+					$route['parent_edge_label'] = " IVR Break Out".$edgeRepeat;
+					$route['parent_node'] = $node;
+					dpp_follow_destinations($route, 'ivr-'.$q['ivr_id'].',s,1,'.$qlang,'',$options);
+				}else{
+					notFound('IVR Break Out',$destination,$node);
+				}
+			}
+			if (isset($q['callback_id']) && is_numeric($q['callback_id'])){
+				if (isset($route['queuecallback'][$q['callback_id']])){
+					$callback=$route['queuecallback'][$q['callback_id']];
+					
+					$route['parent_edge_label'] = " Queue Callback ".$callback['cbstarttime']." - ".$callback['cbendtime']."\l".$edgeRepeat;
+					$route['parent_node'] = $node;
+					dpp_follow_destinations($route, 'queuecallback-'.$q['callback_id'].',request,1,'.$qlang,'',$options);
+				}else{
+					notFound('Queue Callback',$destination,$node);
+				}
+				
 			}
 		}else{
 			notFound($module,$destination,$node);
@@ -1373,9 +1539,26 @@ if ($minimal){
 	} elseif (preg_match("/^qmember(\d+)/", $destination, $matches)) {
 		$qextension=$matches[1];
 		$qlabel = isset($route['extensions'][$qextension]['name']) ? "Ext ".$qextension."\n".$route['extensions'][$qextension]['name'] : $qextension;
+		$tooltip= isset($route['extensions'][$qextension]['name']) ? "Extension: ".$qextension."\nName: ".$route['extensions'][$qextension]['name'] : $qextension;
+		//registration status
+		if (isset($route['extensions'][$qextension]) && ($route['extensions'][$qextension]['tech']=='pjsip' || $route['extensions'][$qextension]['tech']=='sip' || $route['extensions'][$qextension]['tech']=='iax2')){
+			$node->attribute('penwidth', '2');
+			if (!isset($route['extensions'][$qextension]['reg_status'])){
+				$status=isExtensionRegistered($qextension,$route['extensions'][$qextension]['tech']);
+				$route['extensions'][$qextension]['reg_status']=$status;
+			}
+			$registered=$route['extensions'][$qextension]['reg_status'];
+			if ($registered){$online='Yes';}else{$online='No';}
+			$node->attribute('color', $registered ? 'green' : 'red');
+
+			$tooltip.="\n\nRegistration: ".$online;
+			$tooltip.="\nTech: ".strtoupper($route['extensions'][$qextension]['tech']);
+		}elseif(isset($route['extensions'][$qextension])){
+			$tooltip.="\n\nTech: ".ucfirst($route['extensions'][$qextension]['tech']);
+		}
 		
 		$node->attribute('label', sanitizeLabels($qlabel));
-		$node->attribute('tooltip', $node->getAttribute('label'));
+		$node->attribute('tooltip', sanitizeLabels($tooltip));
 		$node->attribute('style', 'filled');
 		if (!is_numeric($qlabel)){
 			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$qextension));
@@ -1388,6 +1571,63 @@ if ($minimal){
 			$node->attribute('fillcolor', $pastels[8]);
 		}
 		#end of Queue members (static and dynamic)
+		
+		#
+		# Queue Callback
+		#
+	} elseif (preg_match("/^queuecallback-(\d+),(.+),(\d+),(.+)/", $destination, $matches)) {
+		$module="Queue Callback";
+		$qcallbackId=$matches[1];
+		$qcallbackLang=$matches[4];
+ 
+		if (isset($route['queuecallback'][$qcallbackId])){
+			$module="Queue Callback";
+			$qcallback=$route['queuecallback'][$qcallbackId];
+			
+			if (empty($qcallback['cbqueue'])){
+				$queue= $route['parent_node']->getId();
+			}elseif (substr($qcallback['cbqueue'], 0, 1) === 'q') {
+				$queue = "ext-queues,".substr($qcallback['cbqueue'], 1).",1,".$qcallbackLang;
+			}else{
+				$queue = "ext-vqueues,".substr($qcallback['cbqueue'], 1).",1,".$qcallbackLang;
+			}
+			
+			if (isset($route['recordings'][$qcallback['announcement']])){
+				$qcbrecording= $route['recordings'][$qcallback['announcement']];
+				$qcbRecName= $qcbrecording['displayname'];
+				$recordingId=$qcbrecording['id'];
+				
+			}else{
+				$qcbRecName="Default";
+			}
+			
+			$label=sanitizeLabels($qcallback['name'])."\nAnnouncement: ".sanitizeLabels($qcbRecName);
+			$tooltip = "Caller ID: ".$qcallback['cid']."\nTimeout: ".secondsToTimes($qcallback['timeout'])."\nRetries: ".$qcallback['retries']."\nRetry Delay: ".secondsToTimes($qcallback['retrydelay']);
+			
+			makeNode($module,$qcallbackId,$label,$tooltip,$node);
+			if ($stop){
+				$undoNode= stopNode($dpgraph,$destination);
+				$edge= $dpgraph->beginEdge(array($node, $undoNode));
+				$edge->attribute('style', 'dashed');
+				$edge->attribute('edgetooltip',$node->getAttribute('label', ''));
+				
+				return;
+			}
+			
+			if ($qcallback['announcement']!=''){
+				$route['parent_node'] = $node;
+				$route['parent_edge_label'] = 'Announcement';
+				dpp_follow_destinations($route,'play-system-recording,'.$recordingId.',1,'.$qcallbackLang,'',$options);
+			}
+			
+			$route['parent_node'] = $node;
+			$route['parent_edge_label'] = ' Callback Queue';
+			dpp_follow_destinations($route,$queue,'',$options);
+			
+		}else{
+			notFound($module,$destination,$node);
+		}
+		#end of Queue Callback
 
 		#
 		# Ring Groups
@@ -1454,9 +1694,30 @@ if ($minimal){
   } elseif (preg_match("/^rgmember(\d+)/", $destination, $matches)) {
 		$rgext = $matches[1];
 		$rglabel = isset($route['extensions'][$rgext]) ? "Ext ".$rgext."\n".$route['extensions'][$rgext]['name'] : $rgext;
+		$tooltip = isset($route['extensions'][$rgext]) ? "Extextnsion: ".$rgext."\nName: ".$route['extensions'][$rgext]['name'] : $rgext;
 
+		//registration status
+		if (isset($route['extensions'][$rgext]) && ($route['extensions'][$rgext]['tech']=='pjsip' || $route['extensions'][$rgext]['tech']=='sip' || $route['extensions'][$rgext]['tech']=='iax2')){
+			$node->attribute('penwidth', '2');
+			if (!isset($route['extensions'][$rgext]['reg_status'])){
+				$status=isExtensionRegistered($rgext,$route['extensions'][$rgext]['tech']);
+				$route['extensions'][$rgext]['reg_status']=$status;
+			}
+			$registered=$route['extensions'][$rgext]['reg_status'];
+			if ($registered){$online='Yes';}else{$online='No';}
+			$node->attribute('color', $registered ? 'green' : 'red');
+
+			$tooltip.="\n\nRegistration: ".$online;
+			$tooltip.="\nTech: ".strtoupper($route['extensions'][$rgext]['tech']);
+		}elseif(isset($route['extensions'][$rgext])){
+			$tooltip.="\n\nTech: ".ucfirst($route['extensions'][$rgext]['tech']);
+		}
+		
+		
+		
+		
 		$node->attribute('label', sanitizeLabels($rglabel));
-		$node->attribute('tooltip', $node->getAttribute('label'));
+		$node->attribute('tooltip', sanitizeLabels($tooltip));
 		if (!is_numeric($rglabel)){
 			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$rgext));
 			$node->attribute('target', '_blank');
@@ -1476,7 +1737,7 @@ if ($minimal){
 		
 		if (isset($route['setcid'][$cidnum])){
 			$cid = $route['setcid'][$cidnum];
-			$label= sanitizeLabels("\nName= ".preg_replace('/\${CALLERID\(name\)}/i', '<name>', $cid['cid_name'])."\nNumber= ".preg_replace('/\${CALLERID\(num\)}/i', '<number>', $cid['cid_num']));
+			$label= sanitizeLabels($cid['description'])." ".sanitizeLabels("\nName= ".preg_replace('/\${CALLERID\(name\)}/i', '<name>', $cid['cid_name'])."\nNumber= ".preg_replace('/\${CALLERID\(num\)}/i', '<number>', $cid['cid_num']));
 			$tooltip='';
 			makeNode($module,$cidnum,$label,$tooltip,$node);
 			if ($stop){
@@ -1600,7 +1861,6 @@ if ($minimal){
 			}
 			
 			# Now set the current node to be the parent and recurse on both the true and false branches
-			//echo $tgLabel;
 			
 			$route['parent_edge_label'] = " Match: ".$tgLabel;
 			$route['parent_edge_url'] = htmlentities($tgLink);
@@ -1649,6 +1909,45 @@ if ($minimal){
 		#end of Trunks
 
 		#
+		# Virtual Queues
+		#
+  } elseif (preg_match("/^ext-vqueues,(\d+),(\d+),(.+)/", $destination, $matches)) {
+		$module='Virtual Queues';
+		$vqueueId= $matches[1];
+		$vqueueOther = $matches[2];
+		$vqueueLang = $matches[3];
+		
+		if (isset($route['vqueues'][$vqueueId])){
+			$vq= $route['vqueues'][$vqueueId];
+			$tooltipitems='';
+			$label=sanitizeLabels($vq['name']);
+			if (!empty($vq['cidpp'])){$tooltipitems.="CID Prefix: ".sanitizeLabels($vq['cidpp'])."\n";}
+			if (!empty($vq['alertinfo'])){$tooltipitems.="Alert Info: ".sanitizeLabels($vq['alertinfo'])."\n";}
+			if (!empty($vq['music'])){$tooltipitems.="MOH Class: ".sanitizeLabels($vq['music'])."\n";}
+			if (!empty($vq['language'])){$tooltipitems.="Language: ".sanitizeLabels($vq['language'])."\n";$vqueueLang=$vq['language'];}
+			
+			$tooltip=$label."\n".$tooltipitems;
+			makeNode($module,$vqueueId,$label,$tooltip,$node);
+			if ($stop){
+				$undoNode= stopNode($dpgraph,$destination);
+				$edge= $dpgraph->beginEdge(array($node, $undoNode));
+				$edge->attribute('style', 'dashed');
+				$edge->attribute('edgetooltip',$node->getAttribute('label', ''));
+				
+				return;
+			}
+			
+			if ($vq['gotodest'] != '') {
+				$route['parent_edge_label'] = ' Continue';
+				$route['parent_node'] = $node;
+				dpp_follow_destinations($route, $vq['gotodest'].','.$vqueueLang,'',$options);
+			}
+		}else{
+			notFound($module,$destination,$node);
+		}
+		#end of Virtual Queues
+		
+		#
 		# Voicemail
 		#
   } elseif (preg_match("/^ext-local,vm([b,i,s,u])(\d+),(\d+)/", $destination, $matches)) {
@@ -1658,12 +1957,19 @@ if ($minimal){
 		$vmother = $matches[3];
 		
 		$vm_array=array('b'=>'(Busy Message)','i'=>'(Instructions Only)','s'=>'(No Message)','u'=>'(Unavailable Message)' );
-		if (isset($route['extensions'][$vmnum]['name'])){
-			$vmname= $route['extensions'][$vmnum]['name'];
-			$vmemail= $route['extensions'][$vmnum]['email'];
-			$vmemail= str_replace("|",",\n",$vmemail);
+		if (isset($route['extensions'][$vmnum]['mailbox'])){
+			$voicemail=$route['extensions'][$vmnum]['mailbox'];
+			$vmname= $voicemail['name'];
+			$vmemail= $voicemail['email'];
+			$vmemail= str_replace(",",",\n",$vmemail);
+			$tooltip="\n\nVoicemail: Enabled";
+			$tooltip.="\nEmail: ".$vmemail;
+			foreach ($voicemail['options'] as $m=>$mm){
+				$tooltip.="\n".ucfirst($m).": ".ucfirst($mm);
+			}
+			
 			$label=$vmnum." ".sanitizeLabels($vmname)." ".$vm_array[$vmtype]."\n".sanitizeLabels($vmemail);
-			$tooltip='';
+
 			makeNode($module,$vmnum,$label,$tooltip,$node);
 		}else{
 			notFound($module,$destination,$node);
@@ -1682,8 +1988,16 @@ if ($minimal){
 		if (isset($route['vmblasts'][$vmblastnum])){
 			$vmblast = $route['vmblasts'][$vmblastnum];
 			$audioID = $vmblast['audio_label'];
-			$label=$vmblastnum.' '.sanitizeLabels($vmblast['description']);
-			$tooltip='';
+			if ($audioID > 0){
+				$audioLabel=findRecording($route,$audioID);
+			}elseif ($audioID=='-1'){
+				$audioLabel="Read Group Number";
+			}elseif ($audioID=='-2'){
+				$audioLabel="Beep Only - No Confirmation";
+			}
+			$label=$vmblastnum." ".sanitizeLabels($vmblast['description'])."\nAudio Label: ".$audioLabel;
+			if ($vmblast['password'] !=''){$pass="\nPassword: ".$vmblast['password'];}else{$pass='';}
+			$tooltip=$module.": ".$label.$pass;
 			makeNode($module,$vmblastnum,$label,$tooltip,$node);
 			
 			if (!empty($vmblast['members']) && !$minimal){
@@ -1691,8 +2005,8 @@ if ($minimal){
 				foreach ($vmblast['members'] as $member) {
 					if (isset($route['extensions'][$member])){
 						$line.="Ext ".$member." ".$route['extensions'][$member]['name'].": ";
-						$vmblastemail=$route['extensions'][$member]['email'];
-						$line.= str_replace("|",",\n",$vmblastemail)."\l";
+						$vmblastemail=$route['extensions'][$member]['mailbox']['email'];
+						$line.= str_replace(",",",\n",$vmblastemail)."\l";
 					}
 				}
 				
@@ -1721,7 +2035,8 @@ if ($minimal){
 		}
 		#end of VM Blast + members
 		
-		#Custom Destinations (with return)
+		#
+		# Custom Destinations (with return)
 		#
 	} elseif (preg_match("/^customdests,dest-(\d+),(\d+),(.+)/", $destination, $matches)) {
 		$module="Custom Dests";
@@ -1744,7 +2059,21 @@ if ($minimal){
 		}else{
 			notFound($module,$destination,$node);
 		}
-	
+		
+		#
+		# blacklistnotset
+		#
+	} elseif (preg_match("/^blacklistnotset/", $destination)) {
+		$node->attribute('label', 'Bad Dest: Blacklist');
+		$node->attribute('tooltip', $node->getAttribute('label'));
+		$node->attribute('URL', htmlentities('/admin/config.php?display=blacklist'));
+		$node->attribute('target','_blank');
+		$node->attribute('shape', 'rect');
+		$node->attribute('fillcolor', 'red');
+		$node->attribute('style', 'filled');
+		#end of blacklistnotset
+		
+		
 		#preg_match not found
 		
 	}else {
@@ -1801,58 +2130,16 @@ function dpp_load_tables(&$dproute,$options) {
 	$fmfmOption= isset($options['fmfm']) ? $options['fmfm'] : '0';
 	
 	# Users
-  $query = "select * from users";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from users");
-  }
-	
-  foreach($results as $users) {
-		$emailResult=array();
-    $id = $users['extension'];
-    $dproute['extensions'][$id]= $users;
-		$email='grep -E \'^'.$id.'[[:space:]]*[=>]+\' /etc/asterisk/voicemail.conf | cut -d \',\' -f3';
-		exec($email, $emailResult);
-		$dproute['extensions'][$id]['email'] = !empty($emailResult[0]) ? $emailResult[0] : 'unassigned';		
+	$users=\FreePBX::Core()->getAllUsersByDeviceType();
+
+  foreach($users as $user) {
+		$id = $user['extension'];
+		$dproute['extensions'][$id]= $user;
+		$mailbox=\FreePBX::Voicemail()->getMailbox($id);
+		$dproute['extensions'][$id]['mailbox']=$mailbox;	
   }
 	
 	
-	//fmfm
-	$D='/usr/sbin/asterisk -rx "database show AMPUSER" | grep \'followme\' | cut -d \'/\' -f3,5';
-	exec($D, $fmfm);
-	foreach ($fmfm as $line) {
-			// Skip empty lines
-			if (trim($line) === '') {
-					continue;
-			}
-
-			// Ensure line contains a colon
-			if (strpos($line, ':') === false) {
-					continue; // or log/handle invalid format
-			}
-
-			list($left, $value) = explode(':', $line, 2);
-			$left = trim($left);
-			$value = trim($value);
-
-			// Ensure left part contains a slash
-			if (strpos($left, '/') === false) {
-					continue; // or log/handle invalid format
-			}
-
-			list($ext, $subkey) = explode('/', $left, 2);
-			$ext = trim($ext);
-			$subkey = trim($subkey);
-
-			// Optionally, skip if either ext or subkey is empty
-			if ($ext === '' || $subkey === '') {
-					continue;
-			}
-
-			$dproute['extensions'][$ext]['fmfm'][$subkey] = $value;
-	}
-
-
 	# Inbound Routes
   $query = "select * from incoming order by extension";
   $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
@@ -1888,23 +2175,13 @@ function dpp_load_tables(&$dproute,$options) {
     $dproute['ivrs'][$id]['entries'][$selid] = $ent;
   }
 
-  # Recordings
-  $query = "select * from recordings";
-  $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
-  if (DB::IsError($results)) {
-    die_freepbx($results->getMessage()."<br><br>Error selecting from featurecodes");
-  }
-  foreach($results as $recordings) {
-		$id=$recordings['id'];
-    $dproute['recordings'][$id] = $recordings;
-		dpplog(9, "recordings=$id");
-  }
-	
-	
 	// Array of table names to check -not required
-	$tables = array('announcement','callback','callrecording','daynight','directory_details','disa','dynroute','dynroute_dests','featurecodes','kvstore_FreePBX_modules_Calendar',
-							'kvstore_FreePBX_modules_Customappsreg','language_incoming','languages','meetme','miscapps','miscdests','paging_config','paging_groups','queueprio','queues_config','queues_details',
-							'ringgroups','setcid','timeconditions','timegroups_groups','timegroups_details','trunks','tts','vmblast','vmblast_groups');
+	$tables = array('announcement','callback','callrecording','daynight','directory_details','disa','dynroute','dynroute_dests',
+									'featurecodes','findmefollow','kvstore_FreePBX_modules_Calendar','kvstore_FreePBX_modules_Customappsreg','language_incoming',
+									'languages','meetme','miscapps','miscdests','paging_config','paging_groups','queueprio','queues_config','queues_details',
+									'recordings','ringgroups','setcid','timeconditions','timegroups_groups','timegroups_details','trunks','tts',
+									'virtual_queue_config','vmblast','vmblast_groups','vqplus_callback_config','vqplus_queue_config'
+						);
 	
 	foreach ($tables as $table) {
     // Check if the table exists
@@ -1983,6 +2260,18 @@ function dpp_load_tables(&$dproute,$options) {
 					$id=$featurecodes['defaultcode'];
 					$dproute['featurecodes'][$id] = $featurecodes;
 					dpplog(9, "featurecodes=$id");
+				}
+		}elseif ($table == 'findmefollow') {
+        foreach($results as $findmefollow) {
+					$id=$findmefollow['grpnum'];
+					$dproute['extensions'][$id]['fmfm'] = $findmefollow;
+					$check = \FreePBX::Findmefollow()->getDDial($id);
+					
+					if ($check){
+						$dproute['extensions'][$id]['fmfm']['ddial']='EXTENSION';
+					}else{
+						$dproute['extensions'][$id]['fmfm']['ddial']='DIRECT';
+					}
 				}
 		}elseif ($table == 'kvstore_FreePBX_modules_Calendar') {
 			foreach($results as $calendar) {
@@ -2092,6 +2381,11 @@ function dpp_load_tables(&$dproute,$options) {
 						}
 					}
 				}
+    }elseif ($table == 'recordings') {
+        foreach($results as $recordings) {
+					$id=$recordings['id'];
+					$dproute['recordings'][$id] = $recordings;
+				}
     }elseif ($table == 'ringgroups') {
         foreach($results as $rg) {
 					$id = $rg['grpnum'];
@@ -2119,16 +2413,18 @@ function dpp_load_tables(&$dproute,$options) {
 						dpplog(1, "timegroups_details id found for unknown timegroup, id=$id");
 					} else {
 						if (!isset($dproute['timegroups'][$id]['time'])){$dproute['timegroups'][$id]['time']="";}
-						$exploded=explode("|",$tgd['time']); 
-						if ($exploded[0]!=="*"){$time=$exploded[0];}else{$time="";}
-						if ($exploded[1]!== "*"){$dow_parts = explode("-", $exploded[1]);foreach ($dow_parts as &$part) {$part = ucfirst($part);}$dow = implode("-", $dow_parts);} else {$dow = "";}
-						if ($exploded[2]!=="*"){$day=$exploded[2];}else{$day="";}
-						if ($exploded[3]!== "*"){$monthParts = explode('-', $exploded[3]);$month = implode('-', array_map('ucfirst', $monthParts));} else {$month = "";}
+						$check=checkTimeGroupLogic($tgd['time']);
+						$exploded=explode("|",$tgd['time']);
+						
+						$time = ($exploded[0] !== "*") ? $exploded[0] : "";
+						$dow = ($exploded[1] !== "*") ? implode("-", array_map('ucfirst', explode("-", $exploded[1]))) : "";
+						$day  = ($exploded[2] !== "*") ? $exploded[2]  : "";
+						$month = ($exploded[3] !== "*") ? implode("-", array_map('ucfirst', explode("-", $exploded[3]))) : "";
 						
 						if ($month && ($dow!='' || $day!='' || $time!='')){$month.=" | ";}
 						if ($day && ($dow!='' || $time!='')){$day.=" | ";}
 						if ($dow && ($time!='')){$dow.=" | ";}
-						$dproute['timegroups'][$id]['time'].=$month . $day . $dow . $time."\l";
+						$dproute['timegroups'][$id]['time'].=$month . $day . $dow . $time . $check."\l";
 					}
 				}
     }elseif ($table == 'trunks') {
@@ -2141,17 +2437,32 @@ function dpp_load_tables(&$dproute,$options) {
 					$id = $tts['id'];
 					$dproute['tts'][$id] = $tts;
 				}
-    }elseif ($table == 'vmblast') {
+    }elseif ($table == 'vqplus_callback_config') {
+				foreach($results as $vqcallback) {
+					$id = $vqcallback['id'];
+					$dproute['queuecallback'][$id] = $vqcallback;
+				}
+		}elseif ($table == 'virtual_queue_config') {
+				foreach($results as $vqueues) {
+					$id = $vqueues['id'];
+					$dproute['vqueues'][$id] = $vqueues;
+				}
+		}elseif ($table == 'vmblast') {
 				foreach($results as $vmblasts) {
 					$id = $vmblasts['grpnum'];
 					dpplog(9, "vmblast:  vmblast=$id");
 					$dproute['vmblasts'][$id] = $vmblasts;
 				}
 		}elseif ($table == 'vmblast_groups') {
-					foreach($results as $vmblastsGrp) {
+				foreach($results as $vmblastsGrp) {
 					$id = $vmblastsGrp['grpnum'];
 					dpplog(9, "vmblast:  vmblast=$id");
 					$dproute['vmblasts'][$id]['members'][]=$vmblastsGrp['ext'];
+				}
+		}elseif ($table == 'vqplus_queue_config') {
+				foreach($results as $vqplus) {
+					$id = $vqplus['queue_num'];
+					$dproute['queues'][$id]['vqplus']=$vqplus;
 				}
 		}
 	}
@@ -2193,6 +2504,11 @@ function dpplog($level, $msg) {
 }
 
 function secondsToTimes($seconds) {
+	
+		if (!is_numeric($seconds) || $seconds < 0) {
+			return $seconds;
+		}
+		
     $seconds = (int) round($seconds); // Ensure whole number input
 
     $hours = (int) ($seconds / 3600);
@@ -2200,13 +2516,18 @@ function secondsToTimes($seconds) {
     $remainingSeconds = $seconds % 60;
 
     if ($hours > 0) {
-        return $remainingSeconds === 0 ? "$hours hrs, $minutes mins" : "$hours hrs, $minutes mins, $remainingSeconds secs";
+        return $remainingSeconds === 0 
+					? "$hours hrs, $minutes mins" 
+					: "$hours hrs, $minutes mins, $remainingSeconds secs";
     } elseif ($minutes > 0) {
-        return $remainingSeconds === 0 ? "$minutes mins" : "$minutes mins, $remainingSeconds secs";
+        return $remainingSeconds === 0 
+					? "$minutes mins" 
+					: "$minutes mins, $remainingSeconds secs";
     } else {
         return "$remainingSeconds secs";
     }
 }
+
 
 function formatPhoneNumbers($phoneNumber) {
     $hasPlusOne = strpos($phoneNumber, '+1') === 0;
@@ -2342,12 +2663,6 @@ function makeNode($module,$id,$label,$tooltip,$node){
 					$color='coral';
 					break;
 
-			case 'Queue Priorities':
-					$url='queueprio&view=form&extdisplay='.$id;
-					$shape='rect';
-					$color='#FFC3A0';
-					break;
-
 			case 'Paging':
 					$url=str_replace(' ', '', strtolower($module)).'&view=form&extdisplay='.$id;
 					$shape='tab';
@@ -2360,10 +2675,22 @@ function makeNode($module,$id,$label,$tooltip,$node){
 					$color='#BDB76B';
 					break;
 			
+			case 'Queue Callback':
+					$url=str_replace(' ', '', strtolower($module)).'&view=form&id='.$id;
+					$shape='rect';
+					$color='#98FB98';
+					break;
+
 			case 'Queues':
 					$url=strtolower($module).'&view=form&extdisplay='.$id;
 					$shape='hexagon';
 					$color='mediumaquamarine';
+					break;
+
+			case 'Queue Priorities':
+					$url='queueprio&view=form&extdisplay='.$id;
+					$shape='rect';
+					$color='#FFC3A0';
 					break;
 
 			case 'Ring Groups':
@@ -2402,6 +2729,13 @@ function makeNode($module,$id,$label,$tooltip,$node){
 					$url=str_replace(' ', '', strtolower($module)).'&view=form&extdisplay='.$id;
 					$shape='folder';
 					$color='gainsboro';
+					break;
+
+			case 'Virtual Queues':
+					$url='vqueue&action=modify&id='.$id;
+					$module='VQueue';
+					$shape='hexagon';
+					$color='#00FA9A';
 					break;
 
 			case 'Voicemail':
@@ -2461,7 +2795,6 @@ function notFound($module,$destination,$node){
 }
 
 function findRecording($route,$id){
-	//echo "-- $id --";
 	if (is_numeric($id)){
 		
 		if (isset($route['recordings'][$id])){
@@ -2476,6 +2809,119 @@ function findRecording($route,$id){
 	}
 	return $name;
 }
+
+function checkTimeGroupLogic($entry) {
+    list($time, $dow, $dom, $month) = explode('|', $entry);
+    
+    $errors = [];
+
+    // Check for inverted month range (e.g., nov-jan)
+    if ($month !== '*') {
+        $monthOrder = ['jan'=>1,'feb'=>2,'mar'=>3,'apr'=>4,'may'=>5,'jun'=>6,
+                       'jul'=>7,'aug'=>8,'sep'=>9,'oct'=>10,'nov'=>11,'dec'=>12];
+        if (preg_match('/(\w{3})-(\w{3})/', strtolower($month), $m)) {
+            if (isset($monthOrder[$m[1]], $monthOrder[$m[2]]) &&
+                $monthOrder[$m[1]] > $monthOrder[$m[2]]) {
+                $errors[] = 'month';
+            }
+        }
+    }
+
+    // Check for inverted day-of-month range (e.g., 27-7)
+    if ($dom !== '*' && preg_match('/(\d{1,2})-(\d{1,2})/', $dom, $d)) {
+        if ((int)$d[1] > (int)$d[2]) {
+            $errors[] = 'day-of-month';
+        }
+    }
+
+    // Check for inverted time range (e.g., 17:00-08:00)
+    if ($time !== '*' && preg_match('/^(\d{1,2}:\d{2})-(\d{1,2}:\d{2})$/', $time, $t)) {
+        $start = strtotime($t[1]);
+        $end = strtotime($t[2]);
+        if ($start >= $end) {
+            $errors[] = 'time';
+        }
+    }
+
+    if (!empty($errors)) {
+        return " ❌ Inverted " . implode(', ', $errors);
+    }
+
+    return null; // or return "" if you prefer
+}
+
+
+function isExtensionRegistered($extension, $tech) {
+    $astman = \FreePBX::create()->astman;
+
+    // Choose command based on technology
+    switch (strtoupper($tech)) {
+        case 'PJSIP':
+            $cmd = "pjsip show aor $extension";
+            break;
+        case 'SIP':
+            $cmd = "sip show peer $extension";
+            break;
+        case 'IAX':
+            $cmd = "iax2 show peer $extension";
+            break;
+        default:
+            return false; // Unknown technology
+    }
+
+    // Run the command
+    $response = $astman->send_request('Command', ['Command' => $cmd]);
+
+    // Extract data
+    $data = '';
+    if (isset($response['data'])) {
+        $data = is_array($response['data']) ? implode("\n", $response['data']) : $response['data'];
+    }
+
+    // Parse based on tech
+    if (strtoupper($tech) === 'PJSIP') {
+    $aors = parsePjsipAors($data);
+			foreach ($aors as $aor) {
+					foreach ($aor['contacts'] as $contactLine) {
+							// Match "Avail" and extract latency
+							if (preg_match('/\bAvail\b\s+([\d.]+)/i', $contactLine, $m)) {
+									return true; // Consider it reachable
+							}
+					}
+			}
+		}elseif (preg_match('/Status\s*:\s*(\S+)/i', $data, $m)) {
+			// SIP or IAX: look for "Status: OK" or similar
+			return (stripos($m[1], 'OK') !== false);
+    }
+
+    return false;
+}
+
+function parsePjsipAors($data) {
+    $lines = explode("\n", $data);
+    $aors = [];
+    $currentAor = null;
+
+    foreach ($lines as $line) {
+        $line = trim($line);
+
+        if (preg_match('/^Aor:\s+(\S+)/', $line, $match)) {
+            $currentAor = $match[1];
+            $aors[$currentAor] = [
+                'contact_found' => false,
+                'contacts' => [],
+            ];
+        }
+
+        if ($currentAor && strpos($line, 'Contact:') === 0) {
+            $aors[$currentAor]['contact_found'] = true;
+            $aors[$currentAor]['contacts'][] = $line;
+        }
+    }
+
+    return $aors;
+}
+
 
 
 

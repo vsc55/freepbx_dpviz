@@ -131,7 +131,7 @@ svg {
 }
 
 .recording-container{
-	margin-bottom:20px;
+	margin-bottom:10px;
 	text-align:left;
 }
 
@@ -142,7 +142,6 @@ svg {
 	padding: 15px; /* Optional: more padding */
 	margin-bottom:20px;
 }
-
 
 #overlay {
 	display: none;
@@ -163,6 +162,46 @@ svg {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+  width: 90%;
+	max-width: 600px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 9999;
+  font-family: sans-serif;
+}
+
+#recordingmodal-header {
+  background: #007bff;
+  color: white;
+  padding: 8px 12px;
+  cursor: move;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+#recordingmodal-title {
+  font-weight: bold;
+}
+
+#modal-close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+/*
+#recordingmodal {
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 	background: #f9f9f9;
 	padding: 30px 40px;
 	border-radius: 10px;
@@ -172,6 +211,15 @@ svg {
 	max-width: 600px;
 	text-align: center;
 }
+
+#recordingmodal-header {
+	padding: 5px;
+	font-weight: bold;
+	cursor: move;
+	background: #ddd;
+	margin-bottom: 5px;
+}
+*/
 
 #recordingmodal audio {
 	width: 100%;

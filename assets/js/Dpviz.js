@@ -14,7 +14,7 @@ $(document).ready(function() {
 						$('#update-result').html('<div style="margin-top: 10px;">You are up to date.</div>');
 					} else {
 						$('#update-result').html(
-							'<a href="https://github.com/madgen78/dpviz/releases/latest" target="_blank" class="btn btn-default">' + response.latest + ' available! View on <i class="fa fa-github"></i> GitHub <i class="fa fa-external-link" aria-hidden="true"></i></a> ' +
+							'<a href="config.php?display=modules" target="_blank" class="btn btn-default">' + response.latest + ' available! Use Module Admin to update <i class="fa fa-external-link" aria-hidden="true"></i></a> ' +
 							'Current installed version: ' + response.current + ' '
 						);
 					}
@@ -102,6 +102,7 @@ function generateVisualization(ext, jump, skips, pan) {
 	const vizGraph = document.getElementById('vizGraph');
 	const toggleButton = document.getElementById("append");
 	skips = skips || [];
+	closeModal();
 	//console.log("Skips:", skips.join(", "));
 	
 	
@@ -168,14 +169,14 @@ function generateVisualization(ext, jump, skips, pan) {
 									
 									
 									if (modal && overlay && !isFocused && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
-										overlay.style.display = 'block';
+										//overlay.style.display = 'block';
 										spinner.style.display = "flex";
 										getRecording(titleText);
 										
 										setTimeout(() => {
 											spinner.style.display = "none";
 											modal.style.display = 'block';
-										}, 750);
+										}, 500);
 									}
 								}
 								
@@ -210,7 +211,7 @@ function generateVisualization(ext, jump, skips, pan) {
 								if (e.shiftKey) {
 									e.preventDefault();
 									const allowedKeywords = ["announcement","callback","callrecording","daynight","directory","dynroute","ext-group","ext-tts","from-trunk",
-										"ivr","languages","miscapp","queueprio","queues","setcid","timeconditions"];
+										"ivr","languages","miscapp","queueprio","queues","vqueues","setcid","timeconditions"];
 
 									const match = allowedKeywords.find(keyword =>
 											titleText.toLowerCase().includes(keyword.toLowerCase())
@@ -315,7 +316,7 @@ function getRecording(titleid) {
 		audioList.innerHTML = "";
 
 		$('#recording-displayname').html(
-			'<a href="config.php?display=recordings&action=edit&id=' + id + '" target="_blank" class="btn btn-default btn-lg">' +
+			'<a href="config.php?display=recordings&action=edit&id=' + id + '" target="_blank" style="width:100%" class="btn btn-default btn-lg">' +
 			'<i class="fa fa-bullhorn"></i> Recording: ' + displayname + 
 			' <i class="fa fa-external-link" aria-hidden="true"></i></a>'
 		);
@@ -350,15 +351,48 @@ function getRecording(titleid) {
 				const audioUrl = URL.createObjectURL(blob);
 
 				const container = document.createElement('div');
-				container.classList.add('card', 'mb-4', 'custom-card-bg');
+				container.classList.add('card', 'mb-3', 'custom-card-bg');
 
 				const cardBody = document.createElement('div');
 				cardBody.classList.add('card-body');
 
+				const shortFilename = headerFilename.split('/').pop();
+
 				const cardTitle = document.createElement('h5');
 				cardTitle.classList.add('card-title', 'text-left');
-				cardTitle.textContent = `Audio: ${headerFilename}.wav`;
+
+				// Create span for text
+				const titleText = document.createElement('span');
+				titleText.textContent = `Audio: ${headerFilename}.wav`;
+
+				// Create copy button
+				const copyBtn = document.createElement('button');
+				copyBtn.classList.add('btn', 'btn-sm', 'btn-outline-secondary');
+				copyBtn.innerHTML = '  <i class="fa fa-copy"></i>';
+				copyBtn.title = 'Copy filename';
+				copyBtn.style.marginLeft = '10px';
+
+				// Handle copy to clipboard
+				copyBtn.addEventListener('click', () => {
+					navigator.clipboard.writeText(shortFilename + '.wav')
+						.then(() => {
+							copyBtn.innerHTML = '  <i class="fa fa-check"></i>';
+							setTimeout(() => {
+								copyBtn.innerHTML = '  <i class="fa fa-copy"></i>';
+							}, 1500);
+						})
+						.catch(err => {
+							console.error('Copy failed:', err);
+						});
+				});
+
+				// Append text and button to the card title
+				cardTitle.appendChild(titleText);
+				cardTitle.appendChild(copyBtn);
+
+				// Append to card body
 				cardBody.appendChild(cardTitle);
+
 
 				const audio = document.createElement('audio');
 				audio.controls = true;
@@ -430,5 +464,28 @@ function closeModal() {
   });
 }
 
+const modal = document.getElementById("recordingmodal");
+  const header = document.getElementById("recordingmodal-header");
 
- 
+  let isDragging = false;
+  let offsetX = 0;
+  let offsetY = 0;
+
+  header.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    offsetX = e.clientX - modal.offsetLeft;
+    offsetY = e.clientY - modal.offsetTop;
+    document.body.style.userSelect = 'none';
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
+    document.body.style.userSelect = 'auto';
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (isDragging) {
+      modal.style.left = (e.clientX - offsetX) + "px";
+      modal.style.top = (e.clientY - offsetY) + "px";
+    }
+  });
