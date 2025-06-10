@@ -12,7 +12,7 @@ $options = \FreePBX::Dpviz()->getOptions();
 						<div class="col-md-12">
 							<div class="row">
 								<div class="col-md-3">
-									<button id="check-update-btn" class="btn btn-default">Check for Updates</button>&nbsp;&nbsp;&nbsp;<a href="https://github.com/madgen78/dpviz/" title="Github" target="_blank"><i class="fa fa-github"></i></a>&nbsp;&nbsp;&nbsp;<a href="https://buymeacoffee.com/adamvolchko" title="Buy Me a Coffee!" target="_blank">☕</a>
+									<button id="check-update-btn" class="btn btn-default">Check for Updates</button>&nbsp;&nbsp;&nbsp;<a href="https://github.com/madgen78/dpviz/" title="Github" target="_blank"><i class="fa fa-github"></i></a>&nbsp;&nbsp;&nbsp;<a href="https://buymeacoffee.com/adamvolchko" style="text-decoration:none;" title="Buy Me a Coffee" target="_blank">☕</a>
 								</div>
 								<div class="col-md-9">
 									<div id="update-result"></div>

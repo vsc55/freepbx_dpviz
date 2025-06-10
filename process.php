@@ -2812,42 +2812,49 @@ function findRecording($route,$id){
 
 function checkTimeGroupLogic($entry) {
     list($time, $dow, $dom, $month) = explode('|', $entry);
-    
+
     $errors = [];
 
-    // Check for inverted month range (e.g., nov-jan)
+    $monthOrder = ['jan'=>1,'feb'=>2,'mar'=>3,'apr'=>4,'may'=>5,'jun'=>6,
+                   'jul'=>7,'aug'=>8,'sep'=>9,'oct'=>10,'nov'=>11,'dec'=>12];
+
+    $monthStart = $monthEnd = null;
+    $monthInverted = false;
+
+    // Check for inverted month range
     if ($month !== '*') {
-        $monthOrder = ['jan'=>1,'feb'=>2,'mar'=>3,'apr'=>4,'may'=>5,'jun'=>6,
-                       'jul'=>7,'aug'=>8,'sep'=>9,'oct'=>10,'nov'=>11,'dec'=>12];
         if (preg_match('/(\w{3})-(\w{3})/', strtolower($month), $m)) {
-            if (isset($monthOrder[$m[1]], $monthOrder[$m[2]]) &&
-                $monthOrder[$m[1]] > $monthOrder[$m[2]]) {
-                $errors[] = 'month';
+            if (isset($monthOrder[$m[1]], $monthOrder[$m[2]])) {
+                $monthStart = $monthOrder[$m[1]];
+                $monthEnd = $monthOrder[$m[2]];
+
+                if ($monthStart > $monthEnd) {
+                    $monthInverted = true;
+                    $errors[] = 'month inverted ';
+                }
             }
         }
     }
 
-    // Check for inverted day-of-month range (e.g., 27-7)
-    if ($dom !== '*' && preg_match('/(\d{1,2})-(\d{1,2})/', $dom, $d)) {
-        if ((int)$d[1] > (int)$d[2]) {
-            $errors[] = 'day-of-month';
-        }
-    }
+    $dayStart = $dayEnd = null;
+    $dayInverted = false;
 
-    // Check for inverted time range (e.g., 17:00-08:00)
-    if ($time !== '*' && preg_match('/^(\d{1,2}:\d{2})-(\d{1,2}:\d{2})$/', $time, $t)) {
-        $start = strtotime($t[1]);
-        $end = strtotime($t[2]);
-        if ($start >= $end) {
-            $errors[] = 'time';
+    // Check for inverted day-of-month
+    if ($dom !== '*' && preg_match('/(\d{1,2})-(\d{1,2})/', $dom, $d)) {
+        $dayStart = (int)$d[1];
+        $dayEnd = (int)$d[2];
+
+        if ($dayStart > $dayEnd) {
+            $dayInverted = true;
+            $errors[] = 'day-of-month inverted ';
         }
     }
 
     if (!empty($errors)) {
-        return " ❌ Inverted " . implode(', ', $errors);
+        return " ❌ " . implode(', ', $errors);
     }
 
-    return null; // or return "" if you prefer
+    return null;
 }
 
 
