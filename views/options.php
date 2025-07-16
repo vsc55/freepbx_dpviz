@@ -1,4 +1,4 @@
-<?php if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); } ?>
+<?php if (!defined('FREEPBX_IS_AUTH')) { exit(_('No direct script access allowed')); }; ?>
 <?php
 $options = \FreePBX::Dpviz()->getOptions();
 ?>
@@ -12,7 +12,7 @@ $options = \FreePBX::Dpviz()->getOptions();
 						<div class="col-md-12">
 							<div class="row">
 								<div class="col-md-3">
-									<button id="check-update-btn" class="btn btn-default">Check for Updates</button>&nbsp;&nbsp;&nbsp;<a href="https://github.com/madgen78/dpviz/" title="Github" target="_blank"><i class="fa fa-github"></i></a>&nbsp;&nbsp;&nbsp;<a href="https://buymeacoffee.com/adamvolchko" style="text-decoration:none;" title="Buy Me a Coffee" target="_blank">☕</a>
+									<button id="check-update-btn" class="btn btn-default"><?php echo _('Check for Updates'); ?></button>&nbsp;&nbsp;&nbsp;<a href="https://github.com/madgen78/dpviz/" title="GitHub" target="_blank"><i class="fa fa-github"></i></a>&nbsp;&nbsp;&nbsp;<a href="https://buymeacoffee.com/adamvolchko" style="text-decoration:none;" title="<?php echo _('Buy Me a Coffee'); ?>" target="_blank">☕</a>
 								</div>
 								<div class="col-md-9">
 									<div id="update-result"></div>
@@ -29,14 +29,14 @@ $options = \FreePBX::Dpviz()->getOptions();
 							<div class="row">
 								<div class="form-group">
 									<div class="col-md-3">
-										<label class="control-label" for="datetime"><?php echo _("Date & Time Stamp") ?></label>
+										<label class="control-label" for="datetime"><?php echo _("Date & Time Stamp"); ?></label>
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="datetime"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="datetime" id="datetimeyes" value="1" <?php echo ($options['datetime']?"CHECKED":"") ?>>
-										<label for="datetimeyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="datetime" id="datetimeno" value="0" <?php echo ($options['datetime']?"":"CHECKED") ?>>
-										<label for="datetimeno"><?php echo _("No");?></label>
+										<input type="radio" name="datetime" id="datetimeyes" value="1" <?php echo ($options['datetime']?"CHECKED":""); ?>>
+										<label for="datetimeyes"><?php echo _("Yes"); ?></label>
+										<input type="radio" name="datetime" id="datetimeno" value="0" <?php echo ($options['datetime']?"":"CHECKED"); ?>>
+										<label for="datetimeno"><?php echo _("No"); ?></label>
 									</div>
 								</div>
 							</div>
@@ -44,7 +44,7 @@ $options = \FreePBX::Dpviz()->getOptions();
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<span id="datetime-help" class="help-block fpbx-help-block"><?php echo _("Displays the date and time on the graph.")?></span>
+							<span id="datetime-help" class="help-block fpbx-help-block"><?php echo _("Displays the date and time on the graph."); ?></span>
 						</div>
 					</div>
 				</div>
@@ -56,14 +56,14 @@ $options = \FreePBX::Dpviz()->getOptions();
 							<div class="row">
 								<div class="form-group">
 									<div class="col-md-3">
-										<label class="control-label" for="panzoom"><?php echo _("Pan & Zoom") ?></label>
+										<label class="control-label" for="panzoom"><?php echo _("Pan & Zoom");; ?></label>
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="panzoom"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="panzoom" id="panzoomyes" value="1" <?php echo ($options['panzoom']?"CHECKED":"") ?>>
-										<label for="panzoomyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="panzoom" id="panzoomno" value="0" <?php echo ($options['panzoom']?"":"CHECKED") ?>>
-										<label for="panzoomno"><?php echo _("No");?></label>
+										<input type="radio" name="panzoom" id="panzoomyes" value="1" <?php echo ($options['panzoom']?"CHECKED":""); ?>>
+										<label for="panzoomyes"><?php echo _("Yes"); ?></label>
+										<input type="radio" name="panzoom" id="panzoomno" value="0" <?php echo ($options['panzoom']?"":"CHECKED"); ?>>
+										<label for="panzoomno"><?php echo _("No"); ?></label>
 									</div>
 								</div>
 							</div>
@@ -71,7 +71,7 @@ $options = \FreePBX::Dpviz()->getOptions();
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<span id="panzoom-help" class="help-block fpbx-help-block"><?php echo _("Allows you to use pan and zoom functions. Click and hold to pan, and use the mouse wheel to zoom.")?></span>
+							<span id="panzoom-help" class="help-block fpbx-help-block"><?php echo _("Allows you to use pan and zoom functions. Click and hold to pan, and use the mouse wheel to zoom."); ?></span>
 						</div>
 					</div>
 				</div>
@@ -83,14 +83,14 @@ $options = \FreePBX::Dpviz()->getOptions();
 							<div class="row">
 								<div class="form-group">
 									<div class="col-md-3">
-										<label class="control-label" for="horizontal"><?php echo _("Horizontal Layout") ?></label>
+										<label class="control-label" for="horizontal"><?php echo _("Horizontal Layout"); ?></label>
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="horizontal"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="horizontal" id="horizontalyes" value="1" <?php echo ($options['horizontal']?"CHECKED":"") ?>>
-										<label for="horizontalyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="horizontal" id="horizontalno" value="0" <?php echo ($options['horizontal']?"":"CHECKED") ?>>
-										<label for="horizontalno"><?php echo _("No");?></label>
+										<input type="radio" name="horizontal" id="horizontalyes" value="1" <?php echo ($options['horizontal']?"CHECKED":""); ?>>
+										<label for="horizontalyes"><?php echo _("Yes"); ?></label>
+										<input type="radio" name="horizontal" id="horizontalno" value="0" <?php echo ($options['horizontal']?"":"CHECKED"); ?>>
+										<label for="horizontalno"><?php echo _("No"); ?></label>
 									</div>
 								</div>
 							</div>
@@ -98,7 +98,7 @@ $options = \FreePBX::Dpviz()->getOptions();
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<span id="horizontal-help" class="help-block fpbx-help-block"><?php echo _("Displays the dial plan in a horizontal layout.")?></span>
+							<span id="horizontal-help" class="help-block fpbx-help-block"><?php echo _("Displays the dial plan in a horizontal layout."); ?></span>
 						</div>
 					</div>
 				</div>
@@ -110,7 +110,7 @@ $options = \FreePBX::Dpviz()->getOptions();
 							<div class="row">
 								<div class="form-group">
 									<div class="col-md-3">
-										<label class="control-label" for="combineQueueRing"><?php echo _("Shared extension node handling") ?></label>
+										<label class="control-label" for="combineQueueRing"><?php echo _("Shared extension node handling"); ?></label>
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="combineQueueRing"></i>
 									</div>
 									<div class="col-md-9 radioset">
@@ -129,26 +129,30 @@ $options = \FreePBX::Dpviz()->getOptions();
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<span id="combineQueueRing-help" class="help-block fpbx-help-block"><?php echo _("\"None\" displays individual extension nodes. \"Queues and Ring Groups Only\" combines them into one node. \"All\" merges all destinations into a single extension node.")?></span>
+							<span id="combineQueueRing-help" class="help-block fpbx-help-block"><?php echo _("\"None\" displays individual extension nodes. \"Queues and Ring Groups Only\" combines them into one node. \"All\" merges all destinations into a single extension node."); ?></span>
 						</div>
 					</div>
 				</div>
 				<!--END combineQueueRing-->
-				<!--dynmembers-->
+				<!--queue_member_display-->
 				<div class="element-container">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="row">
 								<div class="form-group">
 									<div class="col-md-3">
-										<label class="control-label" for="dynmembers"><?php echo _("Show Dynamic Members for Queues") ?></label>
-										<i class="fa fa-question-circle fpbx-help-icon" data-for="dynmembers"></i>
+										<label class="control-label" for="queue_member_display"><?php echo _("Show Queue Agents"); ?></label>
+										<i class="fa fa-question-circle fpbx-help-icon" data-for="queue_member_display"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="dynmembers" id="dynmembersyes" value="1" <?php echo ($options['dynmembers']?"CHECKED":"") ?>>
-										<label for="dynmembersyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="dynmembers" id="dynmembersno" value="0" <?php echo ($options['dynmembers']?"":"CHECKED") ?>>
-										<label for="dynmembersno"><?php echo _("No");?></label>
+											<input type="radio" name="queue_member_display" id="queue_member_displayY" value="1" <?php echo ($options['queue_member_display'] == 1 ? "CHECKED" : ""); ?>>
+											<label for="queue_member_displayY"><?php echo _("Single"); ?></label>
+
+											<input type="radio" name="queue_member_display" id="queue_member_displayC" value="2" <?php echo ($options['queue_member_display'] == 2 ? "CHECKED" : ""); ?>>
+											<label for="queue_member_displayC"><?php echo _("Combine"); ?></label>
+
+											<input type="radio" name="queue_member_display" id="queue_member_displayN" value="0" <?php echo ($options['queue_member_display'] == 0 ? "CHECKED" : ""); ?>>
+											<label for="queue_member_displayN"><?php echo _("Hide"); ?></label>
 									</div>
 								</div>
 							</div>
@@ -156,11 +160,69 @@ $options = \FreePBX::Dpviz()->getOptions();
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<span id="dynmembers-help" class="help-block fpbx-help-block"><?php echo _("Displays the list of dynamic agents currently assigned to the queues.")?></span>
+							<span id="queue_member_display-help" class="help-block fpbx-help-block"><?php echo _("\"Single\" displays individual agent nodes. \"Combine\" displays all agents in a single node. \"Hide\" does not display queue agents."); ?></span>
+						</div>
+					</div>
+				</div>
+				<!--END queue_member_display-->
+				<!--dynmembers-->
+				<div class="element-container">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3">
+										<label class="control-label" for="dynmembers"><?php echo _("Show Dynamic Members for Queues"); ?></label>
+										<i class="fa fa-question-circle fpbx-help-icon" data-for="dynmembers"></i>
+									</div>
+									<div class="col-md-9 radioset">
+										<input type="radio" name="dynmembers" id="dynmembersyes" value="1" <?php echo ($options['dynmembers']?"CHECKED":""); ?>>
+										<label for="dynmembersyes"><?php echo _("Yes"); ?></label>
+										<input type="radio" name="dynmembers" id="dynmembersno" value="0" <?php echo ($options['dynmembers']?"":"CHECKED"); ?>>
+										<label for="dynmembersno"><?php echo _("No"); ?></label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<span id="dynmembers-help" class="help-block fpbx-help-block"><?php echo _("Displays the list of dynamic agents currently assigned to the queues."); ?></span>
 						</div>
 					</div>
 				</div>
 				<!--END dynmembers-->
+				<!--ring_member_display-->
+				<div class="element-container">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3">
+										<label class="control-label" for="ring_member_display"><?php echo _("Show Ring Group Members"); ?></label>
+										<i class="fa fa-question-circle fpbx-help-icon" data-for="ring_member_display"></i>
+									</div>
+									<div class="col-md-9 radioset">
+											<input type="radio" name="ring_member_display" id="ring_member_displayY" value="1" <?php echo ($options['ring_member_display'] == 1 ? "CHECKED" : ""); ?>>
+											<label for="ring_member_displayY"><?php echo _("Single"); ?></label>
+
+											<input type="radio" name="ring_member_display" id="ring_member_displayC" value="2" <?php echo ($options['ring_member_display'] == 2 ? "CHECKED" : ""); ?>>
+											<label for="ring_member_displayC"><?php echo _("Combine"); ?></label>
+
+											<input type="radio" name="ring_member_display" id="ring_member_displayN" value="0" <?php echo ($options['ring_member_display'] == 0 ? "CHECKED" : ""); ?>>
+											<label for="ring_member_displayN"><?php echo _("Hide"); ?></label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<span id="ring_member_display-help" class="help-block fpbx-help-block"><?php echo _("\"Single\" displays individual member nodes. \"Combine\" displays all members in a single node. \"Hide\" does not display members."); ?></span>
+						</div>
+					</div>
+				</div>
+				<!--END combineQueueRing-->
 				<!--fmfm-->
 				<div class="element-container">
 					<div class="row">
@@ -168,14 +230,14 @@ $options = \FreePBX::Dpviz()->getOptions();
 							<div class="row">
 								<div class="form-group">
 									<div class="col-md-3">
-										<label class="control-label" for="fmfm"><?php echo _("Show Find Me Follow Me for Extensions") ?></label>
+										<label class="control-label" for="fmfm"><?php echo _("Show Find Me Follow Me for Extensions"); ?></label>
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="fmfm"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="fmfm" id="fmfmyes" value="1" <?php echo ($options['fmfm']?"CHECKED":"") ?>>
-										<label for="fmfmyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="fmfm" id="fmfmno" value="0" <?php echo ($options['fmfm']?"":"CHECKED") ?>>
-										<label for="fmfmno"><?php echo _("No");?></label>
+										<input type="radio" name="fmfm" id="fmfmyes" value="1" <?php echo ($options['fmfm']?"CHECKED":""); ?>>
+										<label for="fmfmyes"><?php echo _("Yes"); ?></label>
+										<input type="radio" name="fmfm" id="fmfmno" value="0" <?php echo ($options['fmfm']?"":"CHECKED"); ?>>
+										<label for="fmfmno"><?php echo _("No"); ?></label>
 									</div>
 								</div>
 							</div>
@@ -195,14 +257,14 @@ $options = \FreePBX::Dpviz()->getOptions();
 							<div class="row">
 								<div class="form-group">
 									<div class="col-md-3">
-										<label class="control-label" for="extOptional"><?php echo _("Show Extension Optional Destinations") ?></label>
+										<label class="control-label" for="extOptional"><?php echo _("Show Extension Optional Destinations"); ?></label>
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="extOptional"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="extOptional" id="extOptionalyes" value="1" <?php echo ($options['extOptional']?"CHECKED":"") ?>>
-										<label for="extOptionalyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="extOptional" id="extOptionalno" value="0" <?php echo ($options['extOptional']?"":"CHECKED") ?>>
-										<label for="extOptionalno"><?php echo _("No");?></label>
+										<input type="radio" name="extOptional" id="extOptionalyes" value="1" <?php echo ($options['extOptional']?"CHECKED":""); ?>>
+										<label for="extOptionalyes"><?php echo _("Yes"); ?></label>
+										<input type="radio" name="extOptional" id="extOptionalno" value="0" <?php echo ($options['extOptional']?"":"CHECKED"); ?>>
+										<label for="extOptionalno"><?php echo _("No"); ?></label>
 									</div>
 								</div>
 							</div>
@@ -210,7 +272,7 @@ $options = \FreePBX::Dpviz()->getOptions();
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<span id="extOptional-help" class="help-block fpbx-help-block"><?php echo _("Displays and follows the optional destinations (No Answer, Busy, Not Reachable) set for the extension in the Advanced tab.")?></span>
+							<span id="extOptional-help" class="help-block fpbx-help-block"><?php echo _("Displays and follows the optional destinations (No Answer, Busy, Not Reachable) set for the extension in the Advanced tab."); ?></span>
 						</div>
 					</div>
 				</div>
@@ -222,14 +284,14 @@ $options = \FreePBX::Dpviz()->getOptions();
 							<div class="row">
 								<div class="form-group">
 									<div class="col-md-3">
-										<label class="control-label" for="minimal"><?php echo _("Show Minimal View") ?></label>
+										<label class="control-label" for="minimal"><?php echo _("Show Minimal View"); ?></label>
 										<i class="fa fa-question-circle fpbx-help-icon" data-for="minimal"></i>
 									</div>
 									<div class="col-md-9 radioset">
-										<input type="radio" name="minimal" id="minimalyes" value="1" <?php echo ($options['minimal']?"CHECKED":"") ?>>
-										<label for="minimalyes"><?php echo _("Yes");?></label>
-										<input type="radio" name="minimal" id="minimalno" value="0" <?php echo ($options['minimal']?"":"CHECKED") ?>>
-										<label for="minimalno"><?php echo _("No");?></label>
+										<input type="radio" name="minimal" id="minimalyes" value="1" <?php echo ($options['minimal']?"CHECKED":""); ?>>
+										<label for="minimalyes"><?php echo _("Yes"); ?></label>
+										<input type="radio" name="minimal" id="minimalno" value="0" <?php echo ($options['minimal']?"":"CHECKED"); ?>>
+										<label for="minimalno"><?php echo _("No"); ?></label>
 									</div>
 								</div>
 							</div>
@@ -237,7 +299,7 @@ $options = \FreePBX::Dpviz()->getOptions();
 					</div>
 					<div class="row">
 						<div class="col-md-12">
-							<span id="minimal-help" class="help-block fpbx-help-block"><?php echo _("Shows (default) or hides the following types of nodes: Extensions, Queue Members, Ring Group Members, Recordings, Voicemail, and Voicemail Blasting Members.")?></span>
+							<span id="minimal-help" class="help-block fpbx-help-block"><?php echo _("Shows (default) or hides the following types of nodes: Extensions, Queue Members, Ring Group Members, Recordings, Voicemail, and Voicemail Blasting Members."); ?></span>
 						</div>
 					</div>
 				</div>
@@ -245,8 +307,8 @@ $options = \FreePBX::Dpviz()->getOptions();
 
 				<div class="row">
 					<div class="col-md-12 text-right">
-						<button class="btn btn-primary" name="submit" id="saveButton" type="submit">
-							<i class="fa fa-save"></i> Save
+						<button class="btn btn-primary" name="submit" id="saveButton" type="submit" data-saved-label="<?php echo _('Saved!'); ?>">
+							<i class="fa fa-save"></i> <?php echo _('Save'); ?>
 						</button>
 						<div id="saveResponse"></div>
 					</div>

@@ -1,0 +1,718 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Dial Plan"
+msgstr "Dialplan"
+
+msgid "Navigation & Usage"
+msgstr "Navigation & Verwendung"
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "System Recording"
+msgstr "Systemaufzeichnung"
+
+msgid "Dial Plan Not Selected"
+msgstr "Dialplan nicht ausgewählt."
+
+msgid "Use the dropdown to select a dial plan."
+msgstr "Verwenden Sie das Auswählmenü, um ein Dialplan auszuwählen."
+
+msgid "Error: Could not find inbound route for"
+msgstr "Fehler: Konnte keine Eingaberoute für"
+
+msgid "Reset"
+msgstr "Zusammenführen"
+
+msgid "No name selected"
+msgstr "Kein Name ausgewählt"
+
+msgid "Always"
+msgstr "Immer"
+
+msgid "Recording"
+msgstr "Aufzeichnung"
+
+msgid "Continue"
+msgstr "Fortsetzen"
+
+msgid "Music On Hold"
+msgstr "Musik im Warteschlangezustand"
+
+msgid "Play Ringtones"
+msgstr "Wählen Sie Klingeltöne abspielen"
+
+msgid "Play No Service Message"
+msgstr "Spiele keine Dienstleistungsmeldung ab"
+
+msgid "Busy"
+msgstr "Busy"
+
+msgid "Hang Up"
+msgstr "Wegnehmen"
+
+msgid "Congestion"
+msgstr "Verkehrsstörung"
+
+msgid "Terminate Call"
+msgstr "Beenden der Anruf"
+
+msgid "Active"
+msgstr "Aktiv"
+
+msgid "Night Mode"
+msgstr "Nachtmodus"
+
+msgid "Day Mode"
+msgstr "Tagesmodus"
+
+msgid "Feature Code"
+msgstr "Merkmals-Code"
+
+msgid "Callback Number"
+msgstr "Rückrufnummer"
+
+msgid "Delay Before Callback"
+msgstr "Verspätung vor dem Rückruf"
+
+msgid "Caller ID"
+msgstr "Anrufer-ID"
+
+msgid "Timeout"
+msgstr "Zeitüberschreitung"
+
+msgid "Destination after Callback"
+msgstr "Zielnachrichtenknoten nach Rückruf"
+
+msgid "Don't Care"
+msgstr "Ignorieren"
+
+msgid "Mode"
+msgstr "Modus"
+
+msgid "Invalid Input"
+msgstr "Ungültiger Eingabewert"
+
+msgid "Announcement"
+msgstr "Ankündigung"
+
+msgid "Invalid Input, Default (%s) secs"
+msgstr "Ungültige Eingabe, Standard (%s) Sekunden"
+
+msgid "Default (%s) secs"
+msgstr "Standard (%s) Sekunden"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Nein"
+
+msgid "Registration"
+msgstr "Anmeldung"
+
+msgid "Tech"
+msgstr "Tech"
+
+msgid "Voicemail: Enabled"
+msgstr "Stimmeingang: Aktiviert"
+
+msgid "Voicemail: Disabled"
+msgstr "Sprachmail: Deaktiviert"
+
+msgid "Initial Ring Time"
+msgstr "Initialer Anschlusszeit"
+
+msgid "Ring Time"
+msgstr "Ringzeit"
+
+msgid "Follow-Me List"
+msgstr "Nachfolgeliste"
+
+msgid "Confirm Calls"
+msgstr "Bestätige Anrufe"
+
+msgid "Extension"
+msgstr "Extension"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "No Answer"
+msgstr "Keine Antwort"
+
+msgid "No Answer, Busy, Not Reachable"
+msgstr "Keine Antwort, Beschäftigt, Erreichbarkeit nicht gewährleistet"
+
+msgid "No Answer & Busy"
+msgstr "Keine Antwort & Vollbesetzt"
+
+msgid "Not Reachable"
+msgstr "Nicht erreichbar"
+
+msgid "No Answer & Not Reachable"
+msgstr "Keine Antwort & nicht erreichbar"
+
+msgid "Busy & Not Reachable"
+msgstr "Beschäftigt & Nicht erreichbar"
+
+msgid "Block Unknown/Blocked Caller ID"
+msgstr "Blender unbekannt/Blockierter Anrufer-ID"
+
+msgid "Number: Description"
+msgstr "Nummer: Beschreibung"
+
+msgid "Blacklist"
+msgstr "Blacklist (Schwarze Liste)"
+
+msgid "Disallowed by Blacklist"
+msgstr "Nicht zugelassen durch Schwarze Liste"
+
+msgid "Click to edit Blacklist"
+msgstr "Klicken Sie hier, um die Schwarze Liste zu bearbeiten"
+
+msgid "Allowlist"
+msgstr "Zulistung"
+
+msgid "Disallowed by Allowlist"
+msgstr "Nicht erlaubt durch die Zugelistung"
+
+msgid "Click to edit Allowlist"
+msgstr "Klicken Sie, um die Allowlist zu bearbeiten"
+
+msgid "Selection %s"
+msgstr "Auswahl %s"
+
+msgid "Invalid Input, Timeout (%s secs)"
+msgstr "Ungültiger Eingabe, Timeout (%s Sekunden)"
+
+msgid "Timeout (%s secs)"
+msgstr "Zeitüberschreitung (%s Sekunden)"
+
+msgid "Disabled"
+msgstr "Deaktiviert"
+
+msgid "Priority"
+msgstr "Priorität"
+
+msgid "Caller Position"
+msgstr "Rufposition"
+
+msgid "Frequency"
+msgstr "Frequenz"
+
+msgid "Minimum Announcement Interval"
+msgstr "Mindestes-Ankündigung-Intervall"
+
+msgid "Announce Position"
+msgstr "Ankündigen Position"
+
+msgid "Announce Hold Time"
+msgstr "Anzeige der Wartezeit"
+
+msgid "Periodic Announcements"
+msgstr "Periodische Ankündigungen"
+
+msgid "Repeat Frequency"
+msgstr "Wiederholungsfrequenz"
+
+msgid "Queue Callback"
+msgstr "Warteschleife Rückruf"
+
+msgid "General Settings"
+msgstr "Allgemeine Einstellungen"
+
+msgid "Strategy"
+msgstr "Strategie"
+
+msgid "Agent Restrictions"
+msgstr "Agentenbeschränkungen"
+
+msgid "Autofill"
+msgstr "Autofüllen"
+
+msgid "Skip Busy Agents"
+msgstr "Überspringen Sie beschäftigte Agenten"
+
+msgid "Music On Hold Class"
+msgstr "Musik im Warteschlange-Bereich"
+
+msgid "Call Recording"
+msgstr "Rufaufzeichnung"
+
+msgid "Mark calls answered elsewhere"
+msgstr "Mark nimmt andere übernommen"
+
+msgid "Timing & Agent Options"
+msgstr "Zeitraum & Agent-Optionen"
+
+msgid "Max Wait Time"
+msgstr "Maximale Wartezeit"
+
+msgid "Agent Timeout"
+msgstr "Zeitüberschreitung des Agents"
+
+msgid "Agent Retry"
+msgstr "Agent Wiederholung"
+
+msgid "Wrap Up Time"
+msgstr "Abschlusszeit"
+
+msgid "Capacity Options"
+msgstr "Kapazitätsoptionen"
+
+msgid "Max Callers"
+msgstr "Max Anrufer"
+
+msgid "Join Empty"
+msgstr "Beitreten Leer"
+
+msgid "Leave Empty"
+msgstr "Lassen Sie leer"
+
+msgid "No Answer (%s)"
+msgstr "Keine Antwort (%s)"
+
+msgid "Static"
+msgstr "Statisch"
+
+msgid "Dynamic"
+msgstr "Dynamisch"
+
+msgid "Caller Post Hangup"
+msgstr "Rufbeendeposition"
+
+msgid "Agent Post Hangup"
+msgstr "Agent Post Hangup"
+
+msgid "Queue Fail Over on FULL"
+msgstr "Warteschlangenübergabe bei VOLL"
+
+msgid "Queue Fail Over on JOINEMPTY"
+msgstr "Warteschlangen-Fehlerübertragung bei JOINEMPTY"
+
+msgid "Queue Fail Over on LEAVEEMPTY"
+msgstr "Warteschlangen-Übertragung auf LEAVEEMPTY"
+
+msgid "Queue Fail Over on JOINUNAVAIL"
+msgstr "Warteschlangen Übertragung bei JOINUNAVAIL"
+
+msgid "Queue Fail Over on LEAVEUNAVAIL"
+msgstr "Warteschlangen-Fallsicherstellung bei LEAVEUNAVAIL"
+
+msgid "Callback Queue"
+msgstr "Rückruf-Warteschlange"
+
+msgid "Engine"
+msgstr "Ingenieur"
+
+msgid "Description"
+msgstr "Beschreibung"
+
+msgid "Match"
+msgstr "Match"
+
+msgid "No Match"
+msgstr "Kein Treffer"
+
+msgid "Target"
+msgstr "Ziel"
+
+msgid "Return"
+msgstr "Zum Rückgabe"
+
+msgid "Click to continue..."
+msgstr "Klicken Sie, um fortzufahren..."
+
+msgid "No direct script access allowed"
+msgstr "Kein direkter Zugriff auf Skripte erlaubt"
+
+msgid "Check for Updates"
+msgstr "Überprüfen Sie auf Updates"
+
+msgid "Buy Me a Coffee"
+msgstr "Kauf mir ein Kaffee"
+
+msgid "Date & Time Stamp"
+msgstr "Datum & Zeitstempel"
+
+msgid "Displays the date and time on the graph."
+msgstr "Zeigt Datum und Uhrzeit auf dem Diagramm an."
+
+msgid "Pan & Zoom"
+msgstr "Pan & Zoom"
+
+msgid ""
+"Allows you to use pan and zoom functions. Click and hold to pan, and use the "
+"mouse wheel to zoom."
+msgstr ""
+"Erlaubt es Ihnen, die pan- und zoom-Funktionen zu verwenden. Klicken und "
+"halten Sie, um zu panen, und verwenden Sie das Mausrad, um zu zoomen."
+
+msgid "Horizontal Layout"
+msgstr "Horizontale Anordnung"
+
+msgid "Displays the dial plan in a horizontal layout."
+msgstr "Zeigt das Dialplan in einer horizontalen Anzeige an."
+
+msgid "Shared extension node handling"
+msgstr "Gemeinsame Erweiterungs-Knoten-Bearbeitung"
+
+msgid "None"
+msgstr "Keine"
+
+msgid "Queues and Ring Groups Only"
+msgstr "Warteschlangen und Ringgruppen nur"
+
+msgid "All Destinations"
+msgstr "Alle Ziele"
+
+msgid ""
+"\"None\" displays individual extension nodes. \"Queues and Ring Groups Only\" "
+"combines them into one node. \"All\" merges all destinations into a single "
+"extension node."
+msgstr ""
+"\"Keine\" zeigt Einzelknoten für Erweiterungen. \"Warteschlangen und "
+"Rufgruppen nur\" kombiniert sie zu einem Knoten. \"Alle\" vereinigt alle "
+"Zielgebiete in einem einzigen Erweiterungsknoten."
+
+msgid "Show Queue Agents"
+msgstr "Zeige Warteschlangen-Agenten an"
+
+msgid "Single"
+msgstr "Einzel"
+
+msgid "Combine"
+msgstr "Kombinieren"
+
+msgid "Hide"
+msgstr "verstecken"
+
+msgid ""
+"\"Single\" displays individual agent nodes. \"Combine\" displays all agents "
+"in a single node. \"Hide\" does not display queue agents."
+msgstr ""
+"\"Einzel\" zeigt einzelne Agentenknoten an. \"Kombinieren\" zeigt alle "
+"Agenten in einem einzigen Knoten an. \"Verstecken\" zeigt keine "
+"Warteschlangen-Agenten an."
+
+msgid "Show Dynamic Members for Queues"
+msgstr "Zeigen Sie dynamische Mitglieder für Warteschlangen"
+
+msgid "Displays the list of dynamic agents currently assigned to the queues."
+msgstr ""
+"Zeigt die Liste der dynamischen Agenten an, die derzeit den Warteschlängen "
+"zugewiesen sind."
+
+msgid "Show Ring Group Members"
+msgstr "Zeige Gruppenmitglieder an"
+
+msgid ""
+"\"Single\" displays individual member nodes. \"Combine\" displays all members "
+"in a single node. \"Hide\" does not display members."
+msgstr ""
+"\"Einzel\" zeigt einzelne Mitgliedsknoten an. \"Kombinieren\" zeigt alle "
+"Mitglieder in einem einzigen Knoten an. \"Verstecken\" zeigt Mitglieder nicht "
+"an."
+
+msgid "Show Find Me Follow Me for Extensions"
+msgstr "Zeige Find Me Follow Me für Erweiterungen an"
+
+msgid "Displays Find Me Follow Me data for extensions."
+msgstr "Zeigt Find-mich-Follow-me-Daten für Extensionen an."
+
+msgid "Show Extension Optional Destinations"
+msgstr "Zeige Erweiterung Optionale Zielnummern an"
+
+msgid ""
+"Displays and follows the optional destinations (No Answer, Busy, Not "
+"Reachable) set for the extension in the Advanced tab."
+msgstr ""
+"Zeigt und folgt den optional festgelegten Zielnummern (Nicht erreicht, "
+"Beschäftigt, Keine Antwort) für die Verbindung im Fortgeschrittenen Bereich "
+"an."
+
+msgid "Show Minimal View"
+msgstr "Zeige Minimalansicht an"
+
+msgid ""
+"Shows (default) or hides the following types of nodes: Extensions, Queue "
+"Members, Ring Group Members, Recordings, Voicemail, and Voicemail Blasting "
+"Members."
+msgstr ""
+"Zeigt (Standard) oder versteckt die folgenden Node-Typen: Erweiterungen, "
+"Warteschlange-Mitglieder, Rufgruppe-Mitglieder, Aufnahmen, Stimmenmail und "
+"Stimmenmail Sende-Mitglieder."
+
+msgid "Saved!"
+msgstr "Gespeichert!"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Inbound Routes [destination]"
+msgstr "Einbindungswege [Ziel]"
+
+msgid "Time Conditions"
+msgstr "Zeitbedingungen"
+
+msgid "Call Flows"
+msgstr "Anruflauf"
+
+msgid "Virtual Queues"
+msgstr "Virtuelle Warteschlangen"
+
+msgid "Queues"
+msgstr "Warteschlangen"
+
+msgid "Ring Groups"
+msgstr "Ringgruppen"
+
+msgid "Dynamic Routes"
+msgstr "Dynamische Routen"
+
+msgid "Announcements"
+msgstr "Ankündigungen"
+
+msgid "Languages"
+msgstr "Sprachen"
+
+msgid "Misc Applications"
+msgstr "Misc-Anwendungen"
+
+msgid "Reload"
+msgstr "Wiedergabeladen"
+
+msgid "Highlight Paths"
+msgstr "Hervorhebung von Pfaden"
+
+msgid "Choose Dial Plan"
+msgstr "Wählen Sie Dialplan"
+
+msgid "Super"
+msgstr "Super"
+
+msgid "High"
+msgstr "Hoch"
+
+msgid "Standard"
+msgstr "Standardmäßig"
+
+msgid ""
+"Exclude Node(s): Press Shift + left-click a node to exclude it and downstream "
+"paths. Click \"+\" to show the path again. Use \"Reset\" to restore the "
+"original dial plan."
+msgstr ""
+"Ausschließen des Knotens (Knoten): Drücken Sie Shift + linksklicken, um einen "
+"Knoten und die darauffolgenden Pfade auszuschließen. Klicken Sie auf das \"+"
+"\"-Symbol, um den Pfad wieder zu zeigen. Verwenden Sie \"Zurücksetzen\", um "
+"das ursprüngliche Anrufplan zu wiederherstellen."
+
+msgid ""
+"Redraw from a Node: Press Ctrl (Cmd on macOS) + left-click a node to start "
+"from it. To revert, Ctrl/Cmd + left-click the parent node."
+msgstr ""
+"Aus einem Knoten neu Zeichnen: Drücken Sie Ctrl (Cmd auf macOS) + "
+"linksklicken, um von einem Knoten aus zu beginnen. Um abzukehren, drücken Sie "
+"erneut Ctrl/Cmd + linksklicken auf den obersten Knoten."
+
+msgid ""
+"Highlight Paths: Click Highlight Paths, then select a node or edge. Click "
+"Remove Highlights to clear."
+msgstr ""
+"Höhenwerte: Klicken Sie auf Höhenwerte, wählen Sie dann einen Knoten oder "
+"Kanten. Klicken Sie auf Entfernen der Markierungen, um zu klaren."
+
+msgid "Hover: Move your cursor over a path to highlight it."
+msgstr "Hover: Bewegen Sie den Cursor über einen Pfad, um ihn hervorzuheben."
+
+msgid "Open Destinations: Click a destination to open it in a new tab."
+msgstr ""
+"Offene Ziele: Klicken Sie auf ein Ziel, um es in einer neuen Registerkarte zu "
+"öffnen."
+
+msgid ""
+"Open Time Groups: Click on \"Match: (timegroup)\" or \"No Match\" to view "
+"details in a new tab. Time Groups"
+msgstr ""
+"Offene Zeitbereiche: Klicken Sie auf \"Zeitbereich: (timegroup)\" oder \"Kein "
+"Zeitbereich\" um Details in einer neuen Registerkarte anzuzeigen. Zeitbereiche"
+
+msgid "Pan: Click and drag to move around the view."
+msgstr "Pan: Klicken und ziehen Sie, um sich im Blickfeld zu bewegen."
+
+msgid "Zoom: Use the mouse wheel to zoom in and out."
+msgstr "Zoom: Verwenden Sie das Mausrad, um sich ein- und auszuziehen."
+
+msgid "members"
+msgstr "Mitglieder"
+
+msgid "Unlimited"
+msgstr "Unbegrenzt"
+
+msgid "Extension Node Status"
+msgstr "Erweiterungs-Knoten-Status"
+
+msgid "Registered extension (green border)"
+msgstr "Registrierte Verbindung (grüne Kante)"
+
+msgid "Unregistered extension (red border)"
+msgstr "Unregistrierte Erweiterung (rotes Rand)"
+
+msgid "Virtual or non-extension node (no border)"
+msgstr "Virtueller oder nicht-Extension-Knoten (keine Grenze)"
+
+msgid "Remove Highlights"
+msgstr "Entfernen Sie Markierungen"
+
+msgid "Checking..."
+msgstr "Überprüfen..."
+
+msgid "You are up to date."
+msgstr "Sie sind auf dem neuesten Stand."
+
+msgid "available! Use Module Admin to update"
+msgstr "verfügbar! Verwenden Sie das Modul Administrator, um zu aktualisieren"
+
+msgid "Current installed version"
+msgstr "Aktuell installierte Version"
+
+msgid ""
+"could not be found. To generate the file, simply go to the recording, select "
+"the \\\"convert to\\\" wav option, and click submit."
+msgstr ""
+"konnte nicht gefunden werden. Um die Datei zu erstellen, navigieren Sie "
+"einfach zur Aufnahme, wählen Sie die Option \\\"in wav umwandeln\\\" und "
+"klicken Sie auf Absenden."
+
+msgid "No files found for language:"
+msgstr "Keine Dateien gefunden für die Sprache:"
+
+msgid "Copy filename"
+msgstr "Kopieren Sie Dateinamen"
+
+msgid "Audio"
+msgstr "Audio"
+
+msgid "additional entries"
+msgstr "zusätzliche Einträge"
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Enabled"
+msgstr "Aktiviert"
+
+msgid "Caller ID Number"
+msgstr "Rufnummer der Anrufer-ID"
+
+msgid "Alert Info"
+msgstr "Alarminformationen"
+
+msgid "CID Prefix"
+msgstr "CID-Präfix"
+
+msgid "Language"
+msgstr "Sprache"
+
+msgid "DTMF Options"
+msgstr "Tastatur-Optionen"
+
+msgid "Enable Direct Dial"
+msgstr "Aktiviere Direktanruf"
+
+msgid "Invalid Retries"
+msgstr "Ungültige Versuche"
+
+msgid "Invalid Retry Recording"
+msgstr "Ungültige Wiederholungsaufnahme"
+
+msgid "Invalid Recording"
+msgstr "Ungültige Aufnahme"
+
+msgid "Timeout Retries"
+msgstr "Zeitüberschreitung Versuche"
+
+msgid "Timeout Retry Recording"
+msgstr "Zeitüberschreitung Wiederholung Aufnahme"
+
+msgid "Timeout Recording"
+msgstr "Zeitüberschreitung-Aufnahme"
+
+msgid "Return to IVR after VM"
+msgstr "Zurück zum IVR nach der Sprachnachricht"
+
+msgid "Page Group"
+msgstr "Seite Gruppe"
+
+msgid "Busy Extensions"
+msgstr "Belegte Erweiterungen"
+
+msgid "Duplex"
+msgstr "Duplex"
+
+msgid "Queue"
+msgstr "Warteschlange"
+
+msgid "Agents"
+msgstr "Agenten"
+
+msgid "Ext"
+msgstr "Ext"
+
+msgid "Retries"
+msgstr "Wiederholungsversuche"
+
+msgid "Retry Delay"
+msgstr "Wiederholungsverzögerung"
+
+msgid "Ring Group"
+msgstr "Ringgruppe"
+
+msgid "List"
+msgstr "Liste"
+
+msgid "Extextnsion"
+msgstr "Erweiterung"
+
+msgid "Timezone"
+msgstr "Zeitzone"
+
+msgid "Type"
+msgstr "Art"
+
+msgid "Calendars"
+msgstr "Kalender"
+
+msgid "All"
+msgstr "All"
+
+msgid "Events"
+msgstr "Ereignisse"
+
+msgid "Expand"
+msgstr "Erweitern"
+
+msgid "Outbound CallerID"
+msgstr "Ausgehende Caller-ID"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "CID Options"
+msgstr "CID-Optionen"
+
+msgid "Max Channels"
+msgstr "Maximale Kanäle"
+
+msgid "Continue If Busy"
+msgstr "Wenn besetzt, fortsetzen"
+
+msgid "Audio Label"
+msgstr "Audiodatei-Bezeichnung"
+
+msgid "Bad Dest: Blacklist"
+msgstr "Schlechter Ziel: Schwarze Liste"

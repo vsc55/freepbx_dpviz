@@ -25,7 +25,7 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         return $sth->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function editDpviz($panzoom, $horizontal, $datetime,$dynmembers, $combineQueueRing, $extOptional, $fmfm, $minimal) {
+    public function editDpviz($panzoom, $horizontal, $datetime,$dynmembers, $combineQueueRing, $extOptional, $fmfm, $minimal, $queue_member_display, $ring_member_display) {
         $sql = "UPDATE dpviz SET
             `panzoom` = :panzoom,
             `horizontal` = :horizontal,
@@ -34,7 +34,9 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
             `combineQueueRing` = :combineQueueRing,
             `extOptional` = :extOptional,
             `fmfm` = :fmfm,
-						`minimal` = :minimal
+						`minimal` = :minimal,
+						`queue_member_display` = :queue_member_display,
+						`ring_member_display` = :ring_member_display
             WHERE `id` = 1";
 
         $insert = array(
@@ -45,7 +47,9 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
             ':combineQueueRing' => $combineQueueRing,
             ':extOptional' => $extOptional,
             ':fmfm' => $fmfm,
-						':minimal' => $minimal
+						':minimal' => $minimal,
+						':queue_member_display' => $queue_member_display,
+						':ring_member_display' => $ring_member_display
         );
 
         $stmt = $this->db->prepare($sql);
@@ -63,10 +67,12 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $extOptional = isset($request['extOptional']) ? $request['extOptional'] : '';
         $fmfm = isset($request['fmfm']) ? $request['fmfm'] : '';
 				$minimal = isset($request['minimal']) ? $request['minimal'] : '';
+				$queue_member_display = isset($request['queue_member_display']) ? $request['queue_member_display'] : '';
+				$ring_member_display = isset($request['ring_member_display']) ? $request['ring_member_display'] : '';
 
         switch ($action) {
             case 'edit':
-                $this->editDpviz($panzoom, $horizontal, $datetime, $dynmembers, $combineQueueRing, $extOptional, $fmfm, $minimal);
+                $this->editDpviz($panzoom, $horizontal, $datetime, $dynmembers, $combineQueueRing, $extOptional, $fmfm, $minimal, $queue_member_display, $ring_member_display);
                 load_view(dirname(__FILE__) . "/views/rnav.php");
                 break;
             default:
@@ -98,8 +104,10 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
                 $extOptional = isset($_POST['extOptional']) ? $_POST['extOptional'] : '';
                 $fmfm = isset($_POST['fmfm']) ? $_POST['fmfm'] : '';
 								$minimal= isset($_POST['minimal']) ? $_POST['minimal'] : '';
+								$queue_member_display= isset($_POST['queue_member_display']) ? $_POST['queue_member_display'] : '';
+								$ring_member_display= isset($_POST['ring_member_display']) ? $_POST['ring_member_display'] : '';
 
-                $success = $this->editDpviz($panzoom, $horizontal, $datetime, $dynmembers, $combineQueueRing, $extOptional, $fmfm, $minimal);
+                $success = $this->editDpviz($panzoom, $horizontal, $datetime, $dynmembers, $combineQueueRing, $extOptional, $fmfm, $minimal, $queue_member_display, $ring_member_display);
                 echo json_encode(array('success' => $success));
                 exit;
 

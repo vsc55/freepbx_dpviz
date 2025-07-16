@@ -140,7 +140,7 @@ echo '</pre>';
 $dropOptions="";
 //Inbound Routes
 if (isset($inroutes) && count($inroutes) > 0){
-	$dropOptions.='<optgroup label="Inbound Routes [destination]">';
+	$dropOptions .= '<optgroup label="' . _('Inbound Routes [destination]') . '">';
 	foreach ($inroutes as $in=>$extt){
 		$e=$extt['extension'];
 		if (empty($e)){$e='ANY';}
@@ -152,7 +152,7 @@ if (isset($inroutes) && count($inroutes) > 0){
 
 //Time Conditions
 if (isset($otherroutes['timeconditions']) && count($otherroutes['timeconditions']) > 0){
-	$dropOptions.='<optgroup label="Time Conditions">';
+	$dropOptions.='<optgroup label="' . _('Time Conditions') . '">';
 	foreach ($otherroutes['timeconditions'] as $i=>$ii){
 		$dropOptions.='<option value="timeconditions,'.$ii['timeconditions_id'].',1,'.$options['lang'].'">'.$ii['displayname'].'</option>';
 	}
@@ -161,7 +161,7 @@ if (isset($otherroutes['timeconditions']) && count($otherroutes['timeconditions'
 
 //Call Flow Control
 if (isset($otherroutes['daynight']) && count($otherroutes['daynight']) > 0){
-	$dropOptions.='<optgroup label="Call Flows">';
+	$dropOptions.='<optgroup label="' . _('Call Flows') . '">';
 	foreach ($otherroutes['daynight'] as $i=>$ii){
 		foreach ($ii as $iii){
 			if ($iii['dmode']=='fc_description'){
@@ -186,7 +186,7 @@ if (isset($otherroutes['ivrs']) && count($otherroutes['ivrs']) > 0){
 
 //Virtual Queues
 if (isset($otherroutes['vqueues']) && count($otherroutes['vqueues']) > 0){
-	$dropOptions.='<optgroup label="Virtual Queues">';
+	$dropOptions.='<optgroup label="' . _('Virtual Queues') . '">';
 	foreach ($otherroutes['vqueues'] as $i=>$ii){
 		$dropOptions.='<option value="ext-vqueues,'.$ii['id'].',1,'.$options['lang'].'" >'.$ii['name'].'</option>';
 	}
@@ -195,7 +195,7 @@ if (isset($otherroutes['vqueues']) && count($otherroutes['vqueues']) > 0){
 
 //Queues
 if (isset($otherroutes['queues']) && count($otherroutes['queues']) > 0){
-	$dropOptions.='<optgroup label="Queues">';
+	$dropOptions.='<optgroup label="' . _('Queues') . '">';
 	foreach ($otherroutes['queues'] as $i=>$ii){
 		$dropOptions.='<option value="ext-queues,'.$ii['extension'].',1,'.$options['lang'].'" >'.$ii['extension'].' : '.$ii['descr'].'</option>';
 	}
@@ -204,7 +204,7 @@ if (isset($otherroutes['queues']) && count($otherroutes['queues']) > 0){
 
 //Ring Groups
 if (isset($otherroutes['ringgroups']) && count($otherroutes['ringgroups']) > 0){
-	$dropOptions.='<optgroup label="Ring Groups">';
+	$dropOptions.='<optgroup label="' . _('Ring Groups') . '">';
 	foreach ($otherroutes['ringgroups'] as $i=>$ii){
 		$dropOptions.='<option value="ext-group,'.$ii['grpnum'].',1,'.$options['lang'].'">'.$ii['grpnum'].' : '.$ii['description'].'</option>';
 	}
@@ -213,7 +213,7 @@ if (isset($otherroutes['ringgroups']) && count($otherroutes['ringgroups']) > 0){
 
 //Dynamic Routes
 if (isset($otherroutes['dynroute']) && count($otherroutes['dynroute']) > 0){
-	$dropOptions.='<optgroup label="Dynamic Routes">';
+	$dropOptions.='<optgroup label="' . _('Dynamic Routes') . '">';
 	foreach ($otherroutes['dynroute'] as $i=>$ii){
 		$dropOptions.='<option value="dynroute-'.$ii['id'].',s,1,'.$options['lang'].'">'.$ii['name'].'</option>';
 	}
@@ -222,7 +222,7 @@ if (isset($otherroutes['dynroute']) && count($otherroutes['dynroute']) > 0){
 
 //Announcements
 if (isset($otherroutes['announcements']) && count($otherroutes['announcements']) > 0){
-	$dropOptions.='<optgroup label="Announcements">';
+	$dropOptions.='<optgroup label="' . _('Announcements') . '">';
 	foreach ($otherroutes['announcements'] as $i=>$ii){
 		$dropOptions.='<option value="app-announcement-'.$ii['announcement_id'].',s,1,'.$options['lang'].'">'.$ii['description'].'</option>';
 	}
@@ -231,7 +231,7 @@ if (isset($otherroutes['announcements']) && count($otherroutes['announcements'])
 
 //Languages
 if (isset($otherroutes['languages']) && count($otherroutes['languages']) > 0){
-	$dropOptions.='<optgroup label="Languages">';
+	$dropOptions.='<optgroup label="' . _('Languages') . '">';
 	foreach ($otherroutes['languages'] as $i=>$ii){
 		$dropOptions.='<option value="app-languages,'.$ii['language_id'].',1,'.$options['lang'].'">'.$ii['description'].'</option>';
 	}
@@ -240,7 +240,7 @@ if (isset($otherroutes['languages']) && count($otherroutes['languages']) > 0){
 
 //Misc Applications
 if (isset($otherroutes['miscapps']) && count($otherroutes['miscapps']) > 0){
-	$dropOptions.='<optgroup label="Misc Applications">';
+	$dropOptions.='<optgroup label="' . _('Misc Applications') . '">';
 	foreach ($otherroutes['miscapps'] as $i=>$ii){
 		$dropOptions.='<option value="miscapps,'.$ii['miscapps_id'].',s,1,'.$options['lang'].'">'.$ii['description'].' ('.$ii['ext'].')</option>';
 	}
@@ -255,10 +255,10 @@ if (isset($otherroutes['miscapps']) && count($otherroutes['miscapps']) > 0){
     <div class="col-sm-3">
       <div style="display: inline-flex; gap: 5px;">
         <button type="button" class="btn btn-default" id="reloadButton" disabled>
-          <i class="fa fa-refresh"></i> Reload
+          <i class="fa fa-refresh"></i> <?php echo _('Reload'); ?>
         </button>
         <button type="button" id="focus" class="btn btn-default" disabled>
-          <i class="fa fa-magic"></i> Highlight Paths
+          <i class="fa fa-magic"></i> <?php echo _('Highlight Paths'); ?>
         </button>
       </div>
     </div>
@@ -271,7 +271,7 @@ if (isset($otherroutes['miscapps']) && count($otherroutes['miscapps']) > 0){
 					<span id="dialplanLabel" style="margin-left: 5px;"></span>
 				</span>
         <select id="dialPlan" class="form-control" style="width: 100%; display: table-cell; vertical-align: middle;">
-          <option value="">Choose Dial Plan</option>
+          <option value=""><?php echo _('Choose Dial Plan'); ?></option>
           <?php echo $dropOptions; ?>
         </select>
       </div>
@@ -285,9 +285,9 @@ if (isset($otherroutes['miscapps']) && count($otherroutes['miscapps']) > 0){
           <i class="fa fa-download"></i> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-					<li><a class="dropdown-item" href="#" onclick="handleExport(8)"><i class="fa fa-certificate"></i> Super .png</a></li>
-          <li><a class="dropdown-item" href="#" onclick="handleExport(4)"><i class="fa fa-star"></i> High .png</a></li>
-          <li><a class="dropdown-item" href="#" onclick="handleExport(2)"><i class="fa fa-circle"></i> Standard .png</a></li>
+					<li><a class="dropdown-item" href="#" onclick="handleExport(8)"><i class="fa fa-certificate"></i> <?php echo _('Super'); ?> .png</a></li>
+          <li><a class="dropdown-item" href="#" onclick="handleExport(4)"><i class="fa fa-star"></i> <?php echo _('High'); ?> .png</a></li>
+          <li><a class="dropdown-item" href="#" onclick="handleExport(2)"><i class="fa fa-circle"></i> <?php echo _('Standard'); ?> .png</a></li>
           <li><a class="dropdown-item" href="#" onclick="handleSVGExport()"><i class="fa fa-code"></i> SVG .svg</a></li>
         </ul>
       </div>
@@ -299,26 +299,16 @@ if (isset($otherroutes['miscapps']) && count($otherroutes['miscapps']) > 0){
 $(document).ready(function() {
 	
 	$('#dialPlan').select2({
-		placeholder: "Choose Dial Plan",
-		dropdownAutoWidth: true,
-		width: '100%',
-		maximumSelectionLength: 20,
-		//dropdownCssClass: "custom-dropdown",
-		dropdownParent: $("body"),
-		
-	});
-	
-	
-	let lastSearchTerm = '';
-
-	$('#dialPlan').select2({
-		placeholder: "Choose Dial Plan",
+		placeholder: "<?php echo _('Choose Dial Plan'); ?>",
 		dropdownAutoWidth: true,
 		width: '100%',
 		maximumSelectionLength: 20,
 		dropdownCssClass: "custom-dropdown",
-		dropdownParent: $("body")
+		dropdownParent: $("body"),
+		
 	});
+	
+	let lastSearchTerm = '';
 
 	// Store search term right before selection
 	$('#dialPlan').on('select2:selecting', function () {
@@ -379,8 +369,6 @@ $(document).ready(function() {
 
 
 
-
-
 function sanitizeFilename(filename) {
     return filename
         .replace(/[\/\\:*?"<>|]/g, '_')        // Replace illegal characters with _
@@ -389,10 +377,4 @@ function sanitizeFilename(filename) {
         .trim();
 }
 
-/*
-const toggleButton = document.getElementById("append");
-toggleButton.addEventListener("click", () => {
-  toggleButton.classList.toggle("active");
-});
-*/
 </script>

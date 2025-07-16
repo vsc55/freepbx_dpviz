@@ -1,0 +1,709 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Dial Plan"
+msgstr "ダイヤル計画"
+
+msgid "Navigation & Usage"
+msgstr "ナビゲーション & 使用方法"
+
+msgid "Settings"
+msgstr "設定"
+
+msgid "System Recording"
+msgstr "システム記録"
+
+msgid "Dial Plan Not Selected"
+msgstr "選択されていないダイアル・プラン"
+
+msgid "Use the dropdown to select a dial plan."
+msgstr "ドロップダウンを使用して、ダイヤル・プランを選択してください。"
+
+msgid "Error: Could not find inbound route for"
+msgstr "エラー: 入力ルートを見つけることができませんでした"
+
+msgid "Reset"
+msgstr "リセット"
+
+msgid "No name selected"
+msgstr "名前が選択されていません"
+
+msgid "Always"
+msgstr "いつでも"
+
+msgid "Recording"
+msgstr "録音"
+
+msgid "Continue"
+msgstr "続ける"
+
+msgid "Music On Hold"
+msgstr "オンホルド音楽"
+
+msgid "Play Ringtones"
+msgstr "リングトーンを再生"
+
+msgid "Play No Service Message"
+msgstr "プレイノサービスメッセージを再生"
+
+msgid "Busy"
+msgstr "忙しい"
+
+msgid "Hang Up"
+msgstr "放送中断"
+
+msgid "Congestion"
+msgstr "交通大雑布"
+
+msgid "Terminate Call"
+msgstr "通話を終了させる"
+
+msgid "Active"
+msgstr "有効"
+
+msgid "Night Mode"
+msgstr "ナイトモード"
+
+msgid "Day Mode"
+msgstr "日付モード"
+
+msgid "Feature Code"
+msgstr "機能コード"
+
+msgid "Callback Number"
+msgstr "カルバック番号"
+
+msgid "Delay Before Callback"
+msgstr "コールバック待ち時間"
+
+msgid "Caller ID"
+msgstr "通話者ID"
+
+msgid "Timeout"
+msgstr "タイムアウト"
+
+msgid "Destination after Callback"
+msgstr "コールバックの後の先行地"
+
+msgid "Don't Care"
+msgstr "関心なし"
+
+msgid "Mode"
+msgstr "モード"
+
+msgid "Invalid Input"
+msgstr "無効な入力"
+
+msgid "Announcement"
+msgstr "発表"
+
+msgid "Invalid Input, Default (%s) secs"
+msgstr "無効な入力、デフォルト (%s) 秒"
+
+msgid "Default (%s) secs"
+msgstr "デフォルト（%s）秒"
+
+msgid "Yes"
+msgstr "はい"
+
+msgid "No"
+msgstr "いいえ"
+
+msgid "Registration"
+msgstr "登録"
+
+msgid "Tech"
+msgstr "テクノロジー"
+
+msgid "Voicemail: Enabled"
+msgstr "ボイスメール: 有効"
+
+msgid "Voicemail: Disabled"
+msgstr "ボイスメール: 無効"
+
+msgid "Initial Ring Time"
+msgstr "初期リング時間"
+
+msgid "Ring Time"
+msgstr "リング時間"
+
+msgid "Follow-Me List"
+msgstr "フォローメールリスト"
+
+msgid "Confirm Calls"
+msgstr "呼び出しを確認してください"
+
+msgid "Extension"
+msgstr "拡張機能"
+
+msgid "Name"
+msgstr "名前"
+
+msgid "No Answer"
+msgstr "未知の番号"
+
+msgid "No Answer, Busy, Not Reachable"
+msgstr "応答なし、話し中、連絡不能"
+
+msgid "No Answer & Busy"
+msgstr "回答なし & 占拠中"
+
+msgid "Not Reachable"
+msgstr "連絡できない"
+
+msgid "No Answer & Not Reachable"
+msgstr "回答されなかった & 連絡不可"
+
+msgid "Busy & Not Reachable"
+msgstr "忙しくて連絡できない"
+
+msgid "Block Unknown/Blocked Caller ID"
+msgstr "未知の番号/ブロックされた呼出者IDをブロック"
+
+msgid "Number: Description"
+msgstr "番号: 説明"
+
+msgid "Blacklist"
+msgstr "ブラックリスト"
+
+msgid "Disallowed by Blacklist"
+msgstr "ブラックリストによって禁止されました"
+
+msgid "Click to edit Blacklist"
+msgstr "黒リストの編集をクリックしてください"
+
+msgid "Allowlist"
+msgstr "許可リスト"
+
+msgid "Disallowed by Allowlist"
+msgstr "許可リストによって拒否されました"
+
+msgid "Click to edit Allowlist"
+msgstr "編集を許可するにはクリックしてください"
+
+msgid "Selection %s"
+msgstr "選択% s"
+
+msgid "Invalid Input, Timeout (%s secs)"
+msgstr "無効な入力、タイムアウト (%s 秒)"
+
+msgid "Timeout (%s secs)"
+msgstr "タイムアウト (%s 秒)"
+
+msgid "members"
+msgstr "メンバー"
+
+msgid "Disabled"
+msgstr "無効化されています"
+
+msgid "Priority"
+msgstr "優先順位"
+
+msgid "Caller Position"
+msgstr "電話している方の位置"
+
+msgid "Frequency"
+msgstr "頻度"
+
+msgid "Minimum Announcement Interval"
+msgstr "最小の発表間隔"
+
+msgid "Announce Position"
+msgstr "位置を発表する"
+
+msgid "Announce Hold Time"
+msgstr "保留時間をアナウンス"
+
+msgid "Periodic Announcements"
+msgstr "定期的な発言"
+
+msgid "Repeat Frequency"
+msgstr "繰り返し頻度"
+
+msgid "Queue Callback"
+msgstr "キューコールバック"
+
+msgid "General Settings"
+msgstr "一般設定"
+
+msgid "Strategy"
+msgstr "戦略"
+
+msgid "Agent Restrictions"
+msgstr "エージェント制限"
+
+msgid "Autofill"
+msgstr "自動入力"
+
+msgid "Skip Busy Agents"
+msgstr "オートアテンディングをスキップ"
+
+msgid "Music On Hold Class"
+msgstr "オンホルド音楽クラス"
+
+msgid "Call Recording"
+msgstr "カールレコーディング"
+
+msgid "Mark calls answered elsewhere"
+msgstr "マークが他の場所で呼び出されました"
+
+msgid "Timing & Agent Options"
+msgstr "タイミング & エージェントオプション"
+
+msgid "Max Wait Time"
+msgstr "待ち時間の上限"
+
+msgid "Agent Timeout"
+msgstr "エージェントタイムアウト"
+
+msgid "Agent Retry"
+msgstr "エージェントリトライ"
+
+msgid "Wrap Up Time"
+msgstr "ラップアップタイム"
+
+msgid "Capacity Options"
+msgstr "能力オプション"
+
+msgid "Max Callers"
+msgstr "最大呼出数"
+
+msgid "Join Empty"
+msgstr "空の参加に加わる"
+
+msgid "Leave Empty"
+msgstr "空白にしてください"
+
+msgid "No Answer (%s)"
+msgstr "無答(%s)"
+
+msgid "Static"
+msgstr "静的"
+
+msgid "Dynamic"
+msgstr "ディナミックな"
+
+msgid "Caller Post Hangup"
+msgstr "コーラーがポストハンガップします"
+
+msgid "Agent Post Hangup"
+msgstr "エージェントポストハングアップ"
+
+msgid "Queue Fail Over on FULL"
+msgstr "フリーPBXでのキューファイルオーバーのフル"
+
+msgid "Queue Fail Over on JOINEMPTY"
+msgstr "キューのフェイルオーバーが JOINEMPTY に設定されています。"
+
+msgid "Queue Fail Over on LEAVEEMPTY"
+msgstr "クイーューフェイルオーバーはLEAVEEMPTYです。"
+
+msgid "Queue Fail Over on JOINUNAVAIL"
+msgstr "キューのフェイルオーバーをJOINUNAVAILに設定する"
+
+msgid "Queue Fail Over on LEAVEUNAVAIL"
+msgstr "クーイ・フェイラーオーバーはLEAVEUNAVAIL"
+
+msgid "Callback Queue"
+msgstr "コールバックキュー"
+
+msgid "Engine"
+msgstr "エンジン"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "Match"
+msgstr "マッチ"
+
+msgid "No Match"
+msgstr "一致しない"
+
+msgid "Target"
+msgstr "ターゲット"
+
+msgid "Return"
+msgstr "戻る"
+
+msgid "Click to continue..."
+msgstr "続けるにはクリックしてください..."
+
+msgid "No direct script access allowed"
+msgstr "直接のスクリプトアクセスは許可されていません"
+
+msgid "Check for Updates"
+msgstr "更新を確認してください"
+
+msgid "Buy Me a Coffee"
+msgstr "コーヒーを買ってください"
+
+msgid "Date & Time Stamp"
+msgstr "日付 & 時間のタイムスタンプ"
+
+msgid "Displays the date and time on the graph."
+msgstr "グラフに日付と時間を表示します。"
+
+msgid "Pan & Zoom"
+msgstr "パンとズーム"
+
+msgid ""
+"Allows you to use pan and zoom functions. Click and hold to pan, and use the "
+"mouse wheel to zoom."
+msgstr ""
+"パンとズームの機能を使用できるようにします。クリックして保持してパンを使用し、"
+"マウスホイールを使用してズームします。"
+
+msgid "Horizontal Layout"
+msgstr "横に並べる（水平）レイアウト"
+
+msgid "Displays the dial plan in a horizontal layout."
+msgstr "横方向のレイアウトでダイヤルプランを表示します。"
+
+msgid "Shared extension node handling"
+msgstr "共有拡張ノードの管理"
+
+msgid "None"
+msgstr "なし"
+
+msgid "Queues and Ring Groups Only"
+msgstr "キューとリング・グループのみ"
+
+msgid "All Destinations"
+msgstr "すべての先行先"
+
+msgid ""
+"\"None\" displays individual extension nodes. \"Queues and Ring Groups Only\" "
+"combines them into one node. \"All\" merges all destinations into a single "
+"extension node."
+msgstr ""
+"\"None\"は個々の拡張ノードを表示します。\"Queues and Ring Groups Only\"はそれ"
+"らを1つのノードに統合します。\"All\"はすべてのディストリビューションを1つの拡"
+"張ノードにマージします。"
+
+msgid "Show Queue Agents"
+msgstr "キューのエージェントを表示する"
+
+msgid "Single"
+msgstr "シングル"
+
+msgid "Combine"
+msgstr "組み合わせる"
+
+msgid "Hide"
+msgstr "隠れる"
+
+msgid ""
+"\"Single\" displays individual agent nodes. \"Combine\" displays all agents "
+"in a single node. \"Hide\" does not display queue agents."
+msgstr ""
+"シングルは個々のエージェントノードを表示します。コンビネーションはすべてのエー"
+"ジェントを単一のノードで表示します。隠すとエージェントノードが表示されないで"
+"す。"
+
+msgid "Show Dynamic Members for Queues"
+msgstr "キューに対する動的メンバーを表示する"
+
+msgid "Displays the list of dynamic agents currently assigned to the queues."
+msgstr "現在のキューに割り当てられた動的エージェントのリストを表示します。"
+
+msgid "Show Ring Group Members"
+msgstr "グループメンバーを表示する"
+
+msgid ""
+"\"Single\" displays individual member nodes. \"Combine\" displays all members "
+"in a single node. \"Hide\" does not display members."
+msgstr ""
+"\"Single\"は個々のメンバーノードを表示します。\"Combine\"はすべてのメンバー"
+"ノードを1つのノードで表示します。\"Hide\"はメンバーを表示しません。"
+
+msgid "Show Find Me Follow Me for Extensions"
+msgstr "拡張機能のために「Find Me Follow Me」を表示することを選択してください。"
+
+msgid "Displays Find Me Follow Me data for extensions."
+msgstr "拡張機能のFind Me Follow Meデータを表示します。"
+
+msgid "Show Extension Optional Destinations"
+msgstr "拡張機能の任意の目的地を表示"
+
+msgid ""
+"Displays and follows the optional destinations (No Answer, Busy, Not "
+"Reachable) set for the extension in the Advanced tab."
+msgstr ""
+"オプションのデストイネーション (No Answer、Busy、Not Reachable) を設定した拡張"
+"機能のために、それを表示して実行します。"
+
+msgid "Show Minimal View"
+msgstr "最小限のビューを表示する"
+
+msgid ""
+"Shows (default) or hides the following types of nodes: Extensions, Queue "
+"Members, Ring Group Members, Recordings, Voicemail, and Voicemail Blasting "
+"Members."
+msgstr ""
+"以下のノードタイプを表示（既定）または隠します：拡張機、キューメンバー、リング"
+"グループメンバー、レコーディング、ボイスメール、およびボイスメールブラストメン"
+"バー。"
+
+msgid "Saved!"
+msgstr "保存されました！"
+
+msgid "Save"
+msgstr "保存してください"
+
+msgid "Inbound Routes [destination]"
+msgstr "到着ルート [目的地]"
+
+msgid "Time Conditions"
+msgstr "時間の条件"
+
+msgid "Call Flows"
+msgstr "呼び出しフロー"
+
+msgid "Virtual Queues"
+msgstr "仮想キュー"
+
+msgid "Queues"
+msgstr "キュー"
+
+msgid "Ring Groups"
+msgstr "リンググループ"
+
+msgid "Dynamic Routes"
+msgstr "動的ルート"
+
+msgid "Announcements"
+msgstr "声明"
+
+msgid "Languages"
+msgstr "言語"
+
+msgid "Misc Applications"
+msgstr "他のアプリケーション"
+
+msgid "Reload"
+msgstr "再読み"
+
+msgid "Highlight Paths"
+msgstr "強調してパス"
+
+msgid "Choose Dial Plan"
+msgstr "ダイヤル計画を選択してください"
+
+msgid "Super"
+msgstr "素晴らしい"
+
+msgid "High"
+msgstr "高い"
+
+msgid "Standard"
+msgstr "標準"
+
+msgid ""
+"Exclude Node(s): Press Shift + left-click a node to exclude it and downstream "
+"paths. Click \"+\" to show the path again. Use \"Reset\" to restore the "
+"original dial plan."
+msgstr ""
+"ノードを除外する: シフトキーと左クリックを使ってノードを除外し、その下のパスを"
+"除外します。「+」をクリックすると、パスを再表示します。「リセット」を使って元"
+"のダイヤルプランを復元します。"
+
+msgid ""
+"Redraw from a Node: Press Ctrl (Cmd on macOS) + left-click a node to start "
+"from it. To revert, Ctrl/Cmd + left-click the parent node."
+msgstr ""
+"ノードから再描画: Ctrl（macOSではCmd）キーを押しながら左クリックして、そのノー"
+"ドから始めます。戻すには、Ctrl/Cmdキーを押しながら親ノードを左クリックします。"
+
+msgid ""
+"Highlight Paths: Click Highlight Paths, then select a node or edge. Click "
+"Remove Highlights to clear."
+msgstr ""
+"ハイライトパス: ハイライトパスをクリックし、ノードまたはエッジを選択してくださ"
+"い。ハイライトを削除するには、Remove Highlightsをクリックします。"
+
+msgid "Hover: Move your cursor over a path to highlight it."
+msgstr "Hover:カーソルをパスを移動させることに強調されます。"
+
+msgid "Open Destinations: Click a destination to open it in a new tab."
+msgstr "開く目的地：新しいタブで目的地をクリックして開く。"
+
+msgid ""
+"Open Time Groups: Click on \"Match: (timegroup)\" or \"No Match\" to view "
+"details in a new tab. Time Groups"
+msgstr ""
+"開放時間グループ：「一致：（時間グループ）」または「一致しない」と表示されてい"
+"る場合、「新しいタブで詳細を表示」をクリックしてください。時間グループ"
+
+msgid "Pan: Click and drag to move around the view."
+msgstr "パン: ビューを移動させるためにクリックしてドラッグしてください。"
+
+msgid "Zoom: Use the mouse wheel to zoom in and out."
+msgstr "ズーム:マウスのスクロールホイールを使って拡大縮小します。"
+
+msgid "Unlimited"
+msgstr "無制限"
+
+msgid "Extension Node Status"
+msgstr "拡張ノードのステータス"
+
+msgid "Registered extension (green border)"
+msgstr "登録済みの拡張機能（緑色の枠）"
+
+msgid "Unregistered extension (red border)"
+msgstr "登録されていない拡張機能（赤い枠）"
+
+msgid "Virtual or non-extension node (no border)"
+msgstr "仮想または拡張機能のないノード（境界なし）"
+
+msgid "Remove Highlights"
+msgstr "ハイライトを削除"
+
+msgid "Checking..."
+msgstr "チェック中..."
+
+msgid "You are up to date."
+msgstr "更新されています。"
+
+msgid "available! Use Module Admin to update"
+msgstr "利用可能！ Module Admin を使用して更新してください"
+
+msgid "Current installed version"
+msgstr "現在のインストールされたバージョン"
+
+msgid ""
+"could not be found. To generate the file, simply go to the recording, select "
+"the \\\"convert to\\\" wav option, and click submit."
+msgstr ""
+"ファイルが見つかりませんでした。ファイルを生成するには、レコーディングに移動"
+"し、「wav に変換」オプションを選択し、送信をクリックします。"
+
+msgid "No files found for language:"
+msgstr "言語に対応するファイルが見つかりませんでした:"
+
+msgid "Copy filename"
+msgstr "コピーファイル名をコピーしてください."
+
+msgid "Audio"
+msgstr "オーディオ"
+
+msgid "additional entries"
+msgstr "追加のエントリー"
+
+msgid "Email"
+msgstr "メール"
+
+msgid "Enabled"
+msgstr "有効"
+
+msgid "Caller ID Number"
+msgstr "呼出者ID番号"
+
+msgid "Alert Info"
+msgstr "警報情報"
+
+msgid "CID Prefix"
+msgstr "CID プレフィックス"
+
+msgid "Language"
+msgstr "言語"
+
+msgid "DTMF Options"
+msgstr "DTMF オプション"
+
+msgid "Enable Direct Dial"
+msgstr "直接ダイアルを有効にする"
+
+msgid "Invalid Retries"
+msgstr "無効な再試行"
+
+msgid "Invalid Retry Recording"
+msgstr "無効な再試行録音"
+
+msgid "Invalid Recording"
+msgstr "有効な記録がありません。"
+
+msgid "Timeout Retries"
+msgstr "タイムアウトリトライ"
+
+msgid "Timeout Retry Recording"
+msgstr "タイムアウト:再試行録音"
+
+msgid "Timeout Recording"
+msgstr "タイムアウト記録"
+
+msgid "Return to IVR after VM"
+msgstr "メールボックスの後にIVRに戻る"
+
+msgid "Page Group"
+msgstr "ページグループ"
+
+msgid "Busy Extensions"
+msgstr "住宅用電話のOccupied拡張機"
+
+msgid "Duplex"
+msgstr "デュプレックス"
+
+msgid "Queue"
+msgstr "キュー"
+
+msgid "Agents"
+msgstr "エージェント"
+
+msgid "Ext"
+msgstr "拡張機能"
+
+msgid "Retries"
+msgstr "リトライ数"
+
+msgid "Retry Delay"
+msgstr "再試行遅延"
+
+msgid "Ring Group"
+msgstr "リンググループ"
+
+msgid "List"
+msgstr "リスト"
+
+msgid "Extextnsion"
+msgstr "拡張機能"
+
+msgid "Timezone"
+msgstr "時刻帯"
+
+msgid "Type"
+msgstr "タイプ"
+
+msgid "Calendars"
+msgstr "カレンダー"
+
+msgid "All"
+msgstr "すべて"
+
+msgid "Events"
+msgstr "イベント"
+
+msgid "Expand"
+msgstr "増やす"
+
+msgid "Outbound CallerID"
+msgstr "外部通話のCallerID"
+
+msgid "Status"
+msgstr "ステータス"
+
+msgid "CID Options"
+msgstr "CIDオプション"
+
+msgid "Max Channels"
+msgstr "最大チャネル数"
+
+msgid "Continue If Busy"
+msgstr "忙しい場合も続ける"
+
+msgid "Audio Label"
+msgstr "オーディオラベル"
+
+msgid "Bad Dest: Blacklist"
+msgstr "不正なデスト:ブラックリスト"

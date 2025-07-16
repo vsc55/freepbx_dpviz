@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	//github update check
 	$('#check-update-btn').click(function() {
-		$('#update-result').html('<div style="margin-top: 10px;">Checking...</div>');
+		$('#update-result').html(`<div style="margin-top: 10px;">${translations.checking}</div>`);
 
 		$.ajax({
 			url: 'ajax.php?module=dpviz&command=check_update',
@@ -11,11 +11,14 @@ $(document).ready(function() {
 			success: function(response) {
 				if (response.status === 'success') {
 					if (response.up_to_date) {
-						$('#update-result').html('<div style="margin-top: 10px;">You are up to date.</div>');
+						$('#update-result').html(`<div style="margin-top: 10px;">${translations.uptodate}</div>`);
 					} else {
 						$('#update-result').html(
-							'<a href="config.php?display=modules" target="_blank" class="btn btn-default">' + response.latest + ' available! Use Module Admin to update <i class="fa fa-external-link" aria-hidden="true"></i></a> ' +
-							'Current installed version: ' + response.current + ' '
+							`<a href="config.php?display=modules" target="_blank" class="btn btn-default">
+								 ${response.latest} ${translations.available}
+								 <i class="fa fa-external-link" aria-hidden="true"></i>
+							 </a> 
+							 ${translations.currentVersion}: ${response.current}`
 						);
 					}
 				} else {
@@ -54,9 +57,10 @@ $('#dpvizForm').submit(function(event) {
 		data: formData,
 		success: function(response) {
 			var saveButton = document.getElementById("saveButton");
+			const savedText = saveButton.dataset.savedLabel;
 			var originalContent = saveButton.innerHTML;
 		
-			saveButton.innerHTML = '<i class="fa fa-check"></i> Saved!';
+			saveButton.innerHTML = '<i class="fa fa-check"></i> ' + savedText;
 			
 			setTimeout(function() {
 				if (processed === 'yes') {
@@ -134,6 +138,7 @@ function generateVisualization(ext, jump, skips, pan) {
 					//.replace(/\\n/g, '\n')
 				.replace(/\\l/g, '\l')
 					;
+				
 
 				viz.renderSVGElement(dot)
 					.then(function(element) {
@@ -317,12 +322,12 @@ function getRecording(titleid) {
 
 		$('#recording-displayname').html(
 			'<a href="config.php?display=recordings&action=edit&id=' + id + '" target="_blank" style="width:100%" class="btn btn-default btn-lg">' +
-			'<i class="fa fa-bullhorn"></i> Recording: ' + displayname + 
+			'<i class="fa fa-bullhorn"></i> ' + translations.recordingLabel + ': ' + displayname +
 			' <i class="fa fa-external-link" aria-hidden="true"></i></a>'
 		);
 		
 		if (!data.filename || data.filename.trim() === '') {
-			throw new Error(`No files found for language: <strong>${lang}</strong>`);
+			throw new Error(`${translations.noFilesLang} <strong>${lang}</strong>`);
 		}
 		
 		const filenames = data.filename.split('&').filter(f => f.trim() !== '');
@@ -363,13 +368,13 @@ function getRecording(titleid) {
 
 				// Create span for text
 				const titleText = document.createElement('span');
-				titleText.textContent = `Audio: ${headerFilename}.wav`;
+				titleText.textContent = `${translations.audioLabel}: ${headerFilename}.wav`;
 
 				// Create copy button
 				const copyBtn = document.createElement('button');
 				copyBtn.classList.add('btn', 'btn-sm', 'btn-outline-secondary');
 				copyBtn.innerHTML = '  <i class="fa fa-copy"></i>';
-				copyBtn.title = 'Copy filename';
+				copyBtn.title = translations.copyFilename;
 				copyBtn.style.marginLeft = '10px';
 
 				// Handle copy to clipboard
@@ -407,7 +412,7 @@ function getRecording(titleid) {
 
 				const label = document.createElement('div');
 				label.classList.add('alert', 'alert-warning');
-				label.innerHTML = `File: <strong>${filename}.wav</strong> could not be found. To generate the file, simply go to the recording, select the "convert to" wav option, and click submit.`;
+				label.innerHTML = `File: <strong>${filename}.wav</strong> ${translations.fileNotFound}`;
 
 				container.appendChild(label);
 				audioList.appendChild(container);
@@ -474,7 +479,7 @@ const modal = document.getElementById("recordingmodal");
   header.addEventListener("mousedown", (e) => {
     isDragging = true;
     offsetX = e.clientX - modal.offsetLeft;
-    offsetY = e.clientY - modal.offsetTop;
+    offsetY = e.clientY - modal.offsetTop;   
     document.body.style.userSelect = 'none';
   });
 

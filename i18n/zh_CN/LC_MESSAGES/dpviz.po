@@ -1,0 +1,698 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Dial Plan"
+msgstr "拨号计划"
+
+msgid "Navigation & Usage"
+msgstr "导航与使用"
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "System Recording"
+msgstr "系统录音"
+
+msgid "Dial Plan Not Selected"
+msgstr "拨号计划未被选中"
+
+msgid "Use the dropdown to select a dial plan."
+msgstr "使用下拉菜单选择拨号规划。"
+
+msgid "Error: Could not find inbound route for"
+msgstr "错误：找不到进入路由程序的"
+
+msgid "Reset"
+msgstr "重置"
+
+msgid "No name selected"
+msgstr "未选择名称"
+
+msgid "Always"
+msgstr "总是"
+
+msgid "Recording"
+msgstr "录音"
+
+msgid "Continue"
+msgstr "继续"
+
+msgid "Music On Hold"
+msgstr "音乐保持"
+
+msgid "Play Ringtones"
+msgstr "播放铃声"
+
+msgid "Play No Service Message"
+msgstr "播放无服务信息"
+
+msgid "Busy"
+msgstr "忙碌"
+
+msgid "Hang Up"
+msgstr "挂断"
+
+msgid "Congestion"
+msgstr "拥堵"
+
+msgid "Terminate Call"
+msgstr "结束通话"
+
+msgid "Active"
+msgstr "活跃"
+
+msgid "Night Mode"
+msgstr "夜间模式"
+
+msgid "Day Mode"
+msgstr "日间模式"
+
+msgid "Feature Code"
+msgstr "功能代码"
+
+msgid "Callback Number"
+msgstr "回拨电话号码"
+
+msgid "Delay Before Callback"
+msgstr "呼叫回拜前延迟"
+
+msgid "Caller ID"
+msgstr "呼叫者ID"
+
+msgid "Timeout"
+msgstr "超时"
+
+msgid "Destination after Callback"
+msgstr "回拨后的目的地"
+
+msgid "Don't Care"
+msgstr "不关心"
+
+msgid "Mode"
+msgstr "模式"
+
+msgid "Invalid Input"
+msgstr "无效输入"
+
+msgid "Announcement"
+msgstr "声明"
+
+msgid "Invalid Input, Default (%s) secs"
+msgstr "无效输入，默认（%s）秒。"
+
+msgid "Default (%s) secs"
+msgstr "默认(%s)秒"
+
+msgid "Yes"
+msgstr "是的"
+
+msgid "No"
+msgstr "不"
+
+msgid "Registration"
+msgstr "注册"
+
+msgid "Tech"
+msgstr "科技"
+
+msgid "Voicemail: Enabled"
+msgstr "邮箱：已启用"
+
+msgid "Voicemail: Disabled"
+msgstr "语音信箱：关闭"
+
+msgid "Initial Ring Time"
+msgstr "初始拨号时间"
+
+msgid "Ring Time"
+msgstr "响铃时间"
+
+msgid "Follow-Me List"
+msgstr "跟随我列表"
+
+msgid "Confirm Calls"
+msgstr "确认电话"
+
+msgid "Extension"
+msgstr "扩展"
+
+msgid "Name"
+msgstr "名称"
+
+msgid "No Answer"
+msgstr "沒有答案"
+
+msgid "No Answer, Busy, Not Reachable"
+msgstr "未接通、忙碌、不可到达"
+
+msgid "No Answer & Busy"
+msgstr "无人接听 & 繁忙"
+
+msgid "Not Reachable"
+msgstr "非接通"
+
+msgid "No Answer & Not Reachable"
+msgstr "未接听 & 不可达"
+
+msgid "Busy & Not Reachable"
+msgstr "忙碌 & 无法联系"
+
+msgid "Block Unknown/Blocked Caller ID"
+msgstr "屏蔽未知/屏蔽的呼叫者ID"
+
+msgid "Number: Description"
+msgstr "编号：描述"
+
+msgid "Blacklist"
+msgstr "黑名单"
+
+msgid "Disallowed by Blacklist"
+msgstr "被黑名单禁止"
+
+msgid "Click to edit Blacklist"
+msgstr "点击编辑黑名单"
+
+msgid "Allowlist"
+msgstr "允许列表"
+
+msgid "Disallowed by Allowlist"
+msgstr "被允许清单禁止"
+
+msgid "Click to edit Allowlist"
+msgstr "点击编辑允许名单"
+
+msgid "Selection %s"
+msgstr "选择 %s"
+
+msgid "Invalid Input, Timeout (%s secs)"
+msgstr "无效输入，超时（% s秒）"
+
+msgid "Timeout (%s secs)"
+msgstr "超时（%s秒）"
+
+msgid "Disabled"
+msgstr "已禁用"
+
+msgid "Priority"
+msgstr "优先级"
+
+msgid "Caller Position"
+msgstr "呼叫者位置"
+
+msgid "Frequency"
+msgstr "频率"
+
+msgid "Minimum Announcement Interval"
+msgstr "最小宣布间隔"
+
+msgid "Announce Position"
+msgstr "播报位置"
+
+msgid "Announce Hold Time"
+msgstr "宣布保持通话时间"
+
+msgid "Periodic Announcements"
+msgstr "周期性公告"
+
+msgid "Repeat Frequency"
+msgstr "重复频率"
+
+msgid "Queue Callback"
+msgstr "队列回拨"
+
+msgid "General Settings"
+msgstr "一般设置"
+
+msgid "Strategy"
+msgstr "战略"
+
+msgid "Agent Restrictions"
+msgstr "代理限制"
+
+msgid "Autofill"
+msgstr "自動填充"
+
+msgid "Skip Busy Agents"
+msgstr "跳过忙碌代理人"
+
+msgid "Music On Hold Class"
+msgstr "保持音乐类别"
+
+msgid "Call Recording"
+msgstr "通話錄音"
+
+msgid "Mark calls answered elsewhere"
+msgstr "马克叫了其他地方回答的电话"
+
+msgid "Timing & Agent Options"
+msgstr "定时和代理选项"
+
+msgid "Max Wait Time"
+msgstr "最大等待时间"
+
+msgid "Agent Timeout"
+msgstr "代理超时"
+
+msgid "Agent Retry"
+msgstr "代理重新尝试"
+
+msgid "Wrap Up Time"
+msgstr "结束时间"
+
+msgid "Capacity Options"
+msgstr "容量选项"
+
+msgid "Max Callers"
+msgstr "最大呼叫者数量"
+
+msgid "Join Empty"
+msgstr "加入空闲"
+
+msgid "Leave Empty"
+msgstr "留空"
+
+msgid "No Answer (%s)"
+msgstr "无回答（% s）"
+
+msgid "Static"
+msgstr "静态"
+
+msgid "Dynamic"
+msgstr "动态的"
+
+msgid "Caller Post Hangup"
+msgstr "呼叫者挂断后"
+
+msgid "Agent Post Hangup"
+msgstr "代理员挂断后"
+
+msgid "Queue Fail Over on FULL"
+msgstr "队列故障转移已到达最大人数限制"
+
+msgid "Queue Fail Over on JOINEMPTY"
+msgstr "队列故障转移在JOINEMPTY上"
+
+msgid "Queue Fail Over on LEAVEEMPTY"
+msgstr "队列失败转移在LEAVEEMPTY"
+
+msgid "Queue Fail Over on JOINUNAVAIL"
+msgstr "队列故障转移在JOINUNAVAIL"
+
+msgid "Queue Fail Over on LEAVEUNAVAIL"
+msgstr "在LEAVEUNAVAIL时，队列自动切换"
+
+msgid "Callback Queue"
+msgstr "回拨队列"
+
+msgid "Engine"
+msgstr "引擎"
+
+msgid "Description"
+msgstr "描述"
+
+msgid "Match"
+msgstr "匹配"
+
+msgid "No Match"
+msgstr "没有匹配"
+
+msgid "Target"
+msgstr "目标"
+
+msgid "Return"
+msgstr "请返回"
+
+msgid "Click to continue..."
+msgstr "点击继续..."
+
+msgid "No direct script access allowed"
+msgstr "不允许直接访问脚本"
+
+msgid "Check for Updates"
+msgstr "查找更新"
+
+msgid "Buy Me a Coffee"
+msgstr "买我咖啡"
+
+msgid "Date & Time Stamp"
+msgstr "日期与时间戳"
+
+msgid "Displays the date and time on the graph."
+msgstr "显示图表上的日期和时间。"
+
+msgid "Pan & Zoom"
+msgstr "平移与缩放"
+
+msgid ""
+"Allows you to use pan and zoom functions. Click and hold to pan, and use the "
+"mouse wheel to zoom."
+msgstr "允许您使用平移和缩放功能。点击并持续按住以平移，使用鼠标滚轮以缩放。"
+
+msgid "Horizontal Layout"
+msgstr "水平布局"
+
+msgid "Displays the dial plan in a horizontal layout."
+msgstr "显示拨号计划在横向布局中。"
+
+msgid "Shared extension node handling"
+msgstr "共享扩展节点处理"
+
+msgid "None"
+msgstr "无"
+
+msgid "Queues and Ring Groups Only"
+msgstr "队列和铃声组只"
+
+msgid "All Destinations"
+msgstr "所有目的地"
+
+msgid ""
+"\"None\" displays individual extension nodes. \"Queues and Ring Groups Only\" "
+"combines them into one node. \"All\" merges all destinations into a single "
+"extension node."
+msgstr ""
+"\"无\"显示个别扩展节点。\"队列和铃声群组only\"将它们组合成一个节点。\"所有\"合"
+"并所有目的地到一个扩展节点。"
+
+msgid "Show Queue Agents"
+msgstr "显示队列代理人员"
+
+msgid "Single"
+msgstr "单个"
+
+msgid "Combine"
+msgstr "合并"
+
+msgid "Hide"
+msgstr "隐藏"
+
+msgid ""
+"\"Single\" displays individual agent nodes. \"Combine\" displays all agents "
+"in a single node. \"Hide\" does not display queue agents."
+msgstr ""
+"\"单个\"显示个别代理节点。\"组合\"显示所有代理在一个节点中。\"隐藏\"不显示队列"
+"代理。"
+
+msgid "Show Dynamic Members for Queues"
+msgstr "显示队列成员(动态)"
+
+msgid "Displays the list of dynamic agents currently assigned to the queues."
+msgstr "显示当前分配到队列的动态代理人员列表。"
+
+msgid "Show Ring Group Members"
+msgstr "显示组队成员"
+
+msgid ""
+"\"Single\" displays individual member nodes. \"Combine\" displays all members "
+"in a single node. \"Hide\" does not display members."
+msgstr ""
+"\"单个\"显示个别成员节点。\"合并\"显示所有成员在一个节点中。\"隐藏\"不显示成"
+"员。"
+
+msgid "Show Find Me Follow Me for Extensions"
+msgstr "显示呼叫转移配置"
+
+msgid "Displays Find Me Follow Me data for extensions."
+msgstr "显示呼叫转移数据。"
+
+msgid "Show Extension Optional Destinations"
+msgstr "显示扩展可选目的地"
+
+msgid ""
+"Displays and follows the optional destinations (No Answer, Busy, Not "
+"Reachable) set for the extension in the Advanced tab."
+msgstr ""
+"显示和遵循扩展在高级选项卡中设置的可选目的地（无人接听，繁忙，不可达）。"
+
+msgid "Show Minimal View"
+msgstr "显示最小化视图"
+
+msgid ""
+"Shows (default) or hides the following types of nodes: Extensions, Queue "
+"Members, Ring Group Members, Recordings, Voicemail, and Voicemail Blasting "
+"Members."
+msgstr ""
+"显示（默认）或隐藏以下节点类型：分机、队列成员、铃声组成员、录音、电话信箱和电"
+"话信箱广播成员。"
+
+msgid "Saved!"
+msgstr "已儲存！"
+
+msgid "Save"
+msgstr "節省"
+
+msgid "Inbound Routes [destination]"
+msgstr "输入路由 [目的地]"
+
+msgid "Time Conditions"
+msgstr "时间条件"
+
+msgid "Call Flows"
+msgstr "呼叫流程"
+
+msgid "Virtual Queues"
+msgstr "虚拟排队"
+
+msgid "Queues"
+msgstr "佇列"
+
+msgid "Ring Groups"
+msgstr "铃声组"
+
+msgid "Dynamic Routes"
+msgstr "动态路由"
+
+msgid "Announcements"
+msgstr "公告"
+
+msgid "Languages"
+msgstr "语言"
+
+msgid "Misc Applications"
+msgstr "杂项应用程序"
+
+msgid "Reload"
+msgstr "重新加载"
+
+msgid "Highlight Paths"
+msgstr "提取路径"
+
+msgid "Choose Dial Plan"
+msgstr "选择拨号计划"
+
+msgid "Super"
+msgstr "优秀的"
+
+msgid "High"
+msgstr "高"
+
+msgid "Standard"
+msgstr "标准"
+
+msgid ""
+"Exclude Node(s): Press Shift + left-click a node to exclude it and downstream "
+"paths. Click \"+\" to show the path again. Use \"Reset\" to restore the "
+"original dial plan."
+msgstr ""
+"排除节点（节点）：按Shift+左键点击一个节点以排除它和下游路径。点击“+”以显示路"
+"径。使用“重置”恢复原始电话计划。"
+
+msgid ""
+"Redraw from a Node: Press Ctrl (Cmd on macOS) + left-click a node to start "
+"from it. To revert, Ctrl/Cmd + left-click the parent node."
+msgstr ""
+"从节点重新绘制：按Ctrl（macOS上的Cmd）与左键单击一个节点开始。要撤销，按Ctrl/"
+"Cmd与左键单击父节点。"
+
+msgid ""
+"Highlight Paths: Click Highlight Paths, then select a node or edge. Click "
+"Remove Highlights to clear."
+msgstr "强调路径：单击“强调路径”，然后选择节点或边。单击“移除强调”以清除。"
+
+msgid "Hover: Move your cursor over a path to highlight it."
+msgstr "悬停:将鼠标指针悬停在路径上以突出显示。"
+
+msgid "Open Destinations: Click a destination to open it in a new tab."
+msgstr "打开目的地：单击目的地以在新标签中打开它。"
+
+msgid ""
+"Open Time Groups: Click on \"Match: (timegroup)\" or \"No Match\" to view "
+"details in a new tab. Time Groups"
+msgstr ""
+"打开时间组:单击“匹配：(时间组)”或“无匹配”以在新标签中查看详细信息。时间组"
+
+msgid "Pan: Click and drag to move around the view."
+msgstr "潘：点击并拖动以移动视图。"
+
+msgid "Zoom: Use the mouse wheel to zoom in and out."
+msgstr "放大缩小：使用鼠标滚轮放大或缩小。"
+
+msgid "members"
+msgstr "成员"
+
+msgid "Unlimited"
+msgstr "无限制的"
+
+msgid "Extension Node Status"
+msgstr "扩展节点状态"
+
+msgid "Registered extension (green border)"
+msgstr "已注册扩展（绿色边框）"
+
+msgid "Unregistered extension (red border)"
+msgstr "未注册扩展（红色边框）"
+
+msgid "Virtual or non-extension node (no border)"
+msgstr "虚拟或非补号节点（无边框）"
+
+msgid "Remove Highlights"
+msgstr "移除突出显示"
+
+msgid "Checking..."
+msgstr "检查中..."
+
+msgid "You are up to date."
+msgstr "您已了解最新情況"
+
+msgid "available! Use Module Admin to update"
+msgstr "可用！使用模块管理员更新。"
+
+msgid "Current installed version"
+msgstr "当前安装版本"
+
+msgid ""
+"could not be found. To generate the file, simply go to the recording, select "
+"the \\\"convert to\\\" wav option, and click submit."
+msgstr ""
+"无法找到文件。要生成文件，请转到录音，选择“转换为”wav选项，然后单击提交。"
+
+msgid "No files found for language:"
+msgstr "未找到文件：语言"
+
+msgid "Copy filename"
+msgstr "复制文件名"
+
+msgid "Audio"
+msgstr "音频"
+
+msgid "additional entries"
+msgstr "附加项目"
+
+msgid "Email"
+msgstr "电子邮件"
+
+msgid "Enabled"
+msgstr "已启用"
+
+msgid "Caller ID Number"
+msgstr "ID号码"
+
+msgid "Alert Info"
+msgstr "警报信息"
+
+msgid "CID Prefix"
+msgstr "CID前缀"
+
+msgid "Language"
+msgstr "语言"
+
+msgid "DTMF Options"
+msgstr "按键选项"
+
+msgid "Enable Direct Dial"
+msgstr "启用直接拨号"
+
+msgid "Invalid Retries"
+msgstr "无效的重试次数"
+
+msgid "Invalid Retry Recording"
+msgstr "无效重新记录"
+
+msgid "Invalid Recording"
+msgstr "无效的录音"
+
+msgid "Timeout Retries"
+msgstr "超时重试次数"
+
+msgid "Timeout Retry Recording"
+msgstr "超时重试录音"
+
+msgid "Timeout Recording"
+msgstr "超时录音"
+
+msgid "Return to IVR after VM"
+msgstr "回到IVR后返回对话录音"
+
+msgid "Page Group"
+msgstr "页面组"
+
+msgid "Busy Extensions"
+msgstr "忙碌扩展"
+
+msgid "Duplex"
+msgstr "双工模式"
+
+msgid "Queue"
+msgstr "队列"
+
+msgid "Agents"
+msgstr "代理人"
+
+msgid "Ext"
+msgstr "扩展号"
+
+msgid "Retries"
+msgstr "重试次数"
+
+msgid "Retry Delay"
+msgstr "重试延迟"
+
+msgid "Ring Group"
+msgstr "铃声群组"
+
+msgid "List"
+msgstr "列表"
+
+msgid "Extextnsion"
+msgstr "外线"
+
+msgid "Timezone"
+msgstr "时区"
+
+msgid "Type"
+msgstr "类型"
+
+msgid "Calendars"
+msgstr "日历"
+
+msgid "All"
+msgstr "所有"
+
+msgid "Events"
+msgstr "事件"
+
+msgid "Expand"
+msgstr "扩张"
+
+msgid "Outbound CallerID"
+msgstr "外线呼叫ID"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "CID Options"
+msgstr "呼叫ID选项"
+
+msgid "Max Channels"
+msgstr "最大渠道数"
+
+msgid "Continue If Busy"
+msgstr "继续（如忙）"
+
+msgid "Audio Label"
+msgstr "音频标签"
+
+msgid "Bad Dest: Blacklist"
+msgstr "坏目标：黑名单"

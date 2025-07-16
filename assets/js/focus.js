@@ -96,31 +96,37 @@ function resetEdges() {
 	});
 }
 
-function resetFocusMode(){
-	resetEdges();
-	restoreLinks();
-	isFocused = false;
-	document.getElementById("focus").innerHTML  = '<i class="fa fa-magic"></i> Highlight Paths';
-	document.getElementById("focus").classList.add("btn-default");
-	document.getElementById("focus").classList.remove("btn-primary");
-	document.getElementById("focus").classList.remove("active");	
+const focusBtn = document.getElementById("focus");
+
+function setFocusButton(state) {
+  if (state === "highlight") {
+    focusBtn.innerHTML = '<i class="fa fa-magic"></i> ' + translations.highlight;
+    focusBtn.classList.add("btn-default");
+    focusBtn.classList.remove("btn-primary", "active");
+  } else if (state === "remove") {
+    focusBtn.innerHTML = '<i class="fa fa-magic"></i> ' + translations.remove;
+    focusBtn.classList.remove("btn-default");
+    focusBtn.classList.add("btn-primary", "active");
+  }
+}
+
+function resetFocusMode() {
+  resetEdges();
+  restoreLinks();
+  isFocused = false;
+  setFocusButton("highlight");
 }
 
 function toggleFocusMode() {
-	if (!svgContainer) return;
+  if (!svgContainer) return;
 
-	if (isFocused) {
-    // Exit focus mode
+  if (isFocused) {
     resetFocusMode();
-} else {
-    // Enter focus mode
+  } else {
     disableLinks();
     isFocused = true;
-    document.getElementById("focus").innerHTML  = '<i class="fa fa-magic"></i> Remove Highlights';
-    document.getElementById("focus").classList.remove("btn-default");
-		document.getElementById("focus").classList.add("btn-primary");
-		document.getElementById("focus").classList.add("active");
-}
+    setFocusButton("remove");
+  }
 }
 
 function disableLinks() {

@@ -4,6 +4,14 @@ if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
 //	Copyright 2013 Schmooze Com Inc.
 //  Copyright (C) 2011 Mikael Carlsson (mickecarlsson at gmail dot com)
 //
+
+$locale = getenv('LC_ALL');
+if ($locale=='en_US.utf8'){
+	$_SESSION['lang']=NULL;
+}else{
+	$_SESSION['lang']=$locale;
+}
+
 ?>
 <script src="modules/dpviz/assets/js/viz.min.js"></script>
 <script src="modules/dpviz/assets/js/full.render.js"></script>
@@ -20,11 +28,24 @@ let svgContainer = null;
 let selectedNodeId = null;
 let originalLinks = new Map();
 let highlightedEdges = new Set(); // Track highlighted edges
+const translations = {
+	highlight: "<?php echo _('Highlight Paths'); ?>",
+	remove: "<?php echo _('Remove Highlights'); ?>",
+	checking: "<?php echo _('Checking...'); ?>",
+	uptodate: "<?php echo _('You are up to date.'); ?>",
+	available: "<?php echo _('available! Use Module Admin to update'); ?>",
+	currentVersion: "<?php echo _('Current installed version'); ?>",
+	fileNotFound: "<?php echo _('could not be found. To generate the file, simply go to the recording, select the \"convert to\" wav option, and click submit.'); ?>",
+	recordingLabel: "<?php echo _('Recording'); ?>",
+	noFilesLang: "<?php echo _('No files found for language:'); ?>",
+	copyFilename: "<?php echo _('Copy filename'); ?>",
+	audioLabel: "<?php echo _('Audio'); ?>"
+};
 </script>
 <meta charset="UTF-8">
 <div class="container-fluid">
 	<div class="display full-border">
-		<h1><?php echo _("Dial Plan Vizualizer"); ?></h1>
+		<h1><?php echo _("Dial Plan") .' Vizualizer'; ?></h1>
 	</div>
 	<div class="row">
 		<div class="col-sm-12">
@@ -33,26 +54,26 @@ let highlightedEdges = new Set(); // Track highlighted edges
 				<ul class="nav nav-tabs" role="tablist">
 					<li role="presentation" data-name="dpbox" class="active">
 						<a href="#dpbox" aria-controls="dpbox" role="tab" data-toggle="tab">
-							<i class="fa fa-sitemap"></i> <?php echo _("Dial Plan") ?>
+							<i class="fa fa-sitemap"></i> <?php echo _("Dial Plan"); ?>
 						</a>
 					</li>
 					<li role="presentation" data-name="navigation" class="change-tab">
 						<a href="#navigation" aria-controls="navigation" role="tab" data-toggle="tab">
-							<i class="fa fa-compass"></i> <?php echo _("Navigation & Usage") ?>
+							<i class="fa fa-compass"></i> <?php echo _("Navigation & Usage"); ?>
 						</a>
 					</li>
 					<li role="presentation" data-name="settings" class="change-tab">
 						<a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
-							<i class="fa fa-cog"></i> <?php echo _("Settings") ?>
+							<i class="fa fa-cog"></i> <?php echo _('Settings'); ?>
 						</a>
 					</li>
 				</ul>
 				<div class="tab-content display">
 					<div role="tabpanel" id="dpbox" class="tab-pane active">
-						<div id="vizButtons" style="position: sticky; top:50px;">
+						<div id="vizButtons">
 							<?php require('views/toolbar.php');?>
 						</div>
-						<div id="vizSpinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; flex-direction: column; align-items: center; gap:10px;">
+						<div id="vizSpinner">
 							<div class="loader"></div>
 							<h3 class="spinner-text">Loading...</h3>
 						</div>
@@ -61,7 +82,7 @@ let highlightedEdges = new Set(); // Track highlighted edges
 							<div id="overlay" onclick="closeModal()"></div>
 							<div id="recordingmodal">
 								<div id="recordingmodal-header">
-									<span id="recordingmodal-title">🔊 System Recording</span>
+									<span id="recordingmodal-title">🔊 <?php echo _('System Recording'); ?></span>
 									<button id="modal-close-btn" onclick="closeModal()">✖</button>
 								</div>
 								<div id="recording-displayname"></div>
@@ -69,25 +90,14 @@ let highlightedEdges = new Set(); // Track highlighted edges
 							</div>
 							
 							
-							<div id="vizContainer" class="display full-border" style="min-height: 65vh;">
-								<div id="vizHeader"><p><strong>Dial Plan Not Selected</strong><br>Use the dropdown to select a dial plan.</p></div>
+							<div id="vizContainer" class="display full-border">
+								<div id="vizHeader"><p><strong><?php echo _('Dial Plan Not Selected'); ?></strong><br><?php echo _('Use the dropdown to select a dial plan.'); ?></p></div>
 								<div id="vizGraph"></div>
 							</div>
 						</div>
 					</div>
 					<div role="tabpanel" id="navigation" class="tab-pane">
-						<p>
-							<ul class="list-unstyled">
-								<li><strong>Exclude Node(s):</strong> Press <strong>Shift</strong> and <strong>left-click</strong> a node to exclude it and downstream paths. To show path again, click "<strong>Click to continue...</strong>" node. Supports multiple exclusions. Click "<strong>Reset</strong>" node to show original dial plan.</li>
-								<li><strong>Redraw from a Node:</strong> Press <strong>Ctrl</strong> (<strong>Cmd</strong> on macOS) and <strong>left-click</strong> a node to make it the new starting point in the diagram. To revert, <strong>Ctrl/Cmd + left-click</strong> the parent node.</li>
-								<li><strong>Highlight Paths:</strong> Click <strong>Highlight Paths</strong>, then select a node or edge (links are inactive). Click <strong>Remove Highlights</strong> to clear.</li>
-								<li><strong>Hover:</strong> Hover over a path to highlight between destinations.</li>
-								<li><strong>Open Destinations:</strong> Click a destination to open it in a new tab.</li>
-								<li><strong>Open Time Groups:</strong> Click on a "<strong>Match: (timegroup)</strong>" or "<strong>No Match</strong>" to open in a new tab.</li>
-								<li><strong>Pan:</strong> Hold the left mouse button and drag to move the view.</li>
-								<li><strong>Zoom:</strong> Use the mouse wheel to zoom in and out.</li>
-							</ul>
-						</p>
+						<?php require('views/nav.php');?>
 					</div>
 					<div role="tabpanel" id="settings" class="tab-pane">
 						<?php require('views/options.php');?>
@@ -99,6 +109,6 @@ let highlightedEdges = new Set(); // Track highlighted edges
 </div>
 <script>
 
-
+console.log(navigator.language);
 </script>
 

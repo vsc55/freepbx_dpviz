@@ -1,0 +1,717 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Dial Plan"
+msgstr "План звонков"
+
+msgid "Navigation & Usage"
+msgstr "Навигация & Использование"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "System Recording"
+msgstr "Система записи звонков"
+
+msgid "Dial Plan Not Selected"
+msgstr "План звонков не выбран"
+
+msgid "Use the dropdown to select a dial plan."
+msgstr "Используйте выпадающее меню, чтобы выбрать план вызова."
+
+msgid "Error: Could not find inbound route for"
+msgstr "Ошибка: Не удалось найти маршрут входящего звонка для"
+
+msgid "Reset"
+msgstr "Сброс"
+
+msgid "No name selected"
+msgstr "Никто не выбран"
+
+msgid "Always"
+msgstr "Всегда"
+
+msgid "Recording"
+msgstr "Запись"
+
+msgid "Continue"
+msgstr "Продолжить"
+
+msgid "Music On Hold"
+msgstr "Музыка на прослушивании"
+
+msgid "Play Ringtones"
+msgstr "Включить тона звонка"
+
+msgid "Play No Service Message"
+msgstr "Игра \"Служба не работает\""
+
+msgid "Busy"
+msgstr "Занято"
+
+msgid "Hang Up"
+msgstr "Отвести"
+
+msgid "Congestion"
+msgstr "Возможное перегружение"
+
+msgid "Terminate Call"
+msgstr "Прекратить звонок"
+
+msgid "Active"
+msgstr "Активный"
+
+msgid "Night Mode"
+msgstr "Режим ночи"
+
+msgid "Day Mode"
+msgstr "Режим Дня"
+
+msgid "Feature Code"
+msgstr "Код функции"
+
+msgid "Callback Number"
+msgstr "Номер обратного звонка"
+
+msgid "Delay Before Callback"
+msgstr "Задержка перед обратным вызовом"
+
+msgid "Caller ID"
+msgstr "ID звонящего"
+
+msgid "Timeout"
+msgstr "Таймаут"
+
+msgid "Destination after Callback"
+msgstr "Destination после обратного вызова"
+
+msgid "Don't Care"
+msgstr "Не важно"
+
+msgid "Mode"
+msgstr "Режим"
+
+msgid "Invalid Input"
+msgstr "Неверные данные ввода"
+
+msgid "Announcement"
+msgstr "Объявление"
+
+msgid "Invalid Input, Default (%s) secs"
+msgstr "Недопустимый ввод, по умолчанию (%s) сек."
+
+msgid "Default (%s) secs"
+msgstr "По умолчанию (%s) сек."
+
+msgid "Yes"
+msgstr "Да"
+
+msgid "No"
+msgstr "Нет"
+
+msgid "Registration"
+msgstr "Регистрация"
+
+msgid "Tech"
+msgstr "Технологии"
+
+msgid "Voicemail: Enabled"
+msgstr "Войсмейл: Включено"
+
+msgid "Voicemail: Disabled"
+msgstr "Воемайл: Отключено"
+
+msgid "Initial Ring Time"
+msgstr "Инициальное время звонка"
+
+msgid "Ring Time"
+msgstr "Время звонка"
+
+msgid "Follow-Me List"
+msgstr "Список Follow-Me"
+
+msgid "Confirm Calls"
+msgstr "Подтверждать звонки"
+
+msgid "Extension"
+msgstr "Расширение"
+
+msgid "Name"
+msgstr "Название"
+
+msgid "No Answer"
+msgstr "Без ответа"
+
+msgid "No Answer, Busy, Not Reachable"
+msgstr "Без ответа, занят, недоступен"
+
+msgid "No Answer & Busy"
+msgstr "Без ответа и занят"
+
+msgid "Not Reachable"
+msgstr "Недоступный"
+
+msgid "No Answer & Not Reachable"
+msgstr "Без ответа & недоступен"
+
+msgid "Busy & Not Reachable"
+msgstr "Занято & Недоступно"
+
+msgid "Block Unknown/Blocked Caller ID"
+msgstr "Блокировать неизвестного/блокированного звонящего"
+
+msgid "Number: Description"
+msgstr "Номер: Описание"
+
+msgid "Blacklist"
+msgstr "Чёрный список"
+
+msgid "Disallowed by Blacklist"
+msgstr "Запрещен по списку черного списка"
+
+msgid "Click to edit Blacklist"
+msgstr "Щелкните, чтобы отредактировать Чёрный список"
+
+msgid "Allowlist"
+msgstr "Разрешенный список"
+
+msgid "Disallowed by Allowlist"
+msgstr "Запрещенный списком разрешенных"
+
+msgid "Click to edit Allowlist"
+msgstr "Нажмите, чтобы редактировать список разрешенных номеров"
+
+msgid "Selection %s"
+msgstr "Выбор %s"
+
+msgid "Invalid Input, Timeout (%s secs)"
+msgstr "Недопустимые данные, Таймаут (%s сек)"
+
+msgid "Timeout (%s secs)"
+msgstr "Таймаут (%s сек)"
+
+msgid "Disabled"
+msgstr "Отключенный"
+
+msgid "Priority"
+msgstr "Приоритет"
+
+msgid "Caller Position"
+msgstr "Позиция звонящего"
+
+msgid "Frequency"
+msgstr "Частота"
+
+msgid "Minimum Announcement Interval"
+msgstr "Минимальный промежуток между объявлениями"
+
+msgid "Announce Position"
+msgstr "Объявить положение"
+
+msgid "Announce Hold Time"
+msgstr "Объявите время на ожидание"
+
+msgid "Periodic Announcements"
+msgstr "Регулярные объявления"
+
+msgid "Repeat Frequency"
+msgstr "Частота повторов"
+
+msgid "Queue Callback"
+msgstr "Вызов в очередь обратного звонка"
+
+msgid "General Settings"
+msgstr "Общие настройки"
+
+msgid "Strategy"
+msgstr "strategiya"
+
+msgid "Agent Restrictions"
+msgstr "Ограничения агента"
+
+msgid "Autofill"
+msgstr "Автозаполнение"
+
+msgid "Skip Busy Agents"
+msgstr "Пропустить занятых агентов"
+
+msgid "Music On Hold Class"
+msgstr "Класс Музыки на Переадресации"
+
+msgid "Call Recording"
+msgstr "Запись звонков"
+
+msgid "Mark calls answered elsewhere"
+msgstr "Марк звонил, но вызов был перехвачен в другом месте"
+
+msgid "Timing & Agent Options"
+msgstr "Время и параметры агента"
+
+msgid "Max Wait Time"
+msgstr "Максимальное время ожидания"
+
+msgid "Agent Timeout"
+msgstr "Время ожидания агента"
+
+msgid "Agent Retry"
+msgstr "Попробовать снова агента"
+
+msgid "Wrap Up Time"
+msgstr "Время для завершения"
+
+msgid "Capacity Options"
+msgstr "Возможности емкости"
+
+msgid "Max Callers"
+msgstr "Макс звонков"
+
+msgid "Join Empty"
+msgstr "Присоединяйтесь к Пустому"
+
+msgid "Leave Empty"
+msgstr "Оставить пустым"
+
+msgid "No Answer (%s)"
+msgstr "Ответ не получен (%s)"
+
+msgid "Static"
+msgstr "Статика"
+
+msgid "Dynamic"
+msgstr "Динамический"
+
+msgid "Caller Post Hangup"
+msgstr "Звонящий развесил звонок"
+
+msgid "Agent Post Hangup"
+msgstr "Агент после разговора"
+
+msgid "Queue Fail Over on FULL"
+msgstr "Отказ в очереди на ПОЛНОЕ"
+
+msgid "Queue Fail Over on JOINEMPTY"
+msgstr "Переход очереди на JOINEMPTY"
+
+msgid "Queue Fail Over on LEAVEEMPTY"
+msgstr "Обеспечение очереди при отсутствии на LEAVEEMPTY"
+
+msgid "Queue Fail Over on JOINUNAVAIL"
+msgstr "Переход очереди на JOINUNAVAIL"
+
+msgid "Queue Fail Over on LEAVEUNAVAIL"
+msgstr "Переход очереди на NEAVEUNAVAIL"
+
+msgid "Callback Queue"
+msgstr "Очередь обратного звонка"
+
+msgid "Engine"
+msgstr "Двигатель"
+
+msgid "Description"
+msgstr "Описание"
+
+msgid "Match"
+msgstr "Матч"
+
+msgid "No Match"
+msgstr "Ничего не найдено"
+
+msgid "Target"
+msgstr "Цель"
+
+msgid "Return"
+msgstr "Возврат"
+
+msgid "Click to continue..."
+msgstr "Щёлкните для продолжения..."
+
+msgid "No direct script access allowed"
+msgstr "Не допускается прямой доступ к скриптам"
+
+msgid "Check for Updates"
+msgstr "Проверьте обновления"
+
+msgid "Buy Me a Coffee"
+msgstr "Купи кофе для меня"
+
+msgid "Date & Time Stamp"
+msgstr "Дата и время маркировки"
+
+msgid "Displays the date and time on the graph."
+msgstr "Отображает дату и время на графике."
+
+msgid "Pan & Zoom"
+msgstr "Пан и Зум"
+
+msgid ""
+"Allows you to use pan and zoom functions. Click and hold to pan, and use the "
+"mouse wheel to zoom."
+msgstr ""
+"Позволяет использовать функции скольжения и масштабирования. Нажмите и "
+"удерживайте, чтобы скользить, и используйте колесо мыши для масштабирования."
+
+msgid "Horizontal Layout"
+msgstr "Горизонтальное расположение"
+
+msgid "Displays the dial plan in a horizontal layout."
+msgstr "Отображает план диалинга в горизонтальном расположении."
+
+msgid "Shared extension node handling"
+msgstr "Общий узел обработки расширений"
+
+msgid "None"
+msgstr "Ничего"
+
+msgid "Queues and Ring Groups Only"
+msgstr "Очереди и группы звонков"
+
+msgid "All Destinations"
+msgstr "Все направления"
+
+msgid ""
+"\"None\" displays individual extension nodes. \"Queues and Ring Groups Only\" "
+"combines them into one node. \"All\" merges all destinations into a single "
+"extension node."
+msgstr ""
+"\"None\" отображает отдельные узлы расширений. \"Колея и Группы колеи только"
+"\" объединяет их в один узел. \"Все\" объединяет все направления в единый "
+"узел расширения."
+
+msgid "Show Queue Agents"
+msgstr "Отобразить Очередь Агентов"
+
+msgid "Single"
+msgstr "Одиночный"
+
+msgid "Combine"
+msgstr "Соединить"
+
+msgid "Hide"
+msgstr "Скрыть"
+
+msgid ""
+"\"Single\" displays individual agent nodes. \"Combine\" displays all agents "
+"in a single node. \"Hide\" does not display queue agents."
+msgstr ""
+"\"Одиночный\" отображает индивидуальные узлы агентов. \"Объединить\" "
+"отображает всех агентов в одном узле. \"Скрыть\" не отображает агентов "
+"очереди."
+
+msgid "Show Dynamic Members for Queues"
+msgstr "Показать динамические участники очередей"
+
+msgid "Displays the list of dynamic agents currently assigned to the queues."
+msgstr ""
+"Отображает список динамических агентов, которые в данный момент назначены на "
+"очереди."
+
+msgid "Show Ring Group Members"
+msgstr "Показать участников группы звонков"
+
+msgid ""
+"\"Single\" displays individual member nodes. \"Combine\" displays all members "
+"in a single node. \"Hide\" does not display members."
+msgstr ""
+"\"Одиночный\" отображает отдельные узлы членов. \"Скомбинировать\" отображает "
+"всех членов в одном узле. \"Скрыть\" не отображает членов."
+
+msgid "Show Find Me Follow Me for Extensions"
+msgstr "Показать Find Me Follow Me для Расширений"
+
+msgid "Displays Find Me Follow Me data for extensions."
+msgstr ""
+"Отображает информацию о настройках \"Найди меня, следуй за мной\" для "
+"расширений."
+
+msgid "Show Extension Optional Destinations"
+msgstr "Отобразить Дополнительные Назначения Расширения (по умолчанию)"
+
+msgid ""
+"Displays and follows the optional destinations (No Answer, Busy, Not "
+"Reachable) set for the extension in the Advanced tab."
+msgstr ""
+"Отображает и следует по опциональным направлениям (недоступен, занят, "
+"отсутствует ответ) установленным для расширения в разделе \"Предосторожности"
+"\"."
+
+msgid "Show Minimal View"
+msgstr "Показать минимальный вид"
+
+msgid ""
+"Shows (default) or hides the following types of nodes: Extensions, Queue "
+"Members, Ring Group Members, Recordings, Voicemail, and Voicemail Blasting "
+"Members."
+msgstr ""
+"Отображает (по умолчанию) или скрывает следующие типы узлов: Расширения, "
+"Члены очереди, Члены группы обращения, Записи, Сообщения голосового mail и "
+"Участники рассылки сообщений голосового mail."
+
+msgid "Saved!"
+msgstr "Сохранено!"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Inbound Routes [destination]"
+msgstr "Входящие маршруты [назначение]"
+
+msgid "Time Conditions"
+msgstr "Условия времени"
+
+msgid "Call Flows"
+msgstr "Потоки звонков"
+
+msgid "Virtual Queues"
+msgstr "Виртуальные очереди"
+
+msgid "Queues"
+msgstr "Колеи"
+
+msgid "Ring Groups"
+msgstr "Группы звонков"
+
+msgid "Dynamic Routes"
+msgstr "Динамические Маршруты"
+
+msgid "Announcements"
+msgstr "Объявления"
+
+msgid "Languages"
+msgstr "Языки"
+
+msgid "Misc Applications"
+msgstr "Разное приложения"
+
+msgid "Reload"
+msgstr "Перезагрузить"
+
+msgid "Highlight Paths"
+msgstr "Выделить Пути"
+
+msgid "Choose Dial Plan"
+msgstr "Выберите план звонков"
+
+msgid "Super"
+msgstr "Отлично"
+
+msgid "High"
+msgstr "Высокий"
+
+msgid "Standard"
+msgstr "Стандартный"
+
+msgid ""
+"Exclude Node(s): Press Shift + left-click a node to exclude it and downstream "
+"paths. Click \"+\" to show the path again. Use \"Reset\" to restore the "
+"original dial plan."
+msgstr ""
+"Исключить узел(а): Нажмите Shift + щелчок по узлу, чтобы исключить его и все "
+"входящие пути. Нажмите \"+\" для повторного отображения пути. Используйте "
+"\"Сброс\", чтобы вернуться к оригинальному плану routing."
+
+msgid ""
+"Redraw from a Node: Press Ctrl (Cmd on macOS) + left-click a node to start "
+"from it. To revert, Ctrl/Cmd + left-click the parent node."
+msgstr ""
+"Перерисовать из узла: Нажмите Ctrl (Cmd на macOS) + левый клик по узлу, чтобы "
+"начать с него. Для отмены, нажмите Ctrl/Cmd + левый клик по родительскому "
+"узлу."
+
+msgid ""
+"Highlight Paths: Click Highlight Paths, then select a node or edge. Click "
+"Remove Highlights to clear."
+msgstr ""
+"Подсвечивание путей: Нажмите \"Подсвечивание путей\", затем выберите узел или "
+"ребро. Нажмите \"Удалить подсветку\" для очистки."
+
+msgid "Hover: Move your cursor over a path to highlight it."
+msgstr "Хувер: Переместите курсор над путем, чтобы подсветить его."
+
+msgid "Open Destinations: Click a destination to open it in a new tab."
+msgstr ""
+"Открыть Назначения: Нажмите на назначение, чтобы открыть его в новом окне."
+
+msgid ""
+"Open Time Groups: Click on \"Match: (timegroup)\" or \"No Match\" to view "
+"details in a new tab. Time Groups"
+msgstr ""
+"Открыть группы времени: щелкните по \"Совпадение: (timegroup)\" или \"Нет "
+"соответствия\", чтобы просмотреть детали в новой вкладке. Группы времени"
+
+msgid "Pan: Click and drag to move around the view."
+msgstr "Пан: Щелкните и перетащите, чтобы перемещаться по просмотру."
+
+msgid "Zoom: Use the mouse wheel to zoom in and out."
+msgstr ""
+"Зум: Используйте колесо мыши, чтобы увеличивать и уменьшать объекты на экране."
+
+msgid "members"
+msgstr "члены"
+
+msgid "Unlimited"
+msgstr "Безлимитный"
+
+msgid "Extension Node Status"
+msgstr "Степень активности узла расширения"
+
+msgid "Registered extension (green border)"
+msgstr "Зарегистрированное расширение (зеленая рамка)"
+
+msgid "Unregistered extension (red border)"
+msgstr "Не зарегистрированное расширение (красная рамка)"
+
+msgid "Virtual or non-extension node (no border)"
+msgstr "Виртуальный или не-разделение-на-узлы узел (без границ)"
+
+msgid "Remove Highlights"
+msgstr "Удалить Подсветку"
+
+msgid "Checking..."
+msgstr "Проверяется..."
+
+msgid "You are up to date."
+msgstr "Вы актуальны."
+
+msgid "available! Use Module Admin to update"
+msgstr "доступен! Используйте модуль администрирования для обновления"
+
+msgid "Current installed version"
+msgstr "Текущая установленная версия"
+
+msgid ""
+"could not be found. To generate the file, simply go to the recording, select "
+"the \\\"convert to\\\" wav option, and click submit."
+msgstr ""
+"не могли быть найдены. Чтобы сгенерировать файл, просто перейдите к записи, "
+"выберите опцию \\\"преобразовать в\\\" wav и нажмите кнопку присылать."
+
+msgid "No files found for language:"
+msgstr "Ни одного файла не найдено для языка:"
+
+msgid "Copy filename"
+msgstr "Скопировать имя файла"
+
+msgid "Audio"
+msgstr "Аудио"
+
+msgid "additional entries"
+msgstr "дополнительные записи"
+
+msgid "Email"
+msgstr "Электронная почта"
+
+msgid "Enabled"
+msgstr "Включено"
+
+msgid "Caller ID Number"
+msgstr "Номер звонящего"
+
+msgid "Alert Info"
+msgstr "Информация о предупреждении"
+
+msgid "CID Prefix"
+msgstr "Префикс CID"
+
+msgid "Language"
+msgstr "Russian (Russia)"
+
+msgid "DTMF Options"
+msgstr "Параметры DTMF"
+
+msgid "Enable Direct Dial"
+msgstr "Включить прямой звонок"
+
+msgid "Invalid Retries"
+msgstr "Недопустимое количество попыток"
+
+msgid "Invalid Retry Recording"
+msgstr "Недопустимая попытка повтора записи"
+
+msgid "Invalid Recording"
+msgstr "Недопустимая запись"
+
+msgid "Timeout Retries"
+msgstr "Продолжительность попыток повторной попытки"
+
+msgid "Timeout Retry Recording"
+msgstr "Таймаут перезагрузки записи"
+
+msgid "Timeout Recording"
+msgstr "Таймаут записи"
+
+msgid "Return to IVR after VM"
+msgstr "Вернуться в IVR после голосового ответа"
+
+msgid "Page Group"
+msgstr "Группа страниц"
+
+msgid "Busy Extensions"
+msgstr "Занятые расширения"
+
+msgid "Duplex"
+msgstr "Дуплекс"
+
+msgid "Queue"
+msgstr "Очередь"
+
+msgid "Agents"
+msgstr "Агенты:"
+
+msgid "Ext"
+msgstr "Экст"
+
+msgid "Retries"
+msgstr "Попытки"
+
+msgid "Retry Delay"
+msgstr "Отложенная попытка повторной отправки"
+
+msgid "Ring Group"
+msgstr "Группа звонков"
+
+msgid "List"
+msgstr "Список"
+
+msgid "Extextnsion"
+msgstr "Экстенсия"
+
+msgid "Timezone"
+msgstr "Часовой пояс"
+
+msgid "Type"
+msgstr "Тип"
+
+msgid "Calendars"
+msgstr "Календари"
+
+msgid "All"
+msgstr "Все"
+
+msgid "Events"
+msgstr "События"
+
+msgid "Expand"
+msgstr "Развернуть"
+
+msgid "Outbound CallerID"
+msgstr "Внешний номер звонящего"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "CID Options"
+msgstr "Варианты CID"
+
+msgid "Max Channels"
+msgstr "Максимальное количество каналов"
+
+msgid "Continue If Busy"
+msgstr "Продолжить, если занят"
+
+msgid "Audio Label"
+msgstr "Этикетка аудиозаписи"
+
+msgid "Bad Dest: Blacklist"
+msgstr "Плохая Цель: Чёрный список"

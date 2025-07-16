@@ -11,29 +11,48 @@ It is particularly useful for:
 - **Identifying misconfigurations** – Quickly spot and correct unintended call routing behaviors.
 - **Streamlining PBX management** – Reduce the time spent manually tracking call flows in complex systems.
 
-## Installation
+## Installation & Upgrade
 
 #### Install or Upgrade via Command Line:
 ```sh
 fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/heads/main.zip
 ```
 
-### Install or Upgrade via FreePBX Admin Panel
-1. **Log into FreePBX**, then navigate to **Admin > Module Admin**.
-2. Click **Upload Modules**.
-3. **Download (From Web)** Enter ```https://github.com/madgen78/dpviz/archive/refs/heads/main.zip``` then click **Download (From Web)**.
+#### Install or Upgrade via Web GUI
+**FreePBX, TangoPBX, IncrediblePBX users**: **Log into PBX**, then navigate to **Admin > Module Admin > Module Updates tab**.
+
+**PBXAct**: **Log into PBXAct users**, then navigate to **Modules > Updates > Module Updates tab**.
+ 
+1. Click **Upload Modules**.
+2. **Download (From Web)** Enter ```https://github.com/madgen78/dpviz/archive/refs/heads/main.zip``` then click **Download (From Web)**.
 - OR
-3. **Download the module** from the following link: [Download dpviz](https://github.com/madgen78/dpviz/archive/refs/heads/main.zip).
+2. **Download the module** from the following link: [Download dpviz](https://github.com/madgen78/dpviz/archive/refs/heads/main.zip).
     - Set the type to **"Upload (From Hard Disk)"**.
     - Click **Choose File**, select the downloaded module, then click **Upload (From Hard Disk)**.
-4. After the download or upload completes, click **Local Module Administration**.
-5. Scroll down to **Dial Plan Vizualizer** under the **Reports** section and click on it to expand.
-6. Click **Install** or **Upgrade to -version- and Enable** and then click **Process** (at the bottom of page) to complete the installation.
+3. After the download or upload completes, click **Local Module Administration**.
+4. Scroll down to **Dial Plan Vizualizer** under the **Reports** section and click on it to expand.
+5. Click **Install** or **Upgrade to -version- and Enable** and then click **Process** (at the bottom of page) to complete the installation.
+
+
+## Automatic Updates
+
+If **Automatic Module Updates** is enabled, future updates to `dpviz` will be installed automatically during the scheduled update window.
+
+If it is **disabled**, you can either check for updates manually or schedule them using `crontab` as the root user:
+
+`crontab -e` 
+
+Add the following line to check for and install updates every Saturday at 10 AM:
+
+`0  10 * * 6 fwconsole ma upgrade dpviz >> /root/dpviz.log 2>&1` 
+
+You may adjust the schedule as needed.
 
 ## Usage
 1. **Log in to your PBX** and navigate to **Reports > Dial Plan Vizualizer**.
 2. **Select or search for an Inbound Route, Time Condition, Call Flow, IVR, Queue, Ring Group, Dynamic Route, Announcement, Language, or Misc Application** using the dropdown menu.
 3. **Labels** are placed on the right (vertical) or above (horizontal) the paths drawn.
+4. **Registration Status** is shown by the node border color: **green** (online), **red** (offline), or **black** (virtual or non-extension).
 
 ### Highlighting Call Paths
 - Click **Highlight Paths**, then select a node or edge to highlight it (links are inactive).
@@ -50,11 +69,28 @@ fwconsole ma downloadinstall https://github.com/madgen78/dpviz/archive/refs/head
 - **Hover** over a path to highlight the path between destinations.
 - **Click** on a destination to open it in a new tab.
 - **Click** on a "Match: (timegroup)" or "NoMatch" to open it in a new tab.
-- **Export** the dial plan with standard or custom filename. Choose between high and standard quality. 
+- **Export** the dial plan with standard or custom filename. Choose between high and standard quality.
 
-### Dependencies
-- **FreePBX >= 14.0**
-- **PHP >= 5.4.0**
+## Dependencies
+- **PHP >= 5.3.0**
+
+## Supported PBXs
+- **FreePBX 13 - 17**
+- **PBXact**
+- **TangoPBX**
+- **IncrediblePBX 2027 & 2025**
+
+## Supported Languange Translations
+- **Chinese (Simplified)**
+- **Dutch (Netherlands)**
+- **French**
+- **German**
+- **Italian**
+- **Japanese**
+- **Portuguese (Brazil)**
+- **Portuguese (Portugal)**
+- **Russian**
+- **Spanish (Spain)**
 
 ## License
 This module's code is licensed under [GPLv3+](http://www.gnu.org/licenses/gpl-3.0.txt).

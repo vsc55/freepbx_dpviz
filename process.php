@@ -3,6 +3,20 @@ if (!defined('FREEPBX_IS_AUTH')) { die('No direct script access allowed'); }
 header('Content-Type: application/json; charset=utf-8');
 $input = json_decode(file_get_contents('php://input'), true);
 
+if (!empty($_SESSION['lang'])){
+	$locale=$_SESSION['lang'];
+	$baseLocale = preg_replace('/\..*$/', '', $locale);
+
+	putenv("LC_ALL=$locale");
+	putenv("LANGUAGE=$baseLocale");
+	setlocale(LC_ALL, $locale);
+
+	// Set up gettext
+	bindtextdomain("dpviz", "/var/www/html/admin/modules/dpviz/i18n");
+	bind_textdomain_codeset("dpviz", "UTF-8");
+	textdomain("dpviz");
+}
+
 // Basic check
 
 if (!is_array($input)) {
@@ -17,7 +31,6 @@ $skip = isset($input['skip']) ? $input['skip'] : array();
 
 if ($ext==$jump){$jump='';}
 
-
 // load graphviz library
 require_once 'graphviz/src/Alom/Graphviz/InstructionInterface.php';
 require_once 'graphviz/src/Alom/Graphviz/BaseInstruction.php';
@@ -29,6 +42,7 @@ require_once 'graphviz/src/Alom/Graphviz/Graph.php';
 require_once 'graphviz/src/Alom/Graphviz/Digraph.php';
 require_once 'graphviz/src/Alom/Graphviz/AttributeSet.php';
 require_once 'graphviz/src/Alom/Graphviz/Subgraph.php';
+require_once 'graphviz/src/Alom/Graphviz/RawText.php';
 
 //options
 $options=\FreePBX::Dpviz()->getOptions();
@@ -89,7 +103,7 @@ $inroutes=dpp_load_incoming_routes();
 $dproute['extension']= $ext;
 
 	if (empty($dproute)) {
-		$header = "<div><h2>Error: Could not find inbound route for ".$ext."</h2></div>";
+		$header = "<div><h2>" . _('Error: Could not find inbound route for') ." ".$ext."</h2></div>";
 	}else{
 		dpp_load_tables($dproute,$options);   # adds data for time conditions, IVRs, etc.
 		
@@ -111,8 +125,8 @@ $dproute['extension']= $ext;
 		*/
 		if (!empty($skip) && empty($jump)){
 			$dproute['dpgraph']->node('reset', array(
-				'label' => "  Reset",
-				'tooltip' => "Reset",
+				'label' => "   "._('Reset'),
+				'tooltip' => _('Reset'),
 				'shape' => 'larrow',
 				'URL' => '#',
 				'fontcolor' => '#555555',
@@ -126,7 +140,7 @@ $dproute['extension']= $ext;
 		$gtext=json_encode($gtext);
 
 
-		$header='<h2>Dial Plan For <span id="headerSelected"></span></h2>';
+		$header='<h2><span id="headerSelected"></span></h2>';
 		if ($datetime==1){$header.= "<h6>".date('Y-m-d H:i:s')."</h6>";}
 
 		$header .= '
@@ -141,7 +155,7 @@ $dproute['extension']= $ext;
 						let name = sessionStorage.getItem("selectedName");
 						const headerSelected = document.getElementById("headerSelected");
 						if (headerSelected) {
-							headerSelected.textContent = name || "No name selected";
+							headerSelected.textContent = name || "'._('No name selected').'";
 						}
 					}
 					updateHeaderSelected();
@@ -240,15 +254,16 @@ $langOption= isset($options['lang']) ? $options['lang'] : 'en';
 $minimal= isset($options['minimal']) ? $options['minimal'] : '1';
 $stop=false; //reset on new call
 
+if (!isset($route['parent_edge_code'])){$route['parent_edge_code']='';}
+	
 if ($minimal){
-	$patterns = [
+	$patterns = array(
     '/^play-system-recording/i',
     '/^from-did-direct/i',
     '/^qmember/i',
 		'/^rgmember/i',
 		'/^ext-local/i',
-		'/^ext-vqueues/i'
-	];
+	);
 	
 	foreach ($patterns as $pattern) {
 			if (preg_match($pattern, $destination)) {
@@ -280,7 +295,8 @@ if ($minimal){
   if (! isset ($route['dpgraph'])) {
 		
     $route['dpgraph'] = new Alom\Graphviz\Digraph('"reset'.$route['extension'].'"');
-		$route['dpgraph']->attr('graph',array('rankdir'=>$direction,'tooltip'=>' '));
+		//$route['dpgraph']->attr('graph',array('rankdir'=>$direction,'ordering'=>'in','tooltip'=>' ','ranksep'=>'.50 equally','nodesep'=>'.30'));		
+		$route['dpgraph']->attr('graph',array('rankdir'=>$direction,'ordering'=>'in','tooltip'=>' '));
   }
 	
   $dpgraph = $route['dpgraph'];
@@ -295,8 +311,8 @@ if ($minimal){
   if ($destination == '') {
 		
 		$dpgraph->node("reset".$route['extension'], array(
-			'label' => "  Reset",
-			'tooltip' => "Reset",
+			'label' => "   "._('Reset'),
+			'tooltip' => _('Reset'),
 			'shape' => 'larrow',
 			'URL' => '#',
 			'fontcolor' => '#555555',
@@ -324,7 +340,7 @@ if ($minimal){
 			$route['parent_edge_label'] = ' ';
       dpp_follow_destinations($route, $optional,'',$options);
     }elseif ($route['destination'] != '') {
-			$route['parent_edge_label'] = ' Always';
+			$route['parent_edge_label'] = " "._('Always');
       dpp_follow_destinations($route, $route['destination'].','.$langOption,'',$options);
     }
     return;
@@ -373,32 +389,28 @@ if ($minimal){
 			$edge->attribute('labeltooltip',sanitizeLabels($ptxt));
 			$edge->attribute('edgetooltip',sanitizeLabels($ptxt));
 			
-			if (preg_match("/^( Match| No Match)/", $route['parent_edge_label'])) {
+			if (preg_match("/^(edgelink)/", $route['parent_edge_code'])){
 				$edge->attribute('URL', $route['parent_edge_url']);
 				$edge->attribute('target', $route['parent_edge_target']);
-				$edge->attribute('labeltooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
-				$edge->attribute('edgetooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
+				if (isset($route['parent_edge_labeltooltip'])){
+					$edge->attribute('labeltooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
+					$edge->attribute('edgetooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
+				}
+				
+				$route['parent_edge_code']='';
 			}
-			if (preg_match("/^( Allowlist| Disallowed by Blacklist)/", $route['parent_edge_label'])) {
-				$edge->attribute('URL', $route['parent_edge_url']);
-				$edge->attribute('target', $route['parent_edge_target']);
-				$edge->attribute('labeltooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
-				$edge->attribute('edgetooltip',sanitizeLabels($route['parent_edge_labeltooltip']));
-			}
-			if (preg_match("/^( Disallowed by Allowlist)/", $route['parent_edge_label'])) {
-				$edge->attribute('URL', $route['parent_edge_url']);
-				$edge->attribute('target', $route['parent_edge_target']);
-				$edge->attribute('labeltooltip',sanitizeLabels($route['parent_edge_labeltooltip_disallow']));
-				$edge->attribute('edgetooltip',sanitizeLabels($route['parent_edge_labeltooltip_disallow']));
-			}																																						
+			
 			if (preg_match("/^( IVR Break| Queue Callback)./", $route['parent_edge_label'])){
 				$edge->attribute('style', 'dashed');
 			}
 			if (preg_match("/^( Callback | Destination after)./", $route['parent_edge_label'])){
 				$edge->attribute('style', 'dotted');
 			}
-			if (preg_match("/^( Recording)/", $route['parent_edge_label'])){
+			
+			
+			if (preg_match("/^(recording)/", $route['parent_edge_code'])){
 				$edge->attribute('dir', 'back');
+				$route['parent_edge_code']='';
 			}
 			
 			//start from node
@@ -445,7 +457,7 @@ if ($minimal){
 				$announcement="None";
 			}
 		
-			$label=sanitizeLabels($an['description'])."\nRecording: ".sanitizeLabels($announcement);
+			$label=sanitizeLabels($an['description'])."\n". _('Recording').": ".sanitizeLabels($announcement);
 			$tooltip='';
 			makeNode($module,$annum,$label,$tooltip,$node);
 			if ($stop){
@@ -458,13 +470,14 @@ if ($minimal){
 			}
 			
 			if ($an['post_dest'] != '') {
-				$route['parent_edge_label'] = ' Continue';
+				$route['parent_edge_label'] = " "._('Continue');
 				$route['parent_node'] = $node;
 				dpp_follow_destinations($route, $an['post_dest'].','.$anlang,'',$options);
 			}
 			
 			if (isset($route['recordings'][$recID])){
-				$route['parent_edge_label']= ' Recording';
+				$route['parent_edge_label']= " "._('Recording');
+				$route['parent_edge_code']= 'recording';
 				$route['parent_node'] = $node;
 				dpp_follow_destinations($route, 'play-system-recording,'.$recordingId.',1,'.$anlang,'',$options);
 			}
@@ -478,15 +491,22 @@ if ($minimal){
 		#
   } elseif (preg_match("/^app-blackhole,(hangup|congestion|busy|zapateller|musiconhold|ring|no-service),(\d+)/", $destination, $matches)) {
 		$blackholetype = $matches[1];
-		$blackholetype = str_replace('musiconhold','Music On Hold',$blackholetype);
-		$blackholetype = str_replace('ring','Play Ringtones',$blackholetype);
-		$blackholetype = str_replace('no-service','Play No Service Message',$blackholetype);
-		$blackholetype = ucwords(str_replace('-', ' ', $blackholetype));
+		
+		$translatedMap = array(
+			'musiconhold' => _('Music On Hold'),
+			'ring'        => _('Play Ringtones'),
+			'no-service'  => _('Play No Service Message'),
+			'busy'        => _('Busy'),
+			'hangup'      => _('Hang Up'),
+			'congestion'  => _('Congestion'),
+			'zapateller'  => 'Zapateller',
+		);
+		
 		$blackholeother = $matches[2];
 		$previousURL=$route['parent_node']->getAttribute('URL', '');
 
-		$node->attribute('label', 'Terminate Call: '.$blackholetype);
-		$node->attribute('tooltip', 'Terminate Call: '.$blackholetype);
+		$node->attribute('label', _('Terminate Call').': '.$translatedMap[$blackholetype]);
+		$node->attribute('tooltip', _('Terminate Call').': '.$translatedMap[$blackholetype]);
 		$node->attribute('URL', $previousURL);
     $node->attribute('target', '_blank');
 		$node->attribute('shape', 'invhouse');
@@ -504,8 +524,11 @@ if ($minimal){
     $daynightother = $matches[2];
 		$daynightLang=$matches[3];
 		
+
 		if (isset($route['daynight'][$daynightnum])){
-			$daynight = $route['daynight'][$daynightnum];
+			$daynight = array_reverse($route['daynight'][$daynightnum]);
+			//array_reverse($daynight);
+			
 			
 			#feature code exist?
 			if ( isset($route['featurecodes']['*28'.$daynightnum]) ){
@@ -521,19 +544,21 @@ if ($minimal){
 			$C ='/usr/sbin/asterisk -rx "database show DAYNIGHT/C'.$daynightnum.'" | cut -d \':\' -f2 | tr -d \' \' | head -1';
 			exec($C, $current_daynight);
 			$dactive = $nactive = "";
-			if ($current_daynight[0]=='DAY'){$dactive="(Active)";}else{$nactive="(Active)";}
+			if ($current_daynight[0]=='DAY'){$dactive="("._('Active').")";}else{$nactive="("._('Active').")";}
+			
+			
 
 			foreach ($daynight as $d){
-				if (isset($d['dmode']) && $d['dmode'] == 'day' && !$stop) {
-					 $route['parent_edge_label'] = ' Day Mode '.$dactive;
-					 $route['parent_node'] = $node;
-					 dpp_follow_destinations($route, $d['dest'].','.$daynightLang,'',$options);
-				}elseif (isset($d['dmode']) && $d['dmode'] == 'night' && !$stop) {
-						$route['parent_edge_label'] = ' Night Mode '.$nactive;
-						$route['parent_node'] = $node;
-						dpp_follow_destinations($route, $d['dest'].','.$daynightLang,'',$options);
+				if (isset($d['dmode']) && $d['dmode'] == 'night' && !$stop) {
+					$route['parent_edge_label'] = " "._('Night Mode') . ' '.$nactive;
+					$route['parent_node'] = $node;
+					dpp_follow_destinations($route, $d['dest'].','.$daynightLang,'',$options);
+				}elseif (isset($d['dmode']) && $d['dmode'] == 'day' && !$stop) {
+					$route['parent_edge_label'] = " "._('Day Mode') . ' '.$dactive;
+					$route['parent_node'] = $node;
+					dpp_follow_destinations($route, $d['dest'].','.$daynightLang,'',$options);
 				}elseif ($d['dmode']=="fc_description"){
-						$label=sanitizeLabels($d['dest']) ."\nFeature Code: ".$code;
+					$label=sanitizeLabels($d['dest']) ."\n"._('Feature Code').": ".$code;
 				}
 			}
 			$tooltip='';
@@ -564,7 +589,7 @@ if ($minimal){
 			$callback = $route['callback'][$callbackId];
 			
 			$label=sanitizeLabels($callback['description']);
-			$tooltip=sanitizeLabels($callback['description'])."\nCallback Number: ".$callback['callbacknum']."\nDelay Before Callback: ".$callback['sleep']."\nCaller ID: ".$callback['callerid']."\nTimeout: ".$callback['timeout'];
+			$tooltip=sanitizeLabels($callback['description'])."\n"._('Callback Number').": ".$callback['callbacknum']."\n"._('Delay Before Callback').": ".$callback['sleep']."\n"._('Caller ID').": ".$callback['callerid']."\n"._('Timeout').": ".$callback['timeout'];
 			
 			
 			makeNode($module,$callbackId,$label,$tooltip,$node);
@@ -577,7 +602,7 @@ if ($minimal){
 				return;
 			}
 			
-			$route['parent_edge_label']= " Destination after Callback";
+			$route['parent_edge_label']= _('Destination after Callback');
 			$route['parent_node'] = $node;
 			dpp_follow_destinations($route, $callback['destination'].','.$callbackLang,'',$options);
 		}else{
@@ -597,8 +622,8 @@ if ($minimal){
 		if (isset($route['callrecording'][$callrecID])){
 			$callRec = $route['callrecording'][$callrecID];
 			$callMode= ucfirst($callRec['callrecording_mode']);
-			$callMode = str_replace("Dontcare", "Don't Care", $callMode);
-			$label=sanitizeLabels($callRec['description'])."\nMode: ".$callMode;
+			$callMode = str_replace("Dontcare", _('Don\'t Care'), $callMode);
+			$label=sanitizeLabels($callRec['description'])."\n"._('Mode').": ".$callMode;
 			$tooltip='';
 			
 			makeNode($module,$callrecID,$label,$tooltip,$node);
@@ -611,7 +636,7 @@ if ($minimal){
 				return;
 			}
 			
-			$route['parent_edge_label']= " Continue";
+			$route['parent_edge_label']= " "._('Continue');
 			$route['parent_node'] = $node;
 			dpp_follow_destinations($route, $callRec['dest'].','.$callLang,'',$options);
 		}else{
@@ -659,7 +684,7 @@ if ($minimal){
 			}
 			
 			if ($directory['invalid_destination']!=''){
-				 $route['parent_edge_label']= ' Invalid Input';
+				 $route['parent_edge_label']= " "._('Invalid Input');
 				 $route['parent_node'] = $node;
 				 dpp_follow_destinations($route, $directory['invalid_destination'].','.$directoryLang,'',$options);
 			}
@@ -704,7 +729,7 @@ if ($minimal){
 				$announcement="None";
 			}
 			
-			$label=sanitizeLabels($dynrt['name'])."\nAnnouncement: ".sanitizeLabels($announcement);
+			$label=sanitizeLabels($dynrt['name'])."\n"._('Announcement').": ".sanitizeLabels($announcement);
 			$tooltip='';
 			makeNode($module,$dynnum,$label,$tooltip,$node);
 			if ($stop){
@@ -721,7 +746,7 @@ if ($minimal){
 				foreach ($dynrt['routes'] as $selid => $ent) {
 					$desc = isset($ent['description']) ? $ent['description'] : '';
 					
-					$route['parent_edge_label']= "  Match: ".sanitizeLabels($ent['selection'])."\n".$desc;
+					$route['parent_edge_label']= " "._('Match').": ".sanitizeLabels($ent['selection'])."\n".$desc;
 					$route['parent_node'] = $node;
 					dpp_follow_destinations($route, $ent['dest'].','.$dynLang,'',$options);
 				}
@@ -729,25 +754,26 @@ if ($minimal){
 			
 			if (isset($route['recordings'][$recID])){
 				$route['parent_node'] = $node;
-				$route['parent_edge_label']= ' Recording';
+				$route['parent_edge_label']= " "._('Recording');
+				$route['parent_edge_code']= 'recording';
 				dpp_follow_destinations($route, 'play-system-recording,'.$recordingId.',1,'.$dynLang,'',$options);
 				
 			}
 			
 			//are the invalid and default destinations the same?
 			if ($dynrt['invalid_dest'] != '' && $dynrt['invalid_dest']==$dynrt['default_dest']){
-				 $route['parent_edge_label']= ' Invalid Input, Default ('.$dynrt['timeout'].' secs)';
+				 $route['parent_edge_label']= " ".sprintf(_('Invalid Input, Default (%s) secs'), $dynrt['timeout']);
 				 $route['parent_node'] = $node;
 				 dpp_follow_destinations($route, $dynrt['invalid_dest'].','.$dynLang,'',$options);
 			}else{
 				if ($dynrt['invalid_dest'] != '') {
 					$route['parent_node'] = $node;
-					$route['parent_edge_label']= ' Invalid Input';
+					$route['parent_edge_label']= " "._('Invalid Input');
 					dpp_follow_destinations($route, $dynrt['invalid_dest'].','.$dynLang,'',$options);
 				}
 				if ($dynrt['default_dest'] != '') {
 					$route['parent_node'] = $node;
-					$route['parent_edge_label']= ' Default ('.$dynrt['timeout'].' secs)';
+					$route['parent_edge_label']= " ". sprintf(_('Default (%s) secs'), $dynrt['timeout']);
 					dpp_follow_destinations($route, $dynrt['default_dest'].','.$dynLang,'',$options);
 				}
 			}
@@ -777,44 +803,44 @@ if ($minimal){
 					$route['extensions'][$extnum]['reg_status']=$status;
 				}
 				$registered=$route['extensions'][$extnum]['reg_status'];
-				if ($registered){$online='Yes';}else{$online='No';}
+				if ($registered){$online=_('Yes');}else{$online=_('No');}
 				
 				$node->attribute('color', $registered ? 'green' : 'red');
 				
-				$regStatus="\n\nRegistration: ".$online;
-				$regStatus.="\nTech: ".strtoupper($extension['tech']);
+				$regStatus="\n\n"._('Registration').": ".$online;
+				$regStatus.="\n"._('Tech').": ".strtoupper($extension['tech']);
 			}else{
-				$regStatus="\n\nTech: ".ucfirst($extension['tech']);
+				$regStatus="\n\n"._('Tech').": ".ucfirst($extension['tech']);
 			}
 			
 			if (isset($extension['mailbox'])){
 				$extemail= $extension['mailbox']['email'];
 				$extemail= str_replace(",",",\n",$extemail);
 				
-				$mailboxLabel="\n\nVoicemail: Enabled";
-				$mailboxLabel.="\nEmail: ".$extemail;
+				$mailboxLabel="\n\n"._('Voicemail: Enabled');
+				$mailboxLabel.="\n"._('Email').": ".$extemail;
 				foreach ($extension['mailbox']['options'] as $m=>$mm){
 					$mailboxLabel.="\n".ucfirst($m).": ".ucfirst($mm);
 				}
 				
 			}else{
 				$extemail='';
-				$mailboxLabel="\n\nVoicemail: Disabled";
+				$mailboxLabel="\n\n"._('Voicemail: Disabled');
 			}
 			
 			if (isset($extension['fmfm'])){
 				if ($extension['fmfm']['ddial']=='DIRECT'){
-					$confirm = ($extension['fmfm']['needsconf'] == 'CHECKED') ? "Yes" : "No";
-					$fmfmLabel="\n\nFMFM: Enabled\nInitial Ring Time: ".secondsToTimes($extension['fmfm']['pre_ring'])."\nRing Time: ".secondsToTimes($extension['fmfm']['grptime'])."\nFollow-Me List: ".$extension['fmfm']['grplist']."\nConfirm Calls: ".$confirm;
+					$confirm = ($extension['fmfm']['needsconf'] == 'CHECKED') ? _('Yes') : _('No');
+					$fmfmLabel="\n\nFMFM: "._('Enabled')."\n"._('Initial Ring Time').": ".secondsToTimes($extension['fmfm']['pre_ring'])."\n"._('Ring Time').": ".secondsToTimes($extension['fmfm']['grptime'])."\n"._('Follow-Me List').": ".$extension['fmfm']['grplist']."\n"._('Confirm Calls').": ".$confirm;
 				}else{
-					$fmfmLabel="\n\nFMFM: Disabled";
+					$fmfmLabel="\n\nFMFM:"._('Disabled');
 				}
 			}else{
 				$fmfmLabel='';
 			}
 
-			$node->attribute('label', 'Extension: '.$extnum.' '.sanitizeLabels($extname)."\n".sanitizeLabels($extemail));
-			$node->attribute('tooltip', "Extension: ".$extnum."\nName: ".sanitizeLabels($extname).$regStatus.$mailboxLabel.$fmfmLabel);
+			$node->attribute('label', _('Extension').": ".$extnum." ".sanitizeLabels($extname)."\n".sanitizeLabels($extemail));
+			$node->attribute('tooltip', _('Extension').": ".$extnum."\n"._('Name').": ".sanitizeLabels($extname).$regStatus.$mailboxLabel.$fmfmLabel);
 			$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$extnum));
 			$node->attribute('target', '_blank');
 			
@@ -832,7 +858,7 @@ if ($minimal){
 						}
 						
 						if (isset($extension['fmfm']['postdest']) && $extension['fmfm']['postdest']!='ext-local,'.$extnum.',dest'){
-							$route['parent_edge_label'] = ' FMFM No Answer';
+							$route['parent_edge_label'] = " FMFM "._('No Answer');
 							$route['parent_node'] = $node;
 							dpp_follow_destinations($route,$extension['fmfm']['postdest'].','.$extLang,'',$options);
 						}
@@ -857,7 +883,7 @@ if ($minimal){
 					$extension['noanswer_dest'] === $extension['chanunavail_dest']
 			) {
 					// All three are equal
-					$route['parent_edge_label'] = ' No Answer, Busy, Not Reachable';
+					$route['parent_edge_label'] = " "._('No Answer, Busy, Not Reachable');
 					$route['parent_node'] = $node;
 					dpp_follow_destinations($route, $extension['noanswer_dest'].','.$extLang,'',$options);
 			} elseif (
@@ -866,13 +892,13 @@ if ($minimal){
 			) {
 				if (!empty($extension['noanswer_dest'])) {
 					// No Answer and Busy are the same, but Not Reachable is different
-					$route['parent_edge_label'] = ' No Answer & Busy';
+					$route['parent_edge_label'] = " "._('No Answer & Busy');
 					$route['parent_node'] = $node;
 					dpp_follow_destinations($route, $extension['noanswer_dest'].','.$extLang,'',$options);
 				}
 					//Not Reachable
 					if (!empty($extension['chanunavail_dest'])) {
-							$route['parent_edge_label'] = ' Not Reachable';
+							$route['parent_edge_label'] = " "._('Not Reachable');
 							$route['parent_node'] = $node;
 							dpp_follow_destinations($route, $extension['chanunavail_dest'].','.$extLang,'',$options);
 					}
@@ -882,13 +908,13 @@ if ($minimal){
 			) {
 				if (!empty($extension['noanswer_dest'])) {
 					// No Answer and Not Reachable are the same
-					$route['parent_edge_label'] = ' No Answer & Not Reachable';
+					$route['parent_edge_label'] = " "._('No Answer & Not Reachable');
 					$route['parent_node'] = $node;
 					dpp_follow_destinations($route, $extension['noanswer_dest'].','.$extLang,'',$options);
 				}
 					//Busy
 					if (!empty($extension['busy_dest'])) {
-							$route['parent_edge_label'] = ' Busy';
+							$route['parent_edge_label'] = " "._('Busy');
 							$route['parent_node'] = $node;
 							dpp_follow_destinations($route, $extension['busy_dest'].','.$extLang,'',$options);
 					}
@@ -898,30 +924,30 @@ if ($minimal){
 			) {
 				if (!empty($extension['busy_dest'])) {
 					// Busy and Not Reachable are the same
-					$route['parent_edge_label'] = ' Busy & Not Reachable';
+					$route['parent_edge_label'] = " "._('Busy & Not Reachable');
 					$route['parent_node'] = $node;
 					dpp_follow_destinations($route, $extension['busy_dest'].','.$extLang,'',$options);
 				}
 					//No Answer
 					if (!empty($extension['noanswer_dest'])) {
-							$route['parent_edge_label'] = ' No Answer';
+							$route['parent_edge_label'] = " "._('No Answer');
 							$route['parent_node'] = $node;
 							dpp_follow_destinations($route, $extension['noanswer_dest'].','.$extLang,'',$options);
 					}
 			} else {
 					// All are different
 					if (!empty($extension['noanswer_dest'])) {
-							$route['parent_edge_label'] = ' No Answer';
+							$route['parent_edge_label'] = " "._('No Answer');
 							$route['parent_node'] = $node;
 							dpp_follow_destinations($route, $extension['noanswer_dest'].','.$extLang,'',$options);
 					}
 					if (!empty($extension['busy_dest'])) {
-							$route['parent_edge_label'] = ' Busy';
+							$route['parent_edge_label'] = " "._('Busy');
 							$route['parent_node'] = $node;
 							dpp_follow_destinations($route, $extension['busy_dest'].','.$extLang,'',$options);
 					}
 					if (!empty($extension['chanunavail_dest'])) {
-							$route['parent_edge_label'] = ' Not Reachable';
+							$route['parent_edge_label'] = " "._('Not Reachable');
 							$route['parent_node'] = $node;
 							dpp_follow_destinations($route, $extension['chanunavail_dest'].','.$extLang,'',$options);
 					}
@@ -954,8 +980,8 @@ if ($minimal){
 		
 		$num = $matches[1];
 		$numcid = $matches[2];
-		$numLang= $matches[4];
-		
+		$numLang= $matches[4];		
+	
 		$allowCheck = 0;
 		$checkAModule=\FreePBX::Modules()->checkStatus("allowlist");
 		if ($checkAModule){
@@ -981,12 +1007,12 @@ if ($minimal){
 		}
 		
 		$didTooltip=$num.$numcidd."\n";
-		$didTooltip.= !empty($incoming['cidnum']) ? "Caller ID Number= " . $incoming['cidnum']."\n" : "";
-		$didTooltip.= !empty($incoming['description']) ? "Description= " . $incoming['description']."\n" : "";
-		$didTooltip.= !empty($incoming['alertinfo']) ? "Alert Info= " . $incoming['alertinfo']."\n" : "";
-		$didTooltip.= !empty($incoming['grppre']) ? "CID Prefix= " . $incoming['grppre']."\n" : "";
-		$didTooltip.= !empty($incoming['mohclass']) ? "MOH Class= " . $incoming['mohclass']."\n" : "";
-		$didTooltip.= !empty($incoming['language']) ? "Language= " . $incoming['language']."\n" : "";
+		$didTooltip.= !empty($incoming['cidnum']) ? _('Caller ID Number').": " . $incoming['cidnum']."\n" : "";
+		$didTooltip.= !empty($incoming['description']) ? _('Description').": " . $incoming['description']."\n" : "";
+		$didTooltip.= !empty($incoming['alertinfo']) ? _('Alert Info').": " . $incoming['alertinfo']."\n" : "";
+		$didTooltip.= !empty($incoming['grppre']) ? _('CID Prefix').": " . $incoming['grppre']."\n" : "";
+		$didTooltip.= !empty($incoming['mohclass']) ? _('Music on hold class').": " . $incoming['mohclass']."\n" : "";
+		$didTooltip.= !empty($incoming['language']) ? _('Language').": " . $incoming['language']."\n" : "";
 		
 		$node->attribute('label', sanitizeLabels($didLabel));
 		$node->attribute('tooltip',sanitizeLabels($didTooltip));
@@ -1006,15 +1032,15 @@ if ($minimal){
 				return;
 			}
 		
-		if ($blackCheck){
+		if ($blackCheck && !$minimal){
 			$blackList = \FreePBX::Blacklist()->getBlacklist();
 			$total=count($blackList);
 			if ($total > 1){
 				$blackDest = \FreePBX::Blacklist()->destinationGet();
 				$blockUnknown = \FreePBX::Blacklist()->blockunknownGet();
-				$block = $blockUnknown ? "Yes" : "No";
-				$tooltip="\nBlock Unknown/Blocked Caller ID: ".$block;
-				$tooltip.="\n\nNumber: Description\n";
+				$block = $blockUnknown ? _('Yes') : _('No');
+				$tooltip="\n"._('Block Unknown/Blocked Caller ID').": ".$block;
+				$tooltip.="\n\n"._('Number: Description')."\n";
 				
 				$i=0;
 				
@@ -1024,18 +1050,18 @@ if ($minimal){
 					$tooltip.=$b['number'].": ".sanitizeLabels($b['description'])."\n";
 					
 					if ($i >= 25 && $i < $total - 1){
-						$tooltip.="...";
+						$tooltip.="...\n". ($total - 25) ." "._('additional entries');
 						break;
 					}
 					$i++;
 				}
 				
-				$edgeLabel=" Blacklist";
-				
-				$route['parent_edge_label'] =  " Disallowed by Blacklist";
+				$edgeLabel=" "._('Blacklist');
+				$route['parent_edge_code']='edgelink';
+				$route['parent_edge_label'] = " "._('Disallowed by Blacklist');
 				$route['parent_edge_url'] = htmlentities('/admin/config.php?display=blacklist');
 				$route['parent_edge_target'] = '_blank';
-				$route['parent_edge_labeltooltip']=" Click to edit Blacklist\n".$tooltip;
+				$route['parent_edge_labeltooltip']=" "._('Click to edit Blacklist')."\n".$tooltip;
 				$route['parent_node'] = $node;
 				if ($blackDest){
 					dpp_follow_destinations($route, $blackDest.','.$numLang,'',$options);
@@ -1048,7 +1074,7 @@ if ($minimal){
 		if ($allowCheck && !empty($allowList)){
 			$allowDest = \FreePBX::Allowlist()->destinationGet();
 
-			$tooltip="\nNumber: Description\n";
+			$tooltip="\n"._('Number: Description')."\n";
 			$i=0;
 			$total=count($allowList);
 			foreach ($allowList as $a){
@@ -1056,25 +1082,32 @@ if ($minimal){
 				$tooltip.=$a['number'].": ".sanitizeLabels($a['description'])."\n";
 				
 				if ($i >= 25 && $i < $total - 1){
-					$tooltip.="...";
+					$tooltip.="...\n ". ($total - 25) ." "._('additional entries');
 					break;
 				}
 				$i++;
 			}
 				
 				
-			$edgeLabel=" Allowlist";
-			
-			$route['parent_edge_label'] =  " Disallowed by Allowlist";
+			$edgeLabel=" "._('Allowlist');
+			$route['parent_edge_code']='edgelink';
+			$route['parent_edge_label'] =" "._('Disallowed by Allowlist');
 			$route['parent_edge_url'] = htmlentities('/admin/config.php?display=allowlist');
 			$route['parent_edge_target'] = '_blank';
-			$route['parent_edge_labeltooltip_disallow']=" Click to edit Allowlist\n";
-			$route['parent_edge_labeltooltip']=" Click to edit Allowlist\n".$tooltip;
+			$route['parent_edge_labeltooltip']=" "._('Click to edit Allowlist')."\n";
+			
 			$route['parent_node'] = $node;
 			dpp_follow_destinations($route, $allowDest.','.$numLang,'',$options);
 		
 		}else{
-			$edgeLabel=" Always";
+			$edgeLabel=" "._('Always');
+		}
+		
+		if ($allowCheck && !empty($allowList)){
+			$route['parent_edge_code']='edgelink';
+			$route['parent_edge_url'] = htmlentities('/admin/config.php?display=allowlist');
+			$route['parent_edge_target'] = '_blank';
+			$route['parent_edge_labeltooltip']=" "._('Click to edit Allowlist')."\n".$tooltip;
 		}
 		
 		$route['parent_edge_label']= $edgeLabel;
@@ -1105,7 +1138,7 @@ if ($minimal){
 				$ivrRecName="None";
 			}
 			
-			$label=sanitizeLabels($ivr['name'])."\nAnnouncement: ".sanitizeLabels($ivrRecName);
+			$label=sanitizeLabels($ivr['name'])."\n"._('Announcement').": ".sanitizeLabels($ivrRecName);
 			if ($ivr['directdial']=='ext-local'){
 				$ddial="Enabled";
 			}elseif (is_numeric($ivr['directdial'])){
@@ -1118,7 +1151,7 @@ if ($minimal){
 			}else{
 				$retvm="Yes";
 			}
-			$tooltip="IVR DTMF Options\nEnable Direct Dial: ".$ddial."\nTimeout: ".secondsToTimes($ivr['timeout_time'])."\nInvalid Retries: ".$ivr['invalid_loops']."\nInvalid Retry Recording: ".findRecording($route,$ivr['invalid_retry_recording'])."\nInvalid Recording: ".findRecording($route,$ivr['invalid_recording'])."\nTimeout Retries: ".$ivr['timeout_loops']."\nTimeout Retry Recording: ".findRecording($route,$ivr['timeout_retry_recording'])."\nTimeout Recording: ".findRecording($route,$ivr['timeout_recording'])."\nReturn to IVR after VM: ".$retvm."\n";
+			$tooltip="IVR "._('DTMF Options')."\n"._('Enable Direct Dial').": ".$ddial."\n"._('Timeout').": ".secondsToTimes($ivr['timeout_time'])."\n"._('Invalid Retries').": ".$ivr['invalid_loops']."\n"._('Invalid Retry Recording').": ".findRecording($route,$ivr['invalid_retry_recording'])."\n"._('Invalid Recording').": ".findRecording($route,$ivr['invalid_recording'])."\n"._('Timeout Retries').": ".$ivr['timeout_loops']."\n"._('Timeout Retry Recording').": ".findRecording($route,$ivr['timeout_retry_recording'])."\n"._('Timeout Recording').": ".findRecording($route,$ivr['timeout_recording'])."\n"._('Return to IVR after VM').": ".$retvm."\n";
 			
 			makeNode($module,$inum,$label,$tooltip,$node);
 			if ($stop){
@@ -1134,7 +1167,8 @@ if ($minimal){
 			# timeout_destination, and the selection targets
 			if (isset($route['recordings'][$recID])){
 				$route['parent_node'] = $node;
-				$route['parent_edge_label']= ' Recording';
+				$route['parent_edge_label']=" "._('Recording');
+				$route['parent_edge_code']= 'recording';
 				dpp_follow_destinations($route, 'play-system-recording,'.$recordingId.',1,'.$ilang,'',$options);
 				
 			}
@@ -1144,7 +1178,7 @@ if ($minimal){
 				ksort($ivr['entries']);
 				foreach ($ivr['entries'] as $selid => $ent) {
 					
-					$route['parent_edge_label']= ' Selection '.$ent['selection'];
+					$route['parent_edge_label']= " ".sprintf(_('Selection %s'), $ent['selection']);
 					$route['parent_node'] = $node;
 					dpp_follow_destinations($route, $ent['dest'].','.$ilang,'',$options);
 				}
@@ -1153,18 +1187,18 @@ if ($minimal){
 			#are the invalid and timeout destinations the same?
 			if ($ivr['invalid_destination']==$ivr['timeout_destination']){
 				if (!empty($ivr['invalid_destination'])){
-				 $route['parent_edge_label']= ' Invalid Input, Timeout ('.$ivr['timeout_time'].' secs)';
-				 $route['parent_node'] = $node;
-				 dpp_follow_destinations($route, $ivr['invalid_destination'].','.$ilang,'',$options);
+					$route['parent_edge_label']= " ".sprintf(_('Invalid Input, Timeout (%s secs)'), $ivr['timeout_time']);
+					$route['parent_node'] = $node;
+					dpp_follow_destinations($route, $ivr['invalid_destination'].','.$ilang,'',$options);
 				}
 			}else{
 					if ($ivr['invalid_destination'] != '') {
-						$route['parent_edge_label']= ' Invalid Input';
+						$route['parent_edge_label']= " "._('Invalid Input');
 						$route['parent_node'] = $node;
 						dpp_follow_destinations($route, $ivr['invalid_destination'].','.$ilang,'',$options);
 					}
 					if ($ivr['timeout_destination'] != '') {
-						$route['parent_edge_label']= ' Timeout ('.$ivr['timeout_time'].' secs)';
+						$route['parent_edge_label']= " ".sprintf(_('Timeout (%s secs)'), $ivr['timeout_time']);
 						$route['parent_node'] = $node;
 						dpp_follow_destinations($route, $ivr['timeout_destination'].','.$ilang,'',$options);
 					}
@@ -1195,7 +1229,7 @@ if ($minimal){
 				return;
 			}
 			if ($langArray['dest'] != '') {
-				$route['parent_edge_label'] = ' Continue';
+				$route['parent_edge_label'] =" "._('Continue');
 				$route['parent_node'] = $node;
 				dpp_follow_destinations($route, $langArray['dest'].','.$langArray['lang_code'],'',$options);
 			}
@@ -1230,7 +1264,7 @@ if ($minimal){
 			}
 			
 			if ($miscapps['dest'] != '') {
-				$route['parent_edge_label'] = ' Continue';
+				$route['parent_edge_label'] =" "._('Continue');
 				$route['parent_node'] = $node;
 				dpp_follow_destinations($route, $miscapps['dest'].','.$miscappsLang, '',$options);
 			}
@@ -1269,18 +1303,18 @@ if ($minimal){
 		if (isset($route['paging'][$pagenum])){
 			$paging=$route['paging'][$pagenum];
 			$audioID=$paging['announcement'];
-			if (!is_numeric($audioID)){$announcement="Announcement: ".$audioID."\n";}else{$announcement='';}
+			if (!is_numeric($audioID)){$announcement=_('Announcement').": ".$audioID."\n";}else{$announcement='';}
 			$busyArray=array('Skip','Force','Whisper');
 			$duplexArray=array('No','Yes');
 			$label=$paging['page_group']." ".sanitizeLabels($paging['description']);
-			$tooltip="Page Group: ".$paging['page_group']."\nDescription: ".sanitizeLabels($paging['description'])."\n".$announcement."Busy Extensions: ".$busyArray[$paging['force_page']]."\nDuplex: ".$duplexArray[$paging['duplex']];
+			$tooltip=_('Page Group').": ".$paging['page_group']."\n"._('Description').": ".sanitizeLabels($paging['description'])."\n".$announcement._('Busy Extensions').": ".$busyArray[$paging['force_page']]."\n"._('Duplex').": ".$duplexArray[$paging['duplex']];
 			makeNode($module,$pagenum,$label,$tooltip,$node);
 			
 			if (!empty($paging['members']) && !$minimal){
-				$line="Page Group ".$pagenum." members:\n";
+				$line="Page Group ".$pagenum." "._('members').":\n";
 				foreach ($paging['members'] as $member) {
 					if (isset($route['extensions'][$member])){
-						$line.="Ext ".$member." ".$route['extensions'][$member]['name']."\l";
+						$line.="Ext ".$member." ".sanitizeLabels($route['extensions'][$member]['name'])."\l";
 					}
 				}
 				
@@ -1300,7 +1334,8 @@ if ($minimal){
 			
 			if (isset($route['recordings'][$audioID])){
 				$route['parent_node'] = $node;
-				$route['parent_edge_label']= ' Recording';
+				$route['parent_edge_label']= " "._('Recording');
+				$route['parent_edge_code']= 'recording';
 				dpp_follow_destinations($route, 'play-system-recording,'.$audioID.',1,'.$pageLang,'',$options);
 			}
 		}else{
@@ -1337,12 +1372,15 @@ if ($minimal){
 			#custom feature code?
 			if ($route['featurecodes']['*29'.$recID]['customcode']!=''){$featurenum=$route['featurecodes']['*29'.$recID]['customcode'];}else{$featurenum=$route['featurecodes']['*29'.$recID]['defaultcode'];}
 			#is it enabled?
-			if ( ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ){$recEnabled=$featurenum;}else{$recEnabled=$featurenum.' (disabled)';}
+			if ( ($route['recordings'][$recID]['fcode']== '1') && ($route['featurecodes']['*29'.$recID]['enabled']=='1') ){$recEnabled=$featurenum;}else{$recEnabled=$featurenum.' ('._('Disabled').')';}
 		}else{
-			$recEnabled='Disabled';
+			$recEnabled=_('Disabled');
 		}
 		
-		$node->attribute('label', "Recording (".$recLang."): ".sanitizeLabels($playName)."\nFeature Code: ".$recEnabled );
+		$label = _('Recording') . ' (' . $recLang . '): ' . sanitizeLabels($playName) . "\n" .
+         _('Feature Code') . ': ' . $recEnabled;
+
+		$node->attribute('label', $label);
 		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', '#');
 		$node->attribute('shape', 'rect');
@@ -1361,7 +1399,7 @@ if ($minimal){
 		
 		if (isset($route['queueprio'][$queueprioID])){
 			$queueprio = $route['queueprio'][$queueprioID];
-			$label=sanitizeLabels($queueprio['description']."\nPriority: ".$queueprio['queue_priority']);
+			$label=sanitizeLabels($queueprio['description']."\n"._('Priority').": ".$queueprio['queue_priority']);
 			$tooltip='';
 			makeNode($module,$queueprioID,$label,$tooltip,$node);
 			if ($stop){
@@ -1374,7 +1412,7 @@ if ($minimal){
 			}
 			
 			if ($queueprio['dest'] != '') {
-				$route['parent_edge_label'] = ' Continue';
+				$route['parent_edge_label'] =" "._('Continue');
 				$route['parent_node'] = $node;
 				dpp_follow_destinations($route, $queueprio['dest'].','.$queuepriorLang, '',$options);
 			}
@@ -1384,54 +1422,160 @@ if ($minimal){
 		#end of Queue Priorities
 		
 		#
-		# Queues
+		# Queues and Virtual Queues
 		#
-  } elseif (preg_match("/^ext-queues,(\d+),(\d+),(.+)/", $destination, $matches)) {
-		$module="Queues";
-    $qnum = $matches[1];
-    $qother = $matches[2];
-		$qlang= $matches[3];
+  } elseif (preg_match("/^(ext-v?queues),(\d+),(\d+),(.+)/", $destination, $matches)) {
+		$queueType= $matches[1];
+    $num = $matches[2];
+    $qother = $matches[3];
+		$qlang= $matches[4];
+		
+		$label = $tooltip = '';
+		
+		if ($queueType=='ext-vqueues'){
+			
+			$module="Virtual Queues";
+			$vqnum=$num;
+			if (isset($route['vqueues'][$vqnum])){
+				
+				$vq= $route['vqueues'][$vqnum];
 
+				$tooltipitems='';
+				$label=sanitizeLabels($vq['name']) ."\n";
+				if (!empty($vq['cidpp'])){$tooltipitems.=_('CID Prefix').": ".sanitizeLabels($vq['cidpp'])."\n";}
+				if (!empty($vq['alertinfo'])){$tooltipitems.=_('Alert Info').": ".sanitizeLabels($vq['alertinfo'])."\n";}
+				if (!empty($vq['music'])){$tooltipitems.=_('Music on hold Class').": ".sanitizeLabels($vq['music'])."\n";}
+				if (!empty($vq['language'])){$tooltipitems.=_('Language').": ".sanitizeLabels($vq['language'])."\n";$qlang=$vq['language'];}
+				
+				$tooltip=$label."\n".$tooltipitems."\n";
+				
+				if ($vq['gotodest'] != '') {
+					if (preg_match("/^ext-queues,(\d+),(\d+)/", $vq['gotodest'], $matches)) {
+						$qnum=$matches[1];
+						$failover=$vq['dest'];
+					}else{
+						makeNode($module,$vqnum,$label,$tooltip,$node);
+						if ($stop){
+							$undoNode= stopNode($dpgraph,$destination);
+							$edge= $dpgraph->beginEdge(array($node, $undoNode));
+							$edge->attribute('style', 'dashed');
+							$edge->attribute('edgetooltip',$node->getAttribute('label', ''));
+							
+							return;
+						}
+						$route['parent_edge_label'] = " "._('Continue');
+						$route['parent_node'] = $node;
+						dpp_follow_destinations($route, $vq['gotodest'].','.$qlang,'',$options);
+						return;
+					}
+				}
+				
+				if (!empty($vq['cdest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = " "._('Caller Post Hangup');
+					dpp_follow_destinations($route, $vq['cdest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['adest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = " "._('Agent Post Hangup');
+					dpp_follow_destinations($route, $vq['adest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['full_dest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = " "._('Queue Fail Over on FULL');
+					dpp_follow_destinations($route, $vq['full_dest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['joinempty_dest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = " "._('Queue Fail Over on JOINEMPTY');
+					dpp_follow_destinations($route, $vq['joinempty_dest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['leaveempty_dest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = " "._('Queue Fail Over on LEAVEEMPTY');
+					dpp_follow_destinations($route, $vq['leaveempty_dest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['joinunavail_dest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = " "._('Queue Fail Over on JOINUNAVAIL');
+					dpp_follow_destinations($route, $vq['joinunavail_dest'].','.$qlang,'',$options);
+				}
+				if (!empty($vq['leaveunavail_dest'])){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = " "._('Queue Fail Over on LEAVEUNAVAIL');
+					dpp_follow_destinations($route, $vq['leaveunavail_dest'].','.$qlang,'',$options);
+				}
+			}else{
+				notFound($module,$destination,$node);
+				return;
+			}
+			
+		}else{
+			$module="Queues";
+			$qnum=$num;
+		}
+		
+		
 		if (isset($route['queues'][$qnum])){
 			$q = $route['queues'][$qnum];
 			
-			if ($q['maxwait'] == 0 || $q['maxwait'] == '' || !is_numeric($q['maxwait'])) {
-				$maxwait = 'Unlimited';
+			
+			//is the parent a virtual queue?
+			if ($queueType=='ext-vqueues'){
+				$label.="Queues: ";
+				$vq=$route['vqueues'][$vqnum];
+				$cidPrefix = $vq['cidpp'] != '' ? $vq['cidpp'] : $q['grppre'];
+				if ($vq['music'] !=''){$music=$vq['music'];}elseif (isset($q['data']['music'])){$music=$q['data']['music'];}else{$music='inherit';}
+				if (!empty($vq['language'])){$qlang=$vq['language'];}
+				if ($vq['maxwait'] !=='-1'){$maxwait=$vq['maxwait'];}else{$maxwait=$q['maxwait'];}
+
+				if ($vq['dest'] !=''){$failover=$vq['dest'];}else{$failover=$q['dest'];}
+				
+			}else{
+				$cidPrefix=$q['grppre'];
+				$maxwait=$q['maxwait'];
+				if (isset($q['data']['music'])){$music=$q['data']['music'];}else{$music='inherit';}
+				
+				$failover=$q['dest'];
+			}
+				
+			if ($maxwait == 0 || $maxwait == '' || !is_numeric($maxwait)) {
+				$maxwait = _('Unlimited');
 			} else {
-			$maxwait = secondsToTimes($q['maxwait']);
+				$maxwait = secondsToTimes($maxwait);
 			}
 			
-			$label=$qnum.' '.sanitizeLabels($q['descr']);
+			$label.=$qnum . " " . sanitizeLabels($q['descr']);
 			$restrict=array('Call as Dialed','No Follow-Me or Call Forward','Extensions Only');
 			$skipbusy=array('No','Yes','Yes + (ringinuse=no)','Queue calls only (ringinuse=no)');
-			if (isset($q['data']['music'])){$music=$q['data']['music'];}else{$music='inherit';}
 			$mohclass=array('MoH Only','Ring Only','Agent Ringing');
 			$noyes=array('No','Yes');
-			$maxcallers = ($q['data']['maxlen'] == 0) ? 'Unlimited' : $q['data']['maxlen'];
+			$maxcallers = ($q['data']['maxlen'] == 0) ? _('Unlimited') : $q['data']['maxlen'];
 			
 			if ($q['data']['announce-frequency']==0){
-				$position="Caller Position\nDisabled\n\n";
+				$position="["._('Caller Position')."]\n"._('Disabled')."\n\n";
 			}else{
-				$position="Caller Position\nFrequency: ".secondsToTimes($q['data']['announce-frequency'])."\nMinimum Announcement Interval: ".secondsToTimes($q['data']['min-announce-frequency'])."\nAnnounce Position: ".ucfirst($q['data']['announce-position'])."\nAnnounce Hold Time: ".ucfirst($q['data']['announce-holdtime'])."\n\n";
+				$position="["._('Caller Position')."]\n"._('Frequency').": ".secondsToTimes($q['data']['announce-frequency'])."\n"._('Minimum Announcement Interval').": ".secondsToTimes($q['data']['min-announce-frequency'])."\n"._('Announce Position').": ".ucfirst($q['data']['announce-position'])."\n"._('Announce Hold Time').": ".ucfirst($q['data']['announce-holdtime'])."\n\n";
 			}
 
 			if ($q['data']['periodic-announce-frequency']==0){$repeat='Disabled';$edgeRepeat='';}else{$repeat=secondsToTimes($q['data']['periodic-announce-frequency']);$edgeRepeat=" (every ".$repeat.")";}
 			if ($q['ivr_id']!='none'){
 				$breakoutname = isset($route['ivrs'][$q['ivr_id']]['name']) ? $route['ivrs'][$q['ivr_id']]['name'] : "none";
-				$periodic="Periodic Announcements\nIVR Break Out Menu: ".$breakoutname."\nRepeat Frequency: ".$repeat;
+				$periodic="["._('Periodic Announcements')."]\nIVR Break Out Menu: ".$breakoutname."\n"._('Repeat Frequency').": ".$repeat;
 			}elseif (isset($q['callback_id']) && $q['callback_id']!='none'){
 				$breakoutname = isset($route['queuecallback'][$q['callback_id']]) ? $route['queuecallback'][$q['callback_id']]['name'] : "none";
-				$periodic="Periodic Announcements\nQueue Callback: ".$breakoutname."\nRepeat Frequency: ".$repeat;
+				$periodic="["._('Periodic Announcements')."\n"._('Queue Callback').": ".$breakoutname."\n"._('Repeat Frequency').": ".$repeat;
 			}else{
-				$periodic="Periodic Announcements\nDisabled";
+				$periodic="["._('Periodic Announcements')."]\n"._('Disabled')."\n";
 			}
 			
 			
-			$tooltip="General Settings\nCID Prefix: ".$q['grppre']."\nStrategy: ".$q['data']['strategy']."\nAgent Restrictions: ".$restrict[$q['use_queue_context']]."\nAutofill: ".ucfirst($q['data']['autofill'])."\nSkip Busy Agents: ".$skipbusy[$q['cwignore']]."\nMusic On Hold Class: ".$music." (".$mohclass[$q['ringing']].")\nCall Recording: ".$q['data']['recording']."\nMark calls answered elsewhere: ".$noyes[$q['data']['answered_elsewhere']].
-			"\n\nTiming & Agent Options\nMax Wait Time: ".$maxwait."\nAgent Timeout: ".secondsToTimes($q['data']['timeout'])."\nAgent Retry: ".secondsToTimes($q['data']['retry'])."\nWrap-Up-Time: ".secondsToTimes($q['data']['wrapuptime']).
-			"\n\nCapacity Options\nMax Callers: ".$maxcallers."\nJoin Empty: ".ucfirst($q['data']['joinempty'])."\nLeave Empty: ".ucfirst($q['data']['leavewhenempty']).
+			$tooltip="["._('General Settings')."]\n"._('CID Prefix').": ".$cidPrefix."\n"._('Strategy').": ".$q['data']['strategy']."\n"._('Agent Restrictions').": ".$restrict[$q['use_queue_context']]."\n"._('Autofill').": ".ucfirst($q['data']['autofill'])."\n"._('Skip Busy Agents').": ".$skipbusy[$q['cwignore']]."\n"._('Music On Hold Class').": ".$music." (".$mohclass[$q['ringing']].")\n"._('Call Recording').": ".$q['data']['recording']."\n"._('Mark calls answered elsewhere').": ".$noyes[$q['data']['answered_elsewhere']].
+			"\n\n["._('Timing & Agent Options')."]\n"._('Max Wait Time').": ".$maxwait."\n"._('Agent Timeout').": ".secondsToTimes($q['data']['timeout'])."\n"._('Agent Retry').": ".secondsToTimes($q['data']['retry'])."\n"._('Wrap Up Time').": ".secondsToTimes($q['data']['wrapuptime']).
+			"\n\n["._('Capacity Options')."]\n"._('Max Callers').": ".$maxcallers."\n"._('Join Empty').": ".ucfirst($q['data']['joinempty'])."\n"._('Leave Empty').": ".ucfirst($q['data']['leavewhenempty']).
 			"\n\n".$position.$periodic;
-			makeNode($module,$qnum,$label,$tooltip,$node);
+			makeNode($module,$num,$label,$tooltip,$node);
+			
 			if ($stop){
 				$undoNode= stopNode($dpgraph,$destination);
 				$edge= $dpgraph->beginEdge(array($node, $undoNode));
@@ -1441,72 +1585,146 @@ if ($minimal){
 				return;
 			}
 			
+				$route['parent_edge_label'] = " ".sprintf(_('No Answer (%s)'), $maxwait);
+				$route['parent_node'] = $node;
+				dpp_follow_destinations($route, $failover.','.$qlang,'',$options);
+			
+			
 			if (!empty($q['members'])){
-				foreach ($q['members'] as $types=>$type) {
-					foreach ($type as $member){
-						$route['parent_node'] = $node;
-						$route['parent_edge_label'] = ($types == 'static') ? ' Static' : ' Dynamic';
-						switch ($combineQueueRing) {
-							case "2":
+				if ($options['queue_member_display']==1){ //--option "Single"
+					foreach ($q['members'] as $types=>$type) {
+						foreach ($type as $member){
+							$route['parent_node'] = $node;
+							$route['parent_edge_label'] = " "._('Static');
+							if ($types=='static'){
+								$route['parent_edge_label'] = " "._('Static');
+								$route['parent_edge_code'] = 'static';
+							}else{
+								$route['parent_edge_label'] = " "._('Dynamic');
+								$route['parent_edge_code'] = 'dynamic';
+							}
+							
+							switch ($combineQueueRing) {
+								case "2":
+									//$splitPen= explode(',', $member);
+									//$member=$splitPen[0];
 									$go="from-did-direct,$member,1,$qlang";
 									break;
-							default:
+								default:
 									$go="qmember$member";
+							}
+							
+							dpp_follow_destinations($route, $go,'',$options);
 						}
-						dpp_follow_destinations($route, $go,'',$options);
+					}					
+
+				}elseif ($options['queue_member_display']==2){ //--option "Combine"
+					$line=_('Queue')." ".$qnum." "._('Agents').":\n";
+					foreach ($q['members'] as $types=>$type) {
+						
+						if ($types=='static' && !empty($q['members']['static'])){
+							$line.="["._('Static')."]\n";
+						}elseif($types=='dynamic' && !empty($q['members']['dynamic']) && $dynmembers){
+							$line.="["._('Dynamic')."]\n";
+						}
+						
+						/*table view with registrations?
+						foreach ($type as $member) {
+							$split=explode(',',$member);
+							$member=$split[0];
+							$pen=$split[1];
+							
+							if (isset($route['extensions'][$member])) {
+									if (!isset($route['extensions'][$member]['reg_status'])) {
+											$status = isExtensionRegistered($member, $route['extensions'][$member]['tech']);
+											$route['extensions'][$member]['reg_status'] = $status;
+									}
+
+									$isRegistered = $route['extensions'][$member]['reg_status'];
+									$fontcolor = $isRegistered ? 'green' : 'red';
+
+									$reg = "Ext {$member} {$route['extensions'][$member]['name']},{$pen}";
+									$line .= '<font color="' . $fontcolor . '">' . htmlspecialchars($reg) . '</font><br align="left"/>';
+									
+							} else {
+									$line .= $member.','.$pen.'<br align="left"/>';
+							}
+						}
+						*/
+						
+						
+						foreach ($type as $member){
+							
+							if (isset($route['extensions'][$member])){
+								$line.="Ext ".$member." ".sanitizeLabels($route['extensions'][$member]['name'])."\l";
+							}else{
+								$line.=$member."\l";
+							}
+							
+						}
+						
 					}
+					//$finalLabel = new Alom\Graphviz\RawText('<<' . $line . '>>');
+					$memNode= $dpgraph->beginNode('queuemembers'.$qnum,
+						array(
+							'label' => $line,
+							'tooltip' => $line,
+							'URL' => $node->getAttribute('URL', ''),
+							'target' => '_blank',
+							'shape' => 'rect',
+							'style' => 'filled',
+							'fillcolor' => $pastels[20]
+						)
+					);
+					$edge= $dpgraph->beginEdge(array($node, $memNode));
+					$edge->attribute('edgetooltip',$node->getAttribute('label', ''));
+					
+				}else{
+					//do not display agents --option "Hide"
 				}
 			}
 			
 			#Queue Plus Options
 			if (!empty($q['vqplus'])){
-				
-				$vq=$q['vqplus'];
+				//$vq=$q['vqplus'];
 				if (!empty($vq['cdest'])){
 					$route['parent_node'] = $node;
-					$route['parent_edge_label'] = "Caller Post Hangup";
+					$route['parent_edge_label'] = " "._('Caller Post Hangup');
 					dpp_follow_destinations($route, $vq['cdest'].','.$qlang,'',$options);
 				}
 				if (!empty($vq['adest'])){
 					$route['parent_node'] = $node;
-					$route['parent_edge_label'] = "Agent Post Hangup";
+					$route['parent_edge_label'] = " "._('Agent Post Hangup');
 					dpp_follow_destinations($route, $vq['adest'].','.$qlang,'',$options);
 				}
 				if (!empty($vq['full_dest'])){
 					$route['parent_node'] = $node;
-					$route['parent_edge_label'] = "Queue Fail Over on FULL";
+					$route['parent_edge_label'] = " "._('Queue Fail Over on FULL');
 					dpp_follow_destinations($route, $vq['full_dest'].','.$qlang,'',$options);
 				}
 				if (!empty($vq['joinempty_dest'])){
 					$route['parent_node'] = $node;
-					$route['parent_edge_label'] = "Queue Fail Over on JOINEMPTY";
+					$route['parent_edge_label'] = " "._('Queue Fail Over on JOINEMPTY');
 					dpp_follow_destinations($route, $vq['joinempty_dest'].','.$qlang,'',$options);
 				}
 				if (!empty($vq['leaveempty_dest'])){
 					$route['parent_node'] = $node;
-					$route['parent_edge_label'] = "Queue Fail Over on LEAVEEMPTY";
+					$route['parent_edge_label'] = " "._('Queue Fail Over on LEAVEEMPTY');
 					dpp_follow_destinations($route, $vq['leaveempty_dest'].','.$qlang,'',$options);
 				}
 				if (!empty($vq['joinunavail_dest'])){
 					$route['parent_node'] = $node;
-					$route['parent_edge_label'] = "Queue Fail Over on JOINUNAVAIL";
+					$route['parent_edge_label'] = " "._('Queue Fail Over on JOINUNAVAIL');
 					dpp_follow_destinations($route, $vq['joinunavail_dest'].','.$qlang,'',$options);
 				}
 				if (!empty($vq['leaveunavail_dest'])){
 					$route['parent_node'] = $node;
-					$route['parent_edge_label'] = "Queue Fail Over on LEAVEUNAVAIL";
+					$route['parent_edge_label'] = " "._('Queue Fail Over on LEAVEUNAVAIL');
 					dpp_follow_destinations($route, $vq['leaveunavail_dest'].','.$qlang,'',$options);
 				}
 			}
 			
-			# The destinations we need to follow are the queue members (extensions)
-			# and the no-answer destination.
-			if ($q['dest'] != '') {
-				$route['parent_edge_label'] = ' No Answer ('.$maxwait.')';
-				$route['parent_node'] = $node;
-				dpp_follow_destinations($route, $q['dest'].','.$qlang,'',$options);
-			}
-			
+			#Breakout Menus
 			if (is_numeric($q['ivr_id'])){
 				if (isset($route['ivrs'][$q['ivr_id']])){
 					$route['parent_edge_label'] = " IVR Break Out".$edgeRepeat;
@@ -1526,7 +1744,6 @@ if ($minimal){
 				}else{
 					notFound('Queue Callback',$destination,$node);
 				}
-				
 			}
 		}else{
 			notFound($module,$destination,$node);
@@ -1538,8 +1755,9 @@ if ($minimal){
 		#
 	} elseif (preg_match("/^qmember(\d+)/", $destination, $matches)) {
 		$qextension=$matches[1];
-		$qlabel = isset($route['extensions'][$qextension]['name']) ? "Ext ".$qextension."\n".$route['extensions'][$qextension]['name'] : $qextension;
-		$tooltip= isset($route['extensions'][$qextension]['name']) ? "Extension: ".$qextension."\nName: ".$route['extensions'][$qextension]['name'] : $qextension;
+		//$qpen=$matches[2];
+		$qlabel = isset($route['extensions'][$qextension]['name']) ? _('Ext')." ".$qextension."\n".$route['extensions'][$qextension]['name'] : $qextension;
+		$tooltip= isset($route['extensions'][$qextension]['name']) ? _('Extension').": ".$qextension."\n"._('Name').": ".$route['extensions'][$qextension]['name'] : $qextension;
 		//registration status
 		if (isset($route['extensions'][$qextension]) && ($route['extensions'][$qextension]['tech']=='pjsip' || $route['extensions'][$qextension]['tech']=='sip' || $route['extensions'][$qextension]['tech']=='iax2')){
 			$node->attribute('penwidth', '2');
@@ -1548,13 +1766,13 @@ if ($minimal){
 				$route['extensions'][$qextension]['reg_status']=$status;
 			}
 			$registered=$route['extensions'][$qextension]['reg_status'];
-			if ($registered){$online='Yes';}else{$online='No';}
+			if ($registered){$online=_('Yes');}else{$online=_('No');}
 			$node->attribute('color', $registered ? 'green' : 'red');
 
-			$tooltip.="\n\nRegistration: ".$online;
-			$tooltip.="\nTech: ".strtoupper($route['extensions'][$qextension]['tech']);
+			$tooltip.="\n\n"._('Registration').": ".$online;
+			$tooltip.="\n"._('Tech').": ".strtoupper($route['extensions'][$qextension]['tech']);
 		}elseif(isset($route['extensions'][$qextension])){
-			$tooltip.="\n\nTech: ".ucfirst($route['extensions'][$qextension]['tech']);
+			$tooltip.="\n\n"._('Tech').": ".ucfirst($route['extensions'][$qextension]['tech']);
 		}
 		
 		$node->attribute('label', sanitizeLabels($qlabel));
@@ -1565,11 +1783,12 @@ if ($minimal){
 			$node->attribute('target', '_blank');
 		}
 		
-		if ($route['parent_edge_label'] == ' Static') {
+		if ($route['parent_edge_code'] == 'static') {
 			$node->attribute('fillcolor', $pastels[20]);
 		}else{
 			$node->attribute('fillcolor', $pastels[8]);
 		}
+		$route['parent_edge_code']='';
 		#end of Queue members (static and dynamic)
 		
 		#
@@ -1601,8 +1820,8 @@ if ($minimal){
 				$qcbRecName="Default";
 			}
 			
-			$label=sanitizeLabels($qcallback['name'])."\nAnnouncement: ".sanitizeLabels($qcbRecName);
-			$tooltip = "Caller ID: ".$qcallback['cid']."\nTimeout: ".secondsToTimes($qcallback['timeout'])."\nRetries: ".$qcallback['retries']."\nRetry Delay: ".secondsToTimes($qcallback['retrydelay']);
+			$label=sanitizeLabels($qcallback['name'])."\n"._('Announcement').": ".sanitizeLabels($qcbRecName);
+			$tooltip = "Caller ID: ".$qcallback['cid']."\n"._('Timeout').": ".secondsToTimes($qcallback['timeout'])."\n"._('Retries').": ".$qcallback['retries']."\n"._('Retry Delay').": ".secondsToTimes($qcallback['retrydelay']);
 			
 			makeNode($module,$qcallbackId,$label,$tooltip,$node);
 			if ($stop){
@@ -1616,12 +1835,12 @@ if ($minimal){
 			
 			if ($qcallback['announcement']!=''){
 				$route['parent_node'] = $node;
-				$route['parent_edge_label'] = 'Announcement';
+				$route['parent_edge_label'] = " "._('Announcement');
 				dpp_follow_destinations($route,'play-system-recording,'.$recordingId.',1,'.$qcallbackLang,'',$options);
 			}
 			
 			$route['parent_node'] = $node;
-			$route['parent_edge_label'] = ' Callback Queue';
+			$route['parent_edge_label'] = " "._('Callback Queue');
 			dpp_follow_destinations($route,$queue,'',$options);
 			
 		}else{
@@ -1641,7 +1860,7 @@ if ($minimal){
 			
 			$label=$rgnum.' '.sanitizeLabels($rg['description']);
 			if ($rg['needsconf']!=''){$conf='Yes';}else{$conf="No";}
-			$tooltip="Strategy: ".$rg['strategy']."\nRing Time: ".secondsToTimes($rg['grptime'])."\nMusic On Hold: ".$rg['ringing']."\nCID Prefix: ".$rg['grppre']."\nConfirm Calls: ".$conf."\nCall Recording: ".$rg['recording']."\n";
+			$tooltip="Strategy: ".$rg['strategy']."\n"._('Ring Time').": ".secondsToTimes($rg['grptime'])."\n"._('Music On Hold').": ".$rg['ringing']."\n"._('CID Prefix').": ".$rg['grppre']."\n"._('Confirm Calls').": ".$conf."\n"._('Call Recording').": ".$rg['recording']."\n";
 			makeNode($module,$rgnum,$label,$tooltip,$node);
 			if ($stop){
 				$undoNode= stopNode($dpgraph,$destination);
@@ -1651,38 +1870,67 @@ if ($minimal){
 				
 				return;
 			}
-			
-			$grplist=str_replace('#', '', $rg['grplist']);
+
+			$grplist=$rg['grplist'];
 			$grplist = preg_split("/-/", $grplist);
 			
-			foreach ($grplist as $member) {
-				$route['parent_node'] = $node;
-				$route['parent_edge_label'] = '';
-				switch ($combineQueueRing) {
-						case "1":
-								$go="qmember$member";
-								break;
-						case "2":
-								$go="from-did-direct,$member,1,$rglang";
-								break;
-						default:
-								$go="rgmember$member";
+			if ($options['ring_member_display']==1){
+				foreach ($grplist as $member) {
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = '';
+					switch ($combineQueueRing) {
+							case "1":
+									$go="qmember$member";
+									break;
+							case "2":
+									$go="from-did-direct,$member,1,$rglang";
+									break;
+							default:
+									$go="rgmember$member";
+					}
+					dpp_follow_destinations($route,$go,'',$options);
+				} 
+			}elseif ($options['ring_member_display']==2){
+				$line=_('Ring Group')." ".$rgnum." "._('List').":\n";
+				foreach ($grplist as $member){
+					if (isset($route['extensions'][$member])){
+						$line.=_('Ext')." ".$member." ".$route['extensions'][$member]['name']."\l";
+					}else{
+						$line.=$member."\l";
+					}
 				}
-				dpp_follow_destinations($route,$go,'',$options);
-			} 
+				
+				$memNode= $dpgraph->beginNode('ringmembers'.$rgnum,
+					array(
+						'label' => $line,
+						'tooltip' => $line,
+						'URL' => $node->getAttribute('URL', ''),
+						'target' => '_blank',
+						'shape' => 'rect',
+						'style' => 'filled',
+						'fillcolor' => $pastels[2]
+					)
+				);
+				$edge= $dpgraph->beginEdge(array($node, $memNode));
+				$edge->attribute('edgetooltip',$node->getAttribute('label', ''));
+				
+			}else{
+				//do not display ring group members
+			}
+				
+				# The destinations we need to follow are the no-answer destination
+				# (postdest) and the members of the group.
+				if ($rg['postdest'] != '') {
+					$route['parent_edge_label'] = " ".sprintf(_('No Answer (%s)'), secondsToTimes($rg['grptime']));
+					$route['parent_node'] = $node;
+					dpp_follow_destinations($route, $rg['postdest'].','.$rglang,'',$options);
+				}
+				if ($rg['annmsg_id']!=0){
+					$route['parent_node'] = $node;
+					$route['parent_edge_label'] = " "._('Announcement');
+					dpp_follow_destinations($route,'play-system-recording,'.$rg['annmsg_id'].',1,'.$rglang,'',$options);
+				}
 			
-			# The destinations we need to follow are the no-answer destination
-			# (postdest) and the members of the group.
-			if ($rg['postdest'] != '') {
-				$route['parent_edge_label'] = ' No Answer ('.secondsToTimes($rg['grptime']).')';
-				$route['parent_node'] = $node;
-				dpp_follow_destinations($route, $rg['postdest'].','.$rglang,'',$options);
-			}
-			if ($rg['annmsg_id']!=0){
-				$route['parent_node'] = $node;
-				$route['parent_edge_label'] = 'Announcement';
-				dpp_follow_destinations($route,'play-system-recording,'.$rg['annmsg_id'].',1,'.$rglang,'',$options);
-			}
 		}else{
 			notFound($module,$destination,$node);
 		}
@@ -1691,10 +1939,10 @@ if ($minimal){
 		#
 		# Ring Group Members
 		#
-  } elseif (preg_match("/^rgmember(\d+)/", $destination, $matches)) {
+} elseif (preg_match("/^rgmember([#\d]+)/", $destination, $matches)) {
 		$rgext = $matches[1];
-		$rglabel = isset($route['extensions'][$rgext]) ? "Ext ".$rgext."\n".$route['extensions'][$rgext]['name'] : $rgext;
-		$tooltip = isset($route['extensions'][$rgext]) ? "Extextnsion: ".$rgext."\nName: ".$route['extensions'][$rgext]['name'] : $rgext;
+		$rglabel = isset($route['extensions'][$rgext]) ? _('Ext')." ".$rgext."\n".$route['extensions'][$rgext]['name'] : $rgext;
+		$tooltip = isset($route['extensions'][$rgext]) ? _('Extextnsion').": ".$rgext."\n"._('Name').": ".$route['extensions'][$rgext]['name'] : $rgext;
 
 		//registration status
 		if (isset($route['extensions'][$rgext]) && ($route['extensions'][$rgext]['tech']=='pjsip' || $route['extensions'][$rgext]['tech']=='sip' || $route['extensions'][$rgext]['tech']=='iax2')){
@@ -1704,13 +1952,13 @@ if ($minimal){
 				$route['extensions'][$rgext]['reg_status']=$status;
 			}
 			$registered=$route['extensions'][$rgext]['reg_status'];
-			if ($registered){$online='Yes';}else{$online='No';}
+			if ($registered){$online=_('Yes');}else{$online=_('No');}
 			$node->attribute('color', $registered ? 'green' : 'red');
 
-			$tooltip.="\n\nRegistration: ".$online;
-			$tooltip.="\nTech: ".strtoupper($route['extensions'][$rgext]['tech']);
+			$tooltip.="\n\n"._('Registration').": ".$online;
+			$tooltip.="\n"._('Tech').": ".strtoupper($route['extensions'][$rgext]['tech']);
 		}elseif(isset($route['extensions'][$rgext])){
-			$tooltip.="\n\nTech: ".ucfirst($route['extensions'][$rgext]['tech']);
+			$tooltip.="\n\n"._('Tech').": ".ucfirst($route['extensions'][$rgext]['tech']);
 		}
 		
 		
@@ -1750,7 +1998,7 @@ if ($minimal){
 			}
 			
 			if ($cid['dest'] != '') {
-				$route['parent_edge_label'] = ' Continue';
+				$route['parent_edge_label'] = " "._('Continue');
 				$route['parent_node'] = $node;
 				dpp_follow_destinations($route, $cid['dest'].','.$cidLang,'',$options);
 			}
@@ -1770,7 +2018,7 @@ if ($minimal){
 		if (isset($route['tts'][$ttsnum])){
 			$tts = $route['tts'][$ttsnum];
 			$label= sanitizeLabels($tts['name']);
-			$tooltip = "Engine: ".$tts['engine']."\nDesc: ".$tts['text'];
+			$tooltip = _('Engine').": ".$tts['engine']."\n"._('Description').": ".$tts['text'];
 			makeNode($module,$ttsnum,$label,$tooltip,$node);
 			if ($stop){
 				$undoNode= stopNode($dpgraph,$destination);
@@ -1782,7 +2030,7 @@ if ($minimal){
 			}
 			
 			if ($tts['goto'] != '') {
-				$route['parent_edge_label'] = ' Continue';
+				$route['parent_edge_label'] = " "._('Continue');
 				$route['parent_node'] = $node;
 				dpp_follow_destinations($route, $tts['goto'].','.$ttsLang,'',$options);
 			}
@@ -1802,9 +2050,11 @@ if ($minimal){
 		
 		if (isset($route['timeconditions'][$tcnum])){
 			$tc = $route['timeconditions'][$tcnum];
-			$tcTooltip=$tc['displayname']."\nMode= ".$tc['mode']."\n";
+			if (!isset($tc['mode'])){$tc['mode']='time-group';}
+			
+			$tcTooltip=$tc['displayname']."\n"._('Mode').": ".$tc['mode']."\n";
 			if (!empty($tc['timezone'])){
-				$tcTooltip.= ($tc['timezone'] !== 'default') ? "Timezone= " . $tc['timezone'] : '';
+				$tcTooltip.= ($tc['timezone'] !== 'default') ? _('Timezone').": " . $tc['timezone'] : '';
 			}
 			$label=sanitizeLabels($tc['displayname']);
 			$tooltip=sanitizeLabels($tcTooltip);
@@ -1838,44 +2088,46 @@ if ($minimal){
 					}else{
 						$tz='';
 					}
-					$tgTooltip="Name= ".$cal['name']."\nDescription= ".$cal['description']."\nType= ".$cal['type']."\nTimezone= ".$tz;
+					$tgTooltip=_('Name').": ".$cal['name']."\n"._('Description').": ".$cal['description']."\n"._('Type').": ".$cal['type']."\n"._('Timezone').": ".$tz;
 					
 				}elseif (!empty($route['calendar'][$tc['calendar_group_id']])){
 					$cal= $route['calendar'][$tc['calendar_group_id']];
 					$tgLabel=$cal['name'];
 					$tgLink = '/admin/config.php?display=calendargroups&action=edit&id='.$tc['calendar_group_id'];
-					$calNames='Calendars= ';
+					$calNames=_('Calendars').": ";
 					if (!empty($cal['calendars'])){
 						foreach ($cal['calendars'] as $c){
 							$calNames.=$route['calendar'][$c]['name']."\n";
 						}
 					}
 					
-					$cats = !empty($cal['categories']) ? count($cal['categories']) : 'All';
+					$cats = !empty($cal['categories']) ? count($cal['categories']) : _('All');
 					$categories='Categories= '.$cats;
-					$eves = !empty($cal['events']) ? count($cal['events']) : 'All';
-					$events='Events= '.$eves;
+					$eves = !empty($cal['events']) ? count($cal['events']) : _('All');
+					$events=_('Events').": ".$eves;
 					$expand = $cal['expand'] ? 'true' : 'false';
-					$tgTooltip="Name= ".$cal['name']."\n".$calNames."\n".$categories."\n".$events."\nExpand= ".$expand;
+					$tgTooltip=_('Name').": ".$cal['name']."\n".$calNames."\n".$categories."\n".$events."\n"._('Expand').": ".$expand;
 				}
 			}
 			
 			# Now set the current node to be the parent and recurse on both the true and false branches
-			
-			$route['parent_edge_label'] = " Match: ".$tgLabel;
+			$route['parent_edge_label'] = " "._('Match').": ".$tgLabel;
 			$route['parent_edge_url'] = htmlentities($tgLink);
 			$route['parent_edge_target'] = '_blank';
-			$route['parent_edge_labeltooltip']=" Match: ".$tgTooltip;
-
+			$route['parent_edge_code']='match';
+			$route['parent_edge_labeltooltip']=" "._('Match').": ".$tgTooltip;
 			$route['parent_node'] = $node;
 			dpp_follow_destinations($route, $tc['truegoto'].','.$tcLang,'',$options);
-
-			$route['parent_edge_label'] = " No Match";
+			
+			
+			$route['parent_edge_code']='match';
+			$route['parent_edge_label'] = " "._('No Match');
 			$route['parent_edge_url'] = htmlentities($tgLink);
 			$route['parent_edge_target'] = '_blank';
-			$route['parent_edge_labeltooltip']=" No Match\n".$tgTooltip;
+			$route['parent_edge_labeltooltip']=" "._('No Match')."\n".$tgTooltip;
 			$route['parent_node'] = $node;
 			dpp_follow_destinations($route, $tc['falsegoto'].','.$tcLang,'',$options);
+			
 		}else{
 			notFound($module,$destination,$node);
 		}
@@ -1893,13 +2145,13 @@ if ($minimal){
 		if (isset($route['trunks'][$trunkId])){
 			$trunk= $route['trunks'][$trunkId];
 			$status = ($trunk['disabled'] == 'off') ? "Enabled" : "Disabled";
-			$continue = ($trunk['continue'] == 'on') ? "Yes" : "No";
+			$continue = ($trunk['continue'] == 'on') ? _('Yes') : _('No');
 			$busy=$trunk['continue'];
 			$cidArray=array("off"=>"Allow Any CID","on"=>"Block Foreign CID","cnum"=>"Remove CNAM","all"=>"Force Trunk CID");
 			$modId=$trunk['tech'].','.$trunkId;
 			
 			$label=sanitizeLabels($trunk['name'])." (Status: ".$status.")\lCallerID: ".sanitizeLabels($trunk['outcid']);
-			$tooltip="Name: ".sanitizeLabels($trunk['name'])."\nTech: ".$trunk['tech']."\nOutbound CallerID: ".sanitizeLabels($trunk['outcid'])."\nStatus: ".$status."\nCID Options: ".$cidArray[$trunk['keepcid']]."\nMax Channels: ".$trunk['maxchans']."\nContinue If Busy: ".$continue;
+			$tooltip="Name: ".sanitizeLabels($trunk['name'])."\n"._('Tech').": ".$trunk['tech']."\n"._('Outbound CallerID').": ".sanitizeLabels($trunk['outcid'])."\n"._('Status').": ".$status."\n"._('CID Options').": ".$cidArray[$trunk['keepcid']]."\n"._('Max Channels').": ".$trunk['maxchans']."\n"._('Continue If Busy').": ".$continue;
 			$node->attribute('width', 2);
 			$node->attribute('margin','.13');
 			makeNode($module,$modId,$label,$tooltip,$node);
@@ -1908,45 +2160,6 @@ if ($minimal){
 		}
 		#end of Trunks
 
-		#
-		# Virtual Queues
-		#
-  } elseif (preg_match("/^ext-vqueues,(\d+),(\d+),(.+)/", $destination, $matches)) {
-		$module='Virtual Queues';
-		$vqueueId= $matches[1];
-		$vqueueOther = $matches[2];
-		$vqueueLang = $matches[3];
-		
-		if (isset($route['vqueues'][$vqueueId])){
-			$vq= $route['vqueues'][$vqueueId];
-			$tooltipitems='';
-			$label=sanitizeLabels($vq['name']);
-			if (!empty($vq['cidpp'])){$tooltipitems.="CID Prefix: ".sanitizeLabels($vq['cidpp'])."\n";}
-			if (!empty($vq['alertinfo'])){$tooltipitems.="Alert Info: ".sanitizeLabels($vq['alertinfo'])."\n";}
-			if (!empty($vq['music'])){$tooltipitems.="MOH Class: ".sanitizeLabels($vq['music'])."\n";}
-			if (!empty($vq['language'])){$tooltipitems.="Language: ".sanitizeLabels($vq['language'])."\n";$vqueueLang=$vq['language'];}
-			
-			$tooltip=$label."\n".$tooltipitems;
-			makeNode($module,$vqueueId,$label,$tooltip,$node);
-			if ($stop){
-				$undoNode= stopNode($dpgraph,$destination);
-				$edge= $dpgraph->beginEdge(array($node, $undoNode));
-				$edge->attribute('style', 'dashed');
-				$edge->attribute('edgetooltip',$node->getAttribute('label', ''));
-				
-				return;
-			}
-			
-			if ($vq['gotodest'] != '') {
-				$route['parent_edge_label'] = ' Continue';
-				$route['parent_node'] = $node;
-				dpp_follow_destinations($route, $vq['gotodest'].','.$vqueueLang,'',$options);
-			}
-		}else{
-			notFound($module,$destination,$node);
-		}
-		#end of Virtual Queues
-		
 		#
 		# Voicemail
 		#
@@ -1962,8 +2175,8 @@ if ($minimal){
 			$vmname= $voicemail['name'];
 			$vmemail= $voicemail['email'];
 			$vmemail= str_replace(",",",\n",$vmemail);
-			$tooltip="\n\nVoicemail: Enabled";
-			$tooltip.="\nEmail: ".$vmemail;
+			$tooltip="\n\n"._('Voicemail: Enabled');
+			$tooltip.="\n"._('Email').": ".$vmemail;
 			foreach ($voicemail['options'] as $m=>$mm){
 				$tooltip.="\n".ucfirst($m).": ".ucfirst($mm);
 			}
@@ -1995,16 +2208,16 @@ if ($minimal){
 			}elseif ($audioID=='-2'){
 				$audioLabel="Beep Only - No Confirmation";
 			}
-			$label=$vmblastnum." ".sanitizeLabels($vmblast['description'])."\nAudio Label: ".$audioLabel;
+			$label=$vmblastnum." ".sanitizeLabels($vmblast['description'])."\n"._('Audio Label').": ".$audioLabel;
 			if ($vmblast['password'] !=''){$pass="\nPassword: ".$vmblast['password'];}else{$pass='';}
 			$tooltip=$module.": ".$label.$pass;
 			makeNode($module,$vmblastnum,$label,$tooltip,$node);
 			
 			if (!empty($vmblast['members']) && !$minimal){
-				$line="Voicemail Blast ".$vmblastnum." members:\n";
+				$line="Voicemail Blast ".$vmblastnum." "._('members').":\n";
 				foreach ($vmblast['members'] as $member) {
 					if (isset($route['extensions'][$member])){
-						$line.="Ext ".$member." ".$route['extensions'][$member]['name'].": ";
+						$line.=_('Ext')." ".$member." ".$route['extensions'][$member]['name'].": ";
 						$vmblastemail=$route['extensions'][$member]['mailbox']['email'];
 						$line.= str_replace(",",",\n",$vmblastemail)."\l";
 					}
@@ -2026,7 +2239,8 @@ if ($minimal){
 			
 			if (isset($route['recordings'][$audioID])){
 				$route['parent_node'] = $node;
-				$route['parent_edge_label']= ' Recording';
+				$route['parent_edge_label']= " "._('Recording');
+				$route['parent_edge_code']= 'recording';
 				dpp_follow_destinations($route, 'play-system-recording,'.$audioID.',1,'.$vmblastLang,'',$options);
 				
 			}
@@ -2045,13 +2259,13 @@ if ($minimal){
 		
 		if (isset($route['customapps'][$custId])){
 			$custDest=$route['customapps'][$custId];
-			$custReturn = ($custDest['destret'] == 1) ? "Yes" : "No";
-			$label="\n".$custDest['description']."\nTarget: ".$custDest['target']."\lReturn: ".$custReturn."\l";
+			$custReturn = ($custDest['destret'] == 1) ? _('Yes') : _('No');
+			$label="\n".$custDest['description']."\n"._('Target').": ".$custDest['target']."\l"._('Return').": ".$custReturn."\l";
 			$tooltip="";
 			makeNode($module,$custId,$label,$tooltip,$node);
 			
 			if ($custDest['destret']){
-				$route['parent_edge_label']= ' Return';
+				$route['parent_edge_label']=" "._('Return');
 				$route['parent_node'] = $node;
 				
 				dpp_follow_destinations($route, $custDest['dest'].','.$custLang,'',$options);
@@ -2064,7 +2278,7 @@ if ($minimal){
 		# blacklistnotset
 		#
 	} elseif (preg_match("/^blacklistnotset/", $destination)) {
-		$node->attribute('label', 'Bad Dest: Blacklist');
+		$node->attribute('label',_('Bad Dest: Blacklist'));
 		$node->attribute('tooltip', $node->getAttribute('label'));
 		$node->attribute('URL', htmlentities('/admin/config.php?display=blacklist'));
 		$node->attribute('target','_blank');
@@ -2100,14 +2314,14 @@ if ($minimal){
 			if (isset($custDest['destid'])){
 				$module="Custom Dests";
 				$custId=$custDest['destid'];
-				$custReturn = ($custDest['destret'] == 1) ? "Yes" : "No";
+				$custReturn = ($custDest['destret'] == 1) ? _('Yes') : _('No');
 				
-				$label=sanitizeLabels($custDest['description'])."\nTarget: ".$custDest['target']."\lReturn: ".$custReturn."\l";
-				$tooltip=sanitizeLabels($custDest['description'])."\nTarget: ".$custDest['target']."\nReturn: ".$custReturn."\n";
+				$label=sanitizeLabels($custDest['description'])."\n"._('Target').": ".$custDest['target']."\l"._('Return').": ".$custReturn."\l";
+				$tooltip=sanitizeLabels($custDest['description'])."\n"._('Target').": ".$custDest['target']."\n"._('Return').": ".$custReturn."\n";
 				makeNode($module,$custId,$label,$tooltip,$node);
 
 				if ($custDest['destret']){
-					$route['parent_edge_label']= ' Return';
+					$route['parent_edge_label']= " "._('Return');
 					$route['parent_node'] = $node;
 					dpp_follow_destinations($route, $custDest['dest'].$custDest['lang'],'',$options);
 				}
@@ -2350,6 +2564,10 @@ function dpp_load_tables(&$dproute,$options) {
 					$dproute['queues'][$id] = $q;
 					$dproute['queues'][$id]['members']['static']=array();
 					$dproute['queues'][$id]['members']['dynamic']=array();
+					//$dproute['queues'][$id]['static']['members']=array();
+					//$dproute['queues'][$id]['static']['penalties']=array();
+					//$dproute['queues'][$id]['dynamic']['members']=array();
+					//$dproute['queues'][$id]['dynamic']['penalties']=array();
 				}
 		}elseif ($table == 'queues_details') {
         foreach($results as $qd) {
@@ -2360,6 +2578,7 @@ function dpp_load_tables(&$dproute,$options) {
 							$enum = $matches[1];
 							$pen= $matches[2];
 							$dproute['queues'][$id]['members']['static'][]=$enum;
+	
 						}
 					}else{
 						$dproute['queues'][$id]['data'][$qd['keyword']]=$qd['data'];
@@ -2378,6 +2597,7 @@ function dpp_load_tables(&$dproute,$options) {
 							$ext=trim($ext);
 							$pen=trim($pen);
 							$dproute['queues'][$id]['members']['dynamic'][]=$ext;
+							
 						}
 					}
 				}
@@ -2475,11 +2695,8 @@ function sanitizeLabels($text) {
         $text = '';
     }
 		
-		//$text=addcslashes($text, '"');
 		$text = htmlentities($text, ENT_QUOTES, 'UTF-8');
 
-		//$text = str_replace(["\r\n", "\r", "\n"], '\\n', $text);
-		//$text = str_replace('\"', '"', $text);
     return $text;
 }
 
@@ -2567,8 +2784,8 @@ function sanitize_filename($string, $replace_with = '_') {
     $string = trim($string, $replace_with);
 
     // Prevent reserved names (optional for Windows safety)
-    $reserved = ['CON','PRN','AUX','NUL','COM1','COM2','COM3','COM4','COM5','COM6','COM7','COM8','COM9',
-                 'LPT1','LPT2','LPT3','LPT4','LPT5','LPT6','LPT7','LPT8','LPT9'];
+    $reserved = array('CON','PRN','AUX','NUL','COM1','COM2','COM3','COM4','COM5','COM6','COM7','COM8','COM9',
+                 'LPT1','LPT2','LPT3','LPT4','LPT5','LPT6','LPT7','LPT8','LPT9');
     if (in_array(strtoupper($string), $reserved)) {
         $string = '_' . $string;
     }
@@ -2763,7 +2980,7 @@ function stopNode($dpgraph,$id){
 		$undoNode = $dpgraph->beginNode('undoLast'.$id,
 			array(
 				'label' => '+',
-				'tooltip' => "Click to continue...",
+				'tooltip' => _('Click to continue...'),
 				'shape' => 'circle',
 				'URL' => '#',
 				'fontcolor' => '#FFFFFF',
@@ -2813,10 +3030,10 @@ function findRecording($route,$id){
 function checkTimeGroupLogic($entry) {
     list($time, $dow, $dom, $month) = explode('|', $entry);
 
-    $errors = [];
+    $errors = array();
 
-    $monthOrder = ['jan'=>1,'feb'=>2,'mar'=>3,'apr'=>4,'may'=>5,'jun'=>6,
-                   'jul'=>7,'aug'=>8,'sep'=>9,'oct'=>10,'nov'=>11,'dec'=>12];
+    $monthOrder = array('jan'=>1,'feb'=>2,'mar'=>3,'apr'=>4,'may'=>5,'jun'=>6,
+                   'jul'=>7,'aug'=>8,'sep'=>9,'oct'=>10,'nov'=>11,'dec'=>12);
 
     $monthStart = $monthEnd = null;
     $monthInverted = false;
@@ -2877,7 +3094,7 @@ function isExtensionRegistered($extension, $tech) {
     }
 
     // Run the command
-    $response = $astman->send_request('Command', ['Command' => $cmd]);
+    $response = $astman->send_request('Command', array('Command' => $cmd));
 
     // Extract data
     $data = '';
@@ -2906,7 +3123,7 @@ function isExtensionRegistered($extension, $tech) {
 
 function parsePjsipAors($data) {
     $lines = explode("\n", $data);
-    $aors = [];
+    $aors = array();
     $currentAor = null;
 
     foreach ($lines as $line) {
@@ -2914,10 +3131,10 @@ function parsePjsipAors($data) {
 
         if (preg_match('/^Aor:\s+(\S+)/', $line, $match)) {
             $currentAor = $match[1];
-            $aors[$currentAor] = [
+            $aors[$currentAor] = array(
                 'contact_found' => false,
-                'contacts' => [],
-            ];
+                'contacts' => array(),
+            );
         }
 
         if ($currentAor && strpos($line, 'Contact:') === 0) {

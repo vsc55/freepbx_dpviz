@@ -1,0 +1,713 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Highlight Paths"
+msgstr "Benadruk paden"
+
+msgid "Remove Highlights"
+msgstr "Verwijder aanduidingen"
+
+msgid "Checking..."
+msgstr "Controleer..."
+
+msgid "You are up to date."
+msgstr "U bent op de hoogte."
+
+msgid "available! Use Module Admin to update"
+msgstr "beschikbaar! Gebruik het Module Admin om te updaten"
+
+msgid "Current installed version"
+msgstr "Huidige geïnstalleerde versie"
+
+msgid ""
+"could not be found. To generate the file, simply go to the recording, select "
+"the \\\"convert to\\\" wav option, and click submit."
+msgstr ""
+"kon niet worden gevonden. Om de bestand te genereren, gaat u simpelweg naar "
+"de opname, selecteert u de optie \\\"omzetten naar\\\" wav en klikt u op "
+"versturen."
+
+msgid "Recording"
+msgstr "Opname:"
+
+msgid "No files found for language:"
+msgstr "Geen bestanden gevonden voor taal:"
+
+msgid "Copy filename"
+msgstr "Kopie bestandsnaam"
+
+msgid "Audio"
+msgstr "Audio"
+
+msgid "Dial Plan"
+msgstr "Dial Plan"
+
+msgid "Navigation & Usage"
+msgstr "Navigatie & Gebruik"
+
+msgid "Settings"
+msgstr "Instellingen"
+
+msgid "System Recording"
+msgstr "Systeemopname"
+
+msgid "Dial Plan Not Selected"
+msgstr "Dialplan niet geselecteerd"
+
+msgid "Use the dropdown to select a dial plan."
+msgstr "Gebruik de aflopende menu om een dialplan te selecteren."
+
+msgid "Error: Could not find inbound route for"
+msgstr "Fout: Kon geen inkomende route vinden voor"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "No name selected"
+msgstr "Geen naam geselecteerd"
+
+msgid "Always"
+msgstr "Altijd"
+
+msgid "Continue"
+msgstr "Verdergaan"
+
+msgid "Music On Hold"
+msgstr "Muziek tijdens wachtgebied"
+
+msgid "Play Ringtones"
+msgstr "Spel ringtönen"
+
+msgid "Play No Service Message"
+msgstr "Spelen geen dienstbericht af"
+
+msgid "Busy"
+msgstr "Bezet"
+
+msgid "Hang Up"
+msgstr "Afwijzen"
+
+msgid "Congestion"
+msgstr "Congestie"
+
+msgid "Terminate Call"
+msgstr "Einde telefoont:"
+
+msgid "Active"
+msgstr "Actief"
+
+msgid "Night Mode"
+msgstr "Nachtmodus"
+
+msgid "Day Mode"
+msgstr "Dag Modus"
+
+msgid "Feature Code"
+msgstr "Functiescode"
+
+msgid "Callback Number"
+msgstr "Rijkei Nummer"
+
+msgid "Delay Before Callback"
+msgstr "Vertraging voor het terugroepen van de telefoont"
+
+msgid "Caller ID"
+msgstr "Aftel-ID"
+
+msgid "Timeout"
+msgstr "Time-out"
+
+msgid "Destination after Callback"
+msgstr "Bestemming na Callback"
+
+msgid "Don't Care"
+msgstr "Geen belang"
+
+msgid "Mode"
+msgstr "Modus"
+
+msgid "Invalid Input"
+msgstr "Ongeldige Input"
+
+msgid "Announcement"
+msgstr "Aankondiging"
+
+msgid "Match"
+msgstr "Matchen"
+
+msgid "Invalid Input, Default (%s) secs"
+msgstr "Ongeldige Input, Standaard (%s) seconden"
+
+msgid "Default (%s) secs"
+msgstr "Standaard (%s) seconden"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Geen"
+
+msgid "Registration"
+msgstr "Registratie"
+
+msgid "Tech"
+msgstr "Tech"
+
+msgid "Voicemail: Enabled"
+msgstr "Stemmail: Ingeschakeld"
+
+msgid "Voicemail: Disabled"
+msgstr "Telefoon: Uitgeschakeld"
+
+msgid "Initial Ring Time"
+msgstr "Aanvangstijdsduur"
+
+msgid "Ring Time"
+msgstr "Ring Time"
+
+msgid "Follow-Me List"
+msgstr "Volg-Mij Lijst"
+
+msgid "Confirm Calls"
+msgstr "Bevestig Aanroepen"
+
+msgid "Extension"
+msgstr "Extensie"
+
+msgid "Name"
+msgstr "Naam"
+
+msgid "No Answer"
+msgstr "Geen antwoord"
+
+msgid "No Answer, Busy, Not Reachable"
+msgstr "Geen bewerking, Bezet, Niet bereikbaar"
+
+msgid "No Answer & Busy"
+msgstr "Geen aansluiting & Bezet"
+
+msgid "Not Reachable"
+msgstr "Niet bereikbaar"
+
+msgid "No Answer & Not Reachable"
+msgstr "Geen aanwezig & Niet bereikbaar"
+
+msgid "Busy & Not Reachable"
+msgstr "Bezig & Niet Bereikbaar"
+
+msgid "Block Unknown/Blocked Caller ID"
+msgstr "Blokkeer onbekende/blokkeer gerapporteerde aanbeller"
+
+msgid "Number: Description"
+msgstr "Nummer: Beschrijving"
+
+msgid "additional entries"
+msgstr "extra ingangen"
+
+msgid "Blacklist"
+msgstr "Zwartlijst"
+
+msgid "Disallowed by Blacklist"
+msgstr "Niet toegestaan door de zwarte lijst"
+
+msgid "Click to edit Blacklist"
+msgstr "Klik om de Zwarte lijst te bewerken"
+
+msgid "Allowlist"
+msgstr "Toegestaan lijst"
+
+msgid "Disallowed by Allowlist"
+msgstr "Niet toegestaan door Allowlist"
+
+msgid "Click to edit Allowlist"
+msgstr "Klik om de whitelijst te bewerken"
+
+msgid "Selection %s"
+msgstr "Selectie %s"
+
+msgid "Invalid Input, Timeout (%s secs)"
+msgstr "Ongeldige invoer, Timeout (%s seconden)"
+
+msgid "Timeout (%s secs)"
+msgstr "Time-out (%s seconden)"
+
+msgid "members"
+msgstr "leden"
+
+msgid "Disabled"
+msgstr "Gedisableerd"
+
+msgid "Priority"
+msgstr "Prioriteit"
+
+msgid "Unlimited"
+msgstr "Onbeperkt"
+
+msgid "Caller Position"
+msgstr "Aanroeppositie"
+
+msgid "Frequency"
+msgstr "Frequentie"
+
+msgid "Minimum Announcement Interval"
+msgstr "Minste aankondigingsinterval"
+
+msgid "Announce Position"
+msgstr "Aankondiging van de functie"
+
+msgid "Announce Hold Time"
+msgstr "Annonceer wachttijd"
+
+msgid "Periodic Announcements"
+msgstr "Periodieke aankondigingen"
+
+msgid "Repeat Frequency"
+msgstr "Herhaak Frequentie"
+
+msgid "Queue Callback"
+msgstr "Wachtrij-terugroep"
+
+msgid "General Settings"
+msgstr "Algemene instellingen"
+
+msgid "Strategy"
+msgstr "Strategie"
+
+msgid "Agent Restrictions"
+msgstr "Agentbeperkingen"
+
+msgid "Autofill"
+msgstr "Autofill"
+
+msgid "Skip Busy Agents"
+msgstr "Overstappen Op bezet agents"
+
+msgid "Music On Hold Class"
+msgstr "Klasse Muziek In Wachtrij"
+
+msgid "Call Recording"
+msgstr "Opname van telefoongesprek"
+
+msgid "Mark calls answered elsewhere"
+msgstr "Mark noemt aangekomen elders beantwoord"
+
+msgid "Timing & Agent Options"
+msgstr "Tijdvak & Agents Opties"
+
+msgid "Max Wait Time"
+msgstr "Maximale wachttijd"
+
+msgid "Agent Timeout"
+msgstr "Agent Timeout"
+
+msgid "Agent Retry"
+msgstr "Agent herhalen"
+
+msgid "Wrap Up Time"
+msgstr "Wrap Up Tijd"
+
+msgid "Capacity Options"
+msgstr "Capaciteit Opties"
+
+msgid "Max Callers"
+msgstr "Maximale aantal oproepen"
+
+msgid "Join Empty"
+msgstr "Sluit aan op Leeg"
+
+msgid "Leave Empty"
+msgstr "Leeg achterlaten"
+
+msgid "No Answer (%s)"
+msgstr "Geen aankloping (%s)"
+
+msgid "Static"
+msgstr "Statisch"
+
+msgid "Dynamic"
+msgstr "Dynamisch"
+
+msgid "Caller Post Hangup"
+msgstr "Aanroeper Telefoon Afhangen"
+
+msgid "Agent Post Hangup"
+msgstr "Agent Na Doortel Sluiting"
+
+msgid "Queue Fail Over on FULL"
+msgstr "Wachtrij Overstappen bij VOL"
+
+msgid "Queue Fail Over on JOINEMPTY"
+msgstr "Wachtrij Overstappen bij JOINEMPTY"
+
+msgid "Queue Fail Over on LEAVEEMPTY"
+msgstr "Wachtrij Overdracht bij LEAVEEMPTY"
+
+msgid "Queue Fail Over on JOINUNAVAIL"
+msgstr "Wachtrij Overstappen bij NICHT BEREID"
+
+msgid "Queue Fail Over on LEAVEUNAVAIL"
+msgstr "Wachtrij Overstappen bij LEAVEUNAVAIL"
+
+msgid "Callback Queue"
+msgstr "Terugroepwachtrij"
+
+msgid "Engine"
+msgstr "Engine"
+
+msgid "Description"
+msgstr "Beschrijving"
+
+msgid "No Match"
+msgstr "Geen overeenkomst"
+
+msgid "Target"
+msgstr "Doelwit"
+
+msgid "Return"
+msgstr "Retourneren"
+
+msgid "Click to continue..."
+msgstr "Klik om door te gaan..."
+
+msgid "No direct script access allowed"
+msgstr "Geen rechtstreeks toegang tot script toegestaan"
+
+msgid "Check for Updates"
+msgstr "Controleer updates"
+
+msgid "Buy Me a Coffee"
+msgstr "Koop Mij Een Koffie"
+
+msgid "Date & Time Stamp"
+msgstr "Datum & Tijd Stempel"
+
+msgid "Displays the date and time on the graph."
+msgstr "Toont de datum en tijd op het grafiek."
+
+msgid "Pan & Zoom"
+msgstr "Pannen en zoomen"
+
+msgid ""
+"Allows you to use pan and zoom functions. Click and hold to pan, and use the "
+"mouse wheel to zoom."
+msgstr ""
+"Toestaat het gebruik van de pan- en zoomfuncties. Klik en houd vast om te "
+"panen, en gebruik de muiswiel om te zoomen."
+
+msgid "Horizontal Layout"
+msgstr "Horizontale Opstelling"
+
+msgid "Displays the dial plan in a horizontal layout."
+msgstr "Toont het dialplan in een horizontale opstelling."
+
+msgid "Shared extension node handling"
+msgstr "Gedeelde extensie knooppuntbeheer"
+
+msgid "None"
+msgstr "Geen"
+
+msgid "Queues and Ring Groups Only"
+msgstr "Wachtrijen en Ringgroepen Alleen"
+
+msgid "All Destinations"
+msgstr "Alle Bestemmingen"
+
+msgid ""
+"\"None\" displays individual extension nodes. \"Queues and Ring Groups Only\" "
+"combines them into one node. \"All\" merges all destinations into a single "
+"extension node."
+msgstr ""
+"\"Geen\" toont individuele extension knopen. \"Wachttijden en groepen alleen"
+"\" combineert ze tot één knoop. \"Alles\" verenigt alle bestemmingen in één "
+"extension knoop."
+
+msgid "Show Queue Agents"
+msgstr "Weergeven Wachtrij Agenten"
+
+msgid "Single"
+msgstr "Een"
+
+msgid "Combine"
+msgstr "Combineer"
+
+msgid "Hide"
+msgstr "Verberg"
+
+msgid ""
+"\"Single\" displays individual agent nodes. \"Combine\" displays all agents "
+"in a single node. \"Hide\" does not display queue agents."
+msgstr ""
+"\"Single\" toont individuele agentenknooppunten. \"Combineert\" toont alle "
+"agents in één knooppunt. \"Verbergen\" toont geen wachtrijen agents."
+
+msgid "Show Dynamic Members for Queues"
+msgstr "Weergeven dynamische leden voor wachttijden"
+
+msgid "Displays the list of dynamic agents currently assigned to the queues."
+msgstr ""
+"Toont de lijst van dynamische agents die momenteel zijn toegewezen aan de "
+"wachtrijen."
+
+msgid "Show Ring Group Members"
+msgstr "Weergeven van Ringgroep Leden"
+
+msgid ""
+"\"Single\" displays individual member nodes. \"Combine\" displays all members "
+"in a single node. \"Hide\" does not display members."
+msgstr ""
+"\"Single\" toont individuele lid-knopen. \"Samenvatten\" toont alle leden in "
+"één knoop. \"Verbergen\" toont geen leden."
+
+msgid "Show Find Me Follow Me for Extensions"
+msgstr "Toon Find Me Follow Me voor Extensies"
+
+msgid "Displays Find Me Follow Me data for extensions."
+msgstr "Toont gevolgde me-op-zoek gegevens voor extities."
+
+msgid "Show Extension Optional Destinations"
+msgstr "Tonen Extensie Optionale Bestemmingen"
+
+msgid ""
+"Displays and follows the optional destinations (No Answer, Busy, Not "
+"Reachable) set for the extension in the Advanced tab."
+msgstr ""
+"Weergeeft en volgt de optionele bestemmingen (Niet bereikbaar, Bezet, Geen "
+"aanwijzing) die voor de uitbreiding zijn ingesteld in de Geavanceerde sectie."
+
+msgid "Show Minimal View"
+msgstr "Weergeven Minimalistisch Uitzicht"
+
+msgid ""
+"Shows (default) or hides the following types of nodes: Extensions, Queue "
+"Members, Ring Group Members, Recordings, Voicemail, and Voicemail Blasting "
+"Members."
+msgstr ""
+"Weergeeft (standaard) of verbergt de volgende soorten knoppen: Extensies, "
+"Wachtrijleden, Ringgroepleden, Opnames, Stemmail, en Stemmail Blasting Leden."
+
+msgid "Saved!"
+msgstr "Bewaard!"
+
+msgid "Save"
+msgstr "Opslaan"
+
+msgid "Inbound Routes [destination]"
+msgstr "Inkomende Routes [bestemming]"
+
+msgid "Time Conditions"
+msgstr "Tijdvoorwaarden"
+
+msgid "Call Flows"
+msgstr "Routes"
+
+msgid "Virtual Queues"
+msgstr "Virtuele wachtrijen"
+
+msgid "Queues"
+msgstr "Wachtrijen"
+
+msgid "Ring Groups"
+msgstr "Ringgroepen"
+
+msgid "Dynamic Routes"
+msgstr "Dynamische Routes"
+
+msgid "Announcements"
+msgstr "Announcements"
+
+msgid "Languages"
+msgstr "Talen"
+
+msgid "Misc Applications"
+msgstr "Toepassingen vanuit"
+
+msgid "Reload"
+msgstr "Opslaan"
+
+msgid "Choose Dial Plan"
+msgstr "Kies Dial Plan"
+
+msgid "Super"
+msgstr "Trefzeker"
+
+msgid "High"
+msgstr "Hoge"
+
+msgid "Standard"
+msgstr "Standaard"
+
+msgid ""
+"Exclude Node(s): Press Shift + left-click a node to exclude it and downstream "
+"paths. Click \"+\" to show the path again. Use \"Reset\" to restore the "
+"original dial plan."
+msgstr ""
+"Uitsluiten Knoop(en): Druk op Shift en klik met de linkermuis op een knoop om "
+"deze en de daaropvolgende paden uit te sluiten. Klik op \"+\" om de pad weer "
+"te tonen. Gebruik \"Reset\" om de originele telefoonaansluiting te herstellen."
+
+msgid ""
+"Redraw from a Node: Press Ctrl (Cmd on macOS) + left-click a node to start "
+"from it. To revert, Ctrl/Cmd + left-click the parent node."
+msgstr ""
+"Hertekenen van een knooppunt: Druk op Ctrl (Cmd op macOS) + aanmeldknop een "
+"knooppunt om vanaf te starten. Om terug te draaien, Ctrl/Cmd + aanmeldknop "
+"het oudere knooppunt."
+
+msgid ""
+"Highlight Paths: Click Highlight Paths, then select a node or edge. Click "
+"Remove Highlights to clear."
+msgstr ""
+"Opschuiven paden: Klik op Opschuiven paden, klik dan op een knooppunt of een "
+"kant. Klik op Verwijderen Hoge lights om te zuiveren."
+
+msgid "Hover: Move your cursor over a path to highlight it."
+msgstr "Hover: Plaats je cursor over een pad om dit te verhogen."
+
+msgid "Open Destinations: Click a destination to open it in a new tab."
+msgstr ""
+"Open Bestemmingen: Klik op een bestemming om het te openen in een nieuw "
+"venster."
+
+msgid ""
+"Open Time Groups: Click on \"Match: (timegroup)\" or \"No Match\" to view "
+"details in a new tab. Time Groups"
+msgstr ""
+"Open tijdgroepen: Klik op \"Overeenkomst: (tijdgroep)\" of \"Geen overeenkomst"
+"\" om de details in een nieuw venster te bekijken. Tijdgroepen"
+
+msgid "Pan: Click and drag to move around the view."
+msgstr "Pan: Klik en sleep om de weergave te verplaatsen."
+
+msgid "Zoom: Use the mouse wheel to zoom in and out."
+msgstr "Zoom: Gebruik de muiswiel om in- en uit te zoomen."
+
+msgid "Extension Node Status"
+msgstr "Extensie Knooppunt Status"
+
+msgid "Registered extension (green border)"
+msgstr "Geregistreerde extensie (groene rand)"
+
+msgid "Unregistered extension (red border)"
+msgstr "Ongeregistreerde extensie (rode rand)"
+
+msgid "Virtual or non-extension node (no border)"
+msgstr "Virtueel of niet-extensie-knooppunt (geen grens)"
+
+msgid "Email"
+msgstr "E-mail"
+
+msgid "Enabled"
+msgstr "Ingeschakeld"
+
+msgid "Caller ID Number"
+msgstr "Nummer Caller ID"
+
+msgid "Alert Info"
+msgstr "Waarschuwings Informatie"
+
+msgid "CID Prefix"
+msgstr "CID Voorschaaf"
+
+msgid "Language"
+msgstr "Taal"
+
+msgid "DTMF Options"
+msgstr "Toetsenbord opties"
+
+msgid "Enable Direct Dial"
+msgstr "Schakel Direct Dial in"
+
+msgid "Invalid Retries"
+msgstr "Ongeldige pogingen"
+
+msgid "Invalid Retry Recording"
+msgstr "Ongeldig opnieuw opnemen"
+
+msgid "Invalid Recording"
+msgstr "Ongeldige opname"
+
+msgid "Timeout Retries"
+msgstr "Timeout-pogingen"
+
+msgid "Timeout Retry Recording"
+msgstr "Aftellen Ophalen Opname"
+
+msgid "Timeout Recording"
+msgstr "Time-out opname"
+
+msgid "Return to IVR after VM"
+msgstr "Terugkeren naar IVR na stemmail"
+
+msgid "Page Group"
+msgstr "Groep Pagina's"
+
+msgid "Busy Extensions"
+msgstr "Bezig Extensies"
+
+msgid "Duplex"
+msgstr "Duplex"
+
+msgid "Queue"
+msgstr "Wachtrij"
+
+msgid "Agents"
+msgstr "Agents"
+
+msgid "Ext"
+msgstr "Extensie"
+
+msgid "Retries"
+msgstr "Aantal herhalingen"
+
+msgid "Retry Delay"
+msgstr "Herhalingsvertraging"
+
+msgid "Ring Group"
+msgstr "Ringgroep"
+
+msgid "List"
+msgstr "Lijst"
+
+msgid "Extextnsion"
+msgstr "Extensie"
+
+msgid "Timezone"
+msgstr "Tijdzone"
+
+msgid "Type"
+msgstr "Type:"
+
+msgid "Calendars"
+msgstr "Kalenders"
+
+msgid "All"
+msgstr "Alles"
+
+msgid "Events"
+msgstr "Evenementen"
+
+msgid "Expand"
+msgstr "Uitbreiden"
+
+msgid "Outbound CallerID"
+msgstr "Afdijn"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "CID Options"
+msgstr "Opties voor CID"
+
+msgid "Max Channels"
+msgstr "Maximale Kanalen"
+
+msgid "Continue If Busy"
+msgstr "Voortgaan als bezet"
+
+msgid "Audio Label"
+msgstr "Audio Etiket"
+
+msgid "Bad Dest: Blacklist"
+msgstr "Slechte Bestemming: Blokkeerlijst"

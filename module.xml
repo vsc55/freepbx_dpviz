@@ -2,7 +2,7 @@
   <rawname>dpviz</rawname>
   <repo>unsupported</repo>
   <name>Dial Plan Vizualizer</name>
-  <version>1.0.22</version>
+  <version>1.0.23</version>
   <publisher>AdamV</publisher>
   <license>GPLv3+</license>
   <licenselink>http://www.gnu.org/licenses/gpl-3.0.txt</licenselink>
@@ -12,20 +12,8 @@
   <menuitems>
     <dpviz>Dial Plan Vizualizer</dpviz>
   </menuitems>
-	<database>
-		<table name="dpviz">
-			<field name="id" type="integer" primarykey="true" autoincrement="true"/>
-			<field name="datetime" type="boolean" default="1"/>
-			<field name="horizontal" type="boolean" default="0"/>
-			<field name="panzoom" type="boolean" default="1"/>
-			<field name="dynmembers" type="boolean" default="1"/>
-			<field name="combineQueueRing" type="boolean" default="0"/>
-			<field name="extOptional" type="boolean" default="0"/>
-			<field name="fmfm" type="boolean" default="0"/>
-			<field name="minimal" type="boolean" default="0"/>
-		</table>
-  </database>
 	<changelog>
+		*1.0.23* Language translations for multiple languages. Improved Virtual Queues. FPBX 13 support.
 		*1.0.22* Added Registration statuses. Modules: Blacklist, Queue Callback, Queue Plus, Virtual Queues.
 		*1.0.21* Added Shift + click. Minimal Option. More module support.
 		*1.0.20* Added dropdown + categories.
@@ -43,8 +31,8 @@
 		*1.0.0* First release, testing module creation 
 	</changelog>
 	<depends>
-		<phpversion>5.4.0</phpversion>
 		<module>recordings</module>
+		<phpversion>5.3.0</phpversion>
 	</depends>
   <info>https://github.com/madgen78/dpviz</info>
   <supported>
