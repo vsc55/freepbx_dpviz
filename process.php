@@ -2114,13 +2114,13 @@ if ($minimal){
 			$route['parent_edge_label'] = " "._('Match').": ".$tgLabel;
 			$route['parent_edge_url'] = htmlentities($tgLink);
 			$route['parent_edge_target'] = '_blank';
-			$route['parent_edge_code']='match';
+			$route['parent_edge_code']='edgelink';
 			$route['parent_edge_labeltooltip']=" "._('Match').": ".$tgTooltip;
 			$route['parent_node'] = $node;
 			dpp_follow_destinations($route, $tc['truegoto'].','.$tcLang,'',$options);
 			
 			
-			$route['parent_edge_code']='match';
+			$route['parent_edge_code']='edgelink';
 			$route['parent_edge_label'] = " "._('No Match');
 			$route['parent_edge_url'] = htmlentities($tgLink);
 			$route['parent_edge_target'] = '_blank';
