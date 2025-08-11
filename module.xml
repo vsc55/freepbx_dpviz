@@ -32,8 +32,24 @@
 	</changelog>
 	<depends>
 		<module>recordings</module>
+		<module>soundlang</module>
 		<phpversion>5.3.0</phpversion>
 	</depends>
+	<database>
+		<table name="dpviz">
+			<field name="id" type="integer" primarykey="true" autoincrement="true"/>
+			<field name="datetime" type="boolean" notnull="true" default="1"/>
+			<field name="horizontal" type="boolean" notnull="true" default="0"/>
+			<field name="panzoom" type="boolean" notnull="true" default="1"/>
+			<field name="dynmembers" type="boolean" notnull="true" default="0"/>
+			<field name="combineQueueRing" type="boolean" notnull="true" default="0"/>
+			<field name="extOptional" type="boolean" notnull="true" default="0"/>
+			<field name="fmfm" type="boolean" notnull="true" default="0"/>
+			<field name="minimal" type="boolean" notnull="true" default="0"/>
+			<field name="queue_member_display" type="boolean" notnull="true" default="1"/>
+			<field name="ring_member_display" type="boolean" notnull="true" default="1"/>
+		</table>
+	</database>
   <info>https://github.com/madgen78/dpviz</info>
   <supported>
     <version>17.0</version>

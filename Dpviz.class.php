@@ -8,6 +8,7 @@ namespace FreePBX\modules;
 class Dpviz extends \FreePBX_Helpers implements \BMO {
 
     private $freepbx;
+    private $db;
 
     public function __construct($freepbx = null) {
         parent::__construct($freepbx);
@@ -15,7 +16,13 @@ class Dpviz extends \FreePBX_Helpers implements \BMO {
         $this->db = $this->freepbx->Database;
     }
 
-    public function install() {}
+    public function install() {
+        if (empty($this->getoptions())) {
+            // Create default settings
+            $sql = "INSERT INTO dpviz () VALUES ()";
+            $this->db->exec($sql);
+        }
+    }
     public function uninstall() {}
 
     public function getOptions() {
